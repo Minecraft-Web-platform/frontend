@@ -7,7 +7,7 @@ import { RegistrateRequest, RegistrateResponse } from "../types/registrate.types
 
 class AuthService {
   constructor(private readonly httpService: HttpService) {
-    this.httpService = httpService;
+  this.httpService = httpService; 
   }
 
   public async registrate(data: RegistrateRequest): Promise<RegistrateResponse> {
