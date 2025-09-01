@@ -1,11 +1,48 @@
 .registration-page {
-  .button {
-    margin-top: 24px;
-  }
+  position: relative;
+  padding-top: 95px;
+  background-image: url("/png/auth-bg.jpg");
+  width: 100%;
+  height: 100vh;
+  background-position: 60% 0%;
 }
 
 .registration-form {
+  position: absolute;
+  right: 64px;
+  display: block;
+  border-radius: 24px;
+  padding: 48px 64px 90px;
+  background-color: #ffffffcc;
   margin: 0 auto;
   width: 600px;
-  text-align: center;
+
+  h1,
+  p,
+  input,
+  label,
+  span {
+    font-family: "Inter", sans-serif;
+  }
+
+  h1 {
+    font-weight: 500;
+  }
+}
+
+.checkbox-area {
+  margin-top: 24px;
+  display: flex;
+  gap: 8px;
+
+  a {
+    color: #000;
+  }
+}
+
+.buttons {
+  margin-top: 76px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }

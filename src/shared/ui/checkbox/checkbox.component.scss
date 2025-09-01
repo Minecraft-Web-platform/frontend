@@ -1,0 +1,15 @@
+.checkbox {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+
+  border: 1px solid black;
+  border-radius: 4px;
+  background-color: #fff;
+
+  svg {
+    display: block;
+    margin-top: 4px;
+    margin-left: 4px;
+  }
+}

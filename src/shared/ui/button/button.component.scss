@@ -2,6 +2,7 @@
   width: 100%;
   border: none;
   background-color: #000;
+  border-radius: 8px;
   padding: 8px;
   color: #fff;
   transition: 0.3s linear background-color;
@@ -17,6 +18,15 @@
 
   &:disabled {
     pointer-events: none;
-    background-color: gray;
+  }
+
+  &--secondary {
+    border: 1px solid black;
+    color: #000;
+    background-color: transparent;
+
+    &:hover {
+      background-color: #fff;
+    }
   }
 }

@@ -5,11 +5,19 @@ type Props = {
   children: ReactNode;
   callback: () => void;
   disabled?: boolean;
+  secondary?: boolean;
 };
 
-const Button: FC<Props> = ({ children, callback, disabled = false }) => {
+const Button: FC<Props> = ({
+  children,
+  callback,
+  disabled = false,
+  secondary = false,
+}) => {
+  const classNames = "button" + (secondary ? " button--secondary" : "");
+
   return (
-    <button className="button" onClick={callback} disabled={disabled}>
+    <button className={classNames} onClick={callback} disabled={disabled}>
       {children}
     </button>
   );

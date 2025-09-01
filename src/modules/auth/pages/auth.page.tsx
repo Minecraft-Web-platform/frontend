@@ -1,3 +1,9 @@
 import { FC } from "react";
 
-const AuthPage: FC = () => {};
+type Props = {
+  chosenWindow: "registration" | "login";
+};
+
+const AuthPage: FC<Props> = ({ chosenForm }) => {
+  return <main></main>;
+};

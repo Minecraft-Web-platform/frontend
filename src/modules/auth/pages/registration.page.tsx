@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import Button from "../../../shared/ui/button/button.component";
 import Input from "../../../shared/ui/input/input.component";
 
@@ -6,6 +6,8 @@ import { authService } from "../services/auth.service";
 
 import "./registration.page.scss";
 import { validator } from "../../../shared/utils/validator.util";
+import { Link } from "react-router";
+import Checkbox from "../../../shared/ui/checkbox/checkbox.component";
 
 const RegistrationPage: FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -13,13 +15,17 @@ const RegistrationPage: FC = () => {
   const [repeatPassword, setRepeatPassword] = useState<string>("");
   const [isAcceptedAgreement, setIsAcceptedAgreement] =
     useState<boolean>(false);
+  const [accountIsCreated, setAccountIsCreated] = useState<boolean>(false);
 
   const buttonIsActive =
     username.length > 2 &&
     validator.validatePasswordBoolean(password) &&
-    validator.validatePasswordBoolean(repeatPassword);
+    validator.validatePasswordBoolean(repeatPassword) &&
+    isAcceptedAgreement;
 
-  const onSubmitHandler = async () => {
+  const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     const body = {
       username,
       password,
@@ -27,43 +33,77 @@ const RegistrationPage: FC = () => {
       isAcceptedAgreement,
     };
 
-    const res = await authService.registrate(body);
+    authService.registrate(body).then(() => setAccountIsCreated(true));
   };
 
   return (
     <main className="registration-page">
-      <form className="registration-form">
-        <Input
-          value={username}
-          setValue={setUsername}
-          placeholder="Никнейм"
-          label="Никнейм"
-        />
+      {accountIsCreated ? (
+        <div className="created">
+          <h2>
+            Твой аккаунт был создан и я сам в шоке, что ничего не отвалилось :)
+          </h2>
 
-        <Input
-          value={password}
-          setValue={setPassword}
-          placeholder="Пароль"
-          label="Пароль"
-        />
+          <p>
+            Сейчас, дружочек, ты должен залогиниться, чтобы войти в аккаунт и
+            делать грязь с сайта
+          </p>
 
-        <Input
-          value={repeatPassword}
-          setValue={setRepeatPassword}
-          placeholder="Ещё раз пароль"
-          label="Ещё раз пароль"
-        />
+          <p>
+            P.S. Можешь уже заходить на майнкрафт сервер и играть, впиши тот же
+            никнейм что и тут
+          </p>
+        </div>
+      ) : (
+        <form
+          className="registration-form"
+          onSubmit={(e) => onSubmitHandler(e)}
+        >
+          <h1>Регистрация</h1>
 
-        <input
-          type="checkbox"
-          checked={isAcceptedAgreement}
-          onChange={() => setIsAcceptedAgreement((prev) => !prev)}
-        />
+          <Input
+            value={username}
+            setValue={setUsername}
+            placeholder="Никнейм"
+            label="Желаемый никнейм"
+          />
 
-        <Button callback={() => {}} disabled={!buttonIsActive}>
-          Создать аккаунт
-        </Button>
-      </form>
+          <Input
+            value={password}
+            setValue={setPassword}
+            placeholder="Пароль"
+            label="Пароль"
+          />
+
+          <Input
+            value={repeatPassword}
+            setValue={setRepeatPassword}
+            placeholder="Ещё раз пароль"
+            label="Ещё раз пароль"
+          />
+
+          <div className="checkbox-area">
+            <Checkbox
+              checked={isAcceptedAgreement}
+              setChecked={setIsAcceptedAgreement}
+            />
+
+            <span>
+              Я принимаю <Link to="/agreement">условия обработки данных</Link>
+            </span>
+          </div>
+
+          <div className="buttons">
+            <Button callback={() => {}} disabled={!buttonIsActive}>
+              Создать аккаунт
+            </Button>
+
+            <Button callback={() => {}} secondary={true}>
+              Уже есть аккаунт на сервере
+            </Button>
+          </div>
+        </form>
+      )}
     </main>
   );
 };
