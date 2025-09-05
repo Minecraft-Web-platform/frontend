@@ -1,17 +1,19 @@
 import { FC } from "react";
+import "./landing.page.scss";
 
-type Props = {
-  hehe: string;
-};
-
-const LandingPage: FC<Props> = () => {
+const LandingPage: FC = () => {
   return (
     <>
-      <header></header>
+      <header className="header">
+        <h1>Хроники края</h1>
+        <p>Погрузись в мир приключений</p>
+      </header>
 
-      <main></main>
+      <main className="main"></main>
 
       <footer></footer>
     </>
   );
 };
+
+export default LandingPage;
