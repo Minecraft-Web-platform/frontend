@@ -17,28 +17,28 @@ class AuthService {
     data: RegistrateRequest
   ): Promise<RegistrateResponse> {
     return this.httpService.post<RegistrateResponse, RegistrateRequest>(
-      "/auth/register/",
+      "auth/register/",
       data
     );
   }
 
   public async login(data: LoginRequest): Promise<LoginResponse> {
     return this.httpService.post<LoginResponse, LoginRequest>(
-      "/auth/login/",
+      "auth/login/",
       data
     );
   }
 
   public async confirm(data: ConfirmRequest): Promise<ConfirmResponse> {
     return this.httpService.patch<ConfirmResponse, ConfirmRequest>(
-      "/auth/confirm/",
+      "auth/confirm/",
       data
     );
   }
 
   public async logout(data: LogoutRequest): Promise<LogoutResponse> {
     return this.httpService.patch<LogoutResponse, LogoutRequest>(
-      "/auth/logout/",
+      "auth/logout/",
       data
     );
   }
