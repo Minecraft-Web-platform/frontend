@@ -1,14 +1,14 @@
-import { Dispatch, FC, SetStateAction } from "react";
+import { FC } from "react";
 import "./checkbox.component.scss";
 
 type Props = {
   checked: boolean;
-  setChecked: Dispatch<SetStateAction<boolean>>;
+  onClickHandler: () => void;
 };
 
-const Checkbox: FC<Props> = ({ checked, setChecked }) => {
+const Checkbox: FC<Props> = ({ checked, onClickHandler }) => {
   return (
-    <div className="checkbox" onClick={() => setChecked((prev) => !prev)}>
+    <div className="checkbox" onClick={onClickHandler}>
       {checked && (
         <svg
           width="8"

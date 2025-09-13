@@ -1,19 +1,18 @@
-import type { IHttpClient } from './types';
-import type { IHttpConfig, IMap, IResponse } from './types';
+import type { IHttpClient } from "./types";
+import type { IHttpConfig, IMap, IResponse } from "./types";
 
-// @ts-ignore
 const SERVER_URL = import.meta.env.VITE_BACKEND_URL;
 // const SERVER_URL = 'https://backend.com';
 
 export class HttpService {
   constructor(
-		private readonly fetchingService: IHttpClient,
-		private readonly baseUrl: string = SERVER_URL,
+    private readonly fetchingService: IHttpClient,
+    private readonly baseUrl: string = SERVER_URL
   ) {
     if (!SERVER_URL) {
-      throw new Error('VITE_BACKEND_URL in .env file is invalid');
+      throw new Error("VITE_BACKEND_URL in .env file is invalid");
     }
-		
+
     this.fetchingService = fetchingService;
     this.baseUrl = baseUrl;
   }
@@ -22,7 +21,7 @@ export class HttpService {
     let url = `${base}?`;
 
     Object.keys(args).forEach((parameter) => {
-      if (typeof args[parameter] !== 'undefined') {
+      if (typeof args[parameter] !== "undefined") {
         url = `${url}&${parameter}=${String(args[parameter])}`;
       }
     });
@@ -48,26 +47,49 @@ export class HttpService {
   public async post<T, TD>(
     url: string,
     data: TD,
-    config?: IHttpConfig,
+    config?: IHttpConfig
   ): Promise<T> {
-    return this.fetchingService
-      .post<IResponse<T>, TD>(this.getFullApiUrl(url), data, {
+    const responseType = config?.responseType ?? "json";
+
+    const headers = {
+      ...config?.headers,
+      ...(responseType === "json"
+        ? this.populateContentTypeHeaderConfig()
+        : {}),
+    };
+
+    if (responseType === "blob") {
+      // Blob-ответ
+      const blob = await this.fetchingService.post<Blob, TD>(
+        this.getFullApiUrl(url),
+        data,
+        {
+          ...config,
+          headers,
+          responseType: "blob", // axios поймёт, что нужно вернуть Blob
+        }
+      );
+      return blob as unknown as T; // безопасно, если T = Blob
+    }
+
+    // JSON-ответ
+    const result = await this.fetchingService.post<IResponse<T>, TD>(
+      this.getFullApiUrl(url),
+      data,
+      {
         ...config,
-        headers: {
-          ...config?.headers,
-          ...this.populateContentTypeHeaderConfig(),
-        },
-      })
-      .then((result) => {
-        this.checkResponseStatus(result);
-        return result.data;
-      });
+        headers,
+      }
+    );
+
+    this.checkResponseStatus(result);
+    return result.data;
   }
 
   public async put<T, TD>(
     url: string,
     data: TD,
-    config?: IHttpConfig,
+    config?: IHttpConfig
   ): Promise<T> {
     return this.fetchingService
       .put<IResponse<T>, TD>(this.getFullApiUrl(url), data, {
@@ -86,7 +108,7 @@ export class HttpService {
   public async patch<T, TD>(
     url: string,
     data: TD,
-    config?: IHttpConfig,
+    config?: IHttpConfig
   ): Promise<T> {
     return this.fetchingService
       .patch<IResponse<T>, TD>(this.getFullApiUrl(url), data, {
@@ -119,7 +141,7 @@ export class HttpService {
 
   public populateContentTypeHeaderConfig(): Record<string, string> {
     return {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
   }
 
