@@ -1,9 +1,15 @@
 import { EnhancedWithAuthHttpService } from "../../../../shared/services/http-auth.service";
+import { httpFactoryService } from "../../../../shared/services/http-factory.service";
 
 class TransferService {
-  constructor(private readonly httpEnchAuthService: EnhancedWithAuthHttpService) {
+  constructor(
+    // @ts-expect-error: property not used yet
+    private readonly httpEnchAuthService: EnhancedWithAuthHttpService
+  ) {
     this.httpEnchAuthService = httpEnchAuthService;
   }
-
-  public async transfer()
 }
+
+export const transferService = new TransferService(
+  httpFactoryService.createAuthHttpService()
+);

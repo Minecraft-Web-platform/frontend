@@ -85,7 +85,7 @@ const RegistrationPage: FC = () => {
           <div className="checkbox-area">
             <Checkbox
               checked={isAcceptedAgreement}
-              setChecked={setIsAcceptedAgreement}
+              onClickHandler={() => setIsAcceptedAgreement((prev) => !prev)}
             />
 
             <span>
