@@ -6,7 +6,7 @@ import { authService } from "../services/auth.service";
 
 import "./registration.page.scss";
 import { validator } from "../../../shared/utils/validator.util";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Checkbox from "../../../shared/ui/checkbox/checkbox.component";
 
 const RegistrationPage: FC = () => {
@@ -16,6 +16,8 @@ const RegistrationPage: FC = () => {
   const [isAcceptedAgreement, setIsAcceptedAgreement] =
     useState<boolean>(false);
   const [accountIsCreated, setAccountIsCreated] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   const buttonIsActive =
     username.length > 2 &&
@@ -64,21 +66,23 @@ const RegistrationPage: FC = () => {
           <Input
             value={username}
             setValue={setUsername}
-            placeholder="Никнейм"
-            label="Желаемый никнейм"
+            placeholder=""
+            label="Никнейм"
           />
 
           <Input
             value={password}
             setValue={setPassword}
-            placeholder="Пароль"
+            placeholder=""
+            type="password"
             label="Пароль"
           />
 
           <Input
             value={repeatPassword}
             setValue={setRepeatPassword}
-            placeholder="Ещё раз пароль"
+            placeholder=""
+            type="password"
             label="Ещё раз пароль"
           />
 
@@ -89,17 +93,18 @@ const RegistrationPage: FC = () => {
             />
 
             <span>
-              Я принимаю <Link to="/agreement">условия обработки данных</Link>
+              Принимаю{" "}
+              <Link to="/agreement">условия обработки Моих данных</Link>
             </span>
           </div>
 
           <div className="buttons">
             <Button callback={() => {}} disabled={!buttonIsActive}>
-              Создать аккаунт
+              Зарегистрироваться
             </Button>
 
-            <Button callback={() => {}} secondary={true}>
-              Уже есть аккаунт на сервере
+            <Button callback={() => navigate("/login")} secondary={true}>
+              Уже есть аккаунт?
             </Button>
           </div>
         </form>
