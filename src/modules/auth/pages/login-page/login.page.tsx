@@ -1,13 +1,15 @@
 import { FC, FormEvent, useState } from "react";
 import "./login.page.scss";
-import Input from "../../../shared/ui/input/input.component";
+import Input from "../../../../shared/ui/input/input.component";
 import { Link, useNavigate } from "react-router-dom";
-import Button from "../../../shared/ui/button/button.component";
-import { authService } from "../services/auth.service";
+import Button from "../../../../shared/ui/button/button.component";
+import { authService } from "../../services/auth.service";
+import useAuthStore from "../../../../store/auth.store";
 
 const LoginPage: FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const authStore = useAuthStore();
   const navigate = useNavigate();
 
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
@@ -18,7 +20,8 @@ const LoginPage: FC = () => {
       password,
     };
 
-    authService.login(body);
+    const { accessToken, refreshToken } = await authService.login(body);
+    authStore.login(accessToken, refreshToken);
   };
 
   return (

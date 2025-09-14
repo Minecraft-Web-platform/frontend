@@ -1,13 +1,13 @@
 import { FC, FormEvent, useState } from "react";
-import Button from "../../../shared/ui/button/button.component";
-import Input from "../../../shared/ui/input/input.component";
+import Button from "../../../../shared/ui/button/button.component";
+import Input from "../../../../shared/ui/input/input.component";
 
-import { authService } from "../services/auth.service";
+import { authService } from "../../services/auth.service";
 
 import "./registration.page.scss";
-import { validator } from "../../../shared/utils/validator.util";
+import { validator } from "../../../../shared/utils/validator.util";
 import { Link, useNavigate } from "react-router";
-import Checkbox from "../../../shared/ui/checkbox/checkbox.component";
+import Checkbox from "../../../../shared/ui/checkbox/checkbox.component";
 
 const RegistrationPage: FC = () => {
   const [username, setUsername] = useState<string>("");
