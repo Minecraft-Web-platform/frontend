@@ -3,14 +3,14 @@ import "./button.component.scss";
 
 type Props = {
   children: ReactNode;
-  callback: () => void;
+  callback?: () => void;
   disabled?: boolean;
   secondary?: boolean;
 };
 
 const Button: FC<Props> = ({
   children,
-  callback,
+  callback = () => {},
   disabled = false,
   secondary = false,
 }) => {

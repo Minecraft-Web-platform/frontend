@@ -29,6 +29,13 @@ class AuthService {
     );
   }
 
+  public async initConfirmation(data: { email: string }): Promise<void> {
+    return this.httpService.post<void, { email: string }>(
+      "auth/init-confirmation/",
+      data
+    );
+  }
+
   public async confirm(data: ConfirmRequest): Promise<ConfirmResponse> {
     return this.httpService.patch<ConfirmResponse, ConfirmRequest>(
       "auth/confirm/",
