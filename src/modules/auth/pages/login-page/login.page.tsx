@@ -52,7 +52,7 @@ const LoginPage: FC = () => {
           </Button>
         </div>
 
-        <Link to={"/"}>Забыли пароль?</Link>
+        {/* <Link to={"/"}>Забыли пароль?</Link> */}
       </form>
     </main>
   );
