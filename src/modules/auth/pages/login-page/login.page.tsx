@@ -1,7 +1,7 @@
 import { FC, FormEvent, useState } from "react";
 import "./login.page.scss";
 import Input from "../../../../shared/ui/input/input.component";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "../../../../shared/ui/button/button.component";
 import { authService } from "../../services/auth.service";
 import useAuthStore from "../../../../store/auth.store";
