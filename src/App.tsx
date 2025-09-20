@@ -58,15 +58,7 @@ function App() {
           path="/players/:username"
           element={
             <RequireAuth>
-              <PlayerPassport
-                nickname="Deadgore"
-                name="Георгий"
-                surname="Кравцов"
-                uuid="135DABD5-A0AB-3BB4-AF96-C05E4761D839"
-                email="example@example.com"
-                citizenship="Фратера"
-                city="Демигард"
-              />
+              <PlayerPassport />
             </RequireAuth>
           }
         />

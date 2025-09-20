@@ -2,74 +2,80 @@
 import { useParams } from "react-router-dom";
 import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import "./player-passport.page.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { PlayerType } from "../types/player.type";
+import { playersService } from "../services/players.service";
 
-interface PlayerPassportProps {
-  nickname: string;
-  name: string;
-  surname: string;
-  uuid: string;
-  email: string;
-  citizenship: string;
-  city: string;
-  avatarUrl?: string;
-}
-
-const PlayerPassport = ({
-  nickname,
-  name,
-  surname,
-  uuid,
-  email,
-  citizenship,
-  city,
-  avatarUrl,
-}: PlayerPassportProps) => {
+const PlayerPassport = () => {
   const { username } = useParams();
-  const [player, setPlayer] = useState();
+  const [player, setPlayer] = useState<PlayerType | null>(null);
+
+  useEffect(() => {
+    playersService
+      .getByUsername(username as string)
+      .then((res) => setPlayer(res));
+  }, [username]);
 
   return (
     <div className="passport-page">
       <Sidebar />
 
-      <main className="passport">
-        <h2 className="passport__header">КНЯЖЕСТВО ФРАТЕРА</h2>
+      <main className="passport-wrapper">
+        <div className="passport">
+          {player ? (
+            <>
+              <h2 className="passport__header">Мир Хроники Края</h2>
 
-        <div className="passport__content">
-          <div className="passport__photo">
-            {avatarUrl ? (
+              <div className="passport__content">
+                <div className="passport__photo">
+                  {/* {player?.avatarUrl ? (
               <img src={avatarUrl} alt={nickname} />
             ) : (
               <span>Нет фото</span>
-            )}
-          </div>
+            )} */}
+                  <span>Нет фото</span>
+                </div>
 
-          <div className="passport__info">
-            <p>
-              <span className="label">Никнейм:</span> {username}
-            </p>
-            <p>
-              <span className="label">Имя:</span> {name}
-            </p>
-            <p>
-              <span className="label">Фамилия:</span> {surname}
-            </p>
-            <p>
-              <span className="label">UUID:</span> {uuid}
-            </p>
-            <p className="passport__email">
-              <span className="label">Email:</span> {email}
-              <span className="passport__verified">
-                {/* <Check size={12} /> */}
-              </span>
-            </p>
-            <p>
-              <span className="label">Гражданство:</span> {citizenship}
-            </p>
-            <p>
-              <span className="label">Город:</span> {city}
-            </p>
-          </div>
+                <div className="passport__info">
+                  <p>
+                    <span className="label">Никнейм:</span> {username}
+                  </p>
+
+                  <p>
+                    <span className="label">UUID:</span> {player.uuid}
+                  </p>
+                  <p className="passport__email">
+                    <span className="label">Email:</span> {player.email || "-"}
+                    {player.emailIsConfirmed && (
+                      <span className="passport__verified">
+                        {/* <Check size={12} /> */}
+                      </span>
+                    )}
+                  </p>
+                  <p>
+                    <span className="label">Гражданство:</span> -
+                  </p>
+                  <p>
+                    <span className="label">Город:</span> -
+                  </p>
+                  <p>
+                    <span className="label">Улица:</span> -
+                  </p>
+                  <p>
+                    <span className="label">Дом:</span> -
+                  </p>
+                  <p>
+                    <span className="label">Выдано:</span> 01.10.2025
+                  </p>
+                  <p>
+                    <span className="label">Действителен до:</span> 01.10.2028
+                  </p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p>Загрузка...</p>
+          )}
         </div>
       </main>
     </div>
