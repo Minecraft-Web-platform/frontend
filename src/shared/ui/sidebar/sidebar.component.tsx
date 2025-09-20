@@ -7,6 +7,7 @@ import StateIcon from "../../../assets/svg/state.svg?react";
 import CompanyIcon from "../../../assets/svg/company.svg?react";
 import PlayersIcon from "../../../assets/svg/people.svg?react";
 import MapIcon from "../../../assets/svg/map.svg?react";
+import CreeperIcon from "../../../assets/svg/creeper.svg?react";
 import ProfileIcon from "../../../assets/svg/profile.svg?react";
 import TechSupportIcon from "../../../assets/svg/contact.svg?react";
 import DocsIcon from "../../../assets/svg/docs.svg?react";
@@ -23,20 +24,32 @@ const Sidebar: FC = () => {
           <NewsIcon />
         </IconComponent>
 
-        <IconComponent path="/news" label="Государства" iconType="fill">
+        {/* <IconComponent path="/states" label="Государства" iconType="fill">
           <StateIcon />
         </IconComponent>
 
-        <IconComponent path="/news" label="Фирмы" iconType="fill">
+        <IconComponent path="/companies" label="Фирмы" iconType="fill">
           <CompanyIcon />
-        </IconComponent>
+        </IconComponent> */}
 
-        <IconComponent path="/news" label="Список игроков" iconType="fill">
+        <IconComponent path="/players" label="Список игроков" iconType="fill">
           <PlayersIcon />
         </IconComponent>
 
-        <IconComponent path="/news" label="Карта мира" iconType="fill">
+        <IconComponent
+          path="http://146.19.48.158:25900"
+          label="Карта мира"
+          iconType="fill"
+        >
           <MapIcon />
+        </IconComponent>
+
+        <IconComponent
+          path="/download"
+          label="Скачать сборку и лаунчер"
+          iconType="fill"
+        >
+          <CreeperIcon />
         </IconComponent>
       </div>
 
@@ -45,11 +58,15 @@ const Sidebar: FC = () => {
           <ProfileIcon />
         </IconComponent>
 
-        <IconComponent path="/news" label="Техподдержка" iconType="fill">
+        <IconComponent
+          path="/tech-support"
+          label="Техподдержка"
+          iconType="fill"
+        >
           <TechSupportIcon />
         </IconComponent>
 
-        <IconComponent path="/news" label="Регламенты" iconType="stroke">
+        <IconComponent path="/agreement" label="Регламенты" iconType="stroke">
           <DocsIcon />
         </IconComponent>
       </div>
