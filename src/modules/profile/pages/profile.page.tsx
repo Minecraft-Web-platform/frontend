@@ -37,7 +37,7 @@ const Profile: FC = () => {
       {loading ? (
         <p>Загрузка...</p>
       ) : (
-        <main className="profile">
+        <main className="profile content">
           <h1>Профиль {info?.username}</h1>
 
           <p>UUID: {info?.uuid.toUpperCase()}</p>

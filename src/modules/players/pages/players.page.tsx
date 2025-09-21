@@ -21,7 +21,7 @@ const PlayersPage: FC = () => {
     <div className="players-page page">
       <Sidebar />
 
-      <main>
+      <main className="content">
         <h1>Игроки</h1>
 
         {loading ? (

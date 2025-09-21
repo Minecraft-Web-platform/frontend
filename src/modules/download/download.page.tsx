@@ -9,39 +9,41 @@ const DownloadPage: FC = () => {
     <div className="download-page">
       <Sidebar />
 
-      <main className="download-launcher">
-        <h1>Скачай лаунчер</h1>
+      <main className="download-wrapper content">
+        <section className="download-launcher">
+          <h1>Скачай лаунчер</h1>
 
-        <div className="download-launcher__files">
-          <div className="download-launcher__os">
-            <span>Windows</span>
+          <div className="download-launcher__files">
+            <div className="download-launcher__os">
+              <span>Windows</span>
 
-            <img src="/svg/windows.svg" />
+              <img src="/svg/windows.svg" />
+            </div>
+
+            <div className="download-launcher__os">
+              <span>macOS</span>
+
+              <img src="/svg/macos.svg" />
+            </div>
+
+            <div className="download-launcher__os">
+              <span>Ubuntu</span>
+
+              <img src="/svg/linux-ubuntu.svg" />
+            </div>
+
+            <div className="download-launcher__os">
+              <span>Jar</span>
+
+              <img src="/svg/java.svg" />
+            </div>
           </div>
+        </section>
 
-          <div className="download-launcher__os">
-            <span>macOS</span>
-
-            <img src="/svg/macos.svg" />
-          </div>
-
-          <div className="download-launcher__os">
-            <span>Ubuntu</span>
-
-            <img src="/svg/linux-ubuntu.svg" />
-          </div>
-
-          <div className="download-launcher__os">
-            <span>Jar</span>
-
-            <img src="/svg/java.svg" />
-          </div>
-        </div>
+        <section className="download-mod-pack">
+          <ModBuilder />
+        </section>
       </main>
-
-      <section className="download-mod-pack">
-        <ModBuilder />
-      </section>
     </div>
   );
 };

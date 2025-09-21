@@ -20,7 +20,7 @@ const PlayerPassport = () => {
     <div className="passport-page">
       <Sidebar />
 
-      <main className="passport-wrapper">
+      <main className="passport-wrapper content">
         <div className="passport">
           {player ? (
             <>
