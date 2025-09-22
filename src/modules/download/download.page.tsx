@@ -25,7 +25,7 @@ const DownloadPage: FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/launchers/meta")
+    fetch(import.meta.env.VITE_BACKEND_URL + "/launchers/meta")
       .then((res) => res.json())
       .then((data: LaunchersResponse) => {
         setLaunchers(data);

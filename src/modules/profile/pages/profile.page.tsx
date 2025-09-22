@@ -2,10 +2,12 @@ import { FC, useEffect, useState } from "react";
 import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import { profileService } from "../services/profile.service";
 import { GetInfoAboutMeRespone } from "../types/get-info-about-me.response";
+import useAuthStore from "../../../store/auth.store";
 
 const Profile: FC = () => {
   const [info, setInfo] = useState<GetInfoAboutMeRespone | null>(null);
   const [loading, setLoading] = useState(true);
+  const { logout } = useAuthStore();
 
   useEffect(() => {
     let cancelled = false;
@@ -47,6 +49,7 @@ const Profile: FC = () => {
               : "Почта не подтверждена"}
           </p>
           <p>Последний айпи: {info?.lastIp || "Никогда не играл(а)"}</p>
+          <p onClick={() => logout()}>Logout</p>
         </main>
       )}
     </div>
