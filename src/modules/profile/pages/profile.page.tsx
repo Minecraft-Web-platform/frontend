@@ -5,7 +5,6 @@ import { GetInfoAboutMeRespone } from "../types/get-info-about-me.response";
 
 const Profile: FC = () => {
   const [info, setInfo] = useState<GetInfoAboutMeRespone | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,8 +17,8 @@ const Profile: FC = () => {
         if (!cancelled) {
           setInfo(data);
         }
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? "Ошибка загрузки профиля");
+      } catch {
+        //
       } finally {
         if (!cancelled) setLoading(false);
       }

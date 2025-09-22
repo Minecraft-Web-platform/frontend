@@ -56,7 +56,7 @@ const DownloadPage: FC = () => {
                 <a
                   className="download-launcher__os"
                   key={os.key}
-                  href={"https://api.khroniki-kraya.com" + meta.url}
+                  href={meta.url}
                   download={meta.filename}
                 >
                   <span>{os.label}</span>
