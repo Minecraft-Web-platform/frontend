@@ -41,6 +41,10 @@ const DownloadPage: FC = () => {
       <main className="download-wrapper content">
         <section className="download-launcher">
           <h1>Скачай лаунчер</h1>
+          <p>
+            С помощью Legacy Launcher ты сможешь скачать выбранную версию
+            Minecraft, быстро открыть папку для модов и начать игру.
+          </p>
 
           {loading && <p>Загрузка...</p>}
 

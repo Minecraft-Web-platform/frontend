@@ -26,6 +26,12 @@
     font-family: "Minecraft";
   }
 
+  p {
+    margin-top: 16px;
+    color: rgb(65, 65, 65);
+    font-family: sans-serif;
+  }
+
   &__files {
     margin-top: 32px;
     display: flex;
@@ -69,6 +75,7 @@
   background-color: #ffffffcc;
   margin: 0 auto;
   width: 600px;
+  font-family: sans-serif;
 
   h1 {
     text-align: center;
