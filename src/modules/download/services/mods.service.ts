@@ -1,5 +1,6 @@
 import { EnhancedWithAuthHttpService } from "../../../shared/services/http-auth.service";
 import { httpFactoryService } from "../../../shared/services/http-factory.service";
+import useAuthStore from "../../../store/auth.store";
 import { ModType } from "../types/ mod.type";
 
 class ModsService {
@@ -14,12 +15,14 @@ class ModsService {
     return this.httpService.get("mods");
   }
 
-  public async getModpack(optional: string[], at: string): Promise<Blob> {
+  public async getModpack(optional: string[]): Promise<Blob> {
+    const { accessToken } = useAuthStore.getState();
+
     const res = await fetch(this.SERVER_URL + "/mods/modpack", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${at}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ optional }),
     });

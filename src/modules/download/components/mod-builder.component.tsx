@@ -3,14 +3,12 @@ import Checkbox from "../../../shared/ui/checkbox/checkbox.component";
 import { modsService } from "../services/mods.service";
 import { ModType } from "../types/ mod.type";
 import Button from "../../../shared/ui/button/button.component";
-import useAuthStore from "../../../store/auth.store";
 
 type ModWithState = ModType & { isChoosed: boolean };
 
 const ModBuilder: FC = () => {
   const [mods, setMods] = useState<ModWithState[]>([]);
   const [loading, setLoading] = useState(false);
-  const { accessToken } = useAuthStore();
 
   useEffect(() => {
     modsService.getAllOptionalMods().then((res) => {
@@ -30,10 +28,7 @@ const ModBuilder: FC = () => {
     setLoading(true);
     try {
       const selectedFiles = mods.filter((m) => m.isChoosed).map((m) => m.file);
-      const blob = await modsService.getModpack(
-        selectedFiles,
-        accessToken as string
-      );
+      const blob = await modsService.getModpack(selectedFiles);
 
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
