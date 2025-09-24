@@ -3,6 +3,7 @@ import "./players.page.scss";
 import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import { GetAllUsersResponse } from "../types/get-all-users.response";
 import { playersService } from "../services/players.service";
+import { Link } from "react-router";
 
 const PlayersPage: FC = () => {
   const [users, setUsers] = useState<GetAllUsersResponse>([]);
@@ -37,7 +38,9 @@ const PlayersPage: FC = () => {
                       src="/png/steve-head.png"
                     />
 
-                    <h2>{user.username}</h2>
+                    <Link to={"/players/" + user.username}>
+                      <h2>{user.username}</h2>
+                    </Link>
                   </div>
                 );
               })
