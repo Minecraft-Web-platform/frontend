@@ -14,10 +14,13 @@ class ModsService {
     return this.httpService.get("mods");
   }
 
-  public async getModpack(optional: string[]): Promise<Blob> {
+  public async getModpack(optional: string[], at: string): Promise<Blob> {
     const res = await fetch(this.SERVER_URL + "/mods/modpack", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${at}`,
+      },
       body: JSON.stringify({ optional }),
     });
 
