@@ -53,7 +53,11 @@ const DownloadPage: FC = () => {
               const meta = launchers?.[os.key];
 
               if (!meta) {
-                return <p className="unavailable">Недоступно</p>;
+                return (
+                  <p className="unavailable" key={os.key}>
+                    Недоступно
+                  </p>
+                );
               }
 
               return (

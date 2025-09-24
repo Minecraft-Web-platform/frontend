@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react";
 import Checkbox from "../../../shared/ui/checkbox/checkbox.component";
 import { modsService } from "../services/mods.service";
 import { ModType } from "../types/ mod.type";
+import Button from "../../../shared/ui/button/button.component";
 
 type ModWithState = ModType & { isChoosed: boolean };
 
@@ -9,14 +10,12 @@ const ModBuilder: FC = () => {
   const [mods, setMods] = useState<ModWithState[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Загружаем список модов
   useEffect(() => {
     modsService.getAllOptionalMods().then((res) => {
       setMods(res.map((mod) => ({ ...mod, isChoosed: false })));
     });
   }, []);
 
-  // Переключение чекбокса
   const toggleMod = (file: string) => {
     setMods((prev) =>
       prev.map((mod) =>
@@ -25,7 +24,6 @@ const ModBuilder: FC = () => {
     );
   };
 
-  // Скачивание архива
   const handleDownload = async () => {
     setLoading(true);
     try {
@@ -55,25 +53,21 @@ const ModBuilder: FC = () => {
         вместе с обязательными модами :)
       </p>
 
-      <div className="mod-builder__mods-toggler space-y-2">
+      <div className="mod-builder__mods-toggler">
         {mods.map((mod) => (
-          <div key={mod.file} className="flex items-center space-x-2">
-            <span>{mod.name}</span>
+          <div key={mod.file}>
             <Checkbox
               checked={mod.isChoosed}
               onClickHandler={() => toggleMod(mod.file)}
             />
+            <span>{mod.name}</span>
           </div>
         ))}
       </div>
 
-      <button
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-        disabled={loading}
-        onClick={handleDownload}
-      >
+      <Button disabled={loading} callback={handleDownload}>
         {loading ? "Формируем архив..." : "Скачать модпак"}
-      </button>
+      </Button>
     </div>
   );
 };
