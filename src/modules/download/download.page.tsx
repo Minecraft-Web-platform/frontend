@@ -3,6 +3,7 @@ import "./download.page.scss";
 
 import ModBuilder from "./components/mod-builder.component";
 import Sidebar from "../../shared/ui/sidebar/sidebar.component";
+import useAuthStore from "../../store/auth.store";
 
 type LauncherMeta = {
   filename: string;
@@ -23,9 +24,14 @@ const osList: { key: string; label: string; icon: string }[] = [
 const DownloadPage: FC = () => {
   const [launchers, setLaunchers] = useState<LaunchersResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const { accessToken } = useAuthStore();
 
   useEffect(() => {
-    fetch(import.meta.env.VITE_BACKEND_URL + "/launchers/meta")
+    const config = {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    };
+
+    fetch(import.meta.env.VITE_BACKEND_URL + "/launchers/meta", config)
       .then((res) => res.json())
       .then((data: LaunchersResponse) => {
         setLaunchers(data);

@@ -1,11 +1,11 @@
+import { EnhancedWithAuthHttpService } from "../../../shared/services/http-auth.service";
 import { httpFactoryService } from "../../../shared/services/http-factory.service";
-import { HttpService } from "../../../shared/services/http.service";
 import { ModType } from "../types/ mod.type";
 
 class ModsService {
   private readonly SERVER_URL: string;
 
-  constructor(private readonly httpService: HttpService) {
+  constructor(private readonly httpService: EnhancedWithAuthHttpService) {
     this.httpService = httpService;
     this.SERVER_URL = import.meta.env.VITE_BACKEND_URL;
   }
@@ -30,5 +30,5 @@ class ModsService {
 }
 
 export const modsService = new ModsService(
-  httpFactoryService.createHttpService()
+  httpFactoryService.createAuthHttpService()
 );
