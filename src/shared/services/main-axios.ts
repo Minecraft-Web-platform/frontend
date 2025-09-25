@@ -1,5 +1,5 @@
-import axios from 'axios';
-import useAuthStore from '../../store/auth.store';
+import axios from "axios";
+import useAuthStore from "../../store/auth.store";
 
 export const mainAxios = axios.create({
   withCredentials: true,
@@ -12,8 +12,7 @@ mainAxios.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const { refreshToken, login, logout } =
-				useAuthStore.getState();
+      const { refreshToken, login, logout } = useAuthStore.getState();
 
       if (!refreshToken) {
         logout();
@@ -21,12 +20,10 @@ mainAxios.interceptors.response.use(
       }
 
       try {
-        // TODO: Ask about an endpoint to update RT token :)
-        const response = await axios.post('/auth/token/refresh-token/', {
+        const response = await axios.post("/auth/refresh/", {
           refresh: refreshToken,
         });
-        const { accessToken, refreshToken: newRefreshToken } =
-					response.data;
+        const { accessToken, refreshToken: newRefreshToken } = response.data;
 
         login(accessToken, newRefreshToken);
 
@@ -41,5 +38,5 @@ mainAxios.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  },
+  }
 );

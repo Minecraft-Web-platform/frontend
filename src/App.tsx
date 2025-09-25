@@ -11,13 +11,22 @@ import GuestOnly from "./shared/wraps/guests-only.wrap";
 import Profile from "./modules/profile/pages/profile.page";
 import PlayersPage from "./modules/players/pages/players.page";
 import PlayerPassport from "./modules/players/pages/player-passport.page";
+import NewsPage from "./modules/news/pages/news.page";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" index={true} element={<LandingPage />} />
-        <Route path="/download" element={<DownloadPage />} />
+
+        <Route
+          path="/download"
+          element={
+            <RequireAuth>
+              <DownloadPage />
+            </RequireAuth>
+          }
+        />
         <Route
           path="/registration"
           element={
@@ -34,6 +43,16 @@ function App() {
             </GuestOnly>
           }
         />
+
+        <Route
+          path="/news"
+          element={
+            <RequireAuth>
+              <NewsPage />
+            </RequireAuth>
+          }
+        />
+
         <Route path="/agreement" element={<AgreementPage />} />
 
         <Route
