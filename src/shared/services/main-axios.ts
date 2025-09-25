@@ -15,6 +15,7 @@ mainAxios.interceptors.response.use(
       originalRequest._retry = true;
 
       const { refreshToken, login, logout } = useAuthStore.getState();
+      const urlToServer = SERVER_URL + "/auth/refresh/";
 
       if (!refreshToken) {
         logout();
@@ -22,14 +23,14 @@ mainAxios.interceptors.response.use(
       }
 
       try {
-        const response = await axios.post(SERVER_URL + "/auth/refresh/", {
-          refresh: refreshToken,
+        const response = await axios.post(urlToServer, undefined, {
+          headers: { Authorization: `Bearer ${refreshToken}` },
         });
-        const { accessToken, refreshToken: newRefreshToken } = response.data;
+        const newAT = response.data;
 
-        login(accessToken, newRefreshToken);
+        login(newAT, refreshToken);
 
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newAT}`;
 
         return mainAxios(originalRequest);
       } catch (refreshError) {
