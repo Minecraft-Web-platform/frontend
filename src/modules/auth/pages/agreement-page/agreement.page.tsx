@@ -1,8 +1,11 @@
 import { FC } from "react";
-import { Link } from "react-router-dom";
 import "./agreement.page.scss";
+import { useSmartBack } from "../../../../shared/hooks/use-smart-back.hook";
+import Button from "../../../../shared/ui/button/button.component";
 
 const AgreementPage: FC = () => {
+  const smartBackFn = useSmartBack();
+
   return (
     <main className="agreement-page">
       <section className="agreement-block">
@@ -68,7 +71,8 @@ const AgreementPage: FC = () => {
         </p>
 
         <p>Условия обновлялись в последний раз 21 августа 2025 года.</p>
-        <Link to="/registration">Зарегистрироваться</Link>
+
+        <Button callback={smartBackFn}>Назад</Button>
       </section>
     </main>
   );

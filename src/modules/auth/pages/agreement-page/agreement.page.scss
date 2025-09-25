@@ -9,7 +9,7 @@
 .agreement-block {
   display: block;
   border-radius: 24px;
-  padding: 60px 64px 60px;
+  padding: 40px 64px 60px;
   background-color: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -17,6 +17,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   margin: 0 auto;
   width: 820px;
+  font-family: sans-serif;
 
   h1 {
     font-family: "Minecraft";
@@ -26,5 +27,9 @@
 
   ul {
     list-style: none;
+  }
+
+  .button {
+    margin-top: 32px;
   }
 }

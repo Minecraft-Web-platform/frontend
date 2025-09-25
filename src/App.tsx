@@ -12,6 +12,7 @@ import Profile from "./modules/profile/pages/profile.page";
 import PlayersPage from "./modules/players/pages/players.page";
 import PlayerPassport from "./modules/players/pages/player-passport.page";
 import NewsPage from "./modules/news/pages/news.page";
+import TechSupportPage from "./modules/tech-support/pages/tech-support.page";
 
 function App() {
   return (
@@ -78,6 +79,15 @@ function App() {
           element={
             <RequireAuth>
               <PlayerPassport />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/tech-support"
+          element={
+            <RequireAuth>
+              <TechSupportPage />
             </RequireAuth>
           }
         />
