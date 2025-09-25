@@ -5,6 +5,8 @@ export const mainAxios = axios.create({
   withCredentials: true,
 });
 
+const SERVER_URL = import.meta.env.VITE_BACKEND_URL;
+
 mainAxios.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -20,7 +22,7 @@ mainAxios.interceptors.response.use(
       }
 
       try {
-        const response = await axios.post("/auth/refresh/", {
+        const response = await axios.post(SERVER_URL + "/auth/refresh/", {
           refresh: refreshToken,
         });
         const { accessToken, refreshToken: newRefreshToken } = response.data;
