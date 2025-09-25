@@ -34,6 +34,7 @@ const LoginPage: FC = () => {
           setValue={setUsername}
           placeholder=""
           label="Никнейм"
+          element="input"
         />
 
         <Input
@@ -42,6 +43,7 @@ const LoginPage: FC = () => {
           placeholder=""
           type="password"
           label="Пароль"
+          element="input"
         />
 
         <div className="buttons">

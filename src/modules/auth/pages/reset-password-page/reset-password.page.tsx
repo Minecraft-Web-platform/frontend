@@ -52,6 +52,7 @@ const ResetPasswordPage: FC = () => {
             setValue={setEmail}
             label="Почта"
             placeholder=""
+            element="input"
           />
 
           <Button>Получить код</Button>
@@ -74,6 +75,7 @@ const ResetPasswordPage: FC = () => {
             setValue={setConfirmCode}
             label="Код подтверждения"
             placeholder="xxxxxx"
+            element="input"
           />
 
           <Button>Подтвердить</Button>
@@ -94,6 +96,7 @@ const ResetPasswordPage: FC = () => {
             setValue={setNewPassword}
             label="Новый пароль"
             placeholder=""
+            element="input"
           />
 
           <Button>Сменить</Button>

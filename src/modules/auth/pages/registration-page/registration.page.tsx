@@ -68,6 +68,7 @@ const RegistrationPage: FC = () => {
             setValue={setUsername}
             placeholder=""
             label="Никнейм"
+            element="input"
           />
 
           <Input
@@ -76,6 +77,7 @@ const RegistrationPage: FC = () => {
             placeholder=""
             type="password"
             label="Пароль"
+            element="input"
           />
 
           <Input
@@ -84,6 +86,7 @@ const RegistrationPage: FC = () => {
             placeholder=""
             type="password"
             label="Ещё раз пароль"
+            element="input"
           />
 
           <div className="checkbox-area">
