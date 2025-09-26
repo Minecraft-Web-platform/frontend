@@ -4,6 +4,7 @@ import "./download.page.scss";
 import ModBuilder from "./components/mod-builder.component";
 import Sidebar from "../../shared/ui/sidebar/sidebar.component";
 import useAuthStore from "../../store/auth.store";
+import { PropagateLoader } from "react-spinners";
 
 type LauncherMeta = {
   filename: string;
@@ -52,34 +53,36 @@ const DownloadPage: FC = () => {
             Minecraft, быстро открыть папку для модов и начать игру.
           </p>
 
-          {loading && <p>Загрузка...</p>}
+          {loading && <PropagateLoader color="#000" />}
 
-          <div className="download-launcher__files">
-            {osList.map((os) => {
-              const meta = launchers?.[os.key];
+          {!loading && (
+            <div className="download-launcher__files">
+              {osList.map((os) => {
+                const meta = launchers?.[os.key];
 
-              if (!meta) {
+                if (!meta) {
+                  return (
+                    <p className="unavailable" key={os.key}>
+                      Недоступно
+                    </p>
+                  );
+                }
+
                 return (
-                  <p className="unavailable" key={os.key}>
-                    Недоступно
-                  </p>
+                  <a
+                    className="download-launcher__os"
+                    key={os.key}
+                    href={meta.url}
+                    download={meta.filename}
+                  >
+                    <span>{os.label}</span>
+                    <img src={os.icon} alt={os.label} />
+                    <span>{meta.sizeMB}MB</span>
+                  </a>
                 );
-              }
-
-              return (
-                <a
-                  className="download-launcher__os"
-                  key={os.key}
-                  href={meta.url}
-                  download={meta.filename}
-                >
-                  <span>{os.label}</span>
-                  <img src={os.icon} alt={os.label} />
-                  <span>{meta.sizeMB}MB</span>
-                </a>
-              );
-            })}
-          </div>
+              })}
+            </div>
+          )}
         </section>
 
         <section className="download-mod-pack">

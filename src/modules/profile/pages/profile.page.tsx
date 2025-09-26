@@ -3,6 +3,8 @@ import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import { profileService } from "../services/profile.service";
 import { GetInfoAboutMeRespone } from "../types/get-info-about-me.response";
 import useAuthStore from "../../../store/auth.store";
+import "./profile.page.scss";
+import { PropagateLoader } from "react-spinners";
 
 const Profile: FC = () => {
   const [info, setInfo] = useState<GetInfoAboutMeRespone | null>(null);
@@ -32,11 +34,13 @@ const Profile: FC = () => {
   }, []);
 
   return (
-    <div className="profile-page" style={{ display: "flex" }}>
+    <div className="profile-page">
       <Sidebar />
 
       {loading ? (
-        <p>Загрузка...</p>
+        <main className="profile content">
+          <PropagateLoader color="#000" />
+        </main>
       ) : (
         <main className="profile content">
           <h1>Профиль {info?.username}</h1>

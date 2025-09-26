@@ -4,6 +4,7 @@ import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import { GetAllUsersResponse } from "../types/get-all-users.response";
 import { playersService } from "../services/players.service";
 import { Link } from "react-router";
+import { PropagateLoader } from "react-spinners";
 
 const PlayersPage: FC = () => {
   const [users, setUsers] = useState<GetAllUsersResponse>([]);
@@ -26,7 +27,7 @@ const PlayersPage: FC = () => {
         <h1>Игроки</h1>
 
         {loading ? (
-          <p>Загрузка...</p>
+          <PropagateLoader />
         ) : (
           <div className="players">
             {users.length > 0 ? (
