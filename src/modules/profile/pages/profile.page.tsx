@@ -5,6 +5,8 @@ import { GetInfoAboutMeRespone } from "../types/get-info-about-me.response";
 import useAuthStore from "../../../store/auth.store";
 import "./profile.page.scss";
 import { PropagateLoader } from "react-spinners";
+import Input from "../../../shared/ui/input/input.component";
+import Button from "../../../shared/ui/button/button.component";
 
 const Profile: FC = () => {
   const [info, setInfo] = useState<GetInfoAboutMeRespone | null>(null);
@@ -43,17 +45,65 @@ const Profile: FC = () => {
         </main>
       ) : (
         <main className="profile content">
-          <h1>Профиль {info?.username}</h1>
+          <div className="profile-with-data">
+            <h1>Профиль</h1>
+            <p>
+              Твой личный уголок. Со временем появится больше данных здесь, а
+              пока что режим аскета - любуемся, чем можно.
+            </p>
 
-          <p>UUID: {info?.uuid.toUpperCase()}</p>
-          <p>Почта: {info?.email || "привяжи-почту@почта.ком"}</p>
-          <p>
-            {info?.emailIsConfirmed
-              ? "Почта подтверждена"
-              : "Почта не подтверждена"}
-          </p>
-          <p>Последний айпи: {info?.lastIp || "Никогда не играл(а)"}</p>
-          <p onClick={() => logout()}>Logout</p>
+            <div className="profile-content">
+              <div className="left">
+                <Input
+                  value={info?.username || ""}
+                  placeholder=""
+                  label="Никнейм"
+                  element="input"
+                  disabled
+                />
+
+                <Input
+                  value={info?.email || "привяжи-почту@почта.ком"}
+                  placeholder=""
+                  label={`Почта | ${
+                    info?.emailIsConfirmed ? "Подтверждена" : "Не подтверждена"
+                  }`}
+                  element="input"
+                  disabled
+                />
+
+                <Input
+                  value={info?.lastIp || "Никогда не играл(а)"}
+                  placeholder=""
+                  label="Последний айпи"
+                  element="input"
+                  disabled
+                />
+
+                <Input
+                  value={info?.uuid.toUpperCase() as string}
+                  placeholder=""
+                  label="UUID"
+                  element="input"
+                  disabled
+                />
+              </div>
+
+              <div className="right">
+                <div className="avatar">
+                  <img src="/png/steve-head.png" />
+                </div>
+              </div>
+            </div>
+
+            <div className="buttons">
+              <Button callback={() => {}}>Привязать почту</Button>
+
+              <Button callback={() => logout()} secondary>
+                Выйти из аккаунта
+              </Button>
+            </div>
+          </div>
         </main>
       )}
     </div>

@@ -23,7 +23,7 @@ const IconComponent: FC<Props> = ({ path, label, children, iconType }) => {
         `navigation__link--change-${iconType}`
       )}
     >
-      {children} {label}
+      {children} <span>{label}</span>
     </Link>
   );
 };

@@ -32,3 +32,18 @@
     margin-top: auto;
   }
 }
+
+@media (max-width: 736px) {
+  .sidebar {
+    width: 100px;
+    padding: 24px;
+
+    &__logo-block {
+      display: none;
+    }
+  }
+
+  .navigation__link > span {
+    display: none;
+  }
+}
