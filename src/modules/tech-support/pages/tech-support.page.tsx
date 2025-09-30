@@ -14,6 +14,7 @@ const TechSupportPage: FC = () => {
   const [content, setContent] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [emailIsConfirmed, setEmailIsConfirmed] = useState<boolean>(false);
   const [status, setStatus] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -22,8 +23,8 @@ const TechSupportPage: FC = () => {
       .getInfoAboutMe()
       .then((res) => {
         setUsername(res.username);
-        // TODO: remove it after test
-        setEmail("oleksandrshtonda@gmail.com");
+        setEmail(res.email);
+        setEmailIsConfirmed(res.emailIsConfirmed);
       })
       .finally(() => setIsLoading(false));
   }, []);
@@ -88,7 +89,7 @@ const TechSupportPage: FC = () => {
               label="Обращение"
             />
 
-            {email ? (
+            {email && emailIsConfirmed ? (
               <Button>Отправить</Button>
             ) : (
               <Button disabled={true} secondary={true}>
