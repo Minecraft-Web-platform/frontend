@@ -13,6 +13,7 @@ import PlayersPage from "./modules/players/pages/players.page";
 import PlayerPassport from "./modules/players/pages/player-passport.page";
 import NewsPage from "./modules/news/pages/news.page";
 import TechSupportPage from "./modules/tech-support/pages/tech-support.page";
+import EmailConfirmationPage from "./modules/auth/pages/email-confirmation/email-confirmation.page";
 
 function App() {
   return (
@@ -61,6 +62,15 @@ function App() {
           element={
             <RequireAuth>
               <Profile></Profile>
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/email-confirmation"
+          element={
+            <RequireAuth>
+              <EmailConfirmationPage />
             </RequireAuth>
           }
         />

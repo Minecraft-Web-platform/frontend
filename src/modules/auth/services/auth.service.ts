@@ -51,20 +51,27 @@ class AuthService {
   }
 
   public async initEmailConfirmation(
-    data: InitEmailConfirmationRequest
+    data: InitEmailConfirmationRequest,
+    accessToken: string
   ): Promise<InitEmailConfirmationResponse> {
     return this.httpService.post<
       InitEmailConfirmationResponse,
       InitEmailConfirmationRequest
-    >("auth/init-email-confirmation/", data);
+    >("auth/init-email-confirmation/", data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
   }
 
   public async confirmEmail(
-    data: ConfirmEmailRequest
+    data: ConfirmEmailRequest,
+    accessToken: string
   ): Promise<ConfirmEmailResponse> {
     return this.httpService.post<ConfirmEmailResponse, ConfirmEmailRequest>(
       "auth/confirm-email/",
-      data
+      data,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
     );
   }
 

@@ -7,10 +7,12 @@ import "./profile.page.scss";
 import { PropagateLoader } from "react-spinners";
 import Input from "../../../shared/ui/input/input.component";
 import Button from "../../../shared/ui/button/button.component";
+import { useNavigate } from "react-router";
 
 const Profile: FC = () => {
   const [info, setInfo] = useState<GetInfoAboutMeRespone | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const { logout } = useAuthStore();
 
   useEffect(() => {
@@ -97,7 +99,11 @@ const Profile: FC = () => {
             </div>
 
             <div className="buttons">
-              <Button callback={() => {}}>Привязать почту</Button>
+              {!info?.emailIsConfirmed && (
+                <Button callback={() => navigate("/email-confirmation")}>
+                  Привязать почту
+                </Button>
+              )}
 
               <Button callback={() => logout()} secondary>
                 Выйти из аккаунта
