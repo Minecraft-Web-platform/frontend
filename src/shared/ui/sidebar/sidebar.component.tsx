@@ -2,7 +2,7 @@ import { FC } from "react";
 import "./sidebar.component.scss";
 import IconComponent from "./icon-component/icon-component.component";
 
-import NewsIcon from "../../../assets/svg/news.svg?react";
+// import NewsIcon from "../../../assets/svg/news.svg?react";
 // import StateIcon from "../../../assets/svg/state.svg?react";
 // import CompanyIcon from "../../../assets/svg/company.svg?react";
 import PlayersIcon from "../../../assets/svg/people.svg?react";
