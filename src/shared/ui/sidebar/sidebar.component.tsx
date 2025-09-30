@@ -20,9 +20,9 @@ const Sidebar: FC = () => {
       </div>
 
       <div className="sidebar__middle">
-        <IconComponent path="/news" label="Новости" iconType="stroke">
+        {/* <IconComponent path="/news" label="Новости" iconType="stroke">
           <NewsIcon />
-        </IconComponent>
+        </IconComponent> */}
 
         {/* <IconComponent path="/states" label="Государства" iconType="fill">
           <StateIcon />

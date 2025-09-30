@@ -32,18 +32,20 @@ const PlayersPage: FC = () => {
           <div className="players">
             {users.length > 0 ? (
               users.map((user) => {
-                return (
-                  <div className="player" key={user.id}>
-                    <img
-                      className="player__profile-picture"
-                      src="/png/steve-head.png"
-                    />
+                if (user.username.toLowerCase() !== "admin") {
+                  return (
+                    <div className="player" key={user.id}>
+                      <img
+                        className="player__profile-picture"
+                        src="/png/steve-head.png"
+                      />
 
-                    <Link to={"/players/" + user.username}>
-                      <h2>{user.username}</h2>
-                    </Link>
-                  </div>
-                );
+                      <Link to={"/players/" + user.username}>
+                        <h2>{user.username}</h2>
+                      </Link>
+                    </div>
+                  );
+                }
               })
             ) : (
               <p>
