@@ -1,25 +1,42 @@
+.download-wrapper {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
 .download-page {
   position: relative;
-  padding-top: 95px;
+  display: flex;
+
   width: 100%;
   height: 100vh;
-  background-position: 60% 0%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-image: url("/jpg/factory.jpg");
+  background-color: #fff;
 }
 
 .download-launcher {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   border-radius: 24px;
-  padding: 48px 90px 56px;
-  background-color: #ffffffcc;
-  margin: 0 auto;
+  padding-top: 100px;
   width: 600px;
+
+  //loader
+  & > span {
+    margin-top: 16px;
+  }
 
   h1 {
     text-align: center;
     font-family: "Minecraft";
+  }
+
+  p {
+    margin-top: 16px;
+    color: rgb(65, 65, 65);
+    font-family: sans-serif;
+    text-align: center;
   }
 
   &__files {
@@ -33,16 +50,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 24px;
 
-    padding: 0 12px;
-    min-width: 128px;
+    padding: 0 32px;
     height: 64px;
     border-radius: 32px;
     background-color: #000;
+    color: #fff;
+    text-decoration: none;
 
     span {
-      color: #fff;
       font-family: "minecraft";
     }
 
@@ -54,20 +71,51 @@
 }
 
 .download-mod-pack {
-  margin-top: 64px;
+  margin-top: 80px;
 }
 
 .mod-builder {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   border-radius: 24px;
   padding: 48px 90px 56px;
   background-color: #ffffffcc;
   margin: 0 auto;
   width: 600px;
+  font-family: sans-serif;
 
   h1 {
     text-align: center;
     font-family: "Minecraft";
     margin-bottom: 8px;
+  }
+
+  p {
+    text-align: center;
+    margin: 16px 0;
+    color: rgb(65, 65, 65);
+    font-family: sans-serif;
+  }
+
+  //loader
+  & > span {
+    display: block !important;
+  }
+
+  &__mods-toggler {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    div {
+      display: flex;
+      gap: 8px;
+    }
+  }
+
+  .button {
+    margin-top: 32px;
   }
 }

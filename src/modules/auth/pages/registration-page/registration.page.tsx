@@ -1,13 +1,18 @@
-import { FC, FormEvent, useState } from "react";
+import { FC, FormEvent, useEffect, useState } from "react";
 import Button from "../../../../shared/ui/button/button.component";
 import Input from "../../../../shared/ui/input/input.component";
 
 import { authService } from "../../services/auth.service";
 
 import "./registration.page.scss";
-import { validator } from "../../../../shared/utils/validator.util";
 import { Link, useNavigate } from "react-router";
 import Checkbox from "../../../../shared/ui/checkbox/checkbox.component";
+import { MoonLoader } from "react-spinners";
+
+const errorCodes: { [key: number]: string } = {
+  409: "Этот никнейм уже занят. Придумай себе другой.",
+  400: "Пароли не одинаковые. Проверь еще раз.",
+};
 
 const RegistrationPage: FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -16,17 +21,17 @@ const RegistrationPage: FC = () => {
   const [isAcceptedAgreement, setIsAcceptedAgreement] =
     useState<boolean>(false);
   const [accountIsCreated, setAccountIsCreated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<number>();
 
   const navigate = useNavigate();
 
   const buttonIsActive =
-    username.length > 2 &&
-    validator.validatePasswordBoolean(password) &&
-    validator.validatePasswordBoolean(repeatPassword) &&
-    isAcceptedAgreement;
+    username.length > 2 && password.length > 7 && isAcceptedAgreement;
 
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const body = {
       username,
@@ -35,26 +40,40 @@ const RegistrationPage: FC = () => {
       isAcceptedAgreement,
     };
 
-    authService.registrate(body).then(() => setAccountIsCreated(true));
+    authService
+      .registrate(body)
+      .then(() => setAccountIsCreated(true))
+      .catch((e) => setError(e.status));
+    setIsLoading(false);
   };
+
+  useEffect(() => {
+    error && alert(errorCodes[error]);
+
+    setError(0);
+  }, [error]);
 
   return (
     <main className="registration-page">
       {accountIsCreated ? (
         <div className="created">
-          <h2>
+          <h2>Регистрация удалась!</h2>
+
+          <p>
             Твой аккаунт был создан и я сам в шоке, что ничего не отвалилось :)
-          </h2>
+          </p>
 
           <p>
             Сейчас, дружочек, ты должен залогиниться, чтобы войти в аккаунт и
             делать грязь с сайта
           </p>
-
+          <br />
           <p>
             P.S. Можешь уже заходить на майнкрафт сервер и играть, впиши тот же
             никнейм что и тут
           </p>
+
+          <Button callback={() => navigate("/login")}>Залогиниться</Button>
         </div>
       ) : (
         <form
@@ -68,6 +87,7 @@ const RegistrationPage: FC = () => {
             setValue={setUsername}
             placeholder=""
             label="Никнейм"
+            element="input"
           />
 
           <Input
@@ -76,6 +96,7 @@ const RegistrationPage: FC = () => {
             placeholder=""
             type="password"
             label="Пароль"
+            element="input"
           />
 
           <Input
@@ -84,6 +105,7 @@ const RegistrationPage: FC = () => {
             placeholder=""
             type="password"
             label="Ещё раз пароль"
+            element="input"
           />
 
           <div className="checkbox-area">
@@ -100,7 +122,11 @@ const RegistrationPage: FC = () => {
 
           <div className="buttons">
             <Button callback={() => {}} disabled={!buttonIsActive}>
-              Зарегистрироваться
+              {isLoading ? (
+                <MoonLoader size={20} color="#fff" />
+              ) : (
+                "Зарегистрироваться"
+              )}
             </Button>
 
             <Button callback={() => navigate("/login")} secondary={true}>

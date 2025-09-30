@@ -1,0 +1,56 @@
+.navigation {
+  display: flex;
+  flex-direction: column;
+
+  &__link {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-family: sans-serif;
+
+    border-radius: 8px;
+    border: 1px solid transparent;
+
+    background-color: transparent;
+    padding: 16px 8px;
+
+    text-decoration: none;
+    color: #000;
+
+    transition: background-color 0.3s ease-in, color 0.3s ease-in,
+      border-color 0.3s ease-in, box-shadow 0.3s ease-in;
+
+    svg > path {
+      transition: fill 0.3s ease-in, stroke 0.3s ease-in;
+    }
+
+    &--change-fill svg > path {
+      fill: #686970;
+    }
+
+    &--change-stroke svg > path {
+      stroke: #686970;
+    }
+
+    &--active {
+      background-color: #fff;
+      border-color: #d2d2d8;
+    }
+
+    &:hover {
+      background-color: #000;
+      color: #fff;
+      border-color: #000;
+
+      &.navigation__link--change-fill svg > path {
+        fill: #fff;
+      }
+
+      &.navigation__link--change-stroke svg > path {
+        stroke: #fff;
+      }
+
+      box-shadow: 1px 6px 17px 0 rgba(20, 20, 20, 0.5);
+    }
+  }
+}

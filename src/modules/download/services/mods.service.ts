@@ -1,30 +1,40 @@
+import { EnhancedWithAuthHttpService } from "../../../shared/services/http-auth.service";
 import { httpFactoryService } from "../../../shared/services/http-factory.service";
-import { HttpService } from "../../../shared/services/http.service";
-import { IHttpConfig } from "../../../shared/services/types";
+import useAuthStore from "../../../store/auth.store";
+import { ModType } from "../types/ mod.type";
 
 class ModsService {
-  constructor(private readonly httpService: HttpService) {
+  private readonly SERVER_URL: string;
+
+  constructor(private readonly httpService: EnhancedWithAuthHttpService) {
     this.httpService = httpService;
+    this.SERVER_URL = import.meta.env.VITE_BACKEND_URL;
   }
 
-  public async getAllOptionalMods(): Promise<string[]> {
-    return this.httpService.get("/mods");
+  public async getAllOptionalMods(): Promise<ModType[]> {
+    return this.httpService.get("mods");
   }
 
-  public async getModpack(optionalMods: string[]): Promise<Blob> {
-    const data = { optionalMods: optionalMods };
-    const config: IHttpConfig = {
-      responseType: "blob",
-    };
+  public async getModpack(optional: string[]): Promise<Blob> {
+    const { accessToken } = useAuthStore.getState();
 
-    return this.httpService.post<Blob, { optionalMods: string[] }>(
-      "/mods",
-      data,
-      config
-    );
+    const res = await fetch(this.SERVER_URL + "/mods/modpack", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ optional }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Error during downloading modpack");
+    }
+
+    return await res.blob();
   }
 }
 
 export const modsService = new ModsService(
-  httpFactoryService.createHttpService()
+  httpFactoryService.createAuthHttpService()
 );

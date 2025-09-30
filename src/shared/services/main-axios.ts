@@ -1,9 +1,11 @@
-import axios from 'axios';
-import useAuthStore from '../../store/auth.store';
+import axios from "axios";
+import useAuthStore from "../../store/auth.store";
 
 export const mainAxios = axios.create({
   withCredentials: true,
 });
+
+const SERVER_URL = import.meta.env.VITE_BACKEND_URL;
 
 mainAxios.interceptors.response.use(
   (response) => response,
@@ -12,8 +14,8 @@ mainAxios.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const { refreshToken, login, logout } =
-				useAuthStore.getState();
+      const { refreshToken, login, logout } = useAuthStore.getState();
+      const urlToServer = SERVER_URL + "/auth/refresh/";
 
       if (!refreshToken) {
         logout();
@@ -21,16 +23,14 @@ mainAxios.interceptors.response.use(
       }
 
       try {
-        // TODO: Ask about an endpoint to update RT token :)
-        const response = await axios.post('/auth/token/refresh-token/', {
-          refresh: refreshToken,
+        const response = await axios.post(urlToServer, undefined, {
+          headers: { Authorization: `Bearer ${refreshToken}` },
         });
-        const { accessToken, refreshToken: newRefreshToken } =
-					response.data;
+        const newAT = response.data;
 
-        login(accessToken, newRefreshToken);
+        login(newAT, refreshToken);
 
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newAT}`;
 
         return mainAxios(originalRequest);
       } catch (refreshError) {
@@ -41,5 +41,5 @@ mainAxios.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  },
+  }
 );

@@ -102,7 +102,7 @@ const LandingPage: FC = () => {
             </a>
           </span>
 
-          <span>Айпи сервера: 146.19.48.158:25923</span>
+          <span>Айпи сервера: mc.khroniki-kraya.com</span>
         </div>
 
         <img src="/png/steve.png" alt="Steve" height={64} />

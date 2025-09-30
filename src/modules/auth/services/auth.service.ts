@@ -1,5 +1,11 @@
 import { httpFactoryService } from "../../../shared/services/http-factory.service";
 import { HttpService } from "../../../shared/services/http.service";
+import {
+  InitEmailConfirmationRequest,
+  InitEmailConfirmationResponse,
+  ConfirmEmailRequest,
+  ConfirmEmailResponse,
+} from "../types/confirmartion-email.types";
 
 import { ConfirmRequest, ConfirmResponse } from "../types/confirmation.types";
 import { LoginRequest, LoginResponse } from "../types/login.types";
@@ -41,6 +47,31 @@ class AuthService {
     return this.httpService.patch<ConfirmResponse, ConfirmRequest>(
       "auth/confirm/",
       data
+    );
+  }
+
+  public async initEmailConfirmation(
+    data: InitEmailConfirmationRequest,
+    accessToken: string
+  ): Promise<InitEmailConfirmationResponse> {
+    return this.httpService.post<
+      InitEmailConfirmationResponse,
+      InitEmailConfirmationRequest
+    >("auth/init-email-confirmation/", data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+  }
+
+  public async confirmEmail(
+    data: ConfirmEmailRequest,
+    accessToken: string
+  ): Promise<ConfirmEmailResponse> {
+    return this.httpService.post<ConfirmEmailResponse, ConfirmEmailRequest>(
+      "auth/confirm-email/",
+      data,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
     );
   }
 
