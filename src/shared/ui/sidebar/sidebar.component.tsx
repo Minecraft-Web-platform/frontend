@@ -11,12 +11,15 @@ import CreeperIcon from "../../../assets/svg/creeper.svg?react";
 import ProfileIcon from "../../../assets/svg/profile.svg?react";
 import TechSupportIcon from "../../../assets/svg/contact.svg?react";
 import DocsIcon from "../../../assets/svg/docs.svg?react";
+import { Link } from "react-router";
 
 const Sidebar: FC = () => {
   return (
     <aside className="sidebar">
       <div className="sidebar__logo-block">
-        <p>Хроники Края</p>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <p>Хроники Края</p>
+        </Link>
       </div>
 
       <div className="sidebar__middle">
