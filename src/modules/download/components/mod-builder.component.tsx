@@ -46,7 +46,7 @@ const ModBuilder: FC = () => {
       console.error("Ошибка при скачивании модпака:", err);
       alert("Не удалось собрать модпак");
     } finally {
-      setLoadingModPack(true);
+      setLoadingModPack(false);
     }
   };
 
