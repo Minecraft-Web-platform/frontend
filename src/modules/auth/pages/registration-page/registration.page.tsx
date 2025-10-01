@@ -1,13 +1,14 @@
 import { FC, FormEvent, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { MoonLoader } from "react-spinners";
+import "./registration.page.scss";
+
 import Button from "../../../../shared/ui/button/button.component";
 import Input from "../../../../shared/ui/input/input.component";
+import Checkbox from "../../../../shared/ui/checkbox/checkbox.component";
 
 import { authService } from "../../services/auth.service";
-
-import "./registration.page.scss";
-import { Link, useNavigate } from "react-router";
-import Checkbox from "../../../../shared/ui/checkbox/checkbox.component";
-import { MoonLoader } from "react-spinners";
+import { validator } from "../../../../shared/utils/validator.util";
 
 const errorCodes: { [key: number]: string } = {
   409: "Этот никнейм уже занят. Придумай себе другой.",
@@ -29,8 +30,30 @@ const RegistrationPage: FC = () => {
   const buttonIsActive =
     username.length > 2 && password.length > 7 && isAcceptedAgreement;
 
+  const showErrors = (errors: string[]) => {
+    alert(errors.join(".\n"));
+  };
+
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const usernameErrors = validator.validateUsernameErrors(username);
+    const passwordErrors = validator.validatePasswordErrors(password);
+
+    if (usernameErrors.length > 0) {
+      showErrors(usernameErrors);
+      setUsername("");
+
+      return;
+    }
+
+    if (passwordErrors.length > 0) {
+      showErrors(passwordErrors);
+      setPassword("");
+      setRepeatPassword("");
+
+      return;
+    }
+
     setIsLoading(true);
 
     const body = {
