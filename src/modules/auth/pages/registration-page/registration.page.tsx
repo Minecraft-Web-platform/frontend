@@ -34,8 +34,7 @@ const RegistrationPage: FC = () => {
     alert(errors.join(".\n"));
   };
 
-  const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onRegistrationHandler = async () => {
     const usernameErrors = validator.validateUsernameErrors(username);
     const passwordErrors = validator.validatePasswordErrors(password);
 
@@ -101,7 +100,7 @@ const RegistrationPage: FC = () => {
       ) : (
         <form
           className="registration-form"
-          onSubmit={(e) => onSubmitHandler(e)}
+          onSubmit={e => e.preventDefault()}
         >
           <h1>Регистрация</h1>
 
@@ -144,7 +143,7 @@ const RegistrationPage: FC = () => {
           </div>
 
           <div className="buttons">
-            <Button callback={() => {}} disabled={!buttonIsActive}>
+            <Button callback={() => onRegistrationHandler()} disabled={!buttonIsActive}>
               {isLoading ? (
                 <MoonLoader size={20} color="#fff" />
               ) : (

@@ -85,9 +85,9 @@ const DownloadPage: FC = () => {
           )}
         </section>
 
-        <section className="download-mod-pack">
+        {/* <section className="download-mod-pack">
           <ModBuilder />
-        </section>
+        </section> */}
       </main>
     </div>
   );
