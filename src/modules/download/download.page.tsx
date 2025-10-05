@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import "./download.page.scss";
 
-import ModBuilder from "./components/mod-builder.component";
 import Sidebar from "../../shared/ui/sidebar/sidebar.component";
 import useAuthStore from "../../store/auth.store";
 import { PropagateLoader } from "react-spinners";

@@ -1,4 +1,4 @@
-import { FC, FormEvent, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { MoonLoader } from "react-spinners";
 import "./registration.page.scss";
