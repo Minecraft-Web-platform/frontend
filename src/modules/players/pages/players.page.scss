@@ -8,10 +8,16 @@
 
     h1 {
       font-family: "Minecraft";
-      margin-bottom: 32px;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-family: sans-serif;
+      color: rgb(70, 70, 70);
     }
 
     .players {
+      margin-top: 32px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;

@@ -5,15 +5,25 @@ import { GetAllUsersResponse } from "../types/get-all-users.response";
 import { playersService } from "../services/players.service";
 import { Link } from "react-router";
 import { PropagateLoader } from "react-spinners";
+import { GetOnlinePlayersResponse } from "../types/get-online-players.response";
 
 const PlayersPage: FC = () => {
   const [users, setUsers] = useState<GetAllUsersResponse>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [onlinePlayers, setOnlinePlayers] = useState<GetOnlinePlayersResponse>({
+    online: false,
+    players: [],
+    playersCount: 0,
+  });
+
   useEffect(() => {
     (async () => {
       const usersFromServer = await playersService.getAll();
       setUsers(usersFromServer);
+
+      const onlinePlayersResponse = await playersService.getOnlinePlayers();
+      setOnlinePlayers(onlinePlayersResponse);
 
       setLoading(false);
     })();
@@ -25,6 +35,7 @@ const PlayersPage: FC = () => {
 
       <main className="content">
         <h1>Игроки</h1>
+        <p>Игроков онлайн: {onlinePlayers.playersCount}</p>
 
         {loading ? (
           <PropagateLoader />
@@ -43,6 +54,10 @@ const PlayersPage: FC = () => {
                       <Link to={"/players/" + user.username}>
                         <h2>{user.username}</h2>
                       </Link>
+
+                      {onlinePlayers.players.includes(user.username)
+                        ? "Онлайн"
+                        : "Оффлайн"}
                     </div>
                   );
                 }
