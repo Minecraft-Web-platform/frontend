@@ -1,4 +1,3 @@
-// import { Check } from "lucide-react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import "./player-passport.page.scss";
