@@ -4,6 +4,7 @@ import "./download.page.scss";
 import Sidebar from "../../shared/ui/sidebar/sidebar.component";
 import useAuthStore from "../../store/auth.store";
 import { PropagateLoader } from "react-spinners";
+import ModBuilder from "./components/mod-builder.component";
 
 type LauncherMeta = {
   filename: string;
@@ -84,9 +85,9 @@ const DownloadPage: FC = () => {
           )}
         </section>
 
-        {/* <section className="download-mod-pack">
+        <section className="download-mod-pack">
           <ModBuilder />
-        </section> */}
+        </section>
       </main>
     </div>
   );
