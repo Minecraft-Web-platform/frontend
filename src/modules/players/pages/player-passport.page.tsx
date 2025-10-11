@@ -28,12 +28,11 @@ const PlayerPassport = () => {
 
               <div className="passport__content">
                 <div className="passport__photo">
-                  {/* {player?.avatarUrl ? (
-              <img src={avatarUrl} alt={nickname} />
-            ) : (
-              <span>Нет фото</span>
-            )} */}
-                  <span>Нет фото</span>
+                  {player.avatarUrl ? (
+                    <img src={player.avatarUrl} alt={player.username} />
+                  ) : (
+                    <span>Нет фото</span>
+                  )}
                 </div>
 
                 <div className="passport__info">
@@ -46,11 +45,6 @@ const PlayerPassport = () => {
                   </p>
                   <p className="passport__email">
                     <span className="label">Email:</span> {player.email || "-"}
-                    {player.emailIsConfirmed && (
-                      <span className="passport__verified">
-                        {/* <Check size={12} /> */}
-                      </span>
-                    )}
                   </p>
                   <p>
                     <span className="label">Гражданство:</span> -

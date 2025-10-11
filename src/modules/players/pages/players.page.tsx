@@ -48,7 +48,11 @@ const PlayersPage: FC = () => {
                     <div className="player" key={user.id}>
                       <img
                         className="player__profile-picture"
-                        src="/png/steve-head.png"
+                        src={
+                          user?.avatar_img
+                            ? `${user.avatar_img}?t=${Date.now()}`
+                            : "/png/steve-head.png"
+                        }
                       />
 
                       <Link to={"/players/" + user.username}>

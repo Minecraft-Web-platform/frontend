@@ -5,4 +5,5 @@ export type PlayerType = {
   email: string | null;
   emailIsConfirmed: boolean;
   lastIp: string;
+  avatarUrl: string | null;
 };

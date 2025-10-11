@@ -38,6 +38,8 @@
   &__profile-picture {
     width: 160px;
     height: 160px;
+    object-fit: cover;
+    object-position: 50% 0%;
     border-radius: 4px;
     margin-bottom: 24px;
   }
