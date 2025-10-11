@@ -38,11 +38,23 @@
     grid-template-columns: 1fr 280px;
     gap: 64px;
 
-    .avatar img {
-      border-radius: 8px;
-      display: block;
-      margin-top: 24px;
-      width: 280px;
+    .avatar {
+      transition: transform 0.3s linear;
+
+      &:hover {
+        transform: scale(1.03);
+        opacity: 0.9;
+      }
+
+      img {
+        border-radius: 8px;
+        display: block;
+        margin-top: 24px;
+        width: 280px;
+        height: 280px;
+        object-fit: cover;
+        object-position: 50% 0%;
+      }
     }
   }
 

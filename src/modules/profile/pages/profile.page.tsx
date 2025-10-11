@@ -13,7 +13,7 @@ const Profile: FC = () => {
   const [info, setInfo] = useState<GetInfoAboutMeRespone | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
+  const { accessToken, logout } = useAuthStore();
 
   useEffect(() => {
     let cancelled = false;
@@ -93,7 +93,44 @@ const Profile: FC = () => {
 
               <div className="right">
                 <div className="avatar">
-                  <img src="/png/steve-head.png" />
+                  <label htmlFor="avatar-upload">
+                    <img
+                      src={
+                        info?.avatar_img
+                          ? `${info.avatar_img}?t=${Date.now()}`
+                          : "/png/steve-head.png"
+                      }
+                      alt="avatar"
+                      title="Нажми, чтобы изменить аватар"
+                      style={{ cursor: "pointer" }}
+                    />
+                  </label>
+
+                  <input
+                    type="file"
+                    id="avatar-upload"
+                    accept="image/jpeg,image/png,image/webp"
+                    style={{ display: "none" }}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+
+                      try {
+                        setLoading(true);
+                        const { avatarUrl } = await profileService.uploadAvatar(
+                          file,
+                          accessToken as string
+                        );
+                        setInfo((prev) =>
+                          prev ? { ...prev, avatarUrl } : prev
+                        );
+                      } catch (err) {
+                        alert("Ошибка загрузки аватара 😢");
+                      } finally {
+                        setLoading(false);
+                      }
+                    }}
+                  />
                 </div>
               </div>
             </div>

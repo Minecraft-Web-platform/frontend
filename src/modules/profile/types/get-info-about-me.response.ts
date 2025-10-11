@@ -5,4 +5,5 @@ export type GetInfoAboutMeRespone = {
   email: string;
   emailIsConfirmed: boolean;
   lastIp: string;
+  avatar_img: string | null;
 };
