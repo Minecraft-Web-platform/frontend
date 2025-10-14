@@ -77,7 +77,6 @@ const DownloadPage: FC = () => {
                   >
                     <span>{os.label}</span>
                     <img src={os.icon} alt={os.label} />
-                    <span>{meta.sizeMB}MB</span>
                   </a>
                 );
               })}
