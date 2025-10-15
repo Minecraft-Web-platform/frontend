@@ -5,6 +5,22 @@ import { useEffect, useState } from "react";
 import { PlayerType } from "../types/player.type";
 import { playersService } from "../services/players.service";
 
+/**
+ *
+ * @description Normalizes date 2025-09-30T14:47:04.512Z into 30.09.2025
+ * @returns
+ */
+const normalizeDate = (dateToNormalize: string): string => {
+  const date = new Date(dateToNormalize);
+
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const year = date.getUTCFullYear();
+  const formatted = `${day}.${month}.${year}`;
+
+  return formatted;
+};
+
 const PlayerPassport = () => {
   const { username } = useParams();
   const [player, setPlayer] = useState<PlayerType | null>(null);
@@ -27,8 +43,8 @@ const PlayerPassport = () => {
 
               <div className="passport__content">
                 <div className="passport__photo">
-                  {player.avatarUrl ? (
-                    <img src={player.avatarUrl} alt={player.username} />
+                  {player.avatar_img ? (
+                    <img src={player.avatar_img} alt={player.username} />
                   ) : (
                     <span>Нет фото</span>
                   )}
@@ -55,7 +71,8 @@ const PlayerPassport = () => {
                     <span className="label">Дом:</span> -
                   </p>
                   <p>
-                    <span className="label">Выдано:</span> 01.10.2025
+                    <span className="label">Выдано:</span>{" "}
+                    {normalizeDate(player.registrationDate)}
                   </p>
                   <p>
                     <span className="label">Действителен до:</span> 01.10.2028
