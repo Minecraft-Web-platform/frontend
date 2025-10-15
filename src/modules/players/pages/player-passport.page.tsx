@@ -42,9 +42,6 @@ const PlayerPassport = () => {
                   <p>
                     <span className="label">UUID:</span> {player.uuid}
                   </p>
-                  <p className="passport__email">
-                    <span className="label">Email:</span> {player.email || "-"}
-                  </p>
                   <p>
                     <span className="label">Гражданство:</span> -
                   </p>
