@@ -2,7 +2,7 @@ import { FC } from "react";
 import "./sidebar.component.scss";
 import IconComponent from "./icon-component/icon-component.component";
 
-// import NewsIcon from "../../../assets/svg/news.svg?react";
+import NewsIcon from "../../../assets/svg/news.svg?react";
 // import StateIcon from "../../../assets/svg/state.svg?react";
 // import CompanyIcon from "../../../assets/svg/company.svg?react";
 import PlayersIcon from "../../../assets/svg/people.svg?react";
@@ -23,9 +23,9 @@ const Sidebar: FC = () => {
       </div>
 
       <div className="sidebar__middle">
-        {/* <IconComponent path="/news" label="Новости" iconType="stroke">
+        <IconComponent path="/news" label="Новости" iconType="stroke">
           <NewsIcon />
-        </IconComponent> */}
+        </IconComponent>
 
         {/* <IconComponent path="/states" label="Государства" iconType="fill">
           <StateIcon />
