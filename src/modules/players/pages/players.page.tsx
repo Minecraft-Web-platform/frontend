@@ -40,7 +40,9 @@ const PlayersPage: FC = () => {
 
       <main className="content">
         <h1>Игроки</h1>
-        <p>Игроков онлайн: {onlinePlayers.playersCount}</p>
+        <p>
+          Игроков онлайн: {onlinePlayers.playersCount}/{users.length}
+        </p>
 
         <div className="filter-buttons">
           <p>Показывать:</p>
