@@ -15,6 +15,7 @@ import NewsPage from "./modules/news/pages/news.page";
 import TechSupportPage from "./modules/tech-support/pages/tech-support.page";
 import EmailConfirmationPage from "./modules/auth/pages/email-confirmation/email-confirmation.page";
 import NewsDetailsPage from "./modules/news/pages/news-details.page";
+import NotFoundPage from "./modules/not-found/pages/not-found.page";
 
 function App() {
   return (
@@ -111,6 +112,8 @@ function App() {
             </RequireAuth>
           }
         />
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
