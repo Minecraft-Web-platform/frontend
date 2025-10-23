@@ -1,0 +1,115 @@
+.news-page .content {
+  padding-top: 48px;
+
+  .button {
+    max-width: 300px;
+  }
+
+  h1 {
+    font-family: "Minecraft";
+    text-align: center;
+  }
+}
+
+.category {
+  margin: 48px auto 0;
+  width: fit-content;
+
+  &__title {
+    font-size: 32px;
+    text-align: center;
+    font-family: sans-serif;
+  }
+
+  &__description {
+    margin-top: 8px;
+    font-family: sans-serif;
+    font-size: 20px;
+    text-align: center;
+    color: #535353;
+  }
+}
+
+.news-list {
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 404px);
+
+  column-gap: 48px;
+
+  .news {
+    margin-top: 32px;
+    width: 404px;
+    height: 325px;
+
+    background-color: #f6f8fa;
+    text-align: center;
+    border: 1px solid #d2d2d8;
+    border-radius: 16px;
+    padding: 24px;
+    font-family: sans-serif;
+
+    &--create-btn {
+      background-color: transparent;
+      border: 2px dashed black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-family: sans-serif;
+      font-size: 20px;
+
+      cursor: pointer;
+    }
+  }
+}
+
+.news-details-page .content {
+  margin: 0 auto;
+  padding-left: 360px;
+  width: fit-content;
+  padding-top: 64px;
+  display: flex;
+  justify-content: space-around;
+  gap: 32px;
+}
+
+.news-details {
+  max-width: 800px;
+
+  background-color: #f6f8fa;
+  text-align: center;
+  border: 1px solid #d2d2d8;
+  border-radius: 16px;
+  padding: 24px;
+  font-family: sans-serif;
+
+  &__title {
+    margin-bottom: 32px;
+
+    font-family: Minecraft;
+    font-size: 24px;
+  }
+
+  &__meta {
+    color: #535353;
+    text-align: left;
+  }
+
+  .news-block {
+    margin-bottom: 16px;
+
+    &--image {
+      max-width: 400px;
+      max-height: 400px;
+    }
+  }
+}
+
+.news-meta {
+  background-color: #f6f8fa;
+  border: 1px solid #d2d2d8;
+  border-radius: 16px;
+  padding: 48px;
+  font-family: sans-serif;
+}

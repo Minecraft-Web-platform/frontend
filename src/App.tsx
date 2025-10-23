@@ -14,6 +14,7 @@ import PlayerPassport from "./modules/players/pages/player-passport.page";
 import NewsPage from "./modules/news/pages/news.page";
 import TechSupportPage from "./modules/tech-support/pages/tech-support.page";
 import EmailConfirmationPage from "./modules/auth/pages/email-confirmation/email-confirmation.page";
+import NewsDetailsPage from "./modules/news/pages/news-details.page";
 
 function App() {
   return (
@@ -51,6 +52,15 @@ function App() {
           element={
             <RequireAuth>
               <NewsPage />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/news/:id"
+          element={
+            <RequireAuth>
+              <NewsDetailsPage />
             </RequireAuth>
           }
         />

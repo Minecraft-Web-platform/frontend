@@ -13,7 +13,7 @@ const Profile: FC = () => {
   const [info, setInfo] = useState<GetInfoAboutMeRespone | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { accessToken, logout } = useAuthStore();
+  const { accessToken, logout, isAdmin, turnAdmin } = useAuthStore();
 
   useEffect(() => {
     let cancelled = false;
@@ -145,6 +145,16 @@ const Profile: FC = () => {
               <Button callback={() => logout()} secondary>
                 Выйти из аккаунта
               </Button>
+
+              {info?.username === "admin" && !isAdmin && (
+                <Button callback={() => turnAdmin(true)}>Пошалим?</Button>
+              )}
+
+              {isAdmin && (
+                <Button callback={() => turnAdmin(false)} secondary>
+                  На сегодня хватит
+                </Button>
+              )}
             </div>
           </div>
         </main>
