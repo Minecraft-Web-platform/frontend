@@ -1,0 +1,128 @@
+.create-news-modal-wrap {
+  top: 0;
+  left: 0;
+
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+}
+
+.create-news-modal {
+  padding: 32px;
+  background-color: white;
+  width: fit-content;
+  border-radius: 16px;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+
+  h1 {
+    margin-bottom: 8px;
+    font-family: "Minecraft";
+  }
+
+  p {
+    color: #666;
+    font-family: sans-serif;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+
+    .block {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px;
+      background: #fafafa;
+
+      .block-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-family: sans-serif;
+
+        button {
+          background: none;
+          border: none;
+          font-size: 18px;
+          color: #b33;
+          cursor: pointer;
+        }
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 80px;
+        resize: vertical;
+        padding: 8px;
+      }
+
+      .upload-label {
+        display: block;
+        padding: 16px;
+        text-align: center;
+        border: 2px dashed #aaa;
+        border-radius: 6px;
+        color: #666;
+        cursor: pointer;
+
+        input {
+          display: none;
+        }
+
+        &:hover {
+          border-color: #0078ff;
+          color: #0078ff;
+        }
+      }
+
+      .block-preview {
+        max-width: 100%;
+        border-radius: 6px;
+      }
+    }
+  }
+
+  .add-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 16px;
+
+    .button {
+      font-size: 14px;
+      width: 200px;
+      // font-family: sans-serif;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .button {
+    margin-top: 24px;
+  }
+}

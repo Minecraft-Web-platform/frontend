@@ -52,7 +52,7 @@ export class NewsService {
 
     formData.append("file", file);
 
-    const res = await fetch(`${this.SERVER_URL}/upload`, {
+    const res = await fetch(`${this.SERVER_URL}/news/image`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,

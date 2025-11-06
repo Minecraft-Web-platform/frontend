@@ -1,85 +1,180 @@
-import { Dispatch, FC, SetStateAction, useState } from "react";
-
-import { newsCategoryService } from "../services/news-category.service";
-import { CreateCategoryDto } from "../types/create-category.dto";
-
-import Button from "../../../shared/ui/button/button.component";
+import { FC, useEffect, useState } from "react";
+import "./create-news.category.scss";
 import Input from "../../../shared/ui/input/input.component";
-import Checkbox from "../../../shared/ui/checkbox/checkbox.component";
-
-import { NewsCategory } from "../types/news-category.type";
+import { newsCategoryService } from "../services/news-category.service";
+import { newsService } from "../services/news.service";
+import { NewsBlock } from "../types/news-block.type";
+import Button from "../../../shared/ui/button/button.component";
 
 type Props = {
-  setCategories: Dispatch<SetStateAction<NewsCategory[]>>;
+  closeModal: () => void;
+  categoryId: string;
 };
 
-const CreateNewsComponent: FC<Props> = ({ setCategories }) => {
-  const [newCategoryName, setNewCategoryName] = useState<string>("");
-  const [newCategoryDescription, setNewCategoryDescription] =
-    useState<string>("");
-  const [publishPermission, setPublishPermission] = useState<"all" | "admins">(
-    "all"
-  );
-  const [categoryIsCreating, setCategoryIsCreating] = useState<boolean>(false);
+const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
+  const [newsTitle, setNewsTitle] = useState("");
+  const [categoryName, setCategoryName] = useState("Загрузка...");
+  const [blocks, setBlocks] = useState<NewsBlock[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  const createCategory = async () => {
-    const newCategoryData: CreateCategoryDto = {
-      name: newCategoryName,
-      description: newCategoryDescription,
-      publish_permission: publishPermission,
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    newsCategoryService
+      .getOne(categoryId)
+      .then((cat) => setCategoryName(cat.name));
+    return () => {
+      document.body.style.overflow = "";
     };
+  }, [categoryId]);
 
-    const newCategory = await newsCategoryService.create(newCategoryData);
-
-    setCategories((prev) => [...prev, newCategory]);
+  const addBlock = (type: "text" | "image") => {
+    const newBlock: NewsBlock = {
+      id: crypto.randomUUID(),
+      type,
+      content: "",
+      order: blocks.length,
+    };
+    setBlocks((prev) => [...prev, newBlock]);
   };
 
+  const removeBlock = (id: string) => {
+    setBlocks((prev) =>
+      prev.filter((b) => b.id !== id).map((b, i) => ({ ...b, order: i }))
+    );
+  };
+
+  const updateBlockContent = (id: string, content: string) => {
+    setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, content } : b)));
+  };
+
+  const handleImageUpload = async (id: string, file: File) => {
+    try {
+      const tempUrl = URL.createObjectURL(file);
+      updateBlockContent(id, tempUrl);
+
+      const { url } = await newsService.uploadImage(file);
+
+      if (url) {
+        setBlocks((prev) =>
+          prev.map((b) => (b.id === id ? { ...b, content: url } : b))
+        );
+      }
+    } catch (err) {
+      alert("Ошибка при загрузке изображения");
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!newsTitle.trim() || blocks.length === 0) {
+      alert("Введите заголовок и добавьте хотя бы один блок");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await newsService.create({
+        title: newsTitle,
+        categoryId,
+        blocks: blocks.map((b, i) => ({
+          type: b.type,
+          content: b.content,
+          order: i,
+        })),
+      });
+      setShowSuccess(true);
+    } catch (err) {
+      alert("Ошибка при создании новости");
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (showSuccess) {
+    return (
+      <div className="create-news-modal-wrap">
+        <div className="create-news-modal">
+          <h2>✅ Новость отправлена на модерацию!</h2>
+          <button onClick={closeModal}>Закрыть</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <>
-      <Button
-        callback={
-          categoryIsCreating
-            ? () => setCategoryIsCreating(false)
-            : () => setCategoryIsCreating(true)
-        }
-      >
-        {!categoryIsCreating ? "Новая категория" : "Отменить"}
-      </Button>
+    <div className="create-news-modal-wrap">
+      <div className="create-news-modal">
+        <button className="close-btn" onClick={closeModal}>
+          ✕
+        </button>
 
-      {categoryIsCreating && (
-        <form
-          style={{ maxWidth: "600px" }}
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <Input
-            element="input"
-            value={newCategoryName}
-            setValue={setNewCategoryName}
-            placeholder="Имя категории"
-          />
+        <h1>Новая новость</h1>
+        <p>В категории: {categoryName}</p>
 
-          <Input
-            element="textarea"
-            value={newCategoryDescription}
-            setValue={setNewCategoryDescription}
-            placeholder="Описание категории"
-          />
+        <Input
+          value={newsTitle}
+          setValue={setNewsTitle}
+          element="input"
+          placeholder="Заголовок новости"
+        />
 
-          <label>Категория для админов?</label>
-          <Checkbox
-            checked={publishPermission === "admins"}
-            onClickHandler={() =>
-              publishPermission === "all"
-                ? setPublishPermission("admins")
-                : setPublishPermission("all")
-            }
-          />
+        <div className="blocks">
+          {blocks.map((block) => (
+            <div className="block" key={block.id}>
+              <div className="block-header">
+                <strong>
+                  {block.type === "text" ? "Текстовый блок" : "Изображение"}
+                </strong>
 
-          <Button callback={createCategory}>Создать</Button>
-        </form>
-      )}
-    </>
+                <button onClick={() => removeBlock(block.id)}>✕</button>
+              </div>
+
+              {block.type === "text" ? (
+                <textarea
+                  placeholder="Введите текст..."
+                  value={block.content}
+                  onChange={(e) => updateBlockContent(block.id, e.target.value)}
+                />
+              ) : block.content ? (
+                <img
+                  src={block.content}
+                  alt="preview"
+                  className="block-preview"
+                />
+              ) : (
+                <label className="upload-label">
+                  Загрузить изображение
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(block.id, file);
+                    }}
+                  />
+                </label>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="add-buttons">
+          <Button callback={() => addBlock("text")} secondary>
+            + Текст
+          </Button>
+          <Button callback={() => addBlock("image")} secondary>
+            🖼 Картинка
+          </Button>
+        </div>
+
+        <Button disabled={isSubmitting} callback={handleSubmit}>
+          {isSubmitting ? "Публикуем..." : "Опубликовать"}
+        </Button>
+      </div>
+    </div>
   );
 };
 
-export default CreateNewsComponent;
+export default CreateNewsModal;

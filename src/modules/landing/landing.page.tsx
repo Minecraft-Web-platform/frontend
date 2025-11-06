@@ -97,8 +97,8 @@ const LandingPage: FC = () => {
 
           <span>
             Онлайн карта:{" "}
-            <a href="http://146.19.48.158:25900?worldname=world&mapname=surface&zoom=4">
-              146.19.48.158:25900
+            <a href="http://5.83.140.252:25900?worldname=world&mapname=surface&zoom=4">
+              5.83.140.252:25900
             </a>
           </span>
 
