@@ -51,6 +51,7 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
   const handleImageUpload = async (id: string, file: File) => {
     try {
       const tempUrl = URL.createObjectURL(file);
+
       updateBlockContent(id, tempUrl);
 
       const { url } = await newsService.uploadImage(file);

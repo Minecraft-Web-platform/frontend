@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { newsService } from "../services/news.service";
 import { News } from "../types/news.type";
 import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
@@ -11,6 +11,7 @@ const NewsDetailsPage: FC = () => {
   const [news, setNews] = useState<News | null>(null);
   const [loading, setLoading] = useState(true);
   const { isAdmin } = useAuthStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) return;
@@ -90,6 +91,15 @@ const NewsDetailsPage: FC = () => {
                     Одобрить
                   </Button>
                 )}
+
+                <Button
+                  callback={() =>
+                    newsService.remove(news.id).then(() => navigate("/news"))
+                  }
+                  secondary
+                >
+                  Удалить
+                </Button>
               </>
             )}
           </div>
