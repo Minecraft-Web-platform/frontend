@@ -15,7 +15,7 @@ const LandingPage: FC = () => {
 
         <a
           className="header__link-to-online-map"
-          href="http://5.83.140.252:25900"
+          href="http://5.83.140.252:25900/#world:1949:85:1568:0:-0.8:1.07:0:0:free"
         >
           Онлайн-карта
         </a>
@@ -97,7 +97,7 @@ const LandingPage: FC = () => {
 
           <span>
             Онлайн карта:{" "}
-            <a href="http://5.83.140.252:25900?worldname=world&mapname=surface&zoom=4">
+            <a href="http://5.83.140.252:25900/#world:1949:85:1568:0:-0.8:1.07:0:0:free">
               5.83.140.252:25900
             </a>
           </span>

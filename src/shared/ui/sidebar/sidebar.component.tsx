@@ -40,7 +40,7 @@ const Sidebar: FC = () => {
         </IconComponent>
 
         <IconComponent
-          path="http://5.83.140.252:25900"
+          path="http://5.83.140.252:25900/#world:1949:85:1568:0:-0.8:1.07:0:0:free"
           label="Карта мира"
           iconType="fill"
         >
