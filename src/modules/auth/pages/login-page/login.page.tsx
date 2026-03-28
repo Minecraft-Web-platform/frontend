@@ -8,6 +8,9 @@ import useAuthStore from "../../../../store/auth.store";
 import { MoonLoader } from "react-spinners";
 import { AxiosError } from "axios";
 
+import { useTranslation } from "react-i18next";
+import i18n from "../../../../i18n/i18n";
+
 const errorCodes: { [key: number]: string } = {
   401: "Никнейм либо пароль неверны. Попробуй еще раз :)",
 };
@@ -17,8 +20,10 @@ const LoginPage: FC = () => {
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<number>();
+
   const authStore = useAuthStore();
   const navigate = useNavigate();
+  const { t } = useTranslation('auth');
 
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,7 +46,9 @@ const LoginPage: FC = () => {
   };
 
   useEffect(() => {
-    error && alert(errorCodes[error]);
+    if (error) {
+      alert(errorCodes[error]);
+    }
 
     setError(0);
   }, [error]);
@@ -49,32 +56,37 @@ const LoginPage: FC = () => {
   return (
     <main className="login-page">
       <form className="login-form" onSubmit={(e) => onSubmitHandler(e)}>
-        <h1>Вход</h1>
+        <h1>{t("login-page.html-elements.sign-in-heading")}</h1>
 
         <Input
           value={username}
           setValue={setUsername}
           placeholder=""
-          label="Никнейм"
+          label={t("login-page.html-elements.username-input-label")}
           element="input"
         />
+
+        <button onClick={(e) => {e.preventDefault(); i18n.changeLanguage('pl')}}>pl</button>
+        <button onClick={(e) => {e.preventDefault(); i18n.changeLanguage('en')}}>en</button>
+        <button onClick={(e) => {e.preventDefault(); i18n.changeLanguage('ua')}}>ua</button>
+        <button onClick={(e) => {e.preventDefault(); i18n.changeLanguage('ru')}}>ru</button>
 
         <Input
           value={password}
           setValue={setPassword}
           placeholder=""
           type="password"
-          label="Пароль"
+          label={t("login-page.html-elements.password-input-label")}
           element="input"
         />
 
         <div className="buttons">
           <Button disabled={loading}>
-            {loading ? <MoonLoader size={20} color="#fff" /> : "Войти"}
+            {loading ? <MoonLoader size={20} color="#fff" /> : t("login-page.html-elements.sign-in-button")}
           </Button>
 
           <Button callback={() => navigate("/registration")} secondary={true}>
-            Еще нет аккаунта?
+            {t("login-page.html-elements.registration-redirect-button")}
           </Button>
         </div>
 
