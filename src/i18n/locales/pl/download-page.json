@@ -1,0 +1,16 @@
+{
+    "html-elements": {
+        "download-heading": "Pobierz launcher",
+        "page-description": "Dzięki Legacy Launcher możesz pobrać wybraną wersję Minecrafta, szybko otworzyć folder z modami i rozpocząć grę.",
+        "mods-heading": "Dodaj mody",
+        "under-mods-heading-description": "Wybierz mody, które chcesz dodać do paczki — spakujemy je do archiwum razem z wymaganymi modami :)",
+        "download-button-text": "Pobierz modpack",
+        "under-button-text": "Twój modpack się pobiera, zajmie to 2–4 minuty — kup sobie w międzyczasie hotdoga z Żabki <3"
+    },
+    "errors": {
+        "http": {
+            "download-timeout": "Pobieranie trwało zbyt długo. Sprawdź połączenie z internetem i spróbuj ponownie",
+            "internal-error": "Nasza strona ma chwilowy problem. Spróbuj ponownie później :("
+        }
+    }
+}
