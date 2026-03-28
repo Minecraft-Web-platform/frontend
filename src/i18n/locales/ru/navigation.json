@@ -1,0 +1,12 @@
+{
+    "heading": "",
+    "buttons": {
+        "news": "Новости",
+        "players-list": "Список игроков",
+        "world-map": "Карта мира",
+        "download-page": "Скачать сборку и лаунчер",
+        "profile": "Профиль",
+        "tech-support": "Техподдержка",
+        "regulations": "Регламенты"
+    }
+}

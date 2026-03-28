@@ -1,0 +1,12 @@
+{
+    "heading": "",
+    "buttons": {
+        "news": "News",
+        "players-list": "Players",
+        "world-map": "World Map",
+        "download-page": "Download launcher & modpack",
+        "profile": "Profile",
+        "tech-support": "Support",
+        "regulations": "Rules"
+    }
+}
