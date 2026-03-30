@@ -9,7 +9,6 @@ import { MoonLoader } from "react-spinners";
 import { AxiosError } from "axios";
 
 import { useTranslation } from "react-i18next";
-import i18n from "../../../../i18n/i18n";
 
 const errorCodes: { [key: number]: string } = {
   401: "Никнейм либо пароль неверны. Попробуй еще раз :)",
@@ -51,7 +50,7 @@ const LoginPage: FC = () => {
     }
 
     setError(0);
-  }, [error]);
+  }, [error])
 
   return (
     <main className="login-page">
@@ -65,11 +64,6 @@ const LoginPage: FC = () => {
           label={t("login-page.html-elements.username-input-label")}
           element="input"
         />
-
-        <button onClick={(e) => {e.preventDefault(); i18n.changeLanguage('pl')}}>pl</button>
-        <button onClick={(e) => {e.preventDefault(); i18n.changeLanguage('en')}}>en</button>
-        <button onClick={(e) => {e.preventDefault(); i18n.changeLanguage('ua')}}>ua</button>
-        <button onClick={(e) => {e.preventDefault(); i18n.changeLanguage('ru')}}>ru</button>
 
         <Input
           value={password}

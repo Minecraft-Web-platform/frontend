@@ -1,1 +1,20 @@
-{}
+{
+    "sections": {
+        "intro": {
+            "online-map": "",
+            "heading": "",
+            "under-heading": "",
+            "play": ""
+        },
+        "about": {
+            "building": "",
+            "farming": "",
+            "frog": ""
+        },
+        "footer": {
+            "discord": "Discord",
+            "online-map": "",
+            "ip-address": ""
+        }
+    }
+}

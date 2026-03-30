@@ -87,6 +87,8 @@ export const resources = {
   }
 } as const;
 
+console.log('i18n initialized');
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
