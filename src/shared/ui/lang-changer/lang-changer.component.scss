@@ -1,0 +1,36 @@
+.lang-changer {
+  position: fixed;
+  display: flex;
+  gap: 8px;
+  top: 24px;
+  right: 24px;
+  padding: 16px;
+  background-color: #f5f8fa;
+  height: fit-content;
+  border-radius: 8px;
+
+  .btn {
+    padding: 4px 16px;
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 4px;
+    transition: background-color 0.3s linear;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #e5e5e5;
+    }
+
+    &--chosen {
+      background-color: #000;
+      color: #fff;
+      transition:
+        background-color 1s linear,
+        color 0.5s linear;
+
+      &:hover {
+        background-color: #000;
+      }
+    }
+  }
+}

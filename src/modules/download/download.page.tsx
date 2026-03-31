@@ -5,6 +5,7 @@ import Sidebar from "../../shared/ui/sidebar/sidebar.component";
 import useAuthStore from "../../store/auth.store";
 import { PropagateLoader } from "react-spinners";
 import ModBuilder from "./components/mod-builder.component";
+import LangChanger from "../../shared/ui/lang-changer/lang-changer.component";
 
 type LauncherMeta = {
   filename: string;
@@ -88,6 +89,8 @@ const DownloadPage: FC = () => {
           <ModBuilder />
         </section>
       </main>
+
+       <LangChanger />
     </div>
   );
 };

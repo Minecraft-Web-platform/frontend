@@ -1,6 +1,7 @@
 import { FC } from "react";
 import "./sidebar.component.scss";
 import IconComponent from "./icon-component/icon-component.component";
+import { useTranslation } from 'react-i18next';
 
 import NewsIcon from "../../../assets/svg/news.svg?react";
 // import StateIcon from "../../../assets/svg/state.svg?react";
@@ -14,16 +15,18 @@ import DocsIcon from "../../../assets/svg/docs.svg?react";
 import { Link } from "react-router";
 
 const Sidebar: FC = () => {
+  const { t } = useTranslation('navigation');
+
   return (
     <aside className="sidebar">
       <div className="sidebar__logo-block">
         <Link to="/" style={{ textDecoration: "none" }}>
-          <p>Хроники Края</p>
+          <p>{t('heading')}</p>
         </Link>
       </div>
 
       <div className="sidebar__middle">
-        <IconComponent path="/news" label="Новости" iconType="stroke">
+        <IconComponent path="/news" label={t('buttons.news')} iconType="stroke">
           <NewsIcon />
         </IconComponent>
 
@@ -35,13 +38,13 @@ const Sidebar: FC = () => {
           <CompanyIcon />
         </IconComponent> */}
 
-        <IconComponent path="/players" label="Список игроков" iconType="fill">
+        <IconComponent path="/players" label={t('buttons.players-list')} iconType="fill">
           <PlayersIcon />
         </IconComponent>
 
         <IconComponent
           path="http://5.83.140.252:25900/#world:1949:85:1568:0:-0.8:1.07:0:0:free"
-          label="Карта мира"
+          label={t('buttons.world-map')}
           iconType="fill"
         >
           <MapIcon />
@@ -49,7 +52,7 @@ const Sidebar: FC = () => {
 
         <IconComponent
           path="/download"
-          label="Скачать сборку и лаунчер"
+          label={t('buttons.download-page')}
           iconType="fill"
         >
           <CreeperIcon />
@@ -57,19 +60,19 @@ const Sidebar: FC = () => {
       </div>
 
       <div className="sidebar__bottom">
-        <IconComponent path="/profile" label="Профиль" iconType="fill">
+        <IconComponent path="/profile" label={t('buttons.profile')} iconType="fill">
           <ProfileIcon />
         </IconComponent>
 
         <IconComponent
           path="/tech-support"
-          label="Техподдержка"
+          label={t('buttons.tech-support')}
           iconType="fill"
         >
           <TechSupportIcon />
         </IconComponent>
 
-        <IconComponent path="/agreement" label="Регламенты" iconType="stroke">
+        <IconComponent path="/agreement" label={t('buttons.regulations')} iconType="stroke">
           <DocsIcon />
         </IconComponent>
       </div>
