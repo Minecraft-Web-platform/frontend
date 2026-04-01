@@ -2,6 +2,7 @@
     "html-elements": {
         "download-heading": "Скачай лаунчер",
         "page-description": "С помощью Legacy Launcher ты сможешь скачать выбранную версию Minecraft, быстро открыть папку для модов и начать игру.",
+        "unavailable": "Недоступно",
         "mods-heading": "Добавить моды",
         "under-mods-heading-description": "Выбери моды, которые хочешь добавить в сборку — мы упакуем их в архив вместе с обязательными модами :)",
         "download-button-text": "Скачать модпак",

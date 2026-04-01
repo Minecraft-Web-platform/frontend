@@ -2,6 +2,7 @@
     "html-elements": {
         "download-heading": "Download the launcher",
         "page-description": "With Legacy Launcher, you can download your chosen version of Minecraft, quickly open the mods folder, and start playing.",
+        "unavailable": "unavailable",
         "mods-heading": "Add mods",
         "under-mods-heading-description": "Choose the mods you want to add to your pack — we’ll bundle them into an archive along with required mods :)",
         "download-button-text": "Download modpack",
