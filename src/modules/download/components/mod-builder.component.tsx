@@ -1,16 +1,21 @@
 import { FC, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import Checkbox from "../../../shared/ui/checkbox/checkbox.component";
-import { modsService } from "../services/mods.service";
-import { ModType } from "../types/ mod.type";
 import Button from "../../../shared/ui/button/button.component";
+import { modsService } from "../services/mods.service";
+import { ModType } from "../types/mod.type";
 import { MoonLoader, PropagateLoader } from "react-spinners";
 
 type ModWithState = ModType & { isChoosed: boolean };
 
 const ModBuilder: FC = () => {
+  const { t } = useTranslation('download-page');
+
   const [mods, setMods] = useState<ModWithState[]>([]);
   const [loadingModPack, setLoadingModPack] = useState(false);
   const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     setLoading(true);
@@ -44,7 +49,7 @@ const ModBuilder: FC = () => {
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error("Ошибка при скачивании модпака:", err);
-      alert("Не удалось собрать модпак");
+      alert(t('errors.http.internal-error'));
     } finally {
       setLoadingModPack(false);
     }
@@ -52,14 +57,13 @@ const ModBuilder: FC = () => {
 
   return (
     <div className="mod-builder">
-      <h1 className="">Добавить моды</h1>
+      <h1 className="">{t('html-elements.mods-heading')}</h1>
 
       {loading ? (
         <p>Загружаем список опциональных модов...</p>
       ) : (
         <p>
-          Выбери моды, которые хочешь добавить в сборку — мы упакуем их в архив
-          вместе с обязательными модами :)
+          {t('html-elements.under-mods-heading-description')}
         </p>
       )}
 
@@ -83,13 +87,13 @@ const ModBuilder: FC = () => {
         {loadingModPack ? (
           <MoonLoader size={16} color="#fff" />
         ) : (
-          "Скачать модпак"
+          t('html-elements.download-button-text')
         )}
       </Button>
 
       {loadingModPack && (
         <p>
-          Твой модпак скачивается, это займёт 2-4 минуты, завари пока что чай :)
+          {t('html-elements.under-button-text')}
         </p>
       )}
     </div>

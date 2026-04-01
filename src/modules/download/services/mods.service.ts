@@ -1,7 +1,7 @@
 import { EnhancedWithAuthHttpService } from "../../../shared/services/http-auth.service";
 import { httpFactoryService } from "../../../shared/services/http-factory.service";
 import useAuthStore from "../../../store/auth.store";
-import { ModType } from "../types/ mod.type";
+import { ModType } from "../types/mod.type";
 
 class ModsService {
   private readonly SERVER_URL: string;

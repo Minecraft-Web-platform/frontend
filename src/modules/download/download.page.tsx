@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./download.page.scss";
 
 import Sidebar from "../../shared/ui/sidebar/sidebar.component";
@@ -27,6 +28,7 @@ const DownloadPage: FC = () => {
   const [launchers, setLaunchers] = useState<LaunchersResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const { accessToken } = useAuthStore();
+  const { t } = useTranslation('download-page');
 
   useEffect(() => {
     const config = {
@@ -40,7 +42,7 @@ const DownloadPage: FC = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [accessToken]);
 
   return (
     <div className="download-page">
@@ -48,10 +50,9 @@ const DownloadPage: FC = () => {
 
       <main className="download-wrapper content">
         <section className="download-launcher">
-          <h1>Скачай лаунчер</h1>
+          <h1>{t('html-elements.download-heading')}</h1>
           <p>
-            С помощью Legacy Launcher ты сможешь скачать выбранную версию
-            Minecraft, быстро открыть папку для модов и начать игру.
+            {t('html-elements.page-description')}
           </p>
 
           {loading && <PropagateLoader color="#000" />}
@@ -64,7 +65,7 @@ const DownloadPage: FC = () => {
                 if (!meta) {
                   return (
                     <p className="unavailable" key={os.key}>
-                      Недоступно
+                      {t('html-elements.unavailable')}
                     </p>
                   );
                 }
