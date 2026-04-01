@@ -8,6 +8,7 @@ import { NewsCategory } from "../types/news-category.type";
 import { newsCategoryService } from "../services/news-category.service";
 import { useNavigate } from "react-router";
 import CreateNewsModal from "../components/create-news.component";
+import LangChanger from "../../../shared/ui/lang-changer/lang-changer.component";
 
 const NewsPage: FC = () => {
   const [categories, setCategories] = useState<NewsCategory[]>([]);
@@ -100,6 +101,8 @@ const NewsPage: FC = () => {
           categoryId={selectedCategoryId}
         />
       )}
+
+      <LangChanger />
     </div>
   );
 };

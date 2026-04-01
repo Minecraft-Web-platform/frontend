@@ -1,13 +1,19 @@
 .lang-changer {
   position: fixed;
   display: flex;
-  gap: 8px;
+  gap: 16px;
   top: 24px;
   right: 24px;
   padding: 16px;
   background-color: #f5f8fa;
   height: fit-content;
   border-radius: 8px;
+  box-shadow: 0 0 4px #000;
+
+  .btns {
+    display: flex;
+    gap: 8px;
+  }
 
   .btn {
     padding: 4px 16px;
