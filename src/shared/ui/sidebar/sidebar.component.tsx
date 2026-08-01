@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import NewsIcon from "../../../assets/svg/news.svg?react";
 import StateIcon from "../../../assets/svg/state.svg?react";
-// import CompanyIcon from "../../../assets/svg/company.svg?react";
+import CompanyIcon from "../../../assets/svg/company.svg?react";
 import PlayersIcon from "../../../assets/svg/people.svg?react";
 import MapIcon from "../../../assets/svg/map.svg?react";
 import CreeperIcon from "../../../assets/svg/creeper.svg?react";
@@ -36,6 +36,22 @@ const Sidebar: FC = () => {
 
         <IconComponent path="/cities" label="Города" iconType="fill">
           <StateIcon />
+        </IconComponent>
+
+        <IconComponent path="/bank" label="Банки и Счета" iconType="fill">
+          <CompanyIcon />
+        </IconComponent>
+
+        <IconComponent path="/currencies" label="Валюты" iconType="fill">
+          <StateIcon />
+        </IconComponent>
+
+        <IconComponent path="/companies" label="Компании" iconType="fill">
+          <CompanyIcon />
+        </IconComponent>
+
+        <IconComponent path="/exchange" label="Биржа" iconType="fill">
+          <CompanyIcon />
         </IconComponent>
 
         <IconComponent path="/players" label={t('buttons.players-list')} iconType="fill">

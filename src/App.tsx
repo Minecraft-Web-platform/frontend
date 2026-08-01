@@ -23,6 +23,12 @@ import {
   CitiesListPage,
   CityDetailPage,
 } from "./modules/states";
+import {
+  BankPage,
+  CurrenciesPage,
+  CompaniesListPage,
+  StockExchangePage,
+} from "./modules/economy";
 
 function App() {
   return (
@@ -157,6 +163,39 @@ function App() {
           element={
             <RequireAuth>
               <TechSupportPage />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/bank"
+          element={
+            <RequireAuth>
+              <BankPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/currencies"
+          element={
+            <RequireAuth>
+              <CurrenciesPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/companies"
+          element={
+            <RequireAuth>
+              <CompaniesListPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/exchange"
+          element={
+            <RequireAuth>
+              <StockExchangePage />
             </RequireAuth>
           }
         />
