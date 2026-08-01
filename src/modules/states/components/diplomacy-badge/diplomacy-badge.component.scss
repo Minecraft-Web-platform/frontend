@@ -1,0 +1,32 @@
+.diplomacy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+  &--ally {
+    background: rgba(46, 213, 115, 0.15);
+    border: 1px solid rgba(46, 213, 115, 0.4);
+    color: #2ed573;
+    box-shadow: 0 0 12px rgba(46, 213, 115, 0.25);
+  }
+
+  &--neutral {
+    background: rgba(112, 161, 255, 0.15);
+    border: 1px solid rgba(112, 161, 255, 0.4);
+    color: #70a1ff;
+  }
+
+  &--war {
+    background: rgba(255, 71, 87, 0.15);
+    border: 1px solid rgba(255, 71, 87, 0.4);
+    color: #ff4757;
+    box-shadow: 0 0 12px rgba(255, 71, 87, 0.3);
+  }
+}

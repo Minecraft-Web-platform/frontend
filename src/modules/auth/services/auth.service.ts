@@ -14,6 +14,12 @@ import {
   RegistrateRequest,
   RegistrateResponse,
 } from "../types/registrate.types";
+import {
+  InitPasswordResetRequest,
+  InitPasswordResetResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+} from "../types/reset-password.types";
 
 class AuthService {
   constructor(private readonly httpService: HttpService) {
@@ -73,6 +79,24 @@ class AuthService {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
     );
+  }
+
+  public async initPasswordReset(
+    data: InitPasswordResetRequest
+  ): Promise<InitPasswordResetResponse> {
+    return this.httpService.post<
+      InitPasswordResetResponse,
+      InitPasswordResetRequest
+    >("auth/init-password-resetting/", data);
+  }
+
+  public async resetPassword(
+    data: ResetPasswordRequest
+  ): Promise<ResetPasswordResponse> {
+    return this.httpService.post<
+      ResetPasswordResponse,
+      ResetPasswordRequest
+    >("auth/reset-password/", data);
   }
 
   public async logout(data: LogoutRequest): Promise<LogoutResponse> {

@@ -9,11 +9,16 @@ export interface IHttpConfig {
 export type IMap = Record<string, unknown>;
 
 export interface IHttpClient {
-  get: <T>(url: string, config?: IHttpConfig) => Promise<T>;
-  post: <T, TD>(url: string, data: TD, config?: IHttpConfig) => Promise<T>;
-  put: <T, TD>(url: string, data: TD, config?: IHttpConfig) => Promise<T>;
-  delete: <T>(url: string, config?: IHttpConfig) => Promise<T>;
-  patch: <T, TD>(url: string, data: TD, config?: IHttpConfig) => Promise<T>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get: <T = any>(url: string, config?: IHttpConfig) => Promise<T | any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  post: <T = any, TD = any>(url: string, data: TD, config?: IHttpConfig) => Promise<T | any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  put: <T = any, TD = any>(url: string, data: TD, config?: IHttpConfig) => Promise<T | any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  delete: <T = any>(url: string, config?: IHttpConfig) => Promise<T | any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  patch: <T = any, TD = any>(url: string, data: TD, config?: IHttpConfig) => Promise<T | any>;
 }
 
 export enum HttpStatusCode {

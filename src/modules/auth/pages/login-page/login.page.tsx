@@ -1,7 +1,7 @@
 import { FC, FormEvent, useEffect, useState } from "react";
 import "./login.page.scss";
 import Input from "../../../../shared/ui/input/input.component";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Button from "../../../../shared/ui/button/button.component";
 import { authService } from "../../services/auth.service";
 import useAuthStore from "../../../../store/auth.store";
@@ -84,7 +84,9 @@ const LoginPage: FC = () => {
           </Button>
         </div>
 
-        {/* <Link to={"/"}>Забыли пароль?</Link> */}
+        <Link to="/reset-password" style={{ display: "block", marginTop: "16px", textAlign: "center" }}>
+          Забыли пароль?
+        </Link>
       </form>
     </main>
   );

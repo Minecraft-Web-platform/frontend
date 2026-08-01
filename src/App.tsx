@@ -4,6 +4,7 @@ import { RequireAuth } from "./shared/wraps/require-auth.wrap";
 
 import RegistrationPage from "./modules/auth/pages/registration-page/registration.page";
 import LoginPage from "./modules/auth/pages/login-page/login.page";
+import ResetPasswordPage from "./modules/auth/pages/reset-password-page/reset-password.page";
 import AgreementPage from "./modules/auth/pages/agreement-page/agreement.page";
 import LandingPage from "./modules/landing/landing.page";
 import DownloadPage from "./modules/download/download.page";
@@ -16,6 +17,12 @@ import TechSupportPage from "./modules/tech-support/pages/tech-support.page";
 import EmailConfirmationPage from "./modules/auth/pages/email-confirmation/email-confirmation.page";
 import NewsDetailsPage from "./modules/news/pages/news-details.page";
 import NotFoundPage from "./modules/not-found/pages/not-found.page";
+import {
+  StatesListPage,
+  StateDetailPage,
+  CitiesListPage,
+  CityDetailPage,
+} from "./modules/states";
 
 function App() {
   return (
@@ -44,6 +51,14 @@ function App() {
           element={
             <GuestOnly redirectTo="/profile">
               <LoginPage />
+            </GuestOnly>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <GuestOnly redirectTo="/profile">
+              <ResetPasswordPage />
             </GuestOnly>
           }
         />
@@ -100,6 +115,39 @@ function App() {
           element={
             <RequireAuth>
               <PlayerPassport />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/states"
+          element={
+            <RequireAuth>
+              <StatesListPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/states/:id"
+          element={
+            <RequireAuth>
+              <StateDetailPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/cities"
+          element={
+            <RequireAuth>
+              <CitiesListPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/cities/:id"
+          element={
+            <RequireAuth>
+              <CityDetailPage />
             </RequireAuth>
           }
         />

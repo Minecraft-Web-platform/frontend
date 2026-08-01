@@ -6,6 +6,7 @@ type Props = {
   callback?: () => void;
   disabled?: boolean;
   secondary?: boolean;
+  type?: "button" | "submit" | "reset";
 };
 
 const Button: FC<Props> = ({
@@ -13,11 +14,17 @@ const Button: FC<Props> = ({
   callback = () => {},
   disabled = false,
   secondary = false,
+  type = "submit",
 }) => {
   const classNames = "button" + (secondary ? " button--secondary" : "");
 
   return (
-    <button className={classNames} onClick={callback} disabled={disabled}>
+    <button
+      className={classNames}
+      onClick={callback}
+      disabled={disabled}
+      type={type}
+    >
       {children}
     </button>
   );

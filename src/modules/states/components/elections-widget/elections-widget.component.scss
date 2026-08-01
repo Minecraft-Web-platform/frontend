@@ -1,0 +1,148 @@
+.elections-widget {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 24px rgba(255, 215, 0, 0.1);
+  margin-bottom: 24px;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffd700;
+    margin: 0 0 6px 0;
+  }
+
+  &__subtitle {
+    color: #a0aec0;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  &__status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+
+    &--nomination {
+      background: rgba(79, 172, 254, 0.15);
+      border: 1px solid rgba(79, 172, 254, 0.4);
+      color: #4facfe;
+    }
+
+    &--voting {
+      background: rgba(46, 213, 115, 0.15);
+      border: 1px solid rgba(46, 213, 115, 0.4);
+      color: #2ed573;
+    }
+
+    &--completed {
+      background: rgba(160, 174, 192, 0.15);
+      border: 1px solid rgba(160, 174, 192, 0.4);
+      color: #a0aec0;
+    }
+  }
+
+  &__candidates {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__candidate {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+  }
+
+  &__candidate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__candidate-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: #ffffff;
+  }
+
+  &__candidate-votes {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffd700;
+  }
+
+  &__program {
+    font-size: 13px;
+    color: #cbd5e0;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  &__bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+
+    &-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffd700 0%, #ff8c00 100%);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+
+    &--vote {
+      background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+      color: #000000;
+
+      &:hover {
+        opacity: 0.9;
+        transform: scale(1.02);
+      }
+    }
+
+    &--nominate {
+      background: linear-gradient(90deg, #ffd700 0%, #ff8c00 100%);
+      color: #000000;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+}
