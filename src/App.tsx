@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router";
 import "./App.css";
 import { RequireAuth } from "./shared/wraps/require-auth.wrap";
 
@@ -23,12 +23,7 @@ import {
   CitiesListPage,
   CityDetailPage,
 } from "./modules/states";
-import {
-  BankPage,
-  CurrenciesPage,
-  CompaniesListPage,
-  StockExchangePage,
-} from "./modules/economy";
+import { EconomyHubPage } from "./modules/economy";
 
 function App() {
   return (
@@ -168,36 +163,28 @@ function App() {
         />
 
         <Route
-          path="/bank"
+          path="/economy"
           element={
             <RequireAuth>
-              <BankPage />
+              <EconomyHubPage />
             </RequireAuth>
           }
+        />
+        <Route
+          path="/bank"
+          element={<Navigate to="/economy?tab=bank" replace />}
         />
         <Route
           path="/currencies"
-          element={
-            <RequireAuth>
-              <CurrenciesPage />
-            </RequireAuth>
-          }
+          element={<Navigate to="/economy?tab=currencies" replace />}
         />
         <Route
           path="/companies"
-          element={
-            <RequireAuth>
-              <CompaniesListPage />
-            </RequireAuth>
-          }
+          element={<Navigate to="/economy?tab=companies" replace />}
         />
         <Route
           path="/exchange"
-          element={
-            <RequireAuth>
-              <StockExchangePage />
-            </RequireAuth>
-          }
+          element={<Navigate to="/economy?tab=exchange" replace />}
         />
 
         <Route path="*" element={<NotFoundPage />} />

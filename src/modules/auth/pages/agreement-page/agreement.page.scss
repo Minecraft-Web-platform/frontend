@@ -1,35 +1,246 @@
 .agreement-page {
-  padding-top: 100px;
+  padding: 100px 20px 80px;
   background-image: url("/png/auth-bg.jpg");
   width: 100%;
-  height: 100vh;
-  background-position: 60% 0%;
+  min-height: 100vh;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .agreement-block {
   display: block;
-  border-radius: 24px;
-  padding: 40px 64px 60px;
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  margin: 0 auto;
-  width: 820px;
+  border-radius: 28px;
+  padding: 48px 56px;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  max-width: 920px;
+  width: 100%;
   font-family: sans-serif;
+  color: #1f2937;
+  line-height: 1.6;
+
+  @media (max-width: 768px) {
+    padding: 32px 24px;
+  }
+}
+
+.agreement-header {
+  text-align: center;
+  margin-bottom: 40px;
+
+  .agreement-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background-color: rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 999px;
+    font-family: "Minecraft", monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #4b5563;
+    margin-bottom: 16px;
+  }
 
   h1 {
-    font-family: "Minecraft";
-    text-align: center;
-    margin-bottom: 32px;
+    font-family: "Minecraft", sans-serif;
+    font-size: 34px;
+    font-weight: 500;
+    color: #111827;
+    margin: 0 0 14px;
+    line-height: 1.25;
+
+    @media (max-width: 640px) {
+      font-size: 26px;
+    }
   }
 
-  ul {
-    list-style: none;
+  .agreement-subtitle {
+    font-size: 15px;
+    color: #4b5563;
+    max-width: 580px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+}
+
+.agreement-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.agreement-section-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+
+  @media (max-width: 640px) {
+    padding: 20px;
   }
 
-  .button {
-    margin-top: 32px;
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    padding-bottom: 16px;
+
+    .section-num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: #111827;
+      color: #fff;
+      border-radius: 10px;
+      font-family: "Minecraft", sans-serif;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    h2 {
+      font-family: "Minecraft", sans-serif;
+      font-size: 20px;
+      color: #111827;
+      margin: 0;
+
+      @media (max-width: 640px) {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.agreement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.agreement-item {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.07);
+    border-color: rgba(0, 0, 0, 0.15);
+    background: #ffffff;
+  }
+
+  .item-tag {
+    display: inline-block;
+    font-family: "Minecraft", sans-serif;
+    font-size: 13px;
+    color: #1f2937;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #4b5563;
+    margin: 0;
+
+    strong {
+      color: #111827;
+    }
+  }
+}
+
+.agreement-contact-box {
+  margin-top: 24px;
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+  color: #ffffff;
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  box-shadow: 0 10px 25px rgba(17, 24, 39, 0.25);
+
+  .contact-info {
+    max-width: 460px;
+
+    h3 {
+      font-family: "Minecraft", sans-serif;
+      font-size: 16px;
+      margin: 0 0 8px;
+      color: #ffffff;
+    }
+
+    p {
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: #d1d5db;
+      margin: 0;
+    }
+  }
+
+  .contact-email-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    color: #ffffff;
+    font-family: "Minecraft", sans-serif;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+    word-break: break-all;
+
+    &:hover {
+      background: #ffffff;
+      color: #111827;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.agreement-footer {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: center;
+
+  .agreement-date {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+
+    strong {
+      color: #374151;
+    }
+  }
+
+  .agreement-back-button {
+    max-width: 240px;
+    margin: 24px auto 0;
   }
 }

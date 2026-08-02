@@ -1,41 +1,23 @@
 .state-card {
   position: relative;
-  background: rgba(26, 32, 44, 0.75);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: #f6f8fa;
+  border: 1px solid #d2d2d8;
   border-radius: 16px;
   padding: 24px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 
   &:hover {
-    transform: translateY(-4px);
-    border-color: rgba(79, 172, 254, 0.5);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(79, 172, 254, 0.2);
-
-    &::before {
-      opacity: 1;
-    }
+    border-color: #000000;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 
     .state-card__title {
-      color: #4facfe;
+      color: #10b981;
     }
   }
 
@@ -47,27 +29,26 @@
   }
 
   &__flag {
-    width: 60px;
-    height: 60px;
+    width: 64px;
+    height: 64px;
     border-radius: 12px;
     object-fit: cover;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: #ffffff;
+    border: 1px solid #d2d2d8;
   }
 
   &__flag-placeholder {
-    width: 60px;
-    height: 60px;
+    width: 64px;
+    height: 64px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background-color: #ffffff;
+    border: 1px solid #d2d2d8;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
     font-weight: 700;
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #10b981;
   }
 
   &__info {
@@ -75,20 +56,20 @@
   }
 
   &__title {
+    font-family: "Minecraft", sans-serif;
     font-size: 22px;
-    font-weight: 700;
-    color: #ffffff;
+    font-weight: normal;
+    color: #000000;
     margin: 0 0 6px 0;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
   }
 
-  &__leader {
+  &__ideology {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(255, 215, 0, 0.15);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    color: #ffd700;
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #059669;
     font-size: 13px;
     font-weight: 600;
     padding: 4px 10px;
@@ -96,35 +77,61 @@
   }
 
   &__description {
-    color: #a0aec0;
+    color: #535353;
     font-size: 14px;
     line-height: 1.6;
     margin-bottom: 20px;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  &__footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    padding-top: 16px;
-    color: #cbd5e0;
-    font-size: 13px;
-    font-weight: 500;
-  }
-
   &__stats {
     display: flex;
-    gap: 16px;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 16px;
   }
 
   &__stat {
+    text-align: center;
+    flex: 1;
+
+    &-val {
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: #000000;
+    }
+
+    &-label {
+      font-size: 11px;
+      color: #535353;
+      margin-top: 2px;
+    }
+  }
+
+  &__footer {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 6px;
+    font-size: 13px;
+  }
+
+  &__leader {
+    color: #535353;
+    font-weight: 600;
+
+    span {
+      color: #000000;
+    }
+  }
+
+  &__date {
+    color: #718096;
+    font-size: 12px;
   }
 }

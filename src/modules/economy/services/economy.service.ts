@@ -32,17 +32,29 @@ export class EconomyService {
   public async createAccount(
     data: CreateAccountRequest,
   ): Promise<IAccount> {
-    return this.httpService.post('economy/accounts', { body: data });
+    return this.httpService.post('economy/accounts', data);
   }
 
   public async issueCard(data: IssueCardRequest): Promise<ICard> {
-    return this.httpService.post('economy/cards', { body: data });
+    return this.httpService.post('economy/cards', data);
+  }
+
+  public async getMyCards(): Promise<ICard[]> {
+    return this.httpService.get('economy/cards/my');
+  }
+
+  public async toggleBlockCard(cardId: string): Promise<ICard> {
+    return this.httpService.patch(`economy/cards/${cardId}/toggle-block`, {});
+  }
+
+  public async deleteCard(cardId: string): Promise<{ success: true }> {
+    return this.httpService.delete(`economy/cards/${cardId}`);
   }
 
   public async transferMoney(
     data: TransferMoneyRequest,
   ): Promise<ITransfer> {
-    return this.httpService.post('economy/transfers', { body: data });
+    return this.httpService.post('economy/transfers', data);
   }
 
   public async getMyTransfers(): Promise<ITransfer[]> {
@@ -57,16 +69,14 @@ export class EconomyService {
   public async createCurrency(
     data: CreateCurrencyRequest,
   ): Promise<ICurrency> {
-    return this.httpService.post('economy/currencies', { body: data });
+    return this.httpService.post('economy/currencies', data);
   }
 
   public async issueCurrency(
     currencyId: string,
     data: IssueCurrencyRequest,
   ): Promise<ICurrency> {
-    return this.httpService.post(`economy/currencies/${currencyId}/issue`, {
-      body: data,
-    });
+    return this.httpService.post(`economy/currencies/${currencyId}/issue`, data);
   }
 
   // --- Компании и Юрисдикция ---
@@ -88,7 +98,7 @@ export class EconomyService {
   public async createCompany(
     data: CreateCompanyRequest,
   ): Promise<ICompany> {
-    return this.httpService.post('economy/companies', { body: data });
+    return this.httpService.post('economy/companies', data);
   }
 
   // --- Фондовая Биржа ---
@@ -104,27 +114,21 @@ export class EconomyService {
     companyId: string,
     data: ConductIPORequest,
   ): Promise<ICompany> {
-    return this.httpService.post(`economy/stock-exchange/${companyId}/ipo`, {
-      body: data,
-    });
+    return this.httpService.post(`economy/stock-exchange/${companyId}/ipo`, data);
   }
 
   public async buyShares(
     companyId: string,
     data: BuySellSharesRequest,
   ): Promise<{ company: ICompany; portfolio: ICompanyShare }> {
-    return this.httpService.post(`economy/stock-exchange/${companyId}/buy`, {
-      body: data,
-    });
+    return this.httpService.post(`economy/stock-exchange/${companyId}/buy`, data);
   }
 
   public async sellShares(
     companyId: string,
     data: BuySellSharesRequest,
   ): Promise<{ company: ICompany; portfolio: ICompanyShare }> {
-    return this.httpService.post(`economy/stock-exchange/${companyId}/sell`, {
-      body: data,
-    });
+    return this.httpService.post(`economy/stock-exchange/${companyId}/sell`, data);
   }
 
   public async payDividends(
@@ -133,7 +137,7 @@ export class EconomyService {
   ): Promise<{ distributed: number; shareholdersCount: number }> {
     return this.httpService.post(
       `economy/stock-exchange/${companyId}/dividends`,
-      { body: data },
+      data,
     );
   }
 }

@@ -7,4 +7,8 @@ export type PlayerType = {
   lastIp: string;
   avatar_img: string | null;
   registrationDate: string;
+  cityId?: string | null;
+  stateId?: string | null;
+  cityName?: string | null;
+  stateName?: string | null;
 };

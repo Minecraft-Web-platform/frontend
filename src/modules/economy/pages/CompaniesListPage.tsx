@@ -2,8 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { ICompany } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 import { CompanyCard } from '../components/CompanyCard';
+import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
+import useAuthStore from '../../../store/auth.store';
+import { profileService } from '../../profile/services/profile.service';
+import { statesService, IState, ICity } from '../../states';
+import '../economy-shared.scss';
 
-export const CompaniesListPage: React.FC = () => {
+export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
+  embedded = false,
+}) => {
+  const { isAuthenticated } = useAuthStore();
   const [companies, setCompanies] = useState<ICompany[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,6 +23,9 @@ export const CompaniesListPage: React.FC = () => {
   const [logoUrl, setLogoUrl] = useState('');
   const [cityId, setCityId] = useState('');
   const [stateId, setStateId] = useState('');
+
+  const [statesList, setStatesList] = useState<IState[]>([]);
+  const [citiesList, setCitiesList] = useState<ICity[]>([]);
 
   // Модальное окно IPO
   const [ipoCompanyId, setIpoCompanyId] = useState<string | null>(null);
@@ -41,6 +52,38 @@ export const CompaniesListPage: React.FC = () => {
   useEffect(() => {
     loadCompanies();
   }, []);
+
+  const handleOpenCreateModal = async () => {
+    if (!isAuthenticated) {
+      alert('Для регистрации фирмы необходимо авторизоваться');
+      return;
+    }
+    try {
+      const me = await profileService.getInfoAboutMe();
+      if (!me.emailIsConfirmed) {
+        alert('Регистрировать фирму может только игрок с подтвержденной почтой');
+        return;
+      }
+      if (!me.cityId && !me.stateId) {
+        alert(
+          'Регистрировать фирму могут только граждане какого-либо государства или города',
+        );
+        return;
+      }
+      const [stRes, ctRes] = await Promise.all([
+        statesService.getStates().catch(() => [] as IState[]),
+        statesService.getCities().catch(() => [] as ICity[]),
+      ]);
+      setStatesList(stRes);
+      setCitiesList(ctRes);
+      setShowCreateModal(true);
+    } catch (err: any) {
+      alert(
+        'Не удалось проверить статус аккаунта: ' +
+          (err?.message || 'Ошибка загрузки профиля'),
+      );
+    }
+  };
 
   const handleCreateCompany = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,7 +134,7 @@ export const CompaniesListPage: React.FC = () => {
         totalAmount: parseFloat(divAmount),
       });
       alert(
-        `Дивиденды в размере ${res.distributed} AR успешно распределены между ${res.shareholdersCount} акционерами!`,
+        `Дивиденды в размере ${res.distributed} ед. успешно распределены между ${res.shareholdersCount} акционерами!`,
       );
       setDivCompanyId(null);
       setDivAmount('');
@@ -101,257 +144,306 @@ export const CompaniesListPage: React.FC = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Заголовок */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+  const content = (
+    <div className={embedded ? "economy-page economy-page--embedded" : "economy-page"}>
+      {/* Заголовок или панель действий */}
+      {embedded ? (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginBottom: '24px',
+          }}
+        >
+          <button
+            onClick={handleOpenCreateModal}
+            className="economy-btn economy-btn--primary"
+          >
+            + Зарегистрировать фирму
+          </button>
+        </div>
+      ) : (
+        <div className="economy-hero">
           <div>
-            <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-              <span className="text-purple-400">🏢</span> Реестр Коммерческих
-              Фирм
+            <h1 className="hero-title">
+              <span>🏢</span> Реестр Коммерческих Фирм
             </h1>
-            <p className="text-sm text-slate-400 mt-1">
-              Регистрация бизнеса с привязкой к юрисдикции городов/государств и
-              коммерческим счетам
+            <p className="hero-subtitle">
+              Регистрация бизнеса с привязкой к юрисдикции городов/государств
+              и коммерческим счетам
             </p>
           </div>
           <div>
             <button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-lg shadow-purple-500/20"
+              onClick={handleOpenCreateModal}
+              className="economy-btn economy-btn--primary"
             >
               + Зарегистрировать фирму
             </button>
           </div>
         </div>
+      )}
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl text-red-300 text-sm">
-            {error}
-          </div>
-        )}
+          {error && (
+            <div
+              style={{
+                marginBottom: '24px',
+                padding: '14px',
+                background: 'rgba(239, 68, 68, 0.2)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '12px',
+                color: '#fca5a5',
+                fontSize: '14px',
+              }}
+            >
+              {error}
+            </div>
+          )}
 
-        {loading ? (
-          <div className="text-center py-20 text-slate-400">
-            Загрузка каталога компаний...
-          </div>
-        ) : companies.length === 0 ? (
-          <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">
-            В реестре пока нет зарегистрированных фирм. Создайте первую!
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {companies.map((company) => (
-              <CompanyCard
-                key={company.id}
-                company={company}
-                isOwner={true} // Для демонстрации владельческих кнопок IPO и Дивидендов
-                onIpoClick={(id) => setIpoCompanyId(id)}
-                onDividendsClick={(id) => setDivCompanyId(id)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Модальное окно регистрации фирмы */}
-      {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <h3 className="text-xl font-bold text-white mb-4">
-              Регистрация новой фирмы
-            </h3>
-            <form onSubmit={handleCreateCompany} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
-                  Название фирмы
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Redstone Dynamics, Craft Corp..."
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
+          {loading ? (
+            <div className="economy-empty">
+              Загрузка каталога компаний...
+            </div>
+          ) : companies.length === 0 ? (
+            <div className="economy-empty">
+              В реестре пока нет зарегистрированных фирм. Создайте первую!
+            </div>
+          ) : (
+            <div className="economy-grid">
+              {companies.map((company) => (
+                <CompanyCard
+                  key={company.id}
+                  company={company}
+                  isOwner={true}
+                  onIpoClick={(id) => setIpoCompanyId(id)}
+                  onDividendsClick={(id) => setDivCompanyId(id)}
                 />
-              </div>
+              ))}
+            </div>
+          )}
 
-              <div>
-                <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
-                  Описание деятельности
-                </label>
-                <textarea
-                  rows={2}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Добыча редстоуна и строительство автоматизированных ферм..."
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
-                  URL логотипа (опционально)
-                </label>
-                <input
-                  type="text"
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                  placeholder="https://..."
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
-                    ID Города
+          {/* Модальное окно регистрации фирмы */}
+          {showCreateModal && (
+            <div className="economy-modal-overlay">
+              <div className="economy-modal">
+                <h3 className="modal-title">Регистрация новой фирмы</h3>
+                <form onSubmit={handleCreateCompany} className="modal-form">
+                  <label>
+                    <span>Название фирмы</span>
+                    <input
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Redstone Dynamics, Craft Corp..."
+                    />
                   </label>
-                  <input
-                    type="text"
-                    value={cityId}
-                    onChange={(e) => setCityId(e.target.value)}
-                    placeholder="UUID Города"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500 font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
-                    ID Государства
+
+                  <label>
+                    <span>Описание деятельности</span>
+                    <textarea
+                      rows={2}
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Добыча редстоуна и строительство автоматизированных ферм..."
+                    />
                   </label>
-                  <input
-                    type="text"
-                    value={stateId}
-                    onChange={(e) => setStateId(e.target.value)}
-                    placeholder="UUID Государства"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500 font-mono"
-                  />
-                </div>
-              </div>
 
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 rounded-xl text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-300"
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white"
-                >
-                  Зарегистрировать
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+                  {/* TODO: сделать загрузку лого компании на s3 хранилище, но пока что этого не будем делать. */}
+                  <label>
+                    <span>URL логотипа (опционально)</span>
+                    <input
+                      type="text"
+                      value={logoUrl}
+                      onChange={(e) => setLogoUrl(e.target.value)}
+                      placeholder="https://..."
+                    />
+                  </label>
 
-      {/* Модальное окно IPO */}
-      {ipoCompanyId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <h3 className="text-xl font-bold text-white mb-4">
-              Первичное публичное размещение (IPO)
-            </h3>
-            <form onSubmit={handleIpoSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
-                  Общее число выпускаемых акций
-                </label>
-                <input
-                  type="number"
-                  step="100"
-                  required
-                  value={totalShares}
-                  onChange={(e) => setTotalShares(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"
-                />
-              </div>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gap: '12px',
+                    }}
+                  >
+                    <label>
+                      <span>Государство <span style={{ color: '#e11d48' }}>*</span></span>
+                      <select
+                        value={stateId}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setStateId(val);
+                          setCityId('');
+                        }}
+                        required
+                      >
+                        <option value="">-- Выберите государство --</option>
+                        {statesList.map((st) => (
+                          <option key={st.id} value={st.id}>
+                            {st.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      <span>Город</span>
+                      <select
+                        value={cityId}
+                        onChange={(e) => setCityId(e.target.value)}
+                        disabled={!stateId}
+                        style={{
+                          opacity: !stateId ? 0.6 : 1,
+                          cursor: !stateId ? 'not-allowed' : 'pointer',
+                        }}
+                      >
+                        <option value="">
+                          {!stateId
+                            ? '-- Сначала выберите государство --'
+                            : '-- Не выбрано --'}
+                        </option>
+                        {citiesList
+                          .filter((c) => c.stateId === stateId)
+                          .map((ct) => (
+                            <option key={ct.id} value={ct.id}>
+                              {ct.name}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                  </div>
 
-              <div>
-                <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
-                  Стартовая цена одной акции (AR)
-                </label>
-                <input
-                  type="number"
-                  step="0.1"
-                  required
-                  value={initialPrice}
-                  onChange={(e) => setInitialPrice(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"
-                />
+                  <div className="modal-actions">
+                    <button
+                      type="button"
+                      onClick={() => setShowCreateModal(false)}
+                      className="economy-btn economy-btn--secondary"
+                    >
+                      Отмена
+                    </button>
+                    <button
+                      type="submit"
+                      className="economy-btn economy-btn--primary"
+                    >
+                      Зарегистрировать
+                    </button>
+                  </div>
+                </form>
               </div>
+            </div>
+          )}
 
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIpoCompanyId(null)}
-                  className="px-4 py-2 rounded-xl text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-300"
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white"
-                >
-                  Выпустить на биржу
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+          {/* Модальное окно IPO */}
+          {ipoCompanyId && (
+            <div className="economy-modal-overlay">
+              <div className="economy-modal">
+                <h3 className="modal-title">
+                  Первичное публичное размещение (IPO)
+                </h3>
+                <form onSubmit={handleIpoSubmit} className="modal-form">
+                  <label>
+                    <span>Общее число выпускаемых акций</span>
+                    <input
+                      type="number"
+                      step="100"
+                      required
+                      value={totalShares}
+                      onChange={(e) => setTotalShares(e.target.value)}
+                      style={{ fontFamily: 'monospace' }}
+                    />
+                  </label>
 
-      {/* Модальное окно выплаты дивидендов */}
-      {divCompanyId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <h3 className="text-xl font-bold text-white mb-4">
-              Выплата дивидендов акционерам
-            </h3>
-            <form onSubmit={handleDividendsSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
-                  Общая сумма для распределения (AR)
-                </label>
-                <input
-                  type="number"
-                  step="1"
-                  required
-                  value={divAmount}
-                  onChange={(e) => setDivAmount(e.target.value)}
-                  placeholder="500"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"
-                />
-                <p className="text-[11px] text-slate-400 mt-1">
-                  Сумма будет списана со счета компании и разделена между всеми
-                  инвесторами пропорционально их доле акций.
-                </p>
-              </div>
+                  <label>
+                    <span>Стартовая цена одной акции (в нац. валюте)</span>
+                    <input
+                      type="number"
+                      step="0.1"
+                      required
+                      value={initialPrice}
+                      onChange={(e) => setInitialPrice(e.target.value)}
+                      style={{ fontFamily: 'monospace' }}
+                    />
+                  </label>
 
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setDivCompanyId(null)}
-                  className="px-4 py-2 rounded-xl text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-300"
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-600 to-teal-600 text-white"
-                >
-                  Выплатить дивиденды
-                </button>
+                  <div className="modal-actions">
+                    <button
+                      type="button"
+                      onClick={() => setIpoCompanyId(null)}
+                      className="economy-btn economy-btn--secondary"
+                    >
+                      Отмена
+                    </button>
+                    <button
+                      type="submit"
+                      className="economy-btn economy-btn--primary"
+                    >
+                      Выпустить на биржу
+                    </button>
+                  </div>
+                </form>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+          )}
+
+          {/* Модальное окно выплаты дивидендов */}
+          {divCompanyId && (
+            <div className="economy-modal-overlay">
+              <div className="economy-modal">
+                <h3 className="modal-title">
+                  Выплата дивидендов акционерам
+                </h3>
+                <form onSubmit={handleDividendsSubmit} className="modal-form">
+                  <label>
+                    <span>Общая сумма для распределения (в нац. валюте)</span>
+                    <input
+                      type="number"
+                      step="1"
+                      required
+                      value={divAmount}
+                      onChange={(e) => setDivAmount(e.target.value)}
+                      placeholder="500"
+                      style={{ fontFamily: 'monospace' }}
+                    />
+                  </label>
+                  <p
+                    style={{
+                      fontSize: '12px',
+                      color: '#9ca3af',
+                      margin: '4px 0 0',
+                    }}
+                  >
+                    Сумма будет списана со счета компании и разделена между всеми
+                    инвесторами пропорционально их доле акций.
+                  </p>
+
+                  <div className="modal-actions">
+                    <button
+                      type="button"
+                      onClick={() => setDivCompanyId(null)}
+                      className="economy-btn economy-btn--secondary"
+                    >
+                      Отмена
+                    </button>
+                    <button
+                      type="submit"
+                      className="economy-btn economy-btn--success"
+                    >
+                      Выплатить дивиденды
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+    </div>
+  );
+
+  return embedded ? (
+    content
+  ) : (
+    <div className="page">
+      <Sidebar />
+      <main className="content">{content}</main>
     </div>
   );
 };

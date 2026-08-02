@@ -18,7 +18,7 @@ const StatesListPage: FC = () => {
   const [flagUrl, setFlagUrl] = useState('');
   const [creating, setCreating] = useState(false);
 
-  const { isAdmin } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
 
   const loadStates = async () => {
     setLoading(true);
@@ -85,7 +85,7 @@ const StatesListPage: FC = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              {isAdmin && (
+              {isAuthenticated && (
                 <button
                   className="states-list-page__create-btn"
                   onClick={() => setShowCreateModal(true)}

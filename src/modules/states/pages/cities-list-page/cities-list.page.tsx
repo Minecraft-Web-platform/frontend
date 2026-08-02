@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import './cities-list.page.scss';
 import { ICity, IState } from '../../types/states.types';
 import { statesService } from '../../services/states.service';
@@ -7,10 +8,13 @@ import useAuthStore from '../../../../store/auth.store';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 
 const CitiesListPage: FC = () => {
+  const [searchParams] = useSearchParams();
   const [cities, setCities] = useState<ICity[]>([]);
   const [states, setStates] = useState<IState[]>([]);
   const [search, setSearch] = useState('');
-  const [selectedStateId, setSelectedStateId] = useState<string>('');
+  const [selectedStateId, setSelectedStateId] = useState<string>(
+    searchParams.get('stateId') || '',
+  );
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -38,6 +42,13 @@ const CitiesListPage: FC = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const paramStateId = searchParams.get('stateId');
+    if (paramStateId !== null && paramStateId !== selectedStateId) {
+      setSelectedStateId(paramStateId);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     loadData();

@@ -7,7 +7,7 @@ import NewsIcon from "../../../assets/svg/news.svg?react";
 import StateIcon from "../../../assets/svg/state.svg?react";
 import CompanyIcon from "../../../assets/svg/company.svg?react";
 import PlayersIcon from "../../../assets/svg/people.svg?react";
-import MapIcon from "../../../assets/svg/map.svg?react";
+// import MapIcon from "../../../assets/svg/map.svg?react";
 import CreeperIcon from "../../../assets/svg/creeper.svg?react";
 import ProfileIcon from "../../../assets/svg/profile.svg?react";
 import TechSupportIcon from "../../../assets/svg/contact.svg?react";
@@ -34,23 +34,7 @@ const Sidebar: FC = () => {
           <StateIcon />
         </IconComponent>
 
-        <IconComponent path="/cities" label="Города" iconType="fill">
-          <StateIcon />
-        </IconComponent>
-
-        <IconComponent path="/bank" label="Банки и Счета" iconType="fill">
-          <CompanyIcon />
-        </IconComponent>
-
-        <IconComponent path="/currencies" label="Валюты" iconType="fill">
-          <StateIcon />
-        </IconComponent>
-
-        <IconComponent path="/companies" label="Компании" iconType="fill">
-          <CompanyIcon />
-        </IconComponent>
-
-        <IconComponent path="/exchange" label="Биржа" iconType="fill">
+        <IconComponent path="/economy" label="Экономика" iconType="fill">
           <CompanyIcon />
         </IconComponent>
 
@@ -58,13 +42,13 @@ const Sidebar: FC = () => {
           <PlayersIcon />
         </IconComponent>
 
-        <IconComponent
+        {/* <IconComponent
           path="http://5.83.140.252:25900/#world:1949:85:1568:0:-0.8:1.07:0:0:free"
           label={t('buttons.world-map')}
           iconType="fill"
         >
           <MapIcon />
-        </IconComponent>
+        </IconComponent> */}
 
         <IconComponent
           path="/download"

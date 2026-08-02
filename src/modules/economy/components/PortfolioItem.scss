@@ -1,0 +1,87 @@
+.portfolio-item {
+  background-color: #f6f8fa;
+  border: 1px solid #d2d2d8;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+  &:hover {
+    border-color: #000000;
+  }
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    .portfolio-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background-color: #ffffff;
+      border: 1px solid #d2d2d8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: #10b981;
+    }
+
+    .portfolio-name {
+      font-family: "Minecraft", sans-serif;
+      font-size: 16px;
+      font-weight: normal;
+      color: #000000;
+      margin-bottom: 3px;
+    }
+
+    .portfolio-meta {
+      font-size: 12px;
+      color: #535353;
+
+      span {
+        color: #000000;
+        font-family: monospace;
+        font-weight: 600;
+      }
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .portfolio-pnl {
+      text-align: right;
+
+      .current-val {
+        font-size: 16px;
+        font-weight: 700;
+        color: #000000;
+        font-family: monospace;
+      }
+
+      .pnl-text {
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 2px;
+
+        &--pos {
+          color: #059669;
+        }
+
+        &--neg {
+          color: #dc2626;
+        }
+      }
+    }
+  }
+}

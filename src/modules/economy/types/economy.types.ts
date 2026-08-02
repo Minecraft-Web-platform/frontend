@@ -8,6 +8,7 @@ export interface IAccount {
   balance: number;
   currencyCode: string;
   createdAt: string;
+  bankName?: string;
 }
 
 export interface ICard {
@@ -18,6 +19,8 @@ export interface ICard {
   accountId: string;
   isBlocked: boolean;
   createdAt: string;
+  account?: IAccount;
+  bankName?: string;
 }
 
 export interface ITransfer {
@@ -37,6 +40,7 @@ export interface ICurrency {
   code: string;
   name: string;
   minecraftItemId: string;
+  kopeckItemId: string;
   minecraftEnchantment: string;
   totalIssued: number;
   reserves: number;
@@ -93,6 +97,7 @@ export interface CreateCurrencyRequest {
   code: string;
   name: string;
   minecraftItemId?: string;
+  kopeckItemId?: string;
   minecraftEnchantment?: string;
 }
 

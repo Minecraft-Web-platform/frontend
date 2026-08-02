@@ -1,5 +1,6 @@
 import React from 'react';
 import { ICompany, ICompanyShare } from '../types/economy.types';
+import './PortfolioItem.scss';
 
 interface PortfolioItemProps {
   share: ICompanyShare;
@@ -21,34 +22,34 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({
   const isPositive = pnl >= 0;
 
   return (
-    <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700/60 rounded-xl p-4 flex items-center justify-between gap-4 hover:border-slate-600 transition-all">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 flex items-center justify-center font-bold text-sm text-purple-300">
+    <div className="portfolio-item">
+      <div className="portfolio-item__left">
+        <div className="portfolio-icon">
           {company?.name ? company.name.slice(0, 2).toUpperCase() : 'CO'}
         </div>
         <div>
-          <div className="text-sm font-bold text-white">
+          <div className="portfolio-name">
             {company?.name || `Компания #${share.companyId.slice(0, 8)}`}
           </div>
-          <div className="text-xs text-slate-400">
-            В портфеле: <span className="text-white font-mono">{share.sharesCount} шт.</span> | Ср. цена:{' '}
-            <span className="font-mono">{share.boughtAtPrice.toFixed(2)} AR</span>
+          <div className="portfolio-meta">
+            В портфеле: <span>{share.sharesCount} шт.</span> | Ср. цена:{' '}
+            <span>{share.boughtAtPrice.toFixed(2)} ед.</span>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-6">
-        <div className="text-right">
-          <div className="text-sm font-bold text-white font-mono">
-            {currentValue.toLocaleString('ru-RU')} AR
+      <div className="portfolio-item__right">
+        <div className="portfolio-pnl">
+          <div className="current-val">
+            {currentValue.toLocaleString('ru-RU')} ед.
           </div>
           <div
-            className={`text-xs font-semibold ${
-              isPositive ? 'text-emerald-400' : 'text-red-400'
+            className={`pnl-text ${
+              isPositive ? 'pnl-text--pos' : 'pnl-text--neg'
             }`}
           >
             {isPositive ? '+' : ''}
-            {pnl.toFixed(2)} AR ({isPositive ? '+' : ''}
+            {pnl.toFixed(2)} ед. ({isPositive ? '+' : ''}
             {pnlPercent.toFixed(1)}%)
           </div>
         </div>
@@ -56,7 +57,8 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({
         {onSellClick && (
           <button
             onClick={() => onSellClick(share.companyId)}
-            className="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium px-3 py-1.5 rounded-lg text-xs transition-all"
+            className="economy-btn economy-btn--secondary"
+            style={{ padding: '8px 14px', fontSize: '12px' }}
           >
             Продать
           </button>
@@ -65,3 +67,4 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({
     </div>
   );
 };
+

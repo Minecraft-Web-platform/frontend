@@ -1,5 +1,6 @@
 import React from 'react';
 import { ICurrency } from '../types/economy.types';
+import './CurrencyCard.scss';
 
 interface CurrencyCardProps {
   currency: ICurrency;
@@ -15,26 +16,26 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
   const isPositive = currency.rateChange24h >= 0;
 
   return (
-    <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700/60 rounded-2xl p-6 shadow-xl hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+    <div className="currency-card">
       <div>
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 flex items-center justify-center font-bold text-xl text-cyan-400">
+        <div className="currency-card__header">
+          <div className="code-box">
+            <div className="icon-box">
               {currency.code}
             </div>
-            <div>
-              <h3 className="text-lg font-bold text-white">{currency.name}</h3>
-              <div className="text-xs text-slate-400">
-                Тикер: <span className="font-mono text-cyan-300">{currency.code}</span>
+            <div className="title-box">
+              <h3>{currency.name}</h3>
+              <div className="ticker">
+                Тикер: <strong>{currency.code}</strong>
               </div>
             </div>
           </div>
 
           <div
-            className={`text-xs px-2.5 py-1 rounded-full font-semibold border ${
+            className={`change-badge ${
               isPositive
-                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                : 'bg-red-500/20 text-red-300 border-red-500/30'
+                ? 'change-badge--positive'
+                : 'change-badge--negative'
             }`}
           >
             {isPositive ? '+' : ''}
@@ -42,52 +43,56 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
           </div>
         </div>
 
-        <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 mb-4">
-          <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-1">
-            Материальный носитель (Креатив)
+        <div className="currency-card__creative-info">
+          <div className="label">
+            Материальный носитель (1 ед. = 100 коп.)
           </div>
-          <div className="text-xs text-slate-200 font-mono flex items-center justify-between">
-            <span>Предмет: {currency.minecraftItemId}</span>
-            <span className="text-amber-400 font-semibold">
-              ✨ {currency.minecraftEnchantment}
+          <div className="item-row" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span>Основная монета: <strong>{currency.minecraftItemId}</strong></span>
+            {currency.kopeckItemId && (
+              <span>Разменная монета: <strong>{currency.kopeckItemId}</strong></span>
+            )}
+            <span className="enchant">
+              ✨ Чары: {currency.minecraftEnchantment || 'Без чар'}
             </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-slate-800/40 rounded-xl p-3 border border-slate-700/30">
-            <div className="text-xs text-slate-400">В обращении (Эмиссия)</div>
-            <div className="text-lg font-bold text-white mt-1">
+        <div className="currency-card__stats">
+          <div className="stat-box">
+            <div className="stat-label">В обращении (Эмиссия)</div>
+            <div className="stat-value">
               {currency.totalIssued.toLocaleString('ru-RU')}
             </div>
           </div>
 
-          <div className="bg-slate-800/40 rounded-xl p-3 border border-slate-700/30">
-            <div className="text-xs text-slate-400">Золотой резерв</div>
-            <div className="text-lg font-bold text-amber-300 mt-1">
+          <div className="stat-box">
+            <div className="stat-label">Золотой резерв</div>
+            <div className="stat-value stat-value--gold">
               {currency.reserves.toLocaleString('ru-RU')}
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-slate-800/80 to-slate-800/40 border border-slate-700/60 rounded-xl p-4 flex items-center justify-between">
+        <div className="currency-card__rate-box">
           <div>
-            <div className="text-xs text-slate-400">Автоматический курс</div>
-            <div className="text-xl font-extrabold text-white mt-0.5">
-              1 {currency.code} = {currency.exchangeRate.toFixed(4)} AR
+            <div className="rate-label">Автоматический курс</div>
+            <div className="rate-val">
+              1 {currency.code} = {currency.exchangeRate.toFixed(4)} ед. эталона
             </div>
           </div>
-          <div className="text-[11px] text-slate-400 max-w-[120px] text-right">
+          <div className="rate-hint">
             Формула: (Резерв + Мощь) / Эмиссия
           </div>
         </div>
       </div>
 
       {isRuler && onIssueClick && (
-        <div className="mt-5 pt-4 border-t border-slate-800">
+        <div className="currency-card__footer">
           <button
             onClick={() => onIssueClick(currency.id)}
-            className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-all shadow-lg shadow-cyan-500/20"
+            className="economy-btn economy-btn--primary"
+            style={{ width: '100%' }}
           >
             Эмитировать валюту
           </button>
@@ -96,3 +101,4 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
     </div>
   );
 };
+

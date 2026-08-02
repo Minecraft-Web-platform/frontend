@@ -10,6 +10,7 @@ import { statesService } from '../../services/states.service';
 import CitizenshipRequestsModal from '../../components/citizenship-requests-modal/citizenship-requests-modal.component';
 import ElectionsWidget from '../../components/elections-widget/elections-widget.component';
 import useAuthStore from '../../../../store/auth.store';
+import { profileService } from '../../../profile/services/profile.service';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 
 const CityDetailPage: FC = () => {
@@ -23,8 +24,26 @@ const CityDetailPage: FC = () => {
   const [showRequestsModal, setShowRequestsModal] = useState(false);
   const [applying, setApplying] = useState(false);
 
-  const { isAdmin } = useAuthStore();
-  const isMayorOrAdmin = isAdmin || true; // Allow testing / reviewing requests
+  const { isAuthenticated, isAdmin } = useAuthStore();
+  const [currentUsername, setCurrentUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      profileService
+        .getInfoAboutMe()
+        .then((res) => setCurrentUsername(res.username))
+        .catch(() => setCurrentUsername(null));
+    } else {
+      setCurrentUsername(null);
+    }
+  }, [isAuthenticated]);
+
+  const isMayor =
+    Boolean(city?.mayorUsername) &&
+    Boolean(currentUsername) &&
+    city?.mayorUsername?.toLowerCase() === currentUsername?.toLowerCase();
+
+  const isMayorOrAdmin = Boolean(isMayor) || isAdmin;
 
   const loadData = async () => {
     if (!id) return;

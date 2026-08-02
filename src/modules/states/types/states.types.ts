@@ -49,6 +49,8 @@ export interface IState {
   flagUrl?: string | null;
   leaderUsername?: string | null;
   capitalCityId?: string | null;
+  taxRate?: number;
+  treasuryAccountNumber?: string;
   createdAt: string;
   cities?: ICity[];
   citizens?: IStateCitizen[];
@@ -90,6 +92,8 @@ export interface ICreateStateRequest {
   flagUrl?: string;
   leaderUsername?: string;
   capitalCityId?: string;
+  taxRate?: number;
+  treasuryAccountNumber?: string;
 }
 
 export interface ICreateCityRequest {

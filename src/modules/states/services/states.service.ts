@@ -32,11 +32,11 @@ export class StatesService {
   }
 
   public async createState(data: ICreateStateRequest): Promise<IState> {
-    return this.httpService.post('states', { body: data });
+    return this.httpService.post('states', data);
   }
 
   public async updateState(id: string, data: Partial<ICreateStateRequest>): Promise<IState> {
-    return this.httpService.put(`states/${id}`, { body: data });
+    return this.httpService.put(`states/${id}`, data);
   }
 
   public async deleteState(id: string): Promise<void> {
@@ -49,7 +49,7 @@ export class StatesService {
   }
 
   public async createDecree(stateId: string, data: ICreateDecreeRequest): Promise<IStateDecree> {
-    return this.httpService.post(`states/${stateId}/decrees`, { body: data });
+    return this.httpService.post(`states/${stateId}/decrees`, data);
   }
 
   // --- Diplomacy ---
@@ -58,7 +58,7 @@ export class StatesService {
   }
 
   public async setDiplomacy(stateId: string, data: ISetDiplomacyRequest): Promise<IDiplomacy> {
-    return this.httpService.put(`states/${stateId}/diplomacy`, { body: data });
+    return this.httpService.put(`states/${stateId}/diplomacy`, data);
   }
 
   // --- Cities ---
@@ -72,11 +72,11 @@ export class StatesService {
   }
 
   public async createCity(data: ICreateCityRequest): Promise<ICity> {
-    return this.httpService.post('cities', { body: data });
+    return this.httpService.post('cities', data);
   }
 
   public async updateCity(id: string, data: Partial<ICreateCityRequest>): Promise<ICity> {
-    return this.httpService.put(`cities/${id}`, { body: data });
+    return this.httpService.put(`cities/${id}`, data);
   }
 
   public async deleteCity(id: string): Promise<void> {
@@ -89,7 +89,7 @@ export class StatesService {
   }
 
   public async createRequest(cityId: string, data: ICreateCitizenshipRequest): Promise<ICitizenshipRequest> {
-    return this.httpService.post(`cities/${cityId}/requests`, { body: data });
+    return this.httpService.post(`cities/${cityId}/requests`, data);
   }
 
   public async reviewRequest(
@@ -97,7 +97,7 @@ export class StatesService {
     requestId: string,
     data: IReviewCitizenshipRequest,
   ): Promise<ICitizenshipRequest> {
-    return this.httpService.put(`cities/${cityId}/requests/${requestId}`, { body: data });
+    return this.httpService.put(`cities/${cityId}/requests/${requestId}`, data);
   }
 
   // --- Elections ---
@@ -114,18 +114,23 @@ export class StatesService {
   }
 
   public async createElection(data: ICreateElectionRequest): Promise<IElection> {
-    return this.httpService.post('elections', { body: data });
+    return this.httpService.post('elections', data);
   }
 
   public async nominateCandidate(
     electionId: string,
     data: INominateCandidateRequest,
   ): Promise<IElectionCandidate> {
-    return this.httpService.post(`elections/${electionId}/nominate`, { body: data });
+    return this.httpService.post(`elections/${electionId}/nominate`, data);
   }
 
   public async voteInElection(electionId: string, data: IVoteRequest): Promise<{ message: string }> {
-    return this.httpService.post(`elections/${electionId}/vote`, { body: data });
+    return this.httpService.post(`elections/${electionId}/vote`, data);
+  }
+
+  // --- National Bank ---
+  public async createNationalBank(stateId: string, data: { name?: string }): Promise<any> {
+    return this.httpService.post(`states/${stateId}/bank`, data);
   }
 }
 

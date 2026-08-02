@@ -1,0 +1,142 @@
+.economy-hub {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: #000000;
+  font-family: sans-serif;
+
+  &__hero {
+    background-color: #f6f8fa;
+    border: 1px solid #d2d2d8;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    margin-bottom: 32px;
+  }
+
+  &__title {
+    font-family: "Minecraft", sans-serif;
+    font-size: 32px;
+    font-weight: normal;
+    color: #000000;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    span {
+      display: inline-block;
+      font-size: 28px;
+    }
+  }
+
+  &__subtitle {
+    font-size: 16px;
+    color: #535353;
+    max-width: 760px;
+    line-height: 1.5;
+    margin: 0 0 28px 0;
+  }
+
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px;
+
+    @media (max-width: 1100px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__card {
+    background: #ffffff;
+    border: 1px solid #d2d2d8;
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      background: #fcfcfc;
+      border-color: #a1a1aa;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    &--active {
+      background: #ecfdf5;
+      border-color: #10b981;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
+
+      .card-icon {
+        background: #d1fae5;
+        color: #059669;
+      }
+
+      .card-title {
+        color: #065f46;
+      }
+
+      .card-desc {
+        color: #047857;
+      }
+    }
+
+    .card-icon {
+      font-size: 28px;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .card-info {
+      flex: 1;
+
+      .card-title {
+        font-family: "Minecraft", sans-serif;
+        font-size: 16px;
+        font-weight: normal;
+        color: #000000;
+        margin: 0 0 6px 0;
+      }
+
+      .card-desc {
+        font-size: 13px;
+        color: #64748b;
+        line-height: 1.4;
+        margin: 0;
+      }
+    }
+  }
+
+  &__content {
+    background: transparent;
+    animation: fadeIn 0.25s ease;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

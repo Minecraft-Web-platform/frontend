@@ -1,5 +1,6 @@
 import React from 'react';
 import { ICompany } from '../types/economy.types';
+import './CompanyCard.scss';
 
 interface CompanyCardProps {
   company: ICompany;
@@ -22,34 +23,34 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
   const marketCap = company.totalShares * company.sharePrice;
 
   return (
-    <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700/60 rounded-2xl p-6 shadow-xl hover:border-purple-500/40 transition-all duration-300 flex flex-col justify-between">
+    <div className="company-card">
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
+        <div className="company-card__header">
+          <div className="company-info">
             {company.logoUrl ? (
               <img
                 src={company.logoUrl}
                 alt={company.name}
-                className="w-12 h-12 rounded-xl object-cover border border-slate-700"
+                className="logo-img"
               />
             ) : (
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 flex items-center justify-center font-bold text-xl text-purple-400">
+              <div className="logo-fallback">
                 {company.name.slice(0, 2).toUpperCase()}
               </div>
             )}
-            <div>
-              <h3 className="text-lg font-bold text-white">{company.name}</h3>
-              <div className="text-xs text-slate-400">
-                Владелец: <span className="text-purple-300">{company.ownerUsername}</span>
+            <div className="title-box">
+              <h3>{company.name}</h3>
+              <div className="owner">
+                Владелец: <strong>{company.ownerUsername}</strong>
               </div>
             </div>
           </div>
 
           <span
-            className={`text-xs px-3 py-1 rounded-full font-medium border ${
+            className={`public-badge ${
               company.isPublic
-                ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
-                : 'bg-slate-700/40 text-slate-400 border-slate-700'
+                ? 'public-badge--public'
+                : 'public-badge--private'
             }`}
           >
             {company.isPublic ? 'Торгуется на бирже' : 'Частная'}
@@ -57,21 +58,19 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
         </div>
 
         {company.description && (
-          <p className="text-xs text-slate-300 mb-4 line-clamp-2">
+          <p className="company-card__desc">
             {company.description}
           </p>
         )}
 
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-slate-800/40 rounded-xl p-3 border border-slate-700/30">
-            <div className="text-xs text-slate-400">Цена акции</div>
-            <div className="text-lg font-bold text-white mt-1 flex items-baseline justify-between">
-              <span>{company.sharePrice.toFixed(2)} AR</span>
+        <div className="company-card__stats">
+          <div className="stat-box">
+            <div className="stat-label">Цена акции</div>
+            <div className="stat-value">
+              <span>{company.sharePrice.toFixed(2)} ед.</span>
               <span
-                className={`text-xs px-1.5 py-0.5 rounded ${
-                  isPositive
-                    ? 'bg-emerald-500/20 text-emerald-300'
-                    : 'bg-red-500/20 text-red-300'
+                className={`change-pill ${
+                  isPositive ? 'change-pill--pos' : 'change-pill--neg'
                 }`}
               >
                 {isPositive ? '+' : ''}
@@ -80,29 +79,30 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
             </div>
           </div>
 
-          <div className="bg-slate-800/40 rounded-xl p-3 border border-slate-700/30">
-            <div className="text-xs text-slate-400">Капитализация</div>
-            <div className="text-lg font-bold text-amber-300 mt-1">
-              {marketCap.toLocaleString('ru-RU')} AR
+          <div className="stat-box">
+            <div className="stat-label">Капитализация</div>
+            <div className="stat-value stat-value--gold">
+              {marketCap.toLocaleString('ru-RU')} ед.
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 mb-4 flex items-center justify-between text-xs">
-          <span className="text-slate-400">Доступно акций на бирже:</span>
-          <span className="text-white font-mono font-bold">
+        <div className="company-card__shares-bar">
+          <span className="label">Доступно акций на бирже:</span>
+          <span className="value">
             {company.availableShares} / {company.totalShares}
           </span>
         </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-slate-800 flex flex-wrap gap-2">
+      <div className="company-card__actions">
         {company.isPublic ? (
           <>
             {onBuyClick && (
               <button
                 onClick={() => onBuyClick(company.id)}
-                className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-2 px-4 rounded-xl text-xs transition-all shadow-lg shadow-purple-500/20"
+                className="economy-btn economy-btn--primary"
+                style={{ flex: 1 }}
               >
                 Купить акции
               </button>
@@ -110,7 +110,8 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
             {onSellClick && (
               <button
                 onClick={() => onSellClick(company.id)}
-                className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium py-2 px-4 rounded-xl text-xs transition-all border border-slate-700"
+                className="economy-btn economy-btn--secondary"
+                style={{ flex: 1 }}
               >
                 Продать
               </button>
@@ -121,7 +122,8 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           onIpoClick && (
             <button
               onClick={() => onIpoClick(company.id)}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-2 px-4 rounded-xl text-xs transition-all"
+              className="economy-btn economy-btn--primary"
+              style={{ width: '100%' }}
             >
               Провести IPO
             </button>
@@ -131,7 +133,8 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
         {isOwner && onDividendsClick && (
           <button
             onClick={() => onDividendsClick(company.id)}
-            className="w-full mt-1 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 font-semibold py-2 px-4 rounded-xl text-xs transition-all"
+            className="economy-btn economy-btn--success"
+            style={{ width: '100%', marginTop: '4px' }}
           >
             Выплатить дивиденды
           </button>
@@ -140,3 +143,4 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
     </div>
   );
 };
+

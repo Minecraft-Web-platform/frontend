@@ -15,14 +15,16 @@ export class EnhancedWithAuthHttpService {
     return this.httpService.get<T>(url, await this.attachAuthHeader(config));
   }
 
-  public async post<T, TD>(url: string, data: TD): Promise<T> {
-    console.log("res");
-
-    const res = this.httpService.post<T, TD>(url, data);
-
-    console.log(res);
-
-    return res;
+  public async post<T, TD>(
+    url: string,
+    data: TD,
+    config: IHttpConfig = {}
+  ): Promise<T> {
+    return this.httpService.post<T, TD>(
+      url,
+      data,
+      await this.attachAuthHeader(config)
+    );
   }
 
   public async put<T, TD>(

@@ -1,0 +1,276 @@
+.economy-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 32px;
+  color: #000000;
+  font-family: sans-serif;
+
+  &--embedded {
+    padding: 0;
+    max-width: none;
+  }
+}
+
+.economy-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+  gap: 24px;
+  background-color: #f6f8fa;
+  border: 1px solid #d2d2d8;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+
+  .hero-title {
+    font-family: "Minecraft", sans-serif;
+    font-size: 32px;
+    font-weight: normal;
+    color: #000000;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    span {
+      font-size: 28px;
+    }
+  }
+
+  .hero-subtitle {
+    color: #535353;
+    font-size: 16px;
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+.section-title,
+.economy-section-title {
+  font-family: "Minecraft", sans-serif;
+  font-size: 24px;
+  font-weight: normal;
+  color: #000000;
+  margin: 36px 0 16px 0;
+}
+
+.economy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.economy-empty {
+  background-color: #f6f8fa;
+  border: 1px dashed #d2d2d8;
+  border-radius: 16px;
+  padding: 48px 24px;
+  text-align: center;
+  color: #535353;
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.economy-btn {
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+
+  &--primary {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;
+
+    &:hover {
+      background-color: #222222;
+    }
+  }
+
+  &--secondary {
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #d2d2d8;
+
+    &:hover {
+      background-color: #f6f8fa;
+      border-color: #000000;
+    }
+  }
+
+  &--success {
+    background-color: #10b981;
+    color: #ffffff;
+    border-color: #10b981;
+
+    &:hover {
+      background-color: #059669;
+    }
+  }
+
+  &--danger {
+    background-color: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+
+    &:hover {
+      background-color: #dc2626;
+    }
+  }
+}
+
+.economy-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #d2d2d8;
+  padding-bottom: 12px;
+}
+
+.economy-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #535353;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #000000;
+    background-color: #f6f8fa;
+  }
+
+  &--active {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;
+  }
+}
+
+.economy-table-container {
+  background-color: #ffffff;
+  border: 1px solid #d2d2d8;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  margin-bottom: 36px;
+}
+
+.economy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  thead {
+    background-color: #f6f8fa;
+    border-bottom: 1px solid #d2d2d8;
+
+    th {
+      padding: 16px 20px;
+      text-align: left;
+      font-weight: 700;
+      color: #000000;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #e2e8f0;
+      transition: background-color 0.15s ease;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background-color: #f6f8fa;
+      }
+    }
+
+    td {
+      padding: 16px 20px;
+      color: #333333;
+    }
+  }
+}
+
+.economy-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.economy-modal {
+  background-color: #ffffff;
+  border: 1px solid #d2d2d8;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  color: #000000;
+
+  .modal-title {
+    font-family: "Minecraft", sans-serif;
+    font-size: 24px;
+    font-weight: normal;
+    color: #000000;
+    margin: 0 0 24px 0;
+  }
+
+  .modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333333;
+    }
+
+    input, select, textarea {
+      background-color: #f6f8fa;
+      border: 1px solid #d2d2d8;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #000000;
+
+      &:focus {
+        outline: none;
+        border-color: #10b981;
+        background-color: #ffffff;
+      }
+    }
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+  }
+}

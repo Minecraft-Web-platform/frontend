@@ -3,8 +3,12 @@ import { ICompany, ICompanyShare } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 import { CompanyCard } from '../components/CompanyCard';
 import { PortfolioItem } from '../components/PortfolioItem';
+import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
+import '../economy-shared.scss';
 
-export const StockExchangePage: React.FC = () => {
+export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
+  embedded = false,
+}) => {
   const [activeTab, setActiveTab] = useState<'market' | 'portfolio'>('market');
   const [companies, setCompanies] = useState<ICompany[]>([]);
   const [portfolio, setPortfolio] = useState<ICompanyShare[]>([]);
@@ -74,192 +78,273 @@ export const StockExchangePage: React.FC = () => {
     return acc + item.sharesCount * price;
   }, 0);
 
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Заголовок */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+  const content = (
+    <div className={embedded ? "economy-page economy-page--embedded" : "economy-page"}>
+      {/* Заголовок или компактная плашка */}
+      {embedded ? (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginBottom: '24px',
+          }}
+        >
+          <div
+            style={{
+              background: '#ffffff',
+              border: '1px solid #d2d2d8',
+              borderRadius: '16px',
+              padding: '12px 18px',
+              textAlign: 'right',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '12px',
+                color: '#535353',
+                marginBottom: '2px',
+              }}
+            >
+              Стоимость портфеля
+            </div>
+            <div
+              style={{
+                fontSize: '20px',
+                fontWeight: 800,
+                color: '#000000',
+                fontFamily: 'monospace',
+              }}
+            >
+              {totalPortfolioValue.toLocaleString('ru-RU')} ед.
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="economy-hero">
           <div>
-            <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-              <span className="text-emerald-400">📈</span> Фондовая Биржа и
-              Инвестиции
+            <h1 className="hero-title">
+              <span>📈</span> Фондовая Биржа и Инвестиции
             </h1>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="hero-subtitle">
               Торговля акциями публичных компаний, котировки и выплата
               дивидендов
             </p>
           </div>
-          <div className="bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2 text-right">
-            <div className="text-xs text-slate-400">Стоимость портфеля</div>
-            <div className="text-xl font-extrabold text-amber-300 font-mono">
-              {totalPortfolioValue.toLocaleString('ru-RU')} AR
+          <div
+            style={{
+              background: '#ffffff',
+              border: '1px solid #d2d2d8',
+              borderRadius: '16px',
+              padding: '12px 18px',
+              textAlign: 'right',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '12px',
+                color: '#535353',
+                marginBottom: '2px',
+              }}
+            >
+              Стоимость портфеля
+            </div>
+            <div
+              style={{
+                fontSize: '20px',
+                fontWeight: 800,
+                color: '#000000',
+                fontFamily: 'monospace',
+              }}
+            >
+              {totalPortfolioValue.toLocaleString('ru-RU')} ед.
             </div>
           </div>
         </div>
+      )}
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl text-red-300 text-sm">
-            {error}
+          {error && (
+            <div
+              style={{
+                marginBottom: '24px',
+                padding: '14px',
+                background: 'rgba(239, 68, 68, 0.2)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '12px',
+                color: '#fca5a5',
+                fontSize: '14px',
+              }}
+            >
+              {error}
+            </div>
+          )}
+
+          {/* Вкладки */}
+          <div className="economy-tabs">
+            <button
+              onClick={() => setActiveTab('market')}
+              className={`economy-tab ${
+                activeTab === 'market' ? 'economy-tab--active' : ''
+              }`}
+            >
+              Торговый зал (Рынок)
+            </button>
+            <button
+              onClick={() => setActiveTab('portfolio')}
+              className={`economy-tab ${
+                activeTab === 'portfolio' ? 'economy-tab--active' : ''
+              }`}
+            >
+              Мой портфель акционера ({portfolio.length})
+            </button>
           </div>
-        )}
 
-        {/* Вкладки */}
-        <div className="flex border-b border-slate-800 mb-8">
-          <button
-            onClick={() => setActiveTab('market')}
-            className={`pb-3 px-6 text-sm font-bold border-b-2 transition-all ${
-              activeTab === 'market'
-                ? 'border-emerald-500 text-emerald-400'
-                : 'border-transparent text-slate-400 hover:text-slate-300'
-            }`}
-          >
-            Торговый зал (Рынок)
-          </button>
-          <button
-            onClick={() => setActiveTab('portfolio')}
-            className={`pb-3 px-6 text-sm font-bold border-b-2 transition-all ${
-              activeTab === 'portfolio'
-                ? 'border-emerald-500 text-emerald-400'
-                : 'border-transparent text-slate-400 hover:text-slate-300'
-            }`}
-          >
-            Мой портфель акционера ({portfolio.length})
-          </button>
-        </div>
-
-        {loading ? (
-          <div className="text-center py-20 text-slate-400">
-            Загрузка котировок...
-          </div>
-        ) : activeTab === 'market' ? (
-          <div>
-            {companies.length === 0 ? (
-              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">
-                На бирже пока нет публичных компаний. Владельцы фирм могут
-                провести IPO!
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {companies.map((company) => (
-                  <CompanyCard
-                    key={company.id}
-                    company={company}
-                    onBuyClick={(id) => setBuyCompanyId(id)}
+          {loading ? (
+            <div className="economy-empty">Загрузка котировок...</div>
+          ) : activeTab === 'market' ? (
+            <div>
+              {companies.length === 0 ? (
+                <div className="economy-empty">
+                  На бирже пока нет публичных компаний. Владельцы фирм могут
+                  провести IPO!
+                </div>
+              ) : (
+                <div className="economy-grid">
+                  {companies.map((company) => (
+                    <CompanyCard
+                      key={company.id}
+                      company={company}
+                      onBuyClick={(id) => setBuyCompanyId(id)}
+                      onSellClick={(id) => setSellCompanyId(id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {portfolio.length === 0 ? (
+                <div className="economy-empty">
+                  Ваш инвестиционный портфель пуст. Купите акции на рынке, чтобы
+                  получать дивиденды!
+                </div>
+              ) : (
+                portfolio.map((item) => (
+                  <PortfolioItem
+                    key={item.id}
+                    share={item}
+                    company={companies.find((c) => c.id === item.companyId)}
                     onSellClick={(id) => setSellCompanyId(id)}
                   />
-                ))}
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {portfolio.length === 0 ? (
-              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">
-                Ваш инвестиционный портфель пуст. Купите акции на рынке, чтобы
-                получать дивиденды!
-              </div>
-            ) : (
-              portfolio.map((item) => (
-                <PortfolioItem
-                  key={item.id}
-                  share={item}
-                  company={companies.find((c) => c.id === item.companyId)}
-                  onSellClick={(id) => setSellCompanyId(id)}
-                />
-              ))
-            )}
-          </div>
-        )}
-      </div>
+                ))
+              )}
+            </div>
+          )}
 
-      {/* Модальное окно покупки акций */}
-      {buyCompanyId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <h3 className="text-xl font-bold text-white mb-4">Покупка акций</h3>
-            <form onSubmit={handleBuySubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
-                  Количество акций (шт.)
-                </label>
-                <input
-                  type="number"
-                  step="1"
-                  required
-                  value={sharesCount}
-                  onChange={(e) => setSharesCount(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"
-                />
-                <p className="text-[11px] text-slate-400 mt-1">
-                  При активной скупке акций курс компании на бирже автоматически
-                  растет.
-                </p>
-              </div>
+          {/* Модальное окно покупки акций */}
+          {buyCompanyId && (
+            <div className="economy-modal-overlay">
+              <div className="economy-modal">
+                <h3 className="modal-title">Покупка акций</h3>
+                <form onSubmit={handleBuySubmit} className="modal-form">
+                  <label>
+                    <span>Количество акций (шт.)</span>
+                    <input
+                      type="number"
+                      step="1"
+                      required
+                      value={sharesCount}
+                      onChange={(e) => setSharesCount(e.target.value)}
+                      style={{ fontFamily: 'monospace' }}
+                    />
+                  </label>
+                  <p
+                    style={{
+                      fontSize: '12px',
+                      color: '#9ca3af',
+                      margin: '4px 0 0',
+                    }}
+                  >
+                    При активной скупке акций курс компании на бирже автоматически
+                    растет.
+                  </p>
 
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setBuyCompanyId(null)}
-                  className="px-4 py-2 rounded-xl text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-300"
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-600 to-teal-600 text-white"
-                >
-                  Купить
-                </button>
+                  <div className="modal-actions">
+                    <button
+                      type="button"
+                      onClick={() => setBuyCompanyId(null)}
+                      className="economy-btn economy-btn--secondary"
+                    >
+                      Отмена
+                    </button>
+                    <button
+                      type="submit"
+                      className="economy-btn economy-btn--success"
+                    >
+                      Купить
+                    </button>
+                  </div>
+                </form>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+          )}
 
-      {/* Модальное окно продажи акций */}
-      {sellCompanyId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <h3 className="text-xl font-bold text-white mb-4">
-              Продажа акций с биржи
-            </h3>
-            <form onSubmit={handleSellSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
-                  Количество акций для продажи (шт.)
-                </label>
-                <input
-                  type="number"
-                  step="1"
-                  required
-                  value={sharesCount}
-                  onChange={(e) => setSharesCount(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"
-                />
-                <p className="text-[11px] text-slate-400 mt-1">
-                  Средства будут зачислены на ваш личный счет в валюте AR.
-                </p>
-              </div>
+          {/* Модальное окно продажи акций */}
+          {sellCompanyId && (
+            <div className="economy-modal-overlay">
+              <div className="economy-modal">
+                <h3 className="modal-title">Продажа акций с биржи</h3>
+                <form onSubmit={handleSellSubmit} className="modal-form">
+                  <label>
+                    <span>Количество акций для продажи (шт.)</span>
+                    <input
+                      type="number"
+                      step="1"
+                      required
+                      value={sharesCount}
+                      onChange={(e) => setSharesCount(e.target.value)}
+                      style={{ fontFamily: 'monospace' }}
+                    />
+                  </label>
+                  <p
+                    style={{
+                      fontSize: '12px',
+                      color: '#9ca3af',
+                      margin: '4px 0 0',
+                    }}
+                  >
+                    Средства будут зачислены на ваш личный счет в национальной валюте.
+                  </p>
 
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setSellCompanyId(null)}
-                  className="px-4 py-2 rounded-xl text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-300"
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-red-600 to-rose-600 text-white"
-                >
-                  Продать
-                </button>
+                  <div className="modal-actions">
+                    <button
+                      type="button"
+                      onClick={() => setSellCompanyId(null)}
+                      className="economy-btn economy-btn--secondary"
+                    >
+                      Отмена
+                    </button>
+                    <button
+                      type="submit"
+                      className="economy-btn economy-btn--danger"
+                    >
+                      Продать
+                    </button>
+                  </div>
+                </form>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+          )}
+    </div>
+  );
+
+  return embedded ? (
+    content
+  ) : (
+    <div className="page">
+      <Sidebar />
+      <main className="content">{content}</main>
     </div>
   );
 };

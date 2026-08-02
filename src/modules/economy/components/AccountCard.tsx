@@ -1,5 +1,7 @@
 import React from 'react';
+import { useSearchParams } from 'react-router';
 import { IAccount, ICard } from '../types/economy.types';
+import './AccountCard.scss';
 
 interface AccountCardProps {
   account: IAccount;
@@ -14,16 +16,17 @@ export const AccountCard: React.FC<AccountCardProps> = ({
   onIssueCard,
   onTransferClick,
 }) => {
-  const getBadgeColor = (type: string) => {
+  const [, setSearchParams] = useSearchParams();
+  const getBadgeClass = (type: string) => {
     switch (type) {
       case 'personal':
-        return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+        return 'account-card__badge--personal';
       case 'company':
-        return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
+        return 'account-card__badge--company';
       case 'treasury':
-        return 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+        return 'account-card__badge--treasury';
       default:
-        return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
+        return '';
     }
   };
 
@@ -51,63 +54,60 @@ export const AccountCard: React.FC<AccountCardProps> = ({
   };
 
   return (
-    <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700/60 rounded-2xl p-6 shadow-xl hover:border-amber-500/40 transition-all duration-300 flex flex-col justify-between">
+    <div className="account-card">
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <span
-            className={`text-xs px-3 py-1 rounded-full border font-medium uppercase tracking-wider ${getBadgeColor(
-              account.type,
-            )}`}
-          >
+        <div className="account-card__header">
+          <span className={`account-card__badge ${getBadgeClass(account.type)}`}>
             {getBadgeLabel(account.type)}
           </span>
-          <span className="text-sm text-slate-400 font-mono">
+          <span className="account-card__currency-code">
             {account.currencyCode}
           </span>
         </div>
 
-        <div className="mb-6">
-          <div className="text-sm text-slate-400 mb-1">Баланс</div>
-          <div className="text-3xl font-extrabold text-white flex items-baseline gap-2">
-            <span>{account.balance.toLocaleString('ru-RU')}</span>
-            <span className="text-amber-400 text-lg font-semibold">
+        <div className="account-card__balance-section">
+          <div className="label">Баланс</div>
+          <div className="balance">
+            <span>{account.balance.toLocaleString('ru-RU')}</span>{' '}
+            <span className="currency" style={{ marginLeft: '6px' }}>
               {account.currencyCode}
             </span>
           </div>
-          <div className="text-xs text-slate-500 mt-2 font-mono">
+          <div className="account-num">
             № {formatAccountNumber(account.accountNumber)}
           </div>
         </div>
 
         {cards.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-slate-800">
-            <div className="text-xs uppercase tracking-wider text-slate-400 mb-3 font-semibold">
+          <div className="account-card__cards-section">
+            <div className="cards-title">
               Привязанные карты ({cards.length})
             </div>
-            <div className="space-y-2">
+            <div className="cards-list">
               {cards.map((card) => (
                 <div
                   key={card.id}
-                  className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 flex items-center justify-between"
+                  className="card-item"
+                  onClick={() => setSearchParams({ tab: 'cards', cardId: card.id })}
+                  title="Нажмите, чтобы открыть управление картой"
+                  style={{ cursor: 'pointer' }}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-6 bg-gradient-to-r from-amber-500 to-amber-600 rounded flex items-center justify-center text-[10px] font-bold text-slate-950">
-                      CARD
-                    </div>
+                  <div className="card-info">
+                    <div className="card-chip">CARD</div>
                     <div>
-                      <div className="text-sm font-mono text-slate-200">
+                      <div className="card-number">
                         {formatCardNumber(card.cardNumber)}
                       </div>
-                      <div className="text-[11px] text-slate-400">
+                      <div className="card-meta">
                         Годна до: {card.expiresAt} | CVV: ***
                       </div>
                     </div>
                   </div>
                   <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                    className={`card-status ${
                       card.isBlocked
-                        ? 'bg-red-500/20 text-red-300'
-                        : 'bg-emerald-500/20 text-emerald-300'
+                        ? 'card-status--blocked'
+                        : 'card-status--active'
                     }`}
                   >
                     {card.isBlocked ? 'Заблокирована' : 'Активна'}
@@ -119,11 +119,12 @@ export const AccountCard: React.FC<AccountCardProps> = ({
         )}
       </div>
 
-      <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
+      <div className="account-card__actions">
         {onTransferClick && (
           <button
             onClick={() => onTransferClick(account.accountNumber)}
-            className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold py-2 px-4 rounded-xl text-sm transition-all shadow-lg shadow-amber-500/10"
+            className="economy-btn economy-btn--primary"
+            style={{ flex: 1 }}
           >
             Перевести
           </button>
@@ -131,7 +132,8 @@ export const AccountCard: React.FC<AccountCardProps> = ({
         {onIssueCard && (
           <button
             onClick={() => onIssueCard(account.id)}
-            className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium py-2 px-4 rounded-xl text-sm transition-all border border-slate-700"
+            className="economy-btn economy-btn--secondary"
+            style={{ flex: 1 }}
           >
             Выпустить карту
           </button>
@@ -140,3 +142,4 @@ export const AccountCard: React.FC<AccountCardProps> = ({
     </div>
   );
 };
+

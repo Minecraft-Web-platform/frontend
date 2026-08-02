@@ -59,10 +59,12 @@ const PlayerPassport = () => {
                     <span className="label">UUID:</span> {player.uuid}
                   </p>
                   <p>
-                    <span className="label">Гражданство:</span> -
+                    <span className="label">Гражданство:</span>{" "}
+                    {player.stateName || "-"}
                   </p>
                   <p>
-                    <span className="label">Город:</span> -
+                    <span className="label">Город:</span>{" "}
+                    {player.cityName || "-"}
                   </p>
                   <p>
                     <span className="label">Улица:</span> -
