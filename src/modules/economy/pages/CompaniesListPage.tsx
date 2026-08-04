@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ICompany } from '../types/economy.types';
+import { ICompany, ICurrency } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 import { CompanyCard } from '../components/CompanyCard';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
@@ -26,6 +26,9 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
 
   const [statesList, setStatesList] = useState<IState[]>([]);
   const [citiesList, setCitiesList] = useState<ICity[]>([]);
+  const [currenciesList, setCurrenciesList] = useState<ICurrency[]>([]);
+  const [myStateId, setMyStateId] = useState<string | null>(null);
+  const [showNoBankModal, setShowNoBankModal] = useState(false);
 
   // Модальное окно IPO
   const [ipoCompanyId, setIpoCompanyId] = useState<string | null>(null);
@@ -59,7 +62,12 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
       return;
     }
     try {
-      const me = await profileService.getInfoAboutMe();
+      const [me, stRes, ctRes, curRes] = await Promise.all([
+        profileService.getInfoAboutMe(),
+        statesService.getStates().catch(() => [] as IState[]),
+        statesService.getCities().catch(() => [] as ICity[]),
+        economyService.getAllCurrencies().catch(() => [] as ICurrency[]),
+      ]);
       if (!me.emailIsConfirmed) {
         alert('Регистрировать фирму может только игрок с подтвержденной почтой');
         return;
@@ -70,12 +78,20 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
         );
         return;
       }
-      const [stRes, ctRes] = await Promise.all([
-        statesService.getStates().catch(() => [] as IState[]),
-        statesService.getCities().catch(() => [] as ICity[]),
-      ]);
+      let userStateId = me.stateId || '';
+      if (!userStateId && me.cityId) {
+        const myCity = ctRes.find((c) => c.id === me.cityId);
+        if (myCity?.stateId) {
+          userStateId = myCity.stateId;
+        }
+      }
+      setMyStateId(userStateId || null);
       setStatesList(stRes);
       setCitiesList(ctRes);
+      setCurrenciesList(curRes);
+
+      if (userStateId) setStateId(userStateId);
+      if (me.cityId) setCityId(me.cityId);
       setShowCreateModal(true);
     } catch (err: any) {
       alert(
@@ -107,7 +123,11 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
       setStateId('');
       loadCompanies();
     } catch (err: any) {
-      alert(err?.message || 'Ошибка регистрации компании');
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        'Ошибка регистрации компании';
+      alert(msg);
     }
   };
 
@@ -143,6 +163,12 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
       alert(err?.message || 'Ошибка выплаты дивидендов');
     }
   };
+
+  const selectedStateHasBank =
+    !stateId ||
+    currenciesList.some(
+      (cur) => cur.stateId === stateId || cur.stateId === null,
+    );
 
   const content = (
     <div className={embedded ? "economy-page economy-page--embedded" : "economy-page"}>
@@ -279,11 +305,16 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
                         required
                       >
                         <option value="">-- Выберите государство --</option>
-                        {statesList.map((st) => (
-                          <option key={st.id} value={st.id}>
-                            {st.name}
-                          </option>
-                        ))}
+                        {statesList.map((st) => {
+                          const isForeign = Boolean(
+                            myStateId && st.id !== myStateId,
+                          );
+                          return (
+                            <option key={st.id} value={st.id}>
+                              {st.name} {isForeign ? '[Другое гос-во]' : ''}
+                            </option>
+                          );
+                        })}
                       </select>
                     </label>
                     <label>
@@ -313,6 +344,102 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
                     </label>
                   </div>
 
+                  {stateId && (
+                    <div
+                      style={{
+                        padding: '14px 16px',
+                        borderRadius: '12px',
+                        backgroundColor:
+                          stateId !== myStateId ? '#eff6ff' : '#f8fafc',
+                        border:
+                          stateId !== myStateId
+                            ? '1px solid #bfdbfe'
+                            : '1px solid #e2e8f0',
+                        marginBottom: '16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                      }}
+                    >
+                      <div style={{ fontSize: '26px' }}>
+                        {stateId !== myStateId ? '🌐' : '🏛️'}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            color:
+                              stateId !== myStateId ? '#1e40af' : '#334155',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <span>
+                            Юрисдикция:{' '}
+                            {statesList.find((s) => s.id === stateId)?.name ||
+                              'Не выбрано'}
+                          </span>
+                          {stateId !== myStateId && (
+                            <span
+                              style={{
+                                fontSize: '11px',
+                                backgroundColor: '#3b82f6',
+                                color: '#fff',
+                                padding: '2px 8px',
+                                borderRadius: '9999px',
+                                fontWeight: 700,
+                              }}
+                            >
+                              ДРУГОЕ ГОСУДАРСТВО
+                            </span>
+                          )}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: '12px',
+                            color:
+                              stateId !== myStateId ? '#3b82f6' : '#64748b',
+                            marginTop: '4px',
+                            lineHeight: '1.4',
+                          }}
+                        >
+                          {stateId !== myStateId
+                            ? 'Вы регистрируете фирму в иностранной юрисдикции. Коммерческий счёт компании будет автоматически открыт в банке и валюте этого государства.'
+                            : 'Вы регистрируете фирму в домашней юрисдикции.'}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {!selectedStateHasBank && (
+                    <div
+                      style={{
+                        padding: '14px 16px',
+                        background: '#fef2f2',
+                        border: '1px solid #fecaca',
+                        borderRadius: '12px',
+                        color: '#991b1b',
+                        fontSize: '14px',
+                        lineHeight: '1.5',
+                        marginBottom: '16px',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '10px',
+                      }}
+                    >
+                      <span style={{ fontSize: '18px' }}>🏛️</span>
+                      <div>
+                        <strong>В выбранном государстве нет Национального банка</strong>
+                        <div style={{ marginTop: '4px', color: '#b91c1c', fontSize: '13px' }}>
+                          Регистрация фирмы невозможна: без банка нельзя автоматически открыть коммерческий счёт. В государстве должна быть выпущена национальная валюта.
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="modal-actions">
                     <button
                       type="button"
@@ -324,6 +451,11 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
                     <button
                       type="submit"
                       className="economy-btn economy-btn--primary"
+                      disabled={!selectedStateHasBank}
+                      style={{
+                        opacity: !selectedStateHasBank ? 0.6 : 1,
+                        cursor: !selectedStateHasBank ? 'not-allowed' : 'pointer',
+                      }}
                     >
                       Зарегистрировать
                     </button>
@@ -432,6 +564,53 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {/* Модальное окно: Отсутствует Национальный Банк */}
+          {showNoBankModal && (
+            <div className="economy-modal-overlay" onClick={() => setShowNoBankModal(false)}>
+              <div
+                className="economy-modal"
+                style={{ maxWidth: '440px' }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                  <div style={{ fontSize: '48px', marginBottom: '12px' }}>🏛️</div>
+                  <h3 className="modal-title" style={{ margin: 0 }}>
+                    Отсутствует Национальный Банк
+                  </h3>
+                </div>
+                <div
+                  style={{
+                    padding: '16px',
+                    backgroundColor: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '12px',
+                    color: '#334155',
+                    fontSize: '14px',
+                    lineHeight: '1.6',
+                    marginBottom: '24px',
+                  }}
+                >
+                  <p style={{ margin: '0 0 12px 0' }}>
+                    В вашем государстве ещё не учреждён <strong>Национальный банк</strong> и не выпущена валюта.
+                  </p>
+                  <p style={{ margin: 0, color: '#64748b', fontSize: '13px' }}>
+                    При регистрации фирмы для неё автоматически создаётся коммерческий банковский счёт. Без функционирующего банка открыть счёт и зарегистрировать компанию невозможно.
+                  </p>
+                </div>
+                <div className="modal-actions" style={{ justifyContent: 'center' }}>
+                  <button
+                    type="button"
+                    className="economy-btn economy-btn--primary"
+                    onClick={() => setShowNoBankModal(false)}
+                    style={{ width: '100%', justifyContent: 'center' }}
+                  >
+                    Понятно
+                  </button>
+                </div>
               </div>
             </div>
           )}

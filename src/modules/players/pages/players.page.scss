@@ -44,6 +44,27 @@
     margin-bottom: 24px;
   }
 
+  &__name-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #000;
+    margin-bottom: 8px;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  &__coat-of-arms {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
   a {
     text-decoration: none;
     color: #000;
@@ -53,29 +74,50 @@
 .filter-buttons {
   margin-top: 24px;
   background-color: #f6f8fa;
-  text-align: center;
   width: 948px;
-  height: 60px;
+  min-height: 60px;
   border: 1px solid #d2d2d8;
   border-radius: 16px;
-  padding: 24px;
   font-family: sans-serif;
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   align-items: center;
-
-  padding: 16px;
+  padding: 16px 24px;
 
   &__button {
     padding: 8px 16px;
     background-color: transparent;
     border: 1px solid black;
     border-radius: 8px;
+    cursor: pointer;
     transition: background-color 0.3s linear, color 0.3s linear;
 
     &--active {
       background-color: #000;
       color: #fff;
+    }
+  }
+
+  &__state-filter {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__select {
+    padding: 8px 16px;
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 8px;
+    font-family: sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: #000;
     }
   }
 }

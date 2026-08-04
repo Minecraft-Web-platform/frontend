@@ -13,7 +13,7 @@ const Profile: FC = () => {
   const [info, setInfo] = useState<GetInfoAboutMeRespone | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { accessToken, logout, isAdmin, turnAdmin } = useAuthStore();
+  const { accessToken, logout, setRoleInfo } = useAuthStore();
 
   useEffect(() => {
     let cancelled = false;
@@ -24,6 +24,15 @@ const Profile: FC = () => {
 
         if (!cancelled) {
           setInfo(data);
+          if (data.role) {
+            setRoleInfo(
+              data.role,
+              data.role === "admin" || data.isAdmin === true,
+              data.role === "economist" ||
+                data.role === "admin" ||
+                data.isEconomist === true
+            );
+          }
         }
       } catch {
         //
@@ -70,6 +79,36 @@ const Profile: FC = () => {
                   label={`Почта | ${
                     info?.emailIsConfirmed ? "Подтверждена" : "Не подтверждена"
                   }`}
+                  element="input"
+                  disabled
+                />
+
+                <Input
+                  value={
+                    info?.role === "admin"
+                      ? "Администратор"
+                      : info?.role === "economist"
+                      ? "Экономист"
+                      : "Игрок"
+                  }
+                  placeholder=""
+                  label="Роль на проекте"
+                  element="input"
+                  disabled
+                />
+
+                <Input
+                  value={info?.citizenshipName || info?.stateName || "Нет"}
+                  placeholder=""
+                  label="Гражданство"
+                  element="input"
+                  disabled
+                />
+
+                <Input
+                  value={info?.cityName || "Нет"}
+                  placeholder=""
+                  label="Город"
                   element="input"
                   disabled
                 />
@@ -145,16 +184,6 @@ const Profile: FC = () => {
               <Button callback={() => logout()} secondary>
                 Выйти из аккаунта
               </Button>
-
-              {info?.username === "admin" && !isAdmin && (
-                <Button callback={() => turnAdmin(true)}>Пошалим?</Button>
-              )}
-
-              {isAdmin && (
-                <Button callback={() => turnAdmin(false)} secondary>
-                  На сегодня хватит
-                </Button>
-              )}
             </div>
           </div>
         </main>

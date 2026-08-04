@@ -36,10 +36,24 @@ const PlayerPassport = () => {
       <Sidebar />
 
       <main className="passport-wrapper content">
-        <div className="passport">
+        <div
+          className={`passport ${
+            player?.stateFlagUrl ? "passport--with-flag" : ""
+          }`}
+        >
+          {player?.stateFlagUrl && (
+            <div
+              className="passport__bg-flag"
+              style={{
+                backgroundImage: `url(${player.stateFlagUrl})`,
+              }}
+            />
+          )}
           {player ? (
             <>
-              <h2 className="passport__header">Мир Хроники Края</h2>
+              <h2 className="passport__header">
+                {player.stateName || "Мир Хроники Края"}
+              </h2>
 
               <div className="passport__content">
                 <div className="passport__photo">
@@ -56,11 +70,16 @@ const PlayerPassport = () => {
                   </p>
 
                   <p>
+                    <span className="label">Роль:</span>{" "}
+                    {player.role === "admin" ? "Администратор" : "Игрок"}
+                  </p>
+
+                  <p>
                     <span className="label">UUID:</span> {player.uuid}
                   </p>
                   <p>
                     <span className="label">Гражданство:</span>{" "}
-                    {player.stateName || "-"}
+                    {player.citizenshipName || player.stateName || "-"}
                   </p>
                   <p>
                     <span className="label">Город:</span>{" "}
@@ -80,6 +99,20 @@ const PlayerPassport = () => {
                     <span className="label">Действителен до:</span> 01.10.2028
                   </p>
                 </div>
+              </div>
+
+              <div className="passport__emblem">
+                {player.stateCoatOfArmsUrl ? (
+                  <img
+                    src={player.stateCoatOfArmsUrl}
+                    alt={player.stateName || "Coat of arms"}
+                  />
+                ) : player.stateFlagUrl ? (
+                  <img
+                    src={player.stateFlagUrl}
+                    alt={player.stateName || "Flag"}
+                  />
+                ) : null}
               </div>
             </>
           ) : (

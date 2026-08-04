@@ -16,6 +16,10 @@ const StatesListPage: FC = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [flagUrl, setFlagUrl] = useState('');
+  const [coatOfArmsUrl, setCoatOfArmsUrl] = useState('');
+  const [nationalityMale, setNationalityMale] = useState('');
+  const [nationalityFemale, setNationalityFemale] = useState('');
+  const [citizenshipName, setCitizenshipName] = useState('');
   const [creating, setCreating] = useState(false);
 
   const { isAuthenticated } = useAuthStore();
@@ -46,10 +50,18 @@ const StatesListPage: FC = () => {
         name,
         description,
         flagUrl: flagUrl || undefined,
+        coatOfArmsUrl: coatOfArmsUrl || undefined,
+        nationalityMale: nationalityMale || undefined,
+        nationalityFemale: nationalityFemale || undefined,
+        citizenshipName: citizenshipName || undefined,
       });
       setName('');
       setDescription('');
       setFlagUrl('');
+      setCoatOfArmsUrl('');
+      setNationalityMale('');
+      setNationalityFemale('');
+      setCitizenshipName('');
       setShowCreateModal(false);
       await loadStates();
     } catch (err) {
@@ -137,9 +149,33 @@ const StatesListPage: FC = () => {
                   />
                   <input
                     type="url"
-                    placeholder="Ссылка на герб/флаг (URL)"
+                    placeholder="Ссылка на флаг (URL)"
                     value={flagUrl}
                     onChange={(e) => setFlagUrl(e.target.value)}
+                  />
+                  <input
+                    type="url"
+                    placeholder="Ссылка на герб (URL)"
+                    value={coatOfArmsUrl}
+                    onChange={(e) => setCoatOfArmsUrl(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Национальность (муж. род, напр. украинец)"
+                    value={nationalityMale}
+                    onChange={(e) => setNationalityMale(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Национальность (жен. род, напр. украинка)"
+                    value={nationalityFemale}
+                    onChange={(e) => setNationalityFemale(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Название гражданства (напр. украинское)"
+                    value={citizenshipName}
+                    onChange={(e) => setCitizenshipName(e.target.value)}
                   />
 
                   <div className="states-list-page__modal-actions">

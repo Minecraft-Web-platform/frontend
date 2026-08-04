@@ -1,5 +1,9 @@
 import React from 'react';
 import { ICurrency } from '../types/economy.types';
+import {
+  getMinecraftItemInfo,
+  getMinecraftEnchantInfo,
+} from '../constants/minecraft-items';
 import './CurrencyCard.scss';
 
 interface CurrencyCardProps {
@@ -47,13 +51,61 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
           <div className="label">
             Материальный носитель (1 ед. = 100 коп.)
           </div>
-          <div className="item-row" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span>Основная монета: <strong>{currency.minecraftItemId}</strong></span>
-            {currency.kopeckItemId && (
-              <span>Разменная монета: <strong>{currency.kopeckItemId}</strong></span>
-            )}
-            <span className="enchant">
-              ✨ Чары: {currency.minecraftEnchantment || 'Без чар'}
+          <div className="item-row" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {(() => {
+              const mainInfo = getMinecraftItemInfo(currency.minecraftItemId);
+              return (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  <span>Основная монета:</span>
+                  <strong style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    {mainInfo ? mainInfo.icon : null}
+                    <span>{mainInfo ? mainInfo.name : currency.minecraftItemId}</span>
+                  </strong>
+                  <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>
+                    ({currency.minecraftItemId})
+                  </span>
+                </span>
+              );
+            })()}
+
+            {currency.kopeckItemId &&
+              (() => {
+                const kopInfo = getMinecraftItemInfo(currency.kopeckItemId);
+                return (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                    <span>Разменная монета:</span>
+                    <strong style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      {kopInfo ? kopInfo.icon : null}
+                      <span>{kopInfo ? kopInfo.name : currency.kopeckItemId}</span>
+                    </strong>
+                    <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>
+                      ({currency.kopeckItemId})
+                    </span>
+                  </span>
+                );
+              })()}
+
+            <span className="enchant" style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              {(() => {
+                const enchInfo = currency.minecraftEnchantment
+                  ? getMinecraftEnchantInfo(currency.minecraftEnchantment)
+                  : null;
+                return (
+                  <>
+                    <span>✨ Чары:</span>
+                    <strong>
+                      {enchInfo
+                        ? enchInfo.name
+                        : currency.minecraftEnchantment || 'Не указано'}
+                    </strong>
+                    {currency.minecraftEnchantment && (
+                      <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>
+                        ({currency.minecraftEnchantment})
+                      </span>
+                    )}
+                  </>
+                );
+              })()}
             </span>
           </div>
         </div>

@@ -402,14 +402,16 @@ export const CardsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="hero-actions">
-          <button
-            className="economy-btn economy-btn--primary"
-            onClick={() => setShowIssueModal(true)}
-          >
-            + Выпустить карту
-          </button>
-        </div>
+        {cards.length > 0 && (
+          <div className="hero-actions">
+            <button
+              className="economy-btn economy-btn--primary"
+              onClick={() => setShowIssueModal(true)}
+            >
+              + Выпустить карту
+            </button>
+          </div>
+        )}
       </div>
 
       {error && (
@@ -491,22 +493,14 @@ export const CardsPage: React.FC = () => {
 
       {/* Модальное окно: Выпуск карты */}
       {showIssueModal && (
-        <div className="modal-overlay" onClick={() => setShowIssueModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Выпуск новой пластиковой карты</h3>
-              <button
-                className="modal-close"
-                onClick={() => setShowIssueModal(false)}
-              >
-                &times;
-              </button>
-            </div>
-            <form onSubmit={handleIssueCard}>
-              <div className="form-group">
-                <label>Выберите счет для привязки карты:</label>
+        <div className="economy-modal-overlay" onClick={() => setShowIssueModal(false)}>
+          <div className="economy-modal" onClick={(e) => e.stopPropagation()}>
+            <h3 className="modal-title">Выпуск новой пластиковой карты</h3>
+            <form onSubmit={handleIssueCard} className="modal-form">
+              <label>
+                <span>Выберите счет для привязки карты:</span>
                 {accounts.length === 0 ? (
-                  <p style={{ color: '#dc2626', fontSize: '14px' }}>
+                  <p style={{ color: '#dc2626', fontSize: '14px', margin: '8px 0' }}>
                     У вас нет открытых счетов. Сначала откройте счет на вкладке «Банки и Счета».
                   </p>
                 ) : (
@@ -522,23 +516,34 @@ export const CardsPage: React.FC = () => {
                     ))}
                   </select>
                 )}
-              </div>
+              </label>
 
-              <div className="form-actions">
-                <button
-                  type="button"
-                  className="economy-btn economy-btn--secondary"
-                  onClick={() => setShowIssueModal(false)}
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  className="economy-btn economy-btn--primary"
-                  disabled={accounts.length === 0}
-                >
-                  Выпустить карту
-                </button>
+              <div className="modal-actions">
+                {accounts.length === 0 ? (
+                  <button
+                    type="button"
+                    className="economy-btn economy-btn--secondary"
+                    onClick={() => setShowIssueModal(false)}
+                  >
+                    Закрыть
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      className="economy-btn economy-btn--secondary"
+                      onClick={() => setShowIssueModal(false)}
+                    >
+                      Отмена
+                    </button>
+                    <button
+                      type="submit"
+                      className="economy-btn economy-btn--primary"
+                    >
+                      Выпустить карту
+                    </button>
+                  </>
+                )}
               </div>
             </form>
           </div>

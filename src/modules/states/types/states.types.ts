@@ -47,6 +47,10 @@ export interface IState {
   name: string;
   description?: string;
   flagUrl?: string | null;
+  coatOfArmsUrl?: string | null;
+  nationalityMale?: string | null;
+  nationalityFemale?: string | null;
+  citizenshipName?: string | null;
   leaderUsername?: string | null;
   capitalCityId?: string | null;
   taxRate?: number;
@@ -90,6 +94,10 @@ export interface ICreateStateRequest {
   name: string;
   description?: string;
   flagUrl?: string;
+  coatOfArmsUrl?: string;
+  nationalityMale?: string;
+  nationalityFemale?: string;
+  citizenshipName?: string;
   leaderUsername?: string;
   capitalCityId?: string;
   taxRate?: number;

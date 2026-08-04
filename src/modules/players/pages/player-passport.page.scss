@@ -5,29 +5,66 @@
 .passport {
   margin: auto;
   width: 600px;
-  background: #ffffff;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20' fill='none' stroke='%23d2d2d8' stroke-width='1'><path d='M0 10 Q10 0, 20 10 T40 10'/></svg>");
+  background-repeat: repeat;
+  background-size: 10px;
   border: 1px solid #d2d2d8;
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20' fill='none' stroke='%23d2d2d8' stroke-width='1'><path d='M0 10 Q10 0, 20 10 T40 10'/></svg>")
-    repeat;
-  background-repeat: repeat;
-  background-size: 10px;
   font-family: sans-serif;
+  position: relative;
+  overflow: hidden;
+
+  &__bg-flag {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.18;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &__emblem {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+  }
 
   &__header {
     text-align: center;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 20px;
     margin-bottom: 24px;
-    font-family: "Minecraft";
+    position: relative;
+    z-index: 1;
   }
 
   &__content {
     display: flex;
     gap: 24px;
+    position: relative;
+    z-index: 1;
   }
 
   &__photo {

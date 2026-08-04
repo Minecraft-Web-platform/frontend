@@ -9,6 +9,8 @@ import {
 import { economyService } from '../services/economy.service';
 import { AccountCard } from '../components/AccountCard';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
+import { profileService } from '../../profile/services/profile.service';
+import { statesService, IState, ICity } from '../../states';
 import '../economy-shared.scss';
 
 export const BankPage: React.FC<{ embedded?: boolean }> = ({
@@ -18,6 +20,8 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
   const [cards, setCards] = useState<ICard[]>([]);
   const [transfers, setTransfers] = useState<ITransfer[]>([]);
   const [currencies, setCurrencies] = useState<ICurrency[]>([]);
+  const [statesList, setStatesList] = useState<IState[]>([]);
+  const [myStateId, setMyStateId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,15 +40,28 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
     try {
       setLoading(true);
       setError(null);
-      const [accRes, transRes, currRes] = await Promise.all([
-        economyService.getMyAccounts(),
-        economyService.getMyTransfers(),
-        economyService.getAllCurrencies(),
-      ]);
+      const [accRes, transRes, currRes, meRes, stRes, ctRes] =
+        await Promise.all([
+          economyService.getMyAccounts(),
+          economyService.getMyTransfers(),
+          economyService.getAllCurrencies(),
+          profileService.getInfoAboutMe().catch(() => null),
+          statesService.getStates().catch(() => [] as IState[]),
+          statesService.getCities().catch(() => [] as ICity[]),
+        ]);
       setAccounts(accRes.accounts);
       setCards(accRes.cards);
       setTransfers(transRes);
       setCurrencies(currRes);
+      setStatesList(stRes);
+
+      let userStateId = meRes?.stateId || null;
+      if (!userStateId && meRes?.cityId) {
+        const cObj = ctRes.find((c) => c.id === meRes.cityId);
+        if (cObj?.stateId) userStateId = cObj.stateId;
+      }
+      setMyStateId(userStateId);
+
       if (accRes.accounts.length > 0 && !transferFrom) {
         setTransferFrom(accRes.accounts[0].accountNumber);
       }
@@ -317,13 +334,101 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
                   {currencies.length === 0 && (
                     <option value="">-- Нет доступных валют --</option>
                   )}
-                  {currencies.map((curr) => (
-                    <option key={curr.id} value={curr.code}>
-                      {curr.code} ({curr.name})
-                    </option>
-                  ))}
+                  {currencies.map((curr) => {
+                    const st = statesList.find((s) => s.id === curr.stateId);
+                    const stateName = st ? st.name : 'Общесерверная';
+                    const isForeign = Boolean(
+                      curr.stateId && curr.stateId !== myStateId,
+                    );
+                    return (
+                      <option key={curr.id} value={curr.code}>
+                        {curr.code} ({curr.name}) — {stateName}{' '}
+                        {isForeign ? '[Другое гос-во]' : ''}
+                      </option>
+                    );
+                  })}
                 </select>
               </label>
+
+              {(() => {
+                const selectedCurrObj = currencies.find(
+                  (c) => c.code === newAccCurrency,
+                );
+                if (!selectedCurrObj) return null;
+                const selectedCurrState = statesList.find(
+                  (s) => s.id === selectedCurrObj.stateId,
+                );
+                const isForeignCurrency = Boolean(
+                  selectedCurrObj.stateId &&
+                    selectedCurrObj.stateId !== myStateId,
+                );
+                return (
+                  <div
+                    style={{
+                      padding: '14px 16px',
+                      borderRadius: '12px',
+                      backgroundColor: isForeignCurrency ? '#eff6ff' : '#f8fafc',
+                      border: isForeignCurrency
+                        ? '1px solid #bfdbfe'
+                        : '1px solid #e2e8f0',
+                      marginBottom: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                    }}
+                  >
+                    <div style={{ fontSize: '26px' }}>
+                      {isForeignCurrency ? '🌐' : '🏛️'}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          color: isForeignCurrency ? '#1e40af' : '#334155',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          flexWrap: 'wrap',
+                        }}
+                      >
+                        <span>
+                          Юрисдикция:{' '}
+                          {selectedCurrState
+                            ? selectedCurrState.name
+                            : 'Общесерверная валюта'}
+                        </span>
+                        {isForeignCurrency && (
+                          <span
+                            style={{
+                              fontSize: '11px',
+                              backgroundColor: '#3b82f6',
+                              color: '#fff',
+                              padding: '2px 8px',
+                              borderRadius: '9999px',
+                              fontWeight: 700,
+                            }}
+                          >
+                            ДРУГОЕ ГОСУДАРСТВО
+                          </span>
+                        )}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '12px',
+                          color: isForeignCurrency ? '#3b82f6' : '#64748b',
+                          marginTop: '4px',
+                          lineHeight: '1.4',
+                        }}
+                      >
+                        {isForeignCurrency
+                          ? 'Вы открываете счёт в иностранном государстве. Операции счёта и карты будут производиться в национальной валюте этой юрисдикции.'
+                          : 'Вы открываете счёт в домашней юрисдикции.'}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
 
               <div className="modal-actions">
                 <button

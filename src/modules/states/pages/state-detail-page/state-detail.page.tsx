@@ -16,6 +16,10 @@ import useAuthStore from '../../../../store/auth.store';
 import { profileService } from '../../../profile/services/profile.service';
 import { economyService } from '../../../economy/services/economy.service';
 import { ICurrency } from '../../../economy/types/economy.types';
+import {
+  MinecraftItemDropdown,
+  MinecraftEnchantDropdown,
+} from '../../../economy/components/MinecraftItemSelector';
 import '../../../economy/economy-shared.scss';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 
@@ -245,12 +249,23 @@ const StateDetailPage: FC = () => {
           </button>
 
           <div className="state-detail-page__hero">
-            {state.flagUrl && (
-              <img
-                src={state.flagUrl}
-                alt={`${state.name} flag`}
-                className="state-detail-page__flag"
-              />
+            {(state.flagUrl || state.coatOfArmsUrl) && (
+              <div style={{ display: 'flex', gap: '12px' }}>
+                {state.flagUrl && (
+                  <img
+                    src={state.flagUrl}
+                    alt={`${state.name} flag`}
+                    className="state-detail-page__flag"
+                  />
+                )}
+                {state.coatOfArmsUrl && (
+                  <img
+                    src={state.coatOfArmsUrl}
+                    alt={`${state.name} coat of arms`}
+                    className="state-detail-page__flag"
+                  />
+                )}
+              </div>
             )}
             <div>
               <h1 className="state-detail-page__name">{state.name}</h1>
@@ -258,6 +273,11 @@ const StateDetailPage: FC = () => {
                 {state.description || 'Описание отсутствует.'}
               </p>
               <div className="state-detail-page__meta">
+                {state.citizenshipName && (
+                  <span>
+                    📜 Гражданство: <strong>{state.citizenshipName}</strong>
+                  </span>
+                )}
                 <span>
                   👑 Президент: <strong>{state.leaderUsername || 'Нет'}</strong>
                 </span>
@@ -553,35 +573,23 @@ const StateDetailPage: FC = () => {
                       required
                     />
                   </label>
-                  <label>
-                    <span>ID предмета Minecraft (для 1 ед. валюты)</span>
-                    <input
-                      type="text"
-                      value={currItemId}
-                      onChange={(e) => setCurrItemId(e.target.value)}
-                      placeholder="minecraft:gold_ingot"
-                      required
-                    />
-                  </label>
-                  <label>
-                    <span>ID предмета для копеек (0.01 ед. валюты)</span>
-                    <input
-                      type="text"
-                      value={currKopeckItemId}
-                      onChange={(e) => setCurrKopeckItemId(e.target.value)}
-                      placeholder="minecraft:gold_nugget"
-                      required
-                    />
-                  </label>
-                  <label>
-                    <span>Чары для защиты (применятся на оба предмета)</span>
-                    <input
-                      type="text"
-                      value={currEnchantment}
-                      onChange={(e) => setCurrEnchantment(e.target.value)}
-                      placeholder="unbreaking:3"
-                    />
-                  </label>
+                  <MinecraftItemDropdown
+                    label="Предмет основной монеты (1 ед. валюты)"
+                    value={currItemId}
+                    onChange={setCurrItemId}
+                    required
+                  />
+                  <MinecraftItemDropdown
+                    label="Предмет разменной монеты / копейки (0.01 ед. валюты)"
+                    value={currKopeckItemId}
+                    onChange={setCurrKopeckItemId}
+                    required
+                  />
+                  <MinecraftEnchantDropdown
+                    label="Чары для защиты (применятся на оба предмета)"
+                    value={currEnchantment}
+                    onChange={setCurrEnchantment}
+                  />
                   <p style={{ fontSize: '13px', color: '#94a3b8', margin: '8px 0' }}>
                     ℹ️ 1 единица валюты всегда равна 100 копейкам.
                   </p>

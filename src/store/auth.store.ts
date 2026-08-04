@@ -6,9 +6,16 @@ interface AuthState {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isEconomist: boolean;
+  role: "player" | "economist" | "admin";
   login: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
   turnAdmin: (v: boolean) => void;
+  setRoleInfo: (
+    role: "player" | "economist" | "admin",
+    isAdmin: boolean,
+    isEconomist: boolean
+  ) => void;
 }
 
 const useAuthStore = create<AuthState>()(
@@ -18,6 +25,8 @@ const useAuthStore = create<AuthState>()(
       refreshToken: null,
       isAuthenticated: false,
       isAdmin: false,
+      isEconomist: false,
+      role: "player",
       login: (accessToken, refreshToken) =>
         set({
           accessToken,
@@ -30,8 +39,12 @@ const useAuthStore = create<AuthState>()(
           refreshToken: null,
           isAuthenticated: false,
           isAdmin: false,
+          isEconomist: false,
+          role: "player",
         }),
       turnAdmin: (v: boolean) => set({ isAdmin: v }),
+      setRoleInfo: (role, isAdmin, isEconomist) =>
+        set({ role, isAdmin, isEconomist }),
     }),
     {
       name: "auth-storage",
@@ -40,6 +53,8 @@ const useAuthStore = create<AuthState>()(
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
         isAdmin: state.isAdmin,
+        isEconomist: state.isEconomist,
+        role: state.role,
       }),
     }
   )
