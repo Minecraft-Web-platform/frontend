@@ -82,8 +82,11 @@ const StatesListPage: FC = () => {
       <main className="content">
         <div className="states-list-page">
           <div className="states-list-page__hero">
-            <div>
-              <h1 className="states-list-page__title">🏰 Государства сервера</h1>
+            <div className="states-list-page__hero-content">
+              <div className="states-list-page__title-wrapper">
+                <span className="states-list-page__title-icon">🏰</span>
+                <h1 className="states-list-page__title">Государства сервера</h1>
+              </div>
               <p className="states-list-page__subtitle">
                 Альянсы, королевства и республики, управляемые игроками
               </p>

@@ -7,68 +7,104 @@
 
   &__hero {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 36px;
-    flex-wrap: wrap;
-    gap: 24px;
-    background-color: #f6f8fa;
-    border: 1px solid #d2d2d8;
-    border-radius: 16px;
-    padding: 32px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 32px auto;
+    gap: 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 28px 36px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  }
+
+  &__hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 6px;
+  }
+
+  &__title-icon {
+    font-size: 34px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
   }
 
   &__title {
     font-family: "Minecraft", sans-serif;
-    font-size: 32px;
+    font-size: 30px;
     font-weight: normal;
-    color: #000000;
-    margin: 0 0 10px 0;
+    color: #0f172a;
+    margin: 0;
   }
 
   &__subtitle {
-    color: #535353;
-    font-size: 16px;
+    color: #64748b;
+    font-size: 15px;
     margin: 0;
+    text-align: center;
   }
 
   &__controls {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
+    width: 100%;
+    max-width: 580px;
   }
 
   &__search {
     background-color: #ffffff;
-    border: 1px solid #d2d2d8;
-    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
     padding: 12px 18px;
-    color: #000000;
-    font-size: 15px;
-    width: 280px;
+    color: #0f172a;
+    font-size: 14px;
+    flex: 1;
+    min-width: 260px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 
     &:focus {
       outline: none;
       border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
     }
   }
 
   &__create-btn {
-    background-color: #000000;
+    background: #0f172a;
     color: #ffffff;
     font-family: sans-serif;
     font-size: 14px;
     font-weight: 600;
-    border: 1px solid #000000;
-    padding: 12px 24px;
-    border-radius: 10px;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 
     &:hover {
-      background-color: #222222;
+      background: #1e293b;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
     }
   }
 

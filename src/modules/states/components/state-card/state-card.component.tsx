@@ -35,22 +35,36 @@ const StateCard: FC<StateCardProps> = ({ state }) => {
         )}
         <div className="state-card__info">
           <h3 className="state-card__title">{state.name}</h3>
-          <span className="state-card__leader">
-            👑 {state.leaderUsername || 'Без лидера (Выборы)'}
-          </span>
+          <div className="state-card__leader">
+            <span className="leader-badge">
+              👑 {state.leaderUsername || 'Без лидера (Выборы)'}
+            </span>
+          </div>
         </div>
       </div>
 
-      {state.description && (
-        <p className="state-card__description">{state.description}</p>
-      )}
+      <div className="state-card__body">
+        {state.description ? (
+          <p className="state-card__description">{state.description}</p>
+        ) : (
+          <p className="state-card__description state-card__description--empty">
+            Описание государства пока не указано...
+          </p>
+        )}
+      </div>
 
       <div className="state-card__footer">
         <div className="state-card__stats">
-          <span className="state-card__stat">🏙️ Городов: {citiesCount}</span>
-          <span className="state-card__stat">👥 Граждан: {citizensCount}</span>
+          <span className="state-card__stat">
+            🏙️ Городов: <strong>{citiesCount}</strong>
+          </span>
+          <span className="state-card__stat">
+            👥 Граждан: <strong>{citizensCount}</strong>
+          </span>
         </div>
-        <span>Подробнее →</span>
+        <span className="state-card__more">
+          Подробнее <span className="arrow">→</span>
+        </span>
       </div>
     </div>
   );
