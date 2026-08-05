@@ -138,29 +138,7 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
   const content = (
     <div className={embedded ? "economy-page economy-page--embedded" : "economy-page"}>
       {/* Заголовок страницы или панель действий */}
-      {embedded ? (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: '12px',
-            marginBottom: '24px',
-          }}
-        >
-          <button
-            onClick={() => setShowTransferModal(true)}
-            className="economy-btn economy-btn--primary"
-          >
-            Новый перевод
-          </button>
-          <button
-            onClick={() => setShowCreateAccount(true)}
-            className="economy-btn economy-btn--secondary"
-          >
-            + Открыть счет
-          </button>
-        </div>
-      ) : (
+      {!embedded && (
         <div className="economy-hero">
           <div>
             <h1 className="hero-title">
@@ -212,8 +190,34 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
         <>
           {/* Список счетов */}
           <div className="economy-section">
-            <div className="section-header">
-              <h2 className="section-title">Мои счета</h2>
+            <div
+              className="section-header"
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '20px',
+                flexWrap: 'wrap',
+                gap: '12px',
+              }}
+            >
+              <h2 className="section-title" style={{ margin: 0 }}>
+                Мои счета
+              </h2>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                  onClick={() => setShowTransferModal(true)}
+                  className="economy-btn economy-btn--primary"
+                >
+                  Новый перевод
+                </button>
+                <button
+                  onClick={() => setShowCreateAccount(true)}
+                  className="economy-btn economy-btn--secondary"
+                >
+                  + Открыть счет
+                </button>
+              </div>
             </div>
             {accounts.length === 0 ? (
               <div className="economy-empty">

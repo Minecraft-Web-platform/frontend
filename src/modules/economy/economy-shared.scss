@@ -64,14 +64,16 @@
 }
 
 .economy-empty {
-  background-color: #f6f8fa;
-  border: 1px dashed #d2d2d8;
-  border-radius: 16px;
-  padding: 48px 24px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 2px dashed #cbd5e1;
+  border-radius: 20px;
+  padding: 56px 24px;
   text-align: center;
-  color: #535353;
-  font-size: 16px;
-  margin-bottom: 24px;
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 28px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .economy-btn {

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { ICurrency } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 import { CurrencyCard } from '../components/CurrencyCard';
+import { profileService } from '../../profile/services/profile.service';
+import { statesService, IState } from '../../states';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import '../economy-shared.scss';
 
@@ -9,6 +11,8 @@ export const CurrenciesPage: React.FC<{ embedded?: boolean }> = ({
   embedded = false,
 }) => {
   const [currencies, setCurrencies] = useState<ICurrency[]>([]);
+  const [states, setStates] = useState<IState[]>([]);
+  const [currentUsername, setCurrentUsername] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,8 +24,14 @@ export const CurrenciesPage: React.FC<{ embedded?: boolean }> = ({
     try {
       setLoading(true);
       setError(null);
-      const res = await economyService.getAllCurrencies();
-      setCurrencies(res);
+      const [currRes, statesRes, meRes] = await Promise.all([
+        economyService.getAllCurrencies(),
+        statesService.getStates().catch(() => [] as IState[]),
+        profileService.getInfoAboutMe().catch(() => null),
+      ]);
+      setCurrencies(currRes);
+      setStates(statesRes);
+      setCurrentUsername(meRes ? meRes.username : null);
     } catch (e: any) {
       setError(e?.message || 'Ошибка загрузки валют');
     } finally {
@@ -151,14 +161,23 @@ export const CurrenciesPage: React.FC<{ embedded?: boolean }> = ({
             </div>
           ) : (
             <div className="economy-grid">
-              {currencies.map((cur) => (
-                <CurrencyCard
-                  key={cur.id}
-                  currency={cur}
-                  isRuler={true}
-                  onIssueClick={(id) => setIssueCurrencyId(id)}
-                />
-              ))}
+              {currencies.map((cur) => {
+                const state = states.find((s) => s.id === cur.stateId);
+                const isRuler =
+                  Boolean(currentUsername) &&
+                  Boolean(state?.leaderUsername) &&
+                  state?.leaderUsername?.toLowerCase() ===
+                    currentUsername?.toLowerCase();
+
+                return (
+                  <CurrencyCard
+                    key={cur.id}
+                    currency={cur}
+                    isRuler={isRuler}
+                    onIssueClick={(id) => setIssueCurrencyId(id)}
+                  />
+                );
+              })}
             </div>
           )}
 

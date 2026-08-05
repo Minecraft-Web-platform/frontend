@@ -8,13 +8,14 @@ import {
   IStateDecree,
 } from '../../types/states.types';
 import { statesService } from '../../services/states.service';
+import { economyService } from '../../../economy/services/economy.service';
+import { getMinecraftItemInfo } from '../../../economy/constants/minecraft-items';
 import CityCard from '../../components/city-card/city-card.component';
 import DecreesFeed from '../../components/decrees-feed/decrees-feed.component';
 import ElectionsWidget from '../../components/elections-widget/elections-widget.component';
 import DiplomacyBadge from '../../components/diplomacy-badge/diplomacy-badge.component';
 import useAuthStore from '../../../../store/auth.store';
 import { profileService } from '../../../profile/services/profile.service';
-import { economyService } from '../../../economy/services/economy.service';
 import { ICurrency } from '../../../economy/types/economy.types';
 import {
   MinecraftItemDropdown,
@@ -22,6 +23,11 @@ import {
 } from '../../../economy/components/MinecraftItemSelector';
 import '../../../economy/economy-shared.scss';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
+
+const formatAccountNumber = (acc?: string) => {
+  if (!acc) return 'Не учрежден';
+  return '№' + acc.replace(/(\d{4})(?=\d)/g, '$1 ');
+};
 
 const StateDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,6 +38,7 @@ const StateDetailPage: FC = () => {
   const [diplomacy, setDiplomacy] = useState<IDiplomacy[]>([]);
   const [elections, setElections] = useState<IElection[]>([]);
   const [currencies, setCurrencies] = useState<ICurrency[]>([]);
+  const [treasury, setTreasury] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Модальные окна дашборда президента
@@ -76,17 +83,20 @@ const StateDetailPage: FC = () => {
         diplomacyData,
         electionsData,
         currenciesData,
+        treasuryData,
       ] = await Promise.all([
         statesService.getStateById(id),
         statesService.getDecrees(id),
         statesService.getDiplomacy(id),
         statesService.getElections('state', id),
         economyService.getAllCurrencies(),
+        statesService.getStateTreasury(id),
       ]);
       setState(stateData);
       setDecrees(decreesData);
       setDiplomacy(diplomacyData);
       setElections(electionsData);
+      setTreasury(treasuryData);
       setCurrencies(
         currenciesData.filter(
           (c) => !c.stateId || c.stateId === id,
@@ -107,6 +117,37 @@ const StateDetailPage: FC = () => {
     Boolean(state?.leaderUsername) &&
     Boolean(currentUsername) &&
     state?.leaderUsername?.toLowerCase() === currentUsername?.toLowerCase();
+
+  const handleDigitizeTreasury = async () => {
+    if (!id || !canPublishDecree) return;
+    try {
+      setLoading(true);
+      const res = await statesService.digitizeTreasury(id);
+      alert(res.message || 'Успешно оцифровано!');
+      loadData();
+    } catch (err: any) {
+      alert(err?.message || 'Ошибка при оцифровке казны');
+      setLoading(false);
+    }
+  };
+
+  const handleWithdrawTreasury = async (minecraftItemId: string) => {
+    if (!id || !canPublishDecree) return;
+    const qtyStr = prompt('Введите количество предметов для вывода в сейф:');
+    if (!qtyStr) return;
+    const quantity = parseInt(qtyStr, 10);
+    if (isNaN(quantity) || quantity <= 0) return alert('Неверное количество');
+
+    try {
+      setLoading(true);
+      const res = await statesService.withdrawTreasury(id, { minecraftItemId, quantity });
+      alert(res.message || 'Предметы успешно выведены в сейф!');
+      loadData();
+    } catch (err: any) {
+      alert(err?.message || 'Ошибка при выводе из казны');
+      setLoading(false);
+    }
+  };
 
   const handleCreateCity = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,6 +170,10 @@ const StateDetailPage: FC = () => {
   const handleCreateCurrency = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id || !currCode.trim() || !currName.trim()) return;
+    if (currItemId === currKopeckItemId) {
+      alert('Ошибка: Основная и разменная монета не могут быть одинаковым предметом!');
+      return;
+    }
     try {
       await economyService.createCurrency({
         stateId: id,
@@ -236,6 +281,36 @@ const StateDetailPage: FC = () => {
 
   const stateCurrency = currencies.find((c) => c.stateId === state?.id);
 
+  const calculateStatePower = () => {
+    if (!state) return 0;
+    const citizensCount = state.citizens?.length || 0;
+    const activeCitiesCount =
+      state.cities?.filter((c) => (c.citizens?.length || 0) >= 1).length || 0;
+
+    const taxRate = state.taxRate || 5;
+    let taxCoefficient = 1.0;
+    if (taxRate <= 10) {
+      taxCoefficient = 1.0;
+    } else if (taxRate <= 25) {
+      taxCoefficient = 0.95;
+    } else {
+      taxCoefficient = 0.85;
+    }
+
+    let basePower = citizensCount * 10 + activeCitiesCount * 100;
+
+    const currencyCreatedAt = stateCurrency?.createdAt || state.createdAt;
+    if (currencyCreatedAt) {
+      const ageInDays =
+        (Date.now() - new Date(currencyCreatedAt).getTime()) /
+        (1000 * 60 * 60 * 24);
+      const ageWeeks = Math.floor(Math.max(0, ageInDays) / 7);
+      basePower += ageWeeks * 50;
+    }
+
+    return Math.round(basePower * taxCoefficient);
+  };
+
   return (
     <div className="page">
       <Sidebar />
@@ -249,50 +324,97 @@ const StateDetailPage: FC = () => {
           </button>
 
           <div className="state-detail-page__hero">
-            {(state.flagUrl || state.coatOfArmsUrl) && (
-              <div style={{ display: 'flex', gap: '12px' }}>
-                {state.flagUrl && (
-                  <img
-                    src={state.flagUrl}
-                    alt={`${state.name} flag`}
-                    className="state-detail-page__flag"
-                  />
+            <div className="state-detail-page__hero-main">
+              <div className="state-detail-page__header-row">
+                {state.flagUrl || state.coatOfArmsUrl ? (
+                  <div className="state-detail-page__emblems">
+                    {state.flagUrl && (
+                      <img
+                        src={state.flagUrl}
+                        alt={`${state.name} flag`}
+                        className="state-detail-page__flag"
+                      />
+                    )}
+                    {state.coatOfArmsUrl && (
+                      <img
+                        src={state.coatOfArmsUrl}
+                        alt={`${state.name} coat of arms`}
+                        className="state-detail-page__flag"
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <div className="state-detail-page__emblems">
+                    <div className="state-detail-page__flag-placeholder">
+                      <span>🏰</span>
+                    </div>
+                  </div>
                 )}
-                {state.coatOfArmsUrl && (
-                  <img
-                    src={state.coatOfArmsUrl}
-                    alt={`${state.name} coat of arms`}
-                    className="state-detail-page__flag"
-                  />
-                )}
+                <div className="state-detail-page__info">
+                  <h1 className="state-detail-page__name">{state.name}</h1>
+                  <p className="state-detail-page__desc">
+                    {state.description || 'Описание отсутствует.'}
+                  </p>
+                </div>
               </div>
-            )}
-            <div>
-              <h1 className="state-detail-page__name">{state.name}</h1>
-              <p className="state-detail-page__desc">
-                {state.description || 'Описание отсутствует.'}
-              </p>
+
               <div className="state-detail-page__meta">
                 {state.citizenshipName && (
-                  <span>
-                    📜 Гражданство: <strong>{state.citizenshipName}</strong>
-                  </span>
+                  <div className="state-detail-page__stat-pill">
+                    <span>📜 Гражданство:</span> <strong>{state.citizenshipName}</strong>
+                  </div>
                 )}
-                <span>
-                  👑 Президент: <strong>{state.leaderUsername || 'Нет'}</strong>
-                </span>
-                <span>
-                  🏛️ Городов: <strong>{state.cities?.length || 0}</strong>
-                </span>
-                <span>
-                  👥 Граждан: <strong>{state.citizens?.length || 0}</strong>
-                </span>
-                <span>
-                  ⚖️ Налог: <strong>{state.taxRate || 5}%</strong>
-                </span>
-                <span>
-                  🏦 Казна: <strong>{state.treasuryAccountNumber ? `№${state.treasuryAccountNumber}` : 'Не учрежден'}</strong>
-                </span>
+                <div className="state-detail-page__stat-pill">
+                  <span>👑 Президент:</span>{' '}
+                  {state.leaderUsername ? (
+                    <strong
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      <img
+                        src={`https://minotar.net/helm/${state.leaderUsername}/20.png`}
+                        alt=""
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          borderRadius: '4px',
+                          imageRendering: 'pixelated',
+                        }}
+                      />
+                      {state.leaderUsername}
+                    </strong>
+                  ) : (
+                    <strong>Нет</strong>
+                  )}
+                </div>
+                <div className="state-detail-page__stat-pill">
+                  <span>🏛️ Городов:</span> <strong>{state.cities?.length || 0}</strong>
+                </div>
+                <div className="state-detail-page__stat-pill">
+                  <span>👥 Граждан:</span> <strong>{state.citizens?.length || 0}</strong>
+                </div>
+                <div className="state-detail-page__stat-pill">
+                  <span>⚖️ Налог:</span> <strong>{state.taxRate || 5}%</strong>
+                </div>
+                <div
+                  className="state-detail-page__stat-pill state-detail-page__stat-pill--power"
+                  title="Экономическая мощь государства (влияет на курс валюты)"
+                >
+                  <span>⚡ Мощь:</span> <strong>{calculateStatePower()} ед.</strong>
+                </div>
+              </div>
+            </div>
+
+            <div className="state-detail-page__treasury-card">
+              <div className="treasury-label">🏦 Государственная казна</div>
+              <div className="treasury-acc">
+                {formatAccountNumber(state.treasuryAccountNumber)}
+              </div>
+              <div className="treasury-hint">
+                {state.treasuryAccountNumber ? 'Счет в Национальном банке' : 'Требуется регистрация счёта'}
               </div>
             </div>
           </div>
@@ -349,8 +471,8 @@ const StateDetailPage: FC = () => {
                       {!state.treasuryAccountNumber
                         ? '🔒 Сначала учредите Национальный Банк'
                         : stateCurrency
-                        ? `✅ Выпущена: ${stateCurrency.name} (${stateCurrency.code})`
-                        : '⚠️ Не выпущена. Без валюты граждане не могут создавать фирмы и счета!'}
+                          ? `✅ Выпущена: ${stateCurrency.name} (${stateCurrency.code})`
+                          : '⚠️ Не выпущена. Без валюты граждане не могут создавать фирмы и счета!'}
                     </div>
                   </div>
                   {!state.treasuryAccountNumber ? (
@@ -428,7 +550,7 @@ const StateDetailPage: FC = () => {
           )}
 
           <div className="state-detail-page__section-title">
-            <span>🏙️ Города государства ({state.cities?.length || 0})</span>
+            <span>🏙️ &nbsp;Города государства ({state.cities?.length || 0})</span>
             <button
               className="state-detail-page__btn"
               onClick={() => navigate(`/cities?stateId=${state.id}`)}
@@ -441,14 +563,146 @@ const StateDetailPage: FC = () => {
             {state.cities && state.cities.length > 0 ? (
               state.cities.map((city) => <CityCard key={city.id} city={city} />)
             ) : (
-              <p style={{ color: '#a0aec0' }}>
-                В этом государстве еще нет основанных городов.
-              </p>
+              <div className="state-detail-page__empty-card">
+                <div className="empty-icon">🏙️</div>
+                <div className="empty-text">
+                  <strong>
+                    В этом государстве еще нет основанных городов
+                  </strong>
+                  <span>
+                    Основывайте города для привлечения жителей и развития
+                    экономики!
+                  </span>
+                </div>
+                {canPublishDecree && (
+                  <button
+                    className="empty-btn"
+                    onClick={() => setShowCreateCityModal(true)}
+                  >
+                    + Основать город
+                  </button>
+                )}
+              </div>
             )}
           </div>
 
           <div className="state-detail-page__section-title">
-            <span>💰 Валюты государства ({currencies.length})</span>
+            <span>
+              👥 &nbsp;Граждане государства ({state.citizens?.length || 0})
+            </span>
+          </div>
+
+          <div className="state-detail-page__citizens-grid">
+            {state.citizens && state.citizens.length > 0 ? (
+              state.citizens.map((citizen) => {
+                const isLeader =
+                  state.leaderUsername &&
+                  citizen.username.toLowerCase() ===
+                    state.leaderUsername.toLowerCase();
+                const isMe =
+                  currentUsername &&
+                  citizen.username.toLowerCase() ===
+                    currentUsername.toLowerCase();
+
+                return (
+                  <div
+                    key={citizen.id}
+                    className={`state-citizen-card ${
+                      isMe ? 'state-citizen-card--me' : ''
+                    }`}
+                  >
+                    <img
+                      src={`https://minotar.net/helm/${citizen.username}/48.png`}
+                      alt={citizen.username}
+                      className="state-citizen-card__avatar"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://minotar.net/helm/MHF_Steve/48.png';
+                      }}
+                    />
+                    <div className="state-citizen-card__info">
+                      <div className="state-citizen-card__name">
+                        {citizen.username}{' '}
+                        {isMe && <span className="tag-me">(Вы)</span>}
+                      </div>
+                      <div
+                        className={`state-citizen-card__role ${
+                          isLeader ? 'state-citizen-card__role--leader' : ''
+                        }`}
+                      >
+                        {isLeader ? '👑 Президент / Лидер' : '👥 Гражданин'}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="state-detail-page__empty-card">
+                <div className="empty-icon">👥</div>
+                <div className="empty-text">
+                  <strong>
+                    В этом государстве пока нет зарегистрированных граждан
+                  </strong>
+                  <span>
+                    Основывайте города и приглашайте игроков для заселения!
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="state-detail-page__section-title">
+            <span>
+              📦 &nbsp;Золотой резерв и казна государства
+            </span>
+            {canPublishDecree && (
+              <button
+                className="state-detail-page__btn"
+                onClick={handleDigitizeTreasury}
+                style={{ marginLeft: 'auto', background: '#3b82f6', color: '#fff' }}
+              >
+                📥 Оцифровать сейф
+              </button>
+            )}
+          </div>
+          <div className="state-detail-page__treasury-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '16px', marginBottom: '32px' }}>
+            {treasury.length > 0 ? (
+              treasury.map((item) => {
+                const info = getMinecraftItemInfo(item.minecraftItemId);
+                return (
+                  <div key={item.id} className="treasury-card" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)', border: '1px solid #d2d2d8', borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '16px', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)' }}>
+                    <div style={{ fontSize: '36px', filter: 'drop-shadow(0 4px 4px rgba(0,0,0,0.1))' }}>{info ? info.icon : '📦'}</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 'bold', color: '#0f172a', fontSize: '15px' }}>{info ? info.name : item.minecraftItemId}</div>
+                      <div style={{ color: '#64748b', fontSize: '14px', marginTop: '4px' }}>Количество: <strong style={{ color: '#0f172a' }}>{item.quantity} шт.</strong></div>
+                    </div>
+                    {canPublishDecree && (
+                      <button
+                        onClick={() => handleWithdrawTreasury(item.minecraftItemId)}
+                        style={{
+                          background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '6px 12px', fontSize: '13px', cursor: 'pointer', color: '#334155'
+                        }}
+                        title="Вывести в игру"
+                      >
+                        📤 Вывести
+                      </button>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              <div className="state-detail-page__empty-card" style={{ gridColumn: '1 / -1' }}>
+                <div className="empty-icon">📦</div>
+                <div className="empty-text">
+                  <strong>Казна пуста</strong>
+                  <span>Государство еще не сформировало золотой резерв. Загрузка предметов происходит автоматически через игру.</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="state-detail-page__section-title">
+            <span>💰 &nbsp;Валюты государства ({currencies.length})</span>
             <button
               className="state-detail-page__btn"
               onClick={() => navigate('/economy?tab=currencies')}
@@ -475,6 +729,10 @@ const StateDetailPage: FC = () => {
                         <span>В обращении:</span>
                         <strong>{Number(curr.totalIssued || 0).toLocaleString('ru-RU')} {curr.code}</strong>
                       </div>
+                      <div>
+                        <span>Экон. мощь:</span>
+                        <strong>{calculateStatePower()} ед.</strong>
+                      </div>
                     </div>
                   </div>
                   <button
@@ -486,9 +744,24 @@ const StateDetailPage: FC = () => {
                 </div>
               ))
             ) : (
-              <p style={{ color: '#a0aec0' }}>
-                В этом государстве еще нет собственной национальной валюты.
-              </p>
+              <div className="state-detail-page__empty-card">
+                <div className="empty-icon">💰</div>
+                <div className="empty-text">
+                  <strong>Собственная валюта еще не выпущена</strong>
+                  <span>
+                    Учредите Национальный банк и создайте национальную валюту
+                    для торговли!
+                  </span>
+                </div>
+                {canPublishDecree && (
+                  <button
+                    className="empty-btn"
+                    onClick={() => setShowCreateCurrencyModal(true)}
+                  >
+                    + Выпустить валюту
+                  </button>
+                )}
+              </div>
             )}
           </div>
 
@@ -593,6 +866,21 @@ const StateDetailPage: FC = () => {
                   <p style={{ fontSize: '13px', color: '#94a3b8', margin: '8px 0' }}>
                     ℹ️ 1 единица валюты всегда равна 100 копейкам.
                   </p>
+                  {currItemId === currKopeckItemId && (
+                    <div
+                      style={{
+                        padding: '10px 14px',
+                        borderRadius: '8px',
+                        backgroundColor: '#fee2e2',
+                        color: '#b91c1c',
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        margin: '8px 0',
+                      }}
+                    >
+                      ⚠️ Основная и разменная монета не могут быть одинаковым предметом!
+                    </div>
+                  )}
                   <div className="modal-actions">
                     <button
                       type="button"
@@ -604,6 +892,11 @@ const StateDetailPage: FC = () => {
                     <button
                       type="submit"
                       className="economy-btn economy-btn--primary"
+                      disabled={currItemId === currKopeckItemId}
+                      style={{
+                        opacity: currItemId === currKopeckItemId ? 0.5 : 1,
+                        cursor: currItemId === currKopeckItemId ? 'not-allowed' : 'pointer',
+                      }}
                     >
                       Выпустить валюту
                     </button>

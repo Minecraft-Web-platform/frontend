@@ -40,36 +40,40 @@
 
   &__cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 16px;
 
-    @media (max-width: 1100px) {
-      grid-template-columns: repeat(2, 1fr);
+    @media (max-width: 1250px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    @media (max-width: 640px) {
-      grid-template-columns: 1fr;
+    @media (max-width: 800px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 500px) {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 
   &__card {
     background: #ffffff;
     border: 1px solid #d2d2d8;
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 20px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
+    flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
     position: relative;
     overflow: hidden;
 
     &:hover {
-      background: #fcfcfc;
-      border-color: #a1a1aa;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      background: #ffffff;
+      border-color: #000000;
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     }
 
     &--active {
@@ -92,34 +96,40 @@
     }
 
     .card-icon {
-      font-size: 28px;
-      width: 48px;
-      height: 48px;
+      font-size: 24px;
+      width: 44px;
+      height: 44px;
       border-radius: 12px;
       background: #f1f5f9;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      margin-bottom: 14px;
       transition: all 0.2s ease;
     }
 
     .card-info {
-      flex: 1;
+      width: 100%;
 
       .card-title {
         font-family: "Minecraft", sans-serif;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: normal;
         color: #000000;
-        margin: 0 0 6px 0;
+        margin: 0 0 8px 0;
+        line-height: 1.35;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
 
       .card-desc {
         font-size: 13px;
         color: #64748b;
-        line-height: 1.4;
+        line-height: 1.45;
         margin: 0;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
     }
   }

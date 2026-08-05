@@ -100,6 +100,10 @@ export class StatesService {
     return this.httpService.put(`cities/${cityId}/requests/${requestId}`, data);
   }
 
+  public async leaveCity(cityId: string): Promise<{ success: boolean; message: string }> {
+    return this.httpService.post(`cities/${cityId}/leave`, {});
+  }
+
   // --- Elections ---
   public async getElections(targetType?: string, targetId?: string): Promise<IElection[]> {
     const params = new URLSearchParams();
@@ -131,6 +135,19 @@ export class StatesService {
   // --- National Bank ---
   public async createNationalBank(stateId: string, data: { name?: string }): Promise<any> {
     return this.httpService.post(`states/${stateId}/bank`, data);
+  }
+
+  // --- Treasury ---
+  public async getStateTreasury(stateId: string): Promise<any[]> {
+    return this.httpService.get(`states/${stateId}/treasury`);
+  }
+
+  public async digitizeTreasury(stateId: string): Promise<{ message: string; items: any[] }> {
+    return this.httpService.post(`states/${stateId}/treasury/digitize`, {});
+  }
+
+  public async withdrawTreasury(stateId: string, data: { minecraftItemId: string; quantity: number }): Promise<{ message: string }> {
+    return this.httpService.post(`states/${stateId}/treasury/withdraw`, data);
   }
 }
 

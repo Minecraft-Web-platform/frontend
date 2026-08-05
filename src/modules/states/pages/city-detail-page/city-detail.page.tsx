@@ -45,6 +45,14 @@ const CityDetailPage: FC = () => {
 
   const isMayorOrAdmin = Boolean(isMayor) || isAdmin;
 
+  const isCitizenOfThisCity =
+    Boolean(currentUsername) &&
+    Boolean(
+      city?.citizens?.some(
+        (c) => c.username.toLowerCase() === currentUsername?.toLowerCase(),
+      ),
+    );
+
   const loadData = async () => {
     if (!id) return;
     setLoading(true);
@@ -73,11 +81,33 @@ const CityDetailPage: FC = () => {
     setApplying(true);
     try {
       await statesService.createRequest(id, { cityId: id });
-      alert('Ваша заявка на заселение успешно отправлена мэру города!');
+      alert('Ваша заявка на проживание / переезд успешно отправлена мэру города!');
       await loadData();
     } catch (err: any) {
       console.error(err);
-      alert('Не удалось отправить заявку. Возможно, у вас уже есть активная заявка в этот город.');
+      const msg =
+        err?.response?.data?.message ||
+        'Не удалось отправить заявку. Возможно, у вас уже есть активная заявка.';
+      alert(msg);
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  const handleLeaveCity = async () => {
+    if (!id) return;
+    if (!window.confirm('Вы уверены, что хотите покинуть этот город?')) return;
+    setApplying(true);
+    try {
+      await statesService.leaveCity(id);
+      alert('Вы успешно покинули город!');
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      const msg =
+        err?.response?.data?.message ||
+        'Не удалось покинуть город.';
+      alert(msg);
     } finally {
       setApplying(false);
     }
@@ -144,94 +174,223 @@ const CityDetailPage: FC = () => {
         <div className="city-detail-page">
           <button
             className="city-detail-page__back"
-            onClick={() => navigate('/cities')}
+            onClick={() => {
+              const targetStateId = city?.stateId || city?.state?.id;
+              if (targetStateId) {
+                navigate(`/cities?stateId=${targetStateId}`);
+              } else {
+                navigate('/cities');
+              }
+            }}
           >
-            ← К списку городов
+            ← К списку городов {city?.state?.name ? `(${city.state.name})` : ''}
           </button>
 
           <div className="city-detail-page__hero">
-            {city.flagUrl && (
-              <img
-                src={city.flagUrl}
-                alt={`${city.name} flag`}
-                className="city-detail-page__flag"
-              />
-            )}
-            <div className="city-detail-page__info">
-              <h1 className="city-detail-page__title">{city.name}</h1>
-              <div className="city-detail-page__meta">
-                <span className="city-detail-page__badge city-detail-page__badge--mayor">
-                  🏛️ Мэр города: {city.mayorUsername || 'Вакантно (Выборы)'}
-                </span>
-                {city.state && (
-                  <span
-                    className="city-detail-page__badge city-detail-page__badge--state"
-                    onClick={() => navigate(`/states/${city.state?.id}`)}
-                  >
-                    🏰 Государство: {city.state.name}
-                  </span>
-                )}
-                <span className="city-detail-page__badge city-detail-page__badge--mayor">
-                  👥 Жителей: {city.citizens?.length || 0}
-                </span>
+            <div className="city-detail-page__hero-main">
+              <div className="city-detail-page__header-row">
+                <div className="city-detail-page__emblem-wrap">
+                  {city.flagUrl ? (
+                    <img
+                      src={city.flagUrl}
+                      alt={`${city.name} flag`}
+                      className="city-detail-page__flag"
+                    />
+                  ) : (
+                    <div className="city-detail-page__flag-placeholder">
+                      <span>🏛️</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="city-detail-page__info">
+                  <h1 className="city-detail-page__title">{city.name}</h1>
+                  <p className="city-detail-page__desc">
+                    {city.description || 'Описание города пока не указано.'}
+                  </p>
+                </div>
               </div>
 
-              {city.description && (
-                <p className="city-detail-page__desc">{city.description}</p>
-              )}
+              <div className="city-detail-page__meta">
+                <div className="city-detail-page__stat-pill">
+                  <span>🏛️ Мэр города:</span>{' '}
+                  <strong>{city.mayorUsername || 'Вакантно (Выборы)'}</strong>
+                </div>
+                {city.state ? (
+                  <div
+                    className="city-detail-page__stat-pill city-detail-page__stat-pill--state"
+                    onClick={() => navigate(`/states/${city.state?.id}`)}
+                    title="Перейти к странице государства"
+                  >
+                    <span>🏰 Государство:</span>{' '}
+                    <strong>{city.state.name} →</strong>
+                  </div>
+                ) : (
+                  <div className="city-detail-page__stat-pill">
+                    <span>🏰 Государство:</span> <strong>Независимый город</strong>
+                  </div>
+                )}
+                <div className="city-detail-page__stat-pill">
+                  <span>👥 Население:</span>{' '}
+                  <strong>{city.citizens?.length || 0} жит.</strong>
+                </div>
+                <div
+                  className="city-detail-page__stat-pill city-detail-page__stat-pill--power"
+                  title="Экономический вклад города в мощь своего государства"
+                >
+                  <span>⚡ Вклад в мощь:</span>{' '}
+                  <strong>
+                    {(city.citizens?.length || 0) >= 1
+                      ? '+100 ед.'
+                      : '0 ед. (нет жителей)'}
+                  </strong>
+                </div>
+              </div>
 
               <div className="city-detail-page__actions">
-                <button
-                  className="city-detail-page__btn city-detail-page__btn--primary"
-                  onClick={handleApplyForCitizenship}
-                  disabled={applying}
-                >
-                  {applying ? 'Отправка...' : '🏠 Подать заявку на проживание'}
-                </button>
+                {isCitizenOfThisCity ? (
+                  <>
+                    <button
+                      className="city-detail-page__btn city-detail-page__btn--resident"
+                      disabled
+                    >
+                      <span>🏠</span> Вы житель этого города
+                    </button>
+                    <button
+                      className="city-detail-page__btn city-detail-page__btn--danger"
+                      onClick={handleLeaveCity}
+                      disabled={applying}
+                    >
+                      <span>🚪</span> Покинуть город
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="city-detail-page__btn city-detail-page__btn--primary"
+                    onClick={handleApplyForCitizenship}
+                    disabled={applying}
+                  >
+                    <span>🏠</span>{' '}
+                    {applying
+                      ? 'Отправка...'
+                      : 'Подать заявку на проживание / переезд'}
+                  </button>
+                )}
                 {isMayorOrAdmin && (
                   <button
                     className="city-detail-page__btn city-detail-page__btn--secondary"
                     onClick={() => setShowRequestsModal(true)}
                   >
-                    📬 Заявки на заселение ({pendingCount})
+                    <span>📬</span> Заявки на заселение ({pendingCount})
                   </button>
                 )}
+              </div>
+            </div>
+
+            <div className="city-detail-page__passport-card">
+              <div className="passport-label">📜 Паспорт города</div>
+              <div className="passport-status">
+                {(city.citizens?.length || 0) >= 1 ? (
+                  <span className="status-badge status-badge--active">
+                    ● Активный город
+                  </span>
+                ) : (
+                  <span className="status-badge status-badge--inactive">
+                    ○ Малонаселённый
+                  </span>
+                )}
+              </div>
+              <div className="passport-date">
+                Основан:{' '}
+                {city.createdAt
+                  ? new Date(city.createdAt).toLocaleDateString('ru-RU')
+                  : 'Неизвестно'}
               </div>
             </div>
           </div>
 
           {elections.length > 0 && (
-            <>
-              <h3 className="city-detail-page__section-title">
+            <div className="city-detail-page__section">
+              <h2 className="city-detail-page__section-title">
                 🗳️ Выборы Мэра в городе
-              </h3>
-              {elections.map((el) => (
-                <ElectionsWidget
-                  key={el.id}
-                  election={el}
-                  onVote={(candId) => handleVote(el.id, candId)}
-                  onNominate={(progText) => handleNominate(el.id, progText)}
-                />
-              ))}
-            </>
+              </h2>
+              <div className="city-detail-page__elections-list">
+                {elections.map((el) => (
+                  <ElectionsWidget
+                    key={el.id}
+                    election={el}
+                    onVote={(candId) => handleVote(el.id, candId)}
+                    onNominate={(progText) => handleNominate(el.id, progText)}
+                  />
+                ))}
+              </div>
+            </div>
           )}
 
-          <h3 className="city-detail-page__section-title">
-            👥 Жители города ({city.citizens?.length || 0})
-          </h3>
-          <div className="city-detail-page__citizens-grid">
-            {city.citizens && city.citizens.length > 0 ? (
-              city.citizens.map((citizen) => (
-                <div key={citizen.id} className="city-detail-page__citizen">
-                  <div className="city-detail-page__citizen-avatar">👤</div>
-                  <span>{citizen.username}</span>
+          <div className="city-detail-page__section">
+            <h2 className="city-detail-page__section-title">
+              👥 Жители города ({city.citizens?.length || 0})
+            </h2>
+            <div className="city-detail-page__citizens-grid">
+              {city.citizens && city.citizens.length > 0 ? (
+                city.citizens.map((citizen) => {
+                  const isThisMayor =
+                    city.mayorUsername &&
+                    citizen.username.toLowerCase() ===
+                      city.mayorUsername.toLowerCase();
+                  const isMe =
+                    currentUsername &&
+                    citizen.username.toLowerCase() ===
+                      currentUsername.toLowerCase();
+
+                  return (
+                    <div
+                      key={citizen.id}
+                      className={`city-detail-page__citizen-card ${
+                        isMe ? 'city-detail-page__citizen-card--me' : ''
+                      }`}
+                    >
+                      <img
+                        src={`https://minotar.net/helm/${citizen.username}/48.png`}
+                        alt={citizen.username}
+                        className="city-detail-page__citizen-card-avatar"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            'https://minotar.net/helm/MHF_Steve/48.png';
+                        }}
+                      />
+                      <div className="city-detail-page__citizen-card-info">
+                        <div className="city-detail-page__citizen-card-name">
+                          {citizen.username}{' '}
+                          {isMe && (
+                            <span className="citizen-tag-me">(Вы)</span>
+                          )}
+                        </div>
+                        <div
+                          className={`city-detail-page__citizen-card-role ${
+                            isThisMayor
+                              ? 'city-detail-page__citizen-card-role--mayor'
+                              : ''
+                          }`}
+                        >
+                          {isThisMayor ? '👑 Мэр города' : '👥 Житель'}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="city-detail-page__empty-card">
+                  <div className="empty-icon">🏙️</div>
+                  <div className="empty-text">
+                    <strong>
+                      В этом городе пока нет официально зарегистрированных жителей
+                    </strong>
+                    <span>Подайте заявку первым и станьте жителем города!</span>
+                  </div>
                 </div>
-              ))
-            ) : (
-              <p style={{ color: '#a0aec0' }}>
-                В этом городе пока нет официально зарегистрированных жителей.
-              </p>
-            )}
+              )}
+            </div>
           </div>
 
           {showRequestsModal && (

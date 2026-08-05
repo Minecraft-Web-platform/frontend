@@ -153,6 +153,14 @@
       font-family: monospace;
       font-size: 14px;
     }
+
+    &--power {
+      color: #d97706;
+
+      strong {
+        color: #b45309;
+      }
+    }
   }
 
   &__more {

@@ -51,20 +51,17 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
           <div className="label">
             Материальный носитель (1 ед. = 100 коп.)
           </div>
-          <div className="item-row" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <div className="item-row" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {(() => {
               const mainInfo = getMinecraftItemInfo(currency.minecraftItemId);
               return (
-                <span style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                  <span>Основная монета:</span>
-                  <strong style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                  <span style={{ color: '#64748b', fontSize: '13px' }}>Основная:</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#0f172a' }}>
                     {mainInfo ? mainInfo.icon : null}
                     <span>{mainInfo ? mainInfo.name : currency.minecraftItemId}</span>
-                  </strong>
-                  <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>
-                    ({currency.minecraftItemId})
                   </span>
-                </span>
+                </div>
               );
             })()}
 
@@ -72,41 +69,29 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
               (() => {
                 const kopInfo = getMinecraftItemInfo(currency.kopeckItemId);
                 return (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                    <span>Разменная монета:</span>
-                    <strong style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                    <span style={{ color: '#64748b', fontSize: '13px' }}>Разменная:</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#0f172a' }}>
                       {kopInfo ? kopInfo.icon : null}
                       <span>{kopInfo ? kopInfo.name : currency.kopeckItemId}</span>
-                    </strong>
-                    <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>
-                      ({currency.kopeckItemId})
                     </span>
-                  </span>
+                  </div>
                 );
               })()}
 
-            <span className="enchant" style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-              {(() => {
-                const enchInfo = currency.minecraftEnchantment
-                  ? getMinecraftEnchantInfo(currency.minecraftEnchantment)
-                  : null;
+            {currency.minecraftEnchantment &&
+              (() => {
+                const enchInfo = getMinecraftEnchantInfo(currency.minecraftEnchantment);
                 return (
-                  <>
-                    <span>✨ Чары:</span>
-                    <strong>
-                      {enchInfo
-                        ? enchInfo.name
-                        : currency.minecraftEnchantment || 'Не указано'}
-                    </strong>
-                    {currency.minecraftEnchantment && (
-                      <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>
-                        ({currency.minecraftEnchantment})
-                      </span>
-                    )}
-                  </>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', paddingTop: '4px', borderTop: '1px dashed #e2e8f0' }}>
+                    <span style={{ color: '#64748b', fontSize: '13px' }}>Чары защиты:</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#7c3aed' }}>
+                      <span>{enchInfo ? enchInfo.icon : '✨'}</span>
+                      <span>{enchInfo ? enchInfo.name : currency.minecraftEnchantment}</span>
+                    </span>
+                  </div>
                 );
               })()}
-            </span>
           </div>
         </div>
 
