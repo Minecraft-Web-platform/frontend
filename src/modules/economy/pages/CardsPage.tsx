@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { IAccount, ICard } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
+import { BankCard3D } from '../components/BankCard3D/BankCard3D';
 import './CardsPage.scss';
 
 export const CardsPage: React.FC = () => {
@@ -17,8 +18,6 @@ export const CardsPage: React.FC = () => {
   const [showIssueModal, setShowIssueModal] = useState<boolean>(false);
   const [selectedAccountId, setSelectedAccountId] = useState<string>('');
 
-  // Состояние отображения секретных реквизитов (CVV, полный номер)
-  const [revealSecrets, setRevealSecrets] = useState<boolean>(false);
   const [copyToast, setCopyToast] = useState<string | null>(null);
 
   const loadData = async () => {
@@ -90,10 +89,6 @@ export const CardsPage: React.FC = () => {
     }, 2500);
   };
 
-  const formatCardNumberMasked = (num: string) => {
-    if (!num || num.length < 16) return num;
-    return `${num.slice(0, 4)}  ••••  ••••  ${num.slice(-4)}`;
-  };
 
   const formatCardNumberFull = (num: string) => {
     if (!num || num.length < 16) return num;
@@ -111,19 +106,7 @@ export const CardsPage: React.FC = () => {
     return `${typeName} №${acc.accountNumber.slice(0, 5)}...${acc.accountNumber.slice(-4)} (${acc.currencyCode})`;
   };
 
-  const formatBankBrand = (bankName?: string) => {
-    const name = (bankName || 'НАЦИОНАЛЬНЫЙ БАНК').toUpperCase();
-    const parts = name.split(' ');
-    if (parts.length > 1) {
-      const lastWord = parts.pop();
-      return (
-        <>
-          {parts.join(' ')} <span>{lastWord}</span>
-        </>
-      );
-    }
-    return <span>{name}</span>;
-  };
+
 
   const activeCount = cards.filter((c) => !c.isBlocked).length;
   const blockedCount = cards.filter((c) => c.isBlocked).length;
@@ -173,69 +156,8 @@ export const CardsPage: React.FC = () => {
           </div>
 
           <div className="detail-grid">
-            {/* Левая колонка: Крупная визуальная карта */}
             <div className="detail-card-column">
-              <div
-                className={`plastic-card plastic-card--large ${
-                  currentCard.isBlocked ? 'plastic-card--blocked' : ''
-                }`}
-              >
-                <div className="plastic-card__top">
-                  <div className="brand">
-                    {formatBankBrand(currentCard.bankName || (linkedAcc && linkedAcc.bankName))}
-                  </div>
-                  <span
-                    className={`status-badge ${
-                      currentCard.isBlocked
-                        ? 'status-badge--blocked'
-                        : 'status-badge--active'
-                    }`}
-                  >
-                    {currentCard.isBlocked ? 'Заблокирована' : 'Активна'}
-                  </span>
-                </div>
-
-                <div className="plastic-card__chip-row">
-                  <div className="chip" />
-                  <span className="contactless">(((</span>
-                </div>
-
-                <div className="plastic-card__number">
-                  {revealSecrets
-                    ? formatCardNumberFull(currentCard.cardNumber)
-                    : formatCardNumberMasked(currentCard.cardNumber)}
-                </div>
-
-                <div className="plastic-card__bottom">
-                  <div className="holder">
-                    <div className="label">ВЛАДЕЛЕЦ КАРТЫ</div>
-                    <div className="name">
-                      {linkedAcc ? linkedAcc.ownerUsername : 'СЕРВЕРНЫЙ ГРАЖДАНИН'}
-                    </div>
-                  </div>
-                  <div className="expiry">
-                    <div className="label">ГОДНА ДО / CVV</div>
-                    <div className="val">
-                      {currentCard.expiresAt} / {revealSecrets ? currentCard.cvv : '•••'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Управление отображением секретов */}
-              <div className="card-controls">
-                <span className="control-label">
-                  {revealSecrets
-                    ? '👁️ Реквизиты открыты'
-                    : '🔒 Номер и CVV скрыты'}
-                </span>
-                <button
-                  className="eye-btn"
-                  onClick={() => setRevealSecrets(!revealSecrets)}
-                >
-                  {revealSecrets ? 'Скрыть реквизиты' : 'Показать номер и CVV'}
-                </button>
-              </div>
+              <BankCard3D card={currentCard} account={linkedAcc} />
             </div>
 
             {/* Правая колонка: Реквизиты, привязанный счет и действия */}
@@ -437,54 +359,20 @@ export const CardsPage: React.FC = () => {
           </button>
         </div>
       ) : (
-        <div className="cards-page__grid">
+        <div className="cards-page__wallet-stack">
           {cards.map((card) => {
             const linkedAcc = card.account || accounts.find((a) => a.id === card.accountId);
 
             return (
               <div
                 key={card.id}
-                className={`plastic-card ${
-                  card.isBlocked ? 'plastic-card--blocked' : ''
-                }`}
-                onClick={() => setSearchParams({ tab: 'cards', cardId: card.id })}
+                className="wallet-stack-item"
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  setSearchParams({ tab: 'cards', cardId: card.id });
+                }}
               >
-                <div className="plastic-card__top">
-                  <div className="brand">
-                    {formatBankBrand(card.bankName || (linkedAcc && linkedAcc.bankName))}
-                  </div>
-                  <span
-                    className={`status-badge ${
-                      card.isBlocked
-                        ? 'status-badge--blocked'
-                        : 'status-badge--active'
-                    }`}
-                  >
-                    {card.isBlocked ? 'Заблокирована' : 'Активна'}
-                  </span>
-                </div>
-
-                <div className="plastic-card__chip-row">
-                  <div className="chip" />
-                  <span className="contactless">(((</span>
-                </div>
-
-                <div className="plastic-card__number">
-                  {formatCardNumberMasked(card.cardNumber)}
-                </div>
-
-                <div className="plastic-card__bottom">
-                  <div className="holder">
-                    <div className="label">СЧЕТ ПРИВЯЗКИ</div>
-                    <div className="name">
-                      {linkedAcc ? getAccountLabel(linkedAcc) : `Счет ID: ${card.accountId.slice(0, 8)}`}
-                    </div>
-                  </div>
-                  <div className="expiry">
-                    <div className="label">ГОДНА ДО</div>
-                    <div className="val">{card.expiresAt}</div>
-                  </div>
-                </div>
+                <BankCard3D card={card} account={linkedAcc} disableRotation={true} />
               </div>
             );
           })}

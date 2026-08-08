@@ -121,13 +121,49 @@ const Profile: FC = () => {
                   disabled
                 />
 
-                <Input
-                  value={info?.uuid.toUpperCase() as string}
-                  placeholder=""
-                  label="UUID"
-                  element="input"
-                  disabled
-                />
+                <div style={{ display: "flex", gap: "10px", alignItems: "flex-end", marginBottom: "16px" }}>
+                  <div style={{ flex: 1 }}>
+                    <Input
+                      value={info?.uuid?.toUpperCase() || ""}
+                      placeholder=""
+                      label="UUID (игрока)"
+                      element="input"
+                      disabled
+                    />
+                  </div>
+                  <Button
+                    callback={() => {
+                      navigator.clipboard.writeText(info?.uuid || "");
+                      alert("Скопировано!");
+                    }}
+                    style={{ width: "48px", height: "48px", minWidth: "48px" }}
+                  >
+                    📋
+                  </Button>
+                </div>
+                
+                {info?.stateId && (
+                  <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
+                    <div style={{ flex: 1 }}>
+                      <Input
+                        value={info.stateId.toUpperCase()}
+                        placeholder=""
+                        label="UUID (государства)"
+                        element="input"
+                        disabled
+                      />
+                    </div>
+                    <Button
+                      callback={() => {
+                        navigator.clipboard.writeText(info.stateId || "");
+                        alert("Скопировано!");
+                      }}
+                      style={{ width: "48px", height: "48px", minWidth: "48px" }}
+                    >
+                      📋
+                    </Button>
+                  </div>
+                )}
               </div>
 
               <div className="right">

@@ -9,6 +9,7 @@ import {
 import { statesService } from '../../services/states.service';
 import CitizenshipRequestsModal from '../../components/citizenship-requests-modal/citizenship-requests-modal.component';
 import ElectionsWidget from '../../components/elections-widget/elections-widget.component';
+import { EditCityModal } from '../../components/edit-city-modal/EditCityModal';
 import useAuthStore from '../../../../store/auth.store';
 import { profileService } from '../../../profile/services/profile.service';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
@@ -22,6 +23,7 @@ const CityDetailPage: FC = () => {
   const [elections, setElections] = useState<IElection[]>([]);
   const [loading, setLoading] = useState(true);
   const [showRequestsModal, setShowRequestsModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [applying, setApplying] = useState(false);
 
   const { isAuthenticated, isAdmin } = useAuthStore();
@@ -104,12 +106,72 @@ const CityDetailPage: FC = () => {
       await loadData();
     } catch (err: any) {
       console.error(err);
-      const msg =
-        err?.response?.data?.message ||
-        'Не удалось покинуть город.';
+      const msg = err?.response?.data?.message || 'Не удалось покинуть город.';
       alert(msg);
     } finally {
       setApplying(false);
+    }
+  };
+
+  const handleEditCity = async (data: { name?: string; description?: string; flagUrl?: string }) => {
+    if (!id) return;
+    try {
+      await statesService.updateCity(id, data);
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      throw err; // throw so the modal can handle it
+    }
+  };
+
+  const handleDeleteCity = async () => {
+    if (!id) return;
+    if (!window.confirm('ВНИМАНИЕ! Это действие необратимо. Удалить город?')) return;
+    try {
+      await statesService.deleteCity(id);
+      alert('Город успешно удален');
+      navigate('/cities');
+    } catch (err: any) {
+      console.error(err);
+      alert(err?.response?.data?.message || 'Не удалось удалить город');
+    }
+  };
+
+  const handleSetCapital = async () => {
+    if (!id) return;
+    if (!window.confirm('Сделать этот город столицей государства?')) return;
+    try {
+      await statesService.setCapital(id);
+      alert('Город успешно назначен столицей!');
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      alert(err?.response?.data?.message || 'Не удалось назначить столицу');
+    }
+  };
+
+  const handleAddImage = async () => {
+    if (!id) return;
+    const url = window.prompt('Введите URL картинки города:');
+    if (!url) return;
+    try {
+      await statesService.addCityImage(id, url);
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      alert(err?.response?.data?.message || 'Не удалось добавить картинку');
+    }
+  };
+
+  const handleRemoveImage = async (url: string) => {
+    if (!id) return;
+    if (!window.confirm('Удалить эту картинку?')) return;
+    try {
+      await statesService.removeCityImage(id, url);
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      alert(err?.response?.data?.message || 'Не удалось удалить картинку');
     }
   };
 
@@ -277,18 +339,45 @@ const CityDetailPage: FC = () => {
                   </button>
                 )}
                 {isMayorOrAdmin && (
-                  <button
-                    className="city-detail-page__btn city-detail-page__btn--secondary"
-                    onClick={() => setShowRequestsModal(true)}
-                  >
-                    <span>📬</span> Заявки на заселение ({pendingCount})
-                  </button>
+                  <>
+                    <button
+                      className="city-detail-page__btn city-detail-page__btn--primary"
+                      onClick={() => setShowEditModal(true)}
+                    >
+                      <span>✏️</span> Редактировать город
+                    </button>
+                    <button
+                      className="city-detail-page__btn city-detail-page__btn--secondary"
+                      onClick={() => setShowRequestsModal(true)}
+                    >
+                      <span>📬</span> Заявки на заселение ({pendingCount})
+                    </button>
+                    {!city.isCapital && (
+                      <button
+                        className="city-detail-page__btn city-detail-page__btn--primary"
+                        onClick={handleSetCapital}
+                      >
+                        <span>🏛️</span> Сделать столицей
+                      </button>
+                    )}
+                    <button
+                      className="city-detail-page__btn city-detail-page__btn--danger"
+                      onClick={handleDeleteCity}
+                    >
+                      <span>🗑️</span> Удалить город
+                    </button>
+                  </>
                 )}
               </div>
             </div>
 
             <div className="city-detail-page__passport-card">
               <div className="passport-label">📜 Паспорт города</div>
+              {city.isCapital && (
+                <div className="passport-capital-badge">
+                  ⭐ СТОЛИЦА ГОСУДАРСТВА
+                </div>
+              )}
               <div className="passport-status">
                 {(city.citizens?.length || 0) >= 1 ? (
                   <span className="status-badge status-badge--active">
@@ -306,6 +395,38 @@ const CityDetailPage: FC = () => {
                   ? new Date(city.createdAt).toLocaleDateString('ru-RU')
                   : 'Неизвестно'}
               </div>
+            </div>
+          </div>
+
+          {/* City Images */}
+          <div className="city-detail-page__section">
+            <div className="city-detail-page__section-header">
+              <h2 className="city-detail-page__section-title">🖼️ Фотографии города</h2>
+              {isMayorOrAdmin && (
+                <button className="city-detail-page__btn city-detail-page__btn--secondary" onClick={handleAddImage}>
+                  Добавить фото
+                </button>
+              )}
+            </div>
+            <div className="city-images-grid">
+              {city.images && city.images.length > 0 ? (
+                city.images.map((img, idx) => (
+                  <div key={idx} className="city-image-card">
+                    <img src={img} alt={`City view ${idx + 1}`} />
+                    {isMayorOrAdmin && (
+                      <button className="city-image-delete" onClick={() => handleRemoveImage(img)}>×</button>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className="city-detail-page__empty-card">
+                  <div className="empty-icon">📷</div>
+                  <div className="empty-text">
+                    <strong>Нет фотографий</strong>
+                    <span>Мэр пока не загрузил фотографии этого города</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -398,6 +519,14 @@ const CityDetailPage: FC = () => {
               requests={requests}
               onClose={() => setShowRequestsModal(false)}
               onReview={handleReviewRequest}
+            />
+          )}
+
+          {showEditModal && (
+            <EditCityModal
+              city={city}
+              onClose={() => setShowEditModal(false)}
+              onSave={handleEditCity}
             />
           )}
         </div>

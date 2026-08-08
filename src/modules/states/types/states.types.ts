@@ -20,6 +20,8 @@ export interface ICity {
   mayorUsername?: string | null;
   stateId?: string | null;
   createdAt: string;
+  isCapital?: boolean;
+  images?: string[];
   state?: IState;
   citizens?: IStateCitizen[];
   citizenshipRequests?: ICitizenshipRequest[];

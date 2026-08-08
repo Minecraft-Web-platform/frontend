@@ -49,8 +49,8 @@ const StateDetailPage: FC = () => {
   const [showCreateCurrencyModal, setShowCreateCurrencyModal] = useState(false);
   const [currCode, setCurrCode] = useState('');
   const [currName, setCurrName] = useState('');
-  const [currItemId, setCurrItemId] = useState('minecraft:gold_ingot');
-  const [currKopeckItemId, setCurrKopeckItemId] = useState('minecraft:gold_nugget');
+  const [currItemId, setCurrItemId] = useState('createdeco:gold_coin');
+  const [currKopeckItemId, setCurrKopeckItemId] = useState('createdeco:copper_coin');
   const [currEnchantment, setCurrEnchantment] = useState('unbreaking:3');
 
   const [showCreateBankModal, setShowCreateBankModal] = useState(false);
@@ -351,7 +351,19 @@ const StateDetailPage: FC = () => {
                   </div>
                 )}
                 <div className="state-detail-page__info">
-                  <h1 className="state-detail-page__name">{state.name}</h1>
+                  <h1 className="state-detail-page__name" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {state.name}
+                    <button 
+                      title="Скопировать ID" 
+                      onClick={() => {
+                        navigator.clipboard.writeText(state.id);
+                        alert('ID скопирован: ' + state.id);
+                      }}
+                      style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: 0 }}
+                    >
+                      📋
+                    </button>
+                  </h1>
                   <p className="state-detail-page__desc">
                     {state.description || 'Описание отсутствует.'}
                   </p>

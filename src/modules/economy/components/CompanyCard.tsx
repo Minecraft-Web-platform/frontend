@@ -39,7 +39,20 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
               </div>
             )}
             <div className="title-box">
-              <h3>{company.name}</h3>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+                {company.name}
+                <button 
+                  title="Скопировать ID фирмы"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigator.clipboard.writeText(company.id);
+                    alert('ID фирмы скопирован: ' + company.id);
+                  }}
+                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0, fontSize: '1rem' }}
+                >
+                  📋
+                </button>
+              </h3>
               <div className="owner">
                 Владелец: <strong>{company.ownerUsername}</strong>
               </div>

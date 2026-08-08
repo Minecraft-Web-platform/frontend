@@ -48,12 +48,14 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
           profileService.getInfoAboutMe().catch(() => null),
           statesService.getStates().catch(() => [] as IState[]),
           statesService.getCities().catch(() => [] as ICity[]),
+          economyService.getAllCompanies().catch(() => []),
         ]);
       setAccounts(accRes.accounts);
       setCards(accRes.cards);
       setTransfers(transRes);
       setCurrencies(currRes);
       setStatesList(stRes);
+      // We don't use companies or myInfo anymore so we don't set them
 
       let userStateId = meRes?.stateId || null;
       if (!userStateId && meRes?.cityId) {

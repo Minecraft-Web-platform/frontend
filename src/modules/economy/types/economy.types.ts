@@ -21,6 +21,9 @@ export interface ICard {
   createdAt: string;
   account?: IAccount;
   bankName?: string;
+  backgroundImageUrl?: string;
+  currencyItemId?: string;
+  companyName?: string;
 }
 
 export interface ITransfer {

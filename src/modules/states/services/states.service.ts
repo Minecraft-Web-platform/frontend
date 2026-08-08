@@ -83,6 +83,21 @@ export class StatesService {
     return this.httpService.delete(`cities/${id}`);
   }
 
+  public async setCapital(cityId: string): Promise<ICity> {
+    return this.httpService.post(`cities/${cityId}/capital`, {});
+  }
+
+  public async addCityImage(cityId: string, imageUrl: string): Promise<ICity> {
+    return this.httpService.post(`cities/${cityId}/images`, { imageUrl });
+  }
+
+  public async removeCityImage(cityId: string, imageUrl: string): Promise<ICity> {
+    // Axios DELETE with body requires passing data in config.
+    // EnhancedWithAuthHttpService might just use standard Axios config.
+    // If it's a simple wrapper, we can pass it as data.
+    return this.httpService.delete(`cities/${cityId}/images`, { data: { imageUrl } });
+  }
+
   // --- Citizenship Requests ---
   public async getRequests(cityId: string): Promise<ICitizenshipRequest[]> {
     return this.httpService.get(`cities/${cityId}/requests`);

@@ -7,6 +7,7 @@ type Props = {
   disabled?: boolean;
   secondary?: boolean;
   type?: "button" | "submit" | "reset";
+  style?: React.CSSProperties;
 };
 
 const Button: FC<Props> = ({
@@ -15,6 +16,7 @@ const Button: FC<Props> = ({
   disabled = false,
   secondary = false,
   type = "submit",
+  style,
 }) => {
   const classNames = "button" + (secondary ? " button--secondary" : "");
 
@@ -24,6 +26,7 @@ const Button: FC<Props> = ({
       onClick={callback}
       disabled={disabled}
       type={type}
+      style={style}
     >
       {children}
     </button>
