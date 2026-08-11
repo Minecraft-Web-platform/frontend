@@ -11,6 +11,7 @@ import { AccountCard } from '../components/AccountCard';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import { profileService } from '../../profile/services/profile.service';
 import { statesService, IState, ICity } from '../../states';
+import { TransactionReceiptModal } from '../components/transaction-receipt-modal/transaction-receipt.modal';
 import '../economy-shared.scss';
 
 export const BankPage: React.FC<{ embedded?: boolean }> = ({
@@ -18,7 +19,8 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
 }) => {
   const [accounts, setAccounts] = useState<IAccount[]>([]);
   const [cards, setCards] = useState<ICard[]>([]);
-  const [transfers, setTransfers] = useState<ITransfer[]>([]);
+  const [transfers, setTransfers] = useState<any[]>([]);
+  const [selectedAccountFilter, setSelectedAccountFilter] = useState<string>('ALL');
   const [currencies, setCurrencies] = useState<ICurrency[]>([]);
   const [statesList, setStatesList] = useState<IState[]>([]);
   const [myStateId, setMyStateId] = useState<string | null>(null);
@@ -35,6 +37,7 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
   const [transferTo, setTransferTo] = useState('');
   const [transferAmount, setTransferAmount] = useState('');
   const [transferComment, setTransferComment] = useState('');
+  const [selectedTransaction, setSelectedTransaction] = useState<ITransfer | null>(null);
 
   const loadData = async () => {
     try {
@@ -243,16 +246,37 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
 
           {/* История переводов */}
           <div className="economy-section">
-            <div className="section-header">
-              <h2 className="section-title">
+            <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 className="section-title" style={{ margin: 0 }}>
                 История переводов и налогов
               </h2>
+              {accounts.length > 0 && (
+                <select 
+                  className="economy-input" 
+                  style={{ width: 'auto', padding: '8px 12px' }}
+                  value={selectedAccountFilter}
+                  onChange={(e) => setSelectedAccountFilter(e.target.value)}
+                >
+                  <option value="ALL">Все счета</option>
+                  {accounts.map(a => (
+                     <option key={a.id} value={a.accountNumber}>{a.title} ({a.accountNumber})</option>
+                  ))}
+                </select>
+              )}
             </div>
-            {transfers.length === 0 ? (
-              <div className="economy-empty">
-                История транзакций пуста
-              </div>
-            ) : (
+            {(() => {
+              const filteredTransfers = selectedAccountFilter === 'ALL' 
+                ? transfers 
+                : transfers.filter(t => t.fromAccountNumber === selectedAccountFilter || t.toAccountNumber === selectedAccountFilter);
+              
+              if (filteredTransfers.length === 0) {
+                return (
+                  <div className="economy-empty">
+                    История транзакций пуста
+                  </div>
+                );
+              }
+              return (
               <div className="economy-table-container">
                 <table className="economy-table">
                   <thead>
@@ -266,8 +290,13 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {transfers.map((t) => (
-                      <tr key={t.id}>
+                    {filteredTransfers.map((t) => (
+                      <tr 
+                        key={t.id} 
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => setSelectedTransaction(t)}
+                        title="Нажмите для просмотра чека"
+                      >
                         <td style={{ color: '#9ca3af', fontSize: '13px' }}>
                           {new Date(t.createdAt).toLocaleString('ru-RU')}
                         </td>
@@ -306,7 +335,8 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
                   </tbody>
                 </table>
               </div>
-            )}
+              );
+            })()}
           </div>
         </>
       )}
@@ -525,6 +555,14 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
             </form>
           </div>
         </div>
+      )}
+
+      {selectedTransaction && (
+        <TransactionReceiptModal
+          transaction={selectedTransaction}
+          currencies={currencies}
+          onClose={() => setSelectedTransaction(null)}
+        />
       )}
     </div>
   );

@@ -9,6 +9,7 @@ export interface IAccount {
   currencyCode: string;
   createdAt: string;
   bankName?: string;
+  title?: string;
 }
 
 export interface ICard {
@@ -30,6 +31,10 @@ export interface ITransfer {
   id: string;
   fromAccountNumber: string;
   toAccountNumber: string;
+  fromOwnerName?: string;
+  toOwnerName?: string;
+  fromCoatOfArms?: string | null;
+  toCoatOfArms?: string | null;
   amount: number;
   currencyCode: string;
   taxAmount: number;
@@ -62,6 +67,7 @@ export interface ICompany {
   stateId: string | null;
   accountId: string | null;
   isPublic: boolean;
+  exchangeStateId: string | null;
   totalShares: number;
   availableShares: number;
   sharePrice: number;
@@ -72,7 +78,8 @@ export interface ICompany {
 export interface ICompanyShare {
   id: string;
   companyId: string;
-  ownerUsername: string;
+  ownerType: 'player' | 'state' | 'company';
+  ownerId: string;
   sharesCount: number;
   boughtAtPrice: number;
   createdAt: string;
@@ -119,12 +126,25 @@ export interface CreateCompanyRequest {
 export interface ConductIPORequest {
   totalShares?: number;
   initialPrice?: number;
+  exchangeStateId: string;
 }
 
 export interface BuySellSharesRequest {
   count: number;
+  buyerType?: 'player' | 'state' | 'company';
+  buyerId?: string;
+  sellerType?: 'player' | 'state' | 'company';
+  sellerId?: string;
 }
 
 export interface PayDividendsRequest {
   totalAmount: number;
+}
+
+export interface ICompanySharePriceHistory {
+  id: string;
+  companyId: string;
+  price: number;
+  changedByUsername: string;
+  createdAt: string;
 }

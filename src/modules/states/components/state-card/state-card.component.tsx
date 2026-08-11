@@ -15,9 +15,8 @@ const StateCard: FC<StateCardProps> = ({ state }) => {
   const firstLetter = state.name ? state.name.charAt(0).toUpperCase() : 'S';
 
   const calculatePower = () => {
-    const activeCities =
-      state.cities?.filter((c) => (c.citizens?.length || 0) >= 1).length || 0;
-    const taxRate = state.taxRate || 5;
+    const activeCities = state.cities?.filter((c) => (c.citizens?.length || 0) >= 1).length || 0;
+    const taxRate = state.playerToCompanyTransferFee || 5;
     let taxCoefficient = 1.0;
     if (taxRate <= 10) {
       taxCoefficient = 1.0;

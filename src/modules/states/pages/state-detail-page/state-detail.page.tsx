@@ -57,7 +57,13 @@ const StateDetailPage: FC = () => {
   const [bankName, setBankName] = useState('');
 
   const [showTaxModal, setShowTaxModal] = useState(false);
-  const [newTaxRate, setNewTaxRate] = useState('5');
+  const [newPlayerToPlayerTax, setNewPlayerToPlayerTax] = useState('0');
+  const [newPlayerToCompanyTax, setNewPlayerToCompanyTax] = useState('5');
+  const [newExchangeFee, setNewExchangeFee] = useState('2');
+
+  const [showRolesModal, setShowRolesModal] = useState(false);
+  const [newTreasurer, setNewTreasurer] = useState('');
+  const [newVoivode, setNewVoivode] = useState('');
 
   const { isAuthenticated } = useAuthStore();
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
@@ -117,6 +123,23 @@ const StateDetailPage: FC = () => {
     Boolean(state?.leaderUsername) &&
     Boolean(currentUsername) &&
     state?.leaderUsername?.toLowerCase() === currentUsername?.toLowerCase();
+
+  const isTreasurer = 
+    Boolean(state?.treasurerUsername) &&
+    Boolean(currentUsername) &&
+    state?.treasurerUsername?.toLowerCase() === currentUsername?.toLowerCase();
+
+  const handleResignPresident = async () => {
+    if (!id) return;
+    if (!window.confirm('Вы уверены, что хотите сложить полномочия президента?')) return;
+    try {
+      await statesService.resignPresident(id);
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      alert(err?.response?.data?.message || 'Ошибка отставки');
+    }
+  };
 
   const handleDigitizeTreasury = async () => {
     if (!id || !canPublishDecree) return;
@@ -212,17 +235,39 @@ const StateDetailPage: FC = () => {
     e.preventDefault();
     if (!id) return;
     try {
-      const rate = parseFloat(newTaxRate);
-      if (isNaN(rate) || rate < 0 || rate > 100) {
+      const p2p = parseFloat(newPlayerToPlayerTax);
+      const p2c = parseFloat(newPlayerToCompanyTax);
+      const ex = parseFloat(newExchangeFee);
+      if (isNaN(p2p) || p2p < 0 || p2p > 100 || isNaN(p2c) || p2c < 0 || p2c > 100 || isNaN(ex) || ex < 0 || ex > 100) {
         alert('Введите корректный процент налога от 0 до 100');
         return;
       }
-      await statesService.updateState(id, { taxRate: rate });
+      await statesService.updateState(id, { 
+        playerToPlayerTransferFee: p2p,
+        playerToCompanyTransferFee: p2c,
+        exchangeTradingFee: ex
+      });
       setShowTaxModal(false);
-      alert('Процент налоговой ставки успешно обновлен');
+      alert('Налоги успешно обновлены');
       loadData();
     } catch (err: any) {
       alert(err?.message || 'Ошибка при изменении ставки налога');
+    }
+  };
+
+  const handleUpdateRoles = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
+    try {
+      await statesService.assignRoles(id, { 
+        treasurerUsername: newTreasurer || undefined, 
+        voivodeUsername: newVoivode || undefined 
+      });
+      setShowRolesModal(false);
+      alert('Роли успешно обновлены');
+      loadData();
+    } catch (err: any) {
+      alert(err?.message || 'Ошибка при обновлении ролей');
     }
   };
 
@@ -284,10 +329,9 @@ const StateDetailPage: FC = () => {
   const calculateStatePower = () => {
     if (!state) return 0;
     const citizensCount = state.citizens?.length || 0;
-    const activeCitiesCount =
+    const activeCities =
       state.cities?.filter((c) => (c.citizens?.length || 0) >= 1).length || 0;
-
-    const taxRate = state.taxRate || 5;
+    const taxRate = state.playerToCompanyTransferFee || 5;
     let taxCoefficient = 1.0;
     if (taxRate <= 10) {
       taxCoefficient = 1.0;
@@ -297,7 +341,7 @@ const StateDetailPage: FC = () => {
       taxCoefficient = 0.85;
     }
 
-    let basePower = citizensCount * 10 + activeCitiesCount * 100;
+    let basePower = citizensCount * 10 + activeCities * 100;
 
     const currencyCreatedAt = stateCurrency?.createdAt || state.createdAt;
     if (currencyCreatedAt) {
@@ -409,7 +453,7 @@ const StateDetailPage: FC = () => {
                   <span>👥 Граждан:</span> <strong>{state.citizens?.length || 0}</strong>
                 </div>
                 <div className="state-detail-page__stat-pill">
-                  <span>⚖️ Налог:</span> <strong>{state.taxRate || 5}%</strong>
+                  <span>⚖️ Налоги:</span> <strong>{state.playerToPlayerTransferFee || 0}% / {state.playerToCompanyTransferFee || 5}%</strong>
                 </div>
                 <div
                   className="state-detail-page__stat-pill state-detail-page__stat-pill--power"
@@ -425,9 +469,18 @@ const StateDetailPage: FC = () => {
               <div className="treasury-acc">
                 {formatAccountNumber(state.treasuryAccountNumber)}
               </div>
-              <div className="treasury-hint">
+              <div className="treasury-hint" style={{ marginBottom: (canPublishDecree || isTreasurer) ? '12px' : '0' }}>
                 {state.treasuryAccountNumber ? 'Счет в Национальном банке' : 'Требуется регистрация счёта'}
               </div>
+              {(canPublishDecree || isTreasurer) && (
+                <button
+                  className="economy-btn economy-btn--primary"
+                  style={{ width: '100%', fontSize: '14px', padding: '8px 12px' }}
+                  onClick={() => navigate(`/states/${id}/national-bank`)}
+                >
+                  Управление Нацбанком
+                </button>
+              )}
             </div>
           </div>
 
@@ -450,6 +503,22 @@ const StateDetailPage: FC = () => {
                     onClick={() => setShowCreateCityModal(true)}
                   >
                     + Основать город
+                  </button>
+                </div>
+
+                <div className="state-dashboard__card">
+                  <div>
+                    <div className="card-title">🚪 Полномочия</div>
+                    <div className="card-subtitle">
+                      Вы можете сложить полномочия президента в любой момент.
+                    </div>
+                  </div>
+                  <button
+                    className="card-action"
+                    style={{ background: '#fee2e2', color: '#b91c1c' }}
+                    onClick={handleResignPresident}
+                  >
+                    Сложить полномочия
                   </button>
                 </div>
 
@@ -513,17 +582,41 @@ const StateDetailPage: FC = () => {
                   <div>
                     <div className="card-title">⚙️ Налоги и казна</div>
                     <div className="card-subtitle">
-                      Текущая ставка: {state.taxRate || 5}%
+                      Переводы между игроками: {state.playerToPlayerTransferFee || 0}%<br/>
+                      Коммерческие переводы: {state.playerToCompanyTransferFee || 5}%<br/>
+                      Биржевой сбор: {state.exchangeTradingFee || 2}%
                     </div>
                   </div>
                   <button
                     className="card-action"
                     onClick={() => {
-                      setNewTaxRate(String(state.taxRate || 5));
+                      setNewPlayerToPlayerTax(String(state.playerToPlayerTransferFee || 0));
+                      setNewPlayerToCompanyTax(String(state.playerToCompanyTransferFee || 5));
+                      setNewExchangeFee(String(state.exchangeTradingFee || 2));
                       setShowTaxModal(true);
                     }}
                   >
                     Изменить налог
+                  </button>
+                </div>
+
+                <div className="state-dashboard__card">
+                  <div>
+                    <div className="card-title">🎭 Должности</div>
+                    <div className="card-subtitle">
+                      Казначей: {state.treasurerUsername || 'Не назначен'}<br />
+                      Воевода: {state.voivodeUsername || 'Не назначен'}
+                    </div>
+                  </div>
+                  <button
+                    className="card-action"
+                    onClick={() => {
+                      setNewTreasurer(state.treasurerUsername || '');
+                      setNewVoivode(state.voivodeUsername || '');
+                      setShowRolesModal(true);
+                    }}
+                  >
+                    Управление должностями
                   </button>
                 </div>
               </div>
@@ -682,18 +775,16 @@ const StateDetailPage: FC = () => {
               treasury.map((item) => {
                 const info = getMinecraftItemInfo(item.minecraftItemId);
                 return (
-                  <div key={item.id} className="treasury-card" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)', border: '1px solid #d2d2d8', borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '16px', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)' }}>
-                    <div style={{ fontSize: '36px', filter: 'drop-shadow(0 4px 4px rgba(0,0,0,0.1))' }}>{info ? info.icon : '📦'}</div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 'bold', color: '#0f172a', fontSize: '15px' }}>{info ? info.name : item.minecraftItemId}</div>
-                      <div style={{ color: '#64748b', fontSize: '14px', marginTop: '4px' }}>Количество: <strong style={{ color: '#0f172a' }}>{item.quantity} шт.</strong></div>
+                  <div key={item.id} className="state-detail-page__treasury-item">
+                    <div className="treasury-icon">{info ? info.icon : '📦'}</div>
+                    <div className="treasury-info">
+                      <div className="treasury-name">{info ? info.name : item.minecraftItemId}</div>
+                      <div className="treasury-count">Количество: <strong>{item.quantity} шт.</strong></div>
                     </div>
                     {canPublishDecree && (
                       <button
+                        className="treasury-btn"
                         onClick={() => handleWithdrawTreasury(item.minecraftItemId)}
-                        style={{
-                          background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '6px 12px', fontSize: '13px', cursor: 'pointer', color: '#334155'
-                        }}
                         title="Вывести в игру"
                       >
                         📤 Вывести
@@ -963,12 +1054,38 @@ const StateDetailPage: FC = () => {
                 <h3 className="modal-title">Настройка налоговой ставки</h3>
                 <form onSubmit={handleUpdateTax} className="modal-form">
                   <label>
-                    <span>Ставка налога в % (от 0 до 100)</span>
+                    <span>Переводы игрок-игрок (%)</span>
                     <input
                       type="number"
-                      value={newTaxRate}
-                      onChange={(e) => setNewTaxRate(e.target.value)}
+                      value={newPlayerToPlayerTax}
+                      onChange={(e) => setNewPlayerToPlayerTax(e.target.value)}
+                      placeholder="0"
+                      min="0"
+                      max="100"
+                      step="0.1"
+                      required
+                    />
+                  </label>
+                  <label>
+                    <span>Коммерческие переводы (%)</span>
+                    <input
+                      type="number"
+                      value={newPlayerToCompanyTax}
+                      onChange={(e) => setNewPlayerToCompanyTax(e.target.value)}
                       placeholder="5"
+                      min="0"
+                      max="100"
+                      step="0.1"
+                      required
+                    />
+                  </label>
+                  <label>
+                    <span>Биржевой сбор со сделок (%)</span>
+                    <input
+                      type="number"
+                      value={newExchangeFee}
+                      onChange={(e) => setNewExchangeFee(e.target.value)}
+                      placeholder="2"
                       min="0"
                       max="100"
                       step="0.1"
@@ -988,6 +1105,64 @@ const StateDetailPage: FC = () => {
                       className="economy-btn economy-btn--primary"
                     >
                       Сохранить налог
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* Модальное окно управления должностями */}
+          {showRolesModal && (
+            <div className="economy-modal-overlay">
+              <div className="economy-modal">
+                <h3 className="modal-title">Назначение должностных лиц</h3>
+                <form onSubmit={handleUpdateRoles} className="modal-form">
+                  <label>
+                    <span>Казначей (гражданин)</span>
+                    <select
+                      value={newTreasurer}
+                      onChange={(e) => setNewTreasurer(e.target.value)}
+                    >
+                      <option value="">-- Снять должность --</option>
+                      {state?.citizens
+                        ?.filter(c => c.username !== state.leaderUsername && (c.username === newTreasurer || c.username !== newVoivode))
+                        .map(c => (
+                        <option key={c.id} value={c.username}>
+                          {c.username}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <span>Воевода (гражданин)</span>
+                    <select
+                      value={newVoivode}
+                      onChange={(e) => setNewVoivode(e.target.value)}
+                    >
+                      <option value="">-- Снять должность --</option>
+                      {state?.citizens
+                        ?.filter(c => c.username !== state.leaderUsername && (c.username === newVoivode || c.username !== newTreasurer))
+                        .map(c => (
+                        <option key={c.id} value={c.username}>
+                          {c.username}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className="modal-actions">
+                    <button
+                      type="button"
+                      onClick={() => setShowRolesModal(false)}
+                      className="economy-btn economy-btn--secondary"
+                    >
+                      Отмена
+                    </button>
+                    <button
+                      type="submit"
+                      className="economy-btn economy-btn--primary"
+                    >
+                      Сохранить должности
                     </button>
                   </div>
                 </form>

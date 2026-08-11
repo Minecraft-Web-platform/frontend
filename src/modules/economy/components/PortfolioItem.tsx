@@ -6,12 +6,16 @@ interface PortfolioItemProps {
   share: ICompanyShare;
   company?: ICompany;
   onSellClick?: (companyId: string) => void;
+  ownerLabel?: string;
+  currencyCode?: string;
 }
 
 export const PortfolioItem: React.FC<PortfolioItemProps> = ({
   share,
   company,
   onSellClick,
+  ownerLabel,
+  currencyCode,
 }) => {
   const currentPrice = company?.sharePrice || share.boughtAtPrice;
   const currentValue = share.sharesCount * currentPrice;
@@ -33,15 +37,20 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({
           </div>
           <div className="portfolio-meta">
             В портфеле: <span>{share.sharesCount} шт.</span> | Ср. цена:{' '}
-            <span>{share.boughtAtPrice.toFixed(2)} ед.</span>
+            <span>{share.boughtAtPrice.toFixed(2)} {currencyCode || 'ед.'}</span>
           </div>
+          {ownerLabel && (
+            <div className="portfolio-meta" style={{ marginTop: '4px', color: '#8b5cf6' }}>
+              Владелец: <span>{ownerLabel}</span>
+            </div>
+          )}
         </div>
       </div>
 
       <div className="portfolio-item__right">
         <div className="portfolio-pnl">
           <div className="current-val">
-            {currentValue.toLocaleString('ru-RU')} ед.
+            {currentValue.toLocaleString('ru-RU')} {currencyCode || 'ед.'}
           </div>
           <div
             className={`pnl-text ${
@@ -49,7 +58,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({
             }`}
           >
             {isPositive ? '+' : ''}
-            {pnl.toFixed(2)} ед. ({isPositive ? '+' : ''}
+            {pnl.toFixed(2)} {currencyCode || 'ед.'} ({isPositive ? '+' : ''}
             {pnlPercent.toFixed(1)}%)
           </div>
         </div>

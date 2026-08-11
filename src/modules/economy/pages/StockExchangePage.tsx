@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { ICompany, ICompanyShare } from '../types/economy.types';
+import { ICompany, ICompanyShare, ICurrency } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
-import { CompanyCard } from '../components/CompanyCard';
 import { PortfolioItem } from '../components/PortfolioItem';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
+import { statesService, IState } from '../../states';
+import useAuthStore from '../../../store/auth.store';
+import { TradingChart } from '../components/TradingChart';
+import { ChangePriceModal } from '../components/ChangePriceModal';
 import '../economy-shared.scss';
 
 export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
@@ -20,16 +23,60 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
   const [sellCompanyId, setSellCompanyId] = useState<string | null>(null);
   const [sharesCount, setSharesCount] = useState('10');
 
+  // Новые состояния для торгового терминала
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
+  const [changePriceCompanyId, setChangePriceCompanyId] = useState<string | null>(null);
+
+  const { accessToken } = useAuthStore();
+  let currentUsername = '';
+  if (accessToken) {
+    try {
+      const payload = JSON.parse(atob(accessToken.split('.')[1]));
+      currentUsername = payload.username_lower || '';
+    } catch (e) {}
+  }
+
+  const [statesList, setStatesList] = useState<IState[]>([]);
+  const [myCompanies, setMyCompanies] = useState<ICompany[]>([]);
+  const [currencies, setCurrencies] = useState<ICurrency[]>([]);
+
+  const buyerProfiles = [
+    { type: 'player', id: currentUsername, label: 'Личный счет' }
+  ];
+
+  statesList.forEach(st => {
+    const isTreasurer = st.treasurerUsername?.toLowerCase() === currentUsername?.toLowerCase();
+    const isLeader = st.leaderUsername?.toLowerCase() === currentUsername?.toLowerCase();
+    if (isTreasurer || isLeader) {
+      buyerProfiles.push({ type: 'state', id: st.id, label: `Казна государства ${st.name}` });
+    }
+  });
+
+  myCompanies.forEach(comp => {
+    if (comp.ownerUsername?.toLowerCase() === currentUsername?.toLowerCase()) {
+      buyerProfiles.push({ type: 'company', id: comp.id, label: `Счет компании ${comp.name}` });
+    }
+  });
+
+  const [selectedBuyerProfile, setSelectedBuyerProfile] = useState<string>(`player:${currentUsername}`);
+  const [selectedSellerProfile, setSelectedSellerProfile] = useState<string>(`player:${currentUsername}`);
+
   const loadData = async () => {
     try {
       setLoading(true);
       setError(null);
-      const [compRes, portRes] = await Promise.all([
+      const [compRes, portRes, statesRes, myCompRes, currRes] = await Promise.all([
         economyService.getPublicCompanies(),
         economyService.getMyPortfolio(),
+        statesService.getStates().catch(() => [] as IState[]),
+        economyService.getAllCompanies({ ownerUsername: currentUsername }).catch(() => [] as ICompany[]),
+        economyService.getAllCurrencies().catch(() => [] as ICurrency[]),
       ]);
       setCompanies(compRes);
       setPortfolio(portRes);
+      setStatesList(statesRes);
+      setMyCompanies(myCompRes);
+      setCurrencies(currRes);
     } catch (e: any) {
       setError(e?.message || 'Ошибка загрузки биржевых данных');
     } finally {
@@ -41,18 +88,34 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     loadData();
   }, []);
 
+  // Автовыбор первой компании
+  useEffect(() => {
+    if (companies.length > 0 && !selectedCompanyId) {
+      const publicCompanies = companies.filter(c => c.isPublic);
+      if (publicCompanies.length > 0) {
+        setSelectedCompanyId(publicCompanies[0].id);
+      }
+    }
+  }, [companies, selectedCompanyId]);
+
   const handleBuySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!buyCompanyId || !sharesCount || parseInt(sharesCount, 10) <= 0) return;
     try {
+      const sep = selectedBuyerProfile.indexOf(':');
+      const type = selectedBuyerProfile.slice(0, sep);
+      const id = selectedBuyerProfile.slice(sep + 1);
+
       await economyService.buyShares(buyCompanyId, {
         count: parseInt(sharesCount, 10),
+        buyerType: type as any,
+        buyerId: id,
       });
       setBuyCompanyId(null);
       setSharesCount('10');
       loadData();
     } catch (err: any) {
-      alert(err?.message || 'Ошибка покупки акций');
+      alert(err.response?.data?.message || err.message || 'Ошибка покупки акций');
     }
   };
 
@@ -60,14 +123,20 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     e.preventDefault();
     if (!sellCompanyId || !sharesCount || parseInt(sharesCount, 10) <= 0) return;
     try {
+      const sep = selectedSellerProfile.indexOf(':');
+      const type = selectedSellerProfile.slice(0, sep);
+      const id = selectedSellerProfile.slice(sep + 1);
+
       await economyService.sellShares(sellCompanyId, {
         count: parseInt(sharesCount, 10),
+        sellerType: type as any,
+        sellerId: id,
       });
       setSellCompanyId(null);
       setSharesCount('10');
       loadData();
     } catch (err: any) {
-      alert(err?.message || 'Ошибка продажи акций');
+      alert(err.response?.data?.message || err.message || 'Ошибка продажи акций');
     }
   };
 
@@ -77,6 +146,13 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     const price = comp?.sharePrice || item.boughtAtPrice;
     return acc + item.sharesCount * price;
   }, 0);
+
+  const firstCompany = companies.find(c => c.isPublic);
+  const mainCurrencyCode = firstCompany
+    ? currencies.find(curr => curr.stateId === firstCompany.exchangeStateId)?.code || 'ед.'
+    : 'ед.';
+
+  const selectedCompany = companies.find(c => c.id === selectedCompanyId) || null;
 
   const content = (
     <div className={embedded ? "economy-page economy-page--embedded" : "economy-page"}>
@@ -99,15 +175,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
             }}
           >
-            <div
-              style={{
-                fontSize: '12px',
-                color: '#535353',
-                marginBottom: '2px',
-              }}
-            >
-              Стоимость портфеля
-            </div>
+            <div className="value-label">Стоимость портфеля</div>
             <div
               style={{
                 fontSize: '20px',
@@ -116,7 +184,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                 fontFamily: 'monospace',
               }}
             >
-              {totalPortfolioValue.toLocaleString('ru-RU')} ед.
+              {totalPortfolioValue.toLocaleString('ru-RU')} {mainCurrencyCode}
             </div>
           </div>
         </div>
@@ -141,15 +209,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
             }}
           >
-            <div
-              style={{
-                fontSize: '12px',
-                color: '#535353',
-                marginBottom: '2px',
-              }}
-            >
-              Стоимость портфеля
-            </div>
+            <div className="value-label">Стоимость портфеля</div>
             <div
               style={{
                 fontSize: '20px',
@@ -158,184 +218,336 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                 fontFamily: 'monospace',
               }}
             >
-              {totalPortfolioValue.toLocaleString('ru-RU')} ед.
+              {totalPortfolioValue.toLocaleString('ru-RU')} {mainCurrencyCode}
             </div>
           </div>
         </div>
       )}
 
-          {error && (
-            <div
-              style={{
-                marginBottom: '24px',
-                padding: '14px',
-                background: 'rgba(239, 68, 68, 0.2)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '12px',
-                color: '#fca5a5',
-                fontSize: '14px',
-              }}
-            >
-              {error}
-            </div>
-          )}
+      {error && (
+        <div
+          style={{
+            marginBottom: '24px',
+            padding: '14px',
+            background: 'rgba(239, 68, 68, 0.2)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            borderRadius: '12px',
+            color: '#fca5a5',
+            fontSize: '14px',
+          }}
+        >
+          {error}
+        </div>
+      )}
 
-          {/* Вкладки */}
-          <div className="economy-tabs">
-            <button
-              onClick={() => setActiveTab('market')}
-              className={`economy-tab ${
-                activeTab === 'market' ? 'economy-tab--active' : ''
-              }`}
-            >
-              Торговый зал (Рынок)
-            </button>
-            <button
-              onClick={() => setActiveTab('portfolio')}
-              className={`economy-tab ${
-                activeTab === 'portfolio' ? 'economy-tab--active' : ''
-              }`}
-            >
-              Мой портфель акционера ({portfolio.length})
-            </button>
+      {/* Вкладки */}
+      <div className="economy-tabs">
+        <button
+          onClick={() => setActiveTab('market')}
+          className={`economy-tab ${
+            activeTab === 'market' ? 'economy-tab--active' : ''
+          }`}
+        >
+          Торговый зал (Рынок)
+        </button>
+        <button
+          onClick={() => setActiveTab('portfolio')}
+          className={`economy-tab ${
+            activeTab === 'portfolio' ? 'economy-tab--active' : ''
+          }`}
+        >
+          Мой портфель акционера ({portfolio.length})
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="economy-empty">Загрузка котировок...</div>
+      ) : activeTab === 'market' ? (
+        <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+          
+          {/* Левая колонка: График и действия */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {selectedCompany ? (
+              <>
+                <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #d2d2d8', padding: '24px', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)' }}>
+                  <h2 style={{ margin: '0 0 16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '24px', fontWeight: 600 }}>{selectedCompany.name}</span>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '28px', fontWeight: 'bold' }}>{selectedCompany.sharePrice} {mainCurrencyCode}</span>
+                      <div style={{ fontSize: '14px', color: selectedCompany.priceChange24h >= 0 ? '#10b981' : '#ef4444' }}>
+                        {selectedCompany.priceChange24h >= 0 ? '+' : ''}{selectedCompany.priceChange24h.toFixed(2)}% (24ч)
+                      </div>
+                    </div>
+                  </h2>
+                  <TradingChart company={selectedCompany} />
+                </div>
+                
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <button onClick={() => setBuyCompanyId(selectedCompany.id)} className="economy-btn economy-btn--success" style={{ flex: 1, padding: '16px', fontSize: '16px', fontWeight: 600, border: 'none', background: '#10b981', color: 'white', borderRadius: '12px', cursor: 'pointer' }}>Купить акции</button>
+                  <button onClick={() => setSellCompanyId(selectedCompany.id)} className="economy-btn economy-btn--danger" style={{ flex: 1, padding: '16px', fontSize: '16px', fontWeight: 600, border: 'none', background: '#ef4444', color: 'white', borderRadius: '12px', cursor: 'pointer' }}>Продать акции</button>
+                  
+                  {(() => {
+                    const state = statesList.find(s => s.id === selectedCompany.exchangeStateId);
+                    const isTreasurer = state?.treasurerUsername?.toLowerCase() === currentUsername;
+                    if (isTreasurer) {
+                      return (
+                        <button onClick={() => setChangePriceCompanyId(selectedCompany.id)} className="economy-btn economy-btn--secondary" style={{ flex: 1, padding: '16px', fontSize: '16px', fontWeight: 600, color: '#8b5cf6', border: '1px solid #8b5cf6', background: 'transparent', borderRadius: '12px', cursor: 'pointer' }}>
+                          ⚙️ Изменить цену
+                        </button>
+                      );
+                    }
+                    return null;
+                  })()}
+                </div>
+              </>
+            ) : (
+              <div className="economy-empty" style={{ background: '#fff', border: '1px solid #d2d2d8', borderRadius: '16px', padding: '40px' }}>
+                {companies.filter(c => c.isPublic).length === 0 
+                  ? "На бирже пока нет публичных компаний. Владельцы фирм могут провести IPO!"
+                  : "Выберите компанию в списке справа для просмотра котировок."}
+              </div>
+            )}
           </div>
 
-          {loading ? (
-            <div className="economy-empty">Загрузка котировок...</div>
-          ) : activeTab === 'market' ? (
-            <div>
-              {companies.length === 0 ? (
-                <div className="economy-empty">
-                  На бирже пока нет публичных компаний. Владельцы фирм могут
-                  провести IPO!
-                </div>
-              ) : (
-                <div className="economy-grid">
-                  {companies.map((company) => (
-                    <CompanyCard
-                      key={company.id}
-                      company={company}
-                      onBuyClick={(id) => setBuyCompanyId(id)}
-                      onSellClick={(id) => setSellCompanyId(id)}
-                    />
-                  ))}
-                </div>
-              )}
+          {/* Правая колонка: Список акций */}
+          <div style={{ width: '320px', flexShrink: 0, background: '#fff', borderRadius: '16px', border: '1px solid #d2d2d8', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)' }}>
+            <div style={{ padding: '16px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', fontWeight: 600, fontSize: '16px' }}>
+              Акции на рынке
             </div>
+            <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+              {companies.filter(c => c.isPublic).map(company => (
+                <div 
+                  key={company.id}
+                  onClick={() => setSelectedCompanyId(company.id)}
+                  style={{ 
+                    padding: '16px', 
+                    borderBottom: '1px solid #f1f5f9', 
+                    cursor: 'pointer',
+                    background: selectedCompanyId === company.id ? '#f0f4ff' : 'transparent',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    transition: 'background 0.2s',
+                    borderLeft: selectedCompanyId === company.id ? '4px solid #3b82f6' : '4px solid transparent'
+                  }}
+                >
+                  <div style={{ fontWeight: 600, fontSize: '15px' }}>{company.name}</div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontWeight: 700 }}>{company.sharePrice}</div>
+                    <div style={{ fontSize: '12px', color: company.priceChange24h >= 0 ? '#10b981' : '#ef4444' }}>
+                      {company.priceChange24h >= 0 ? '+' : ''}{company.priceChange24h.toFixed(2)}%
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="portfolio-list">
+          {portfolio.length > 0 ? (
+            portfolio.map((item) => (
+              <PortfolioItem
+                key={item.id}
+                share={item}
+                company={companies.find((c) => c.id === item.companyId)!}
+                ownerLabel={buyerProfiles.find(p => p.id === item.ownerId && p.type === item.ownerType)?.label || 'Неизвестно'}
+                currencyCode={mainCurrencyCode}
+                onSellClick={(id) => setSellCompanyId(id)}
+              />
+            ))
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {portfolio.length === 0 ? (
-                <div className="economy-empty">
-                  Ваш инвестиционный портфель пуст. Купите акции на рынке, чтобы
-                  получать дивиденды!
-                </div>
-              ) : (
-                portfolio.map((item) => (
-                  <PortfolioItem
-                    key={item.id}
-                    share={item}
-                    company={companies.find((c) => c.id === item.companyId)}
-                    onSellClick={(id) => setSellCompanyId(id)}
-                  />
-                ))
-              )}
+            <div className="economy-empty">
+              Ваш инвестиционный портфель пуст. Купите акции на рынке, чтобы
+              получать дивиденды!
             </div>
           )}
+        </div>
+      )}
 
-          {/* Модальное окно покупки акций */}
-          {buyCompanyId && (
-            <div className="economy-modal-overlay">
-              <div className="economy-modal">
-                <h3 className="modal-title">Покупка акций</h3>
-                <form onSubmit={handleBuySubmit} className="modal-form">
-                  <label>
-                    <span>Количество акций (шт.)</span>
-                    <input
-                      type="number"
-                      step="1"
-                      required
-                      value={sharesCount}
-                      onChange={(e) => setSharesCount(e.target.value)}
-                      style={{ fontFamily: 'monospace' }}
-                    />
-                  </label>
-                  <p
-                    style={{
-                      fontSize: '12px',
-                      color: '#9ca3af',
-                      margin: '4px 0 0',
-                    }}
-                  >
-                    При активной скупке акций курс компании на бирже автоматически
-                    растет.
-                  </p>
-
-                  <div className="modal-actions">
-                    <button
-                      type="button"
-                      onClick={() => setBuyCompanyId(null)}
-                      className="economy-btn economy-btn--secondary"
-                    >
-                      Отмена
-                    </button>
-                    <button
-                      type="submit"
-                      className="economy-btn economy-btn--success"
-                    >
-                      Купить
-                    </button>
+      {/* Модальное окно покупки акций */}
+      {buyCompanyId && (
+        <div className="economy-modal-overlay">
+          <div className="economy-modal">
+            <h3 className="modal-title">Покупка акций</h3>
+            <form onSubmit={handleBuySubmit} className="modal-form">
+              <label>
+                <span>От чьего лица купить:</span>
+                <select
+                  value={selectedBuyerProfile}
+                  onChange={(e) => setSelectedBuyerProfile(e.target.value)}
+                >
+                  {buyerProfiles.map(p => (
+                    <option key={`${p.type}:${p.id}`} value={`${p.type}:${p.id}`}>
+                      {p.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span>Количество акций (шт.)</span>
+                <input
+                  type="number"
+                  step="1"
+                  required
+                  value={sharesCount}
+                  onChange={(e) => setSharesCount(e.target.value)}
+                  style={{ fontFamily: 'monospace' }}
+                />
+              </label>
+              
+              {buyCompanyId && sharesCount && !isNaN(parseInt(sharesCount, 10)) && (() => {
+                const count = parseInt(sharesCount, 10);
+                const company = companies.find(c => c.id === buyCompanyId);
+                if (!company || count <= 0) return null;
+                const oldPrice = company.sharePrice;
+                const priceMultiplier = 1 + (count / company.totalShares) * 0.4;
+                const newPrice = oldPrice * priceMultiplier;
+                const executionPrice = (oldPrice + newPrice) / 2;
+                const total = count * executionPrice;
+                return (
+                  <div style={{ marginTop: '12px', fontSize: '14px', fontWeight: 'bold' }}>
+                    Сумма сделки: {total.toLocaleString('ru-RU', { maximumFractionDigits: 2 })} {mainCurrencyCode}
+                    <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: 'normal' }}>
+                      Ср. цена исполнения: {executionPrice.toFixed(2)} {mainCurrencyCode}
+                    </div>
                   </div>
-                </form>
+                );
+              })()}
+
+              <p
+                style={{
+                  fontSize: '12px',
+                  color: '#9ca3af',
+                  margin: '12px 0 0',
+                }}
+              >
+                При активной скупке акций курс компании на бирже автоматически
+                растет.
+              </p>
+
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  onClick={() => setBuyCompanyId(null)}
+                  className="economy-btn economy-btn--secondary"
+                >
+                  Отмена
+                </button>
+                <button
+                  type="submit"
+                  className="economy-btn economy-btn--success"
+                >
+                  Купить
+                </button>
               </div>
-            </div>
-          )}
+            </form>
+          </div>
+        </div>
+      )}
 
-          {/* Модальное окно продажи акций */}
-          {sellCompanyId && (
-            <div className="economy-modal-overlay">
-              <div className="economy-modal">
-                <h3 className="modal-title">Продажа акций с биржи</h3>
-                <form onSubmit={handleSellSubmit} className="modal-form">
-                  <label>
-                    <span>Количество акций для продажи (шт.)</span>
-                    <input
-                      type="number"
-                      step="1"
-                      required
-                      value={sharesCount}
-                      onChange={(e) => setSharesCount(e.target.value)}
-                      style={{ fontFamily: 'monospace' }}
-                    />
-                  </label>
-                  <p
-                    style={{
-                      fontSize: '12px',
-                      color: '#9ca3af',
-                      margin: '4px 0 0',
-                    }}
-                  >
-                    Средства будут зачислены на ваш личный счет в национальной валюте.
-                  </p>
-
-                  <div className="modal-actions">
-                    <button
-                      type="button"
-                      onClick={() => setSellCompanyId(null)}
-                      className="economy-btn economy-btn--secondary"
-                    >
-                      Отмена
-                    </button>
-                    <button
-                      type="submit"
-                      className="economy-btn economy-btn--danger"
-                    >
-                      Продать
-                    </button>
+      {/* Модальное окно продажи акций */}
+      {sellCompanyId && (
+        <div className="economy-modal-overlay">
+          <div className="economy-modal">
+            <h3 className="modal-title">Продажа акций с биржи</h3>
+            <form onSubmit={handleSellSubmit} className="modal-form">
+              <label>
+                <span>От чьего лица продать:</span>
+                <select
+                  value={selectedSellerProfile}
+                  onChange={(e) => setSelectedSellerProfile(e.target.value)}
+                >
+                  {buyerProfiles.map(p => (
+                    <option key={`${p.type}:${p.id}`} value={`${p.type}:${p.id}`}>
+                      {p.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span>Количество акций для продажи (шт.)</span>
+                {(() => {
+                  const sep = selectedSellerProfile.indexOf(':');
+                  const type = selectedSellerProfile.slice(0, sep);
+                  const id = selectedSellerProfile.slice(sep + 1);
+                  const sh = portfolio.find(p => p.companyId === sellCompanyId && p.ownerType === type && p.ownerId === id);
+                  const max = sh?.sharesCount || 0;
+                  return (
+                    <div style={{ fontSize: '12px', color: '#10b981', marginBottom: '4px' }}>
+                      В наличии: {max} шт.
+                    </div>
+                  );
+                })()}
+                <input
+                  type="number"
+                  step="1"
+                  required
+                  value={sharesCount}
+                  onChange={(e) => setSharesCount(e.target.value)}
+                  style={{ fontFamily: 'monospace' }}
+                />
+              </label>
+              
+              {sellCompanyId && sharesCount && !isNaN(parseInt(sharesCount, 10)) && (() => {
+                const count = parseInt(sharesCount, 10);
+                const company = companies.find(c => c.id === sellCompanyId);
+                if (!company || count <= 0) return null;
+                const oldPrice = company.sharePrice;
+                const priceMultiplier = Math.max(1 - (count / company.totalShares) * 0.4, 0.1);
+                const newPrice = oldPrice * priceMultiplier;
+                const executionPrice = (oldPrice + newPrice) / 2;
+                const total = count * executionPrice;
+                return (
+                  <div style={{ marginTop: '12px', fontSize: '14px', fontWeight: 'bold' }}>
+                    Сумма сделки: {total.toLocaleString('ru-RU', { maximumFractionDigits: 2 })} {mainCurrencyCode}
+                    <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: 'normal' }}>
+                      Ср. цена исполнения: {executionPrice.toFixed(2)} {mainCurrencyCode}
+                    </div>
                   </div>
-                </form>
+                );
+              })()}
+
+              <p
+                style={{
+                  fontSize: '12px',
+                  color: '#9ca3af',
+                  margin: '12px 0 0',
+                }}
+              >
+                Средства будут зачислены на ваш личный счет в национальной валюте.
+              </p>
+
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  onClick={() => setSellCompanyId(null)}
+                  className="economy-btn economy-btn--secondary"
+                >
+                  Отмена
+                </button>
+                <button
+                  type="submit"
+                  className="economy-btn economy-btn--danger"
+                >
+                  Продать
+                </button>
               </div>
-            </div>
-          )}
+            </form>
+          </div>
+        </div>
+      )}
+
+      {changePriceCompanyId && (
+        <ChangePriceModal
+          company={companies.find(c => c.id === changePriceCompanyId)!}
+          onClose={() => setChangePriceCompanyId(null)}
+          onSuccess={() => {
+            setChangePriceCompanyId(null);
+            loadData();
+          }}
+        />
+      )}
     </div>
   );
 

@@ -88,7 +88,10 @@ export const BankCard3D: React.FC<BankCard3DProps> = ({ card, account, disableRo
         onPointerCancel={handlePointerUp}
       >
         {/* FRONT */}
-        <div className="card-face card-front" style={{ backgroundImage: card.backgroundImageUrl ? `url(${card.backgroundImageUrl})` : undefined }}>
+        <div className="card-face card-front">
+          {card.backgroundImageUrl && (
+            <div className="card-bg-image" style={{ backgroundImage: `url(${card.backgroundImageUrl})` }} />
+          )}
           {card.isBlocked && <div className="blocked-overlay">ЗАБЛОКИРОВАНА</div>}
           
           <div className="card-front-top">
@@ -127,7 +130,7 @@ export const BankCard3D: React.FC<BankCard3DProps> = ({ card, account, disableRo
         ))}
         
         {/* BACK */}
-        <div className="card-face card-back" style={{ transform: `translateZ(-8px) rotateY(180deg)`, backgroundImage: card.backgroundImageUrl ? `url(${card.backgroundImageUrl})` : undefined }}>
+        <div className="card-face card-back" style={{ transform: `translateZ(-8px) rotateY(180deg)` }}>
           {card.isBlocked && <div className="blocked-overlay">ЗАБЛОКИРОВАНА</div>}
           <div className="mag-stripe"></div>
           

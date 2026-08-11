@@ -69,7 +69,7 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
       </p>
 
       {candidates.length === 0 ? (
-        <p style={{ color: '#a0aec0' }}>Кандидаты еще не выдвинуты.</p>
+        <p style={{ color: '#718096', fontStyle: 'italic', padding: '10px 0' }}>Кандидаты еще не выдвинуты.</p>
       ) : (
         <div className="elections-widget__candidates">
           {candidates.map((cand) => {
@@ -91,16 +91,25 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
                     style={{ width: `${percent}%` }}
                   />
                 </div>
-                {election.status === 'voting' && (
-                  <div className="elections-widget__actions">
+                <div className="elections-widget__actions">
+                  {election.status === 'voting' ? (
                     <button
                       className="elections-widget__btn elections-widget__btn--vote"
                       onClick={() => handleVote(cand.id)}
                     >
                       Голосовать за кандидата
                     </button>
-                  </div>
-                )}
+                  ) : election.status === 'nomination' ? (
+                    <button
+                      className="elections-widget__btn"
+                      style={{ background: '#f1f5f9', color: '#94a3b8', cursor: 'not-allowed' }}
+                      disabled
+                      title="Голосование станет доступно после этапа регистрации"
+                    >
+                      Голосование пока недоступно
+                    </button>
+                  ) : null}
+                </div>
               </div>
             );
           })}
@@ -119,26 +128,17 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
       )}
 
       {showNominateForm && (
-        <form onSubmit={handleNominateSubmit} style={{ marginTop: 16 }}>
+        <form onSubmit={handleNominateSubmit} className="elections-widget__form">
           <textarea
+            className="elections-widget__textarea"
             placeholder="Ваша программа кандидата (почему нужно голосовать за вас)..."
             value={programText}
             onChange={(e) => setProgramText(e.target.value)}
-            style={{
-              width: '100%',
-              minHeight: 80,
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: 8,
-              padding: 10,
-              color: '#fff',
-              marginBottom: 10,
-            }}
           />
           <div style={{ display: 'flex', gap: 10 }}>
             <button
               type="button"
-              className="elections-widget__btn"
+              className="elections-widget__btn elections-widget__btn--cancel"
               onClick={() => setShowNominateForm(false)}
             >
               Отмена

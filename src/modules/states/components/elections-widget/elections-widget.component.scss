@@ -1,11 +1,15 @@
 .elections-widget {
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 24px rgba(255, 215, 0, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   margin-bottom: 24px;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
 
   &__title {
     display: flex;
@@ -13,61 +17,66 @@
     gap: 10px;
     font-size: 20px;
     font-weight: 700;
-    color: #ffd700;
-    margin: 0 0 6px 0;
+    color: #1a202c;
+    margin: 0 0 12px 0;
   }
 
   &__subtitle {
-    color: #a0aec0;
+    color: #718096;
     font-size: 14px;
     margin-bottom: 20px;
+    font-weight: 500;
   }
 
   &__status {
     display: inline-block;
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: 20px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 16px;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
 
     &--nomination {
-      background: rgba(79, 172, 254, 0.15);
-      border: 1px solid rgba(79, 172, 254, 0.4);
-      color: #4facfe;
+      background: #ebf8ff;
+      border: 1px solid #90cdf4;
+      color: #3182ce;
     }
 
     &--voting {
-      background: rgba(46, 213, 115, 0.15);
-      border: 1px solid rgba(46, 213, 115, 0.4);
-      color: #2ed573;
+      background: #f0fff4;
+      border: 1px solid #9ae6b4;
+      color: #38a169;
     }
 
     &--completed {
-      background: rgba(160, 174, 192, 0.15);
-      border: 1px solid rgba(160, 174, 192, 0.4);
-      color: #a0aec0;
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      color: #718096;
     }
   }
 
   &__candidates {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
   }
 
   &__candidate {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    transition: all 0.2s ease;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.07);
+      background: #ffffff;
+      border-color: #cbd5e0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
   }
 
@@ -80,33 +89,40 @@
   &__candidate-name {
     font-weight: 700;
     font-size: 16px;
-    color: #ffffff;
+    color: #2d3748;
   }
 
   &__candidate-votes {
     font-size: 14px;
-    font-weight: 600;
-    color: #ffd700;
+    font-weight: 700;
+    color: #4a5568;
+    background: #edf2f7;
+    padding: 4px 10px;
+    border-radius: 12px;
   }
 
   &__program {
-    font-size: 13px;
-    color: #cbd5e0;
+    font-size: 14px;
+    color: #4a5568;
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.6;
+    background: #ffffff;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #edf2f7;
   }
 
   &__bar {
-    height: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
+    height: 8px;
+    background: #edf2f7;
+    border-radius: 4px;
     overflow: hidden;
 
     &-fill {
       height: 100%;
-      background: linear-gradient(90deg, #ffd700 0%, #ff8c00 100%);
-      border-radius: 3px;
-      transition: width 0.4s ease;
+      background: linear-gradient(90deg, #4299e1 0%, #3182ce 100%);
+      border-radius: 4px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 
@@ -117,31 +133,97 @@
     flex-wrap: wrap;
   }
 
-  &__btn {
-    padding: 8px 16px;
+  &__form {
+    margin-top: 20px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  &__textarea {
+    width: 100%;
+    min-height: 100px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
-    font-size: 13px;
+    padding: 12px;
+    color: #2d3748;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    margin-bottom: 16px;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #4299e1;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+    }
+    
+    &::placeholder {
+      color: #a0aec0;
+    }
+  }
+
+  &__btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    border: none;
+    border: 1px solid transparent;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 
     &--vote {
-      background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
-      color: #000000;
+      background: #48bb78;
+      color: #ffffff;
 
       &:hover {
-        opacity: 0.9;
-        transform: scale(1.02);
+        background: #38a169;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(72, 187, 120, 0.4);
+      }
+      
+      &:active {
+        transform: translateY(0);
       }
     }
 
     &--nominate {
-      background: linear-gradient(90deg, #ffd700 0%, #ff8c00 100%);
-      color: #000000;
+      background: #4299e1;
+      color: #ffffff;
 
       &:hover {
-        opacity: 0.9;
+        background: #3182ce;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(66, 153, 225, 0.4);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+      
+      &:disabled {
+        background: #a0aec0;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+    }
+    
+    &--cancel {
+      background: #ffffff;
+      border-color: #e2e8f0;
+      color: #4a5568;
+      
+      &:hover {
+        background: #f7fafc;
+        border-color: #cbd5e0;
       }
     }
   }

@@ -2,5 +2,6 @@ export { default as StatesListPage } from './pages/states-list-page/states-list.
 export { default as StateDetailPage } from './pages/state-detail-page/state-detail.page';
 export { default as CitiesListPage } from './pages/cities-list-page/cities-list.page';
 export { default as CityDetailPage } from './pages/city-detail-page/city-detail.page';
+export { default as NationalBankPage } from './pages/national-bank-page/national-bank.page';
 export { statesService } from './services/states.service';
 export * from './types/states.types';

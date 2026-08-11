@@ -54,8 +54,13 @@ export interface IState {
   nationalityFemale?: string | null;
   citizenshipName?: string | null;
   leaderUsername?: string | null;
+  treasurerUsername?: string | null;
+  voivodeUsername?: string | null;
   capitalCityId?: string | null;
-  taxRate?: number;
+  playerToPlayerTransferFee?: number;
+  playerToCompanyTransferFee?: number;
+  ipoFee?: number;
+  exchangeTradingFee?: number;
   treasuryAccountNumber?: string;
   createdAt: string;
   cities?: ICity[];
@@ -102,7 +107,10 @@ export interface ICreateStateRequest {
   citizenshipName?: string;
   leaderUsername?: string;
   capitalCityId?: string;
-  taxRate?: number;
+  playerToPlayerTransferFee?: number;
+  playerToCompanyTransferFee?: number;
+  ipoFee?: number;
+  exchangeTradingFee?: number;
   treasuryAccountNumber?: string;
 }
 

@@ -107,6 +107,30 @@ export const MINECRAFT_CURRENCY_ITEMS: IMinecraftItemOption[] = [
       </svg>
     ),
   },
+  {
+    id: 'minecraft:diamond',
+    name: 'Алмаз',
+    type: 'ingot',
+    icon: <img src="/png/diamond.png" alt="Алмаз" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+  },
+  {
+    id: 'minecraft:gold_ingot',
+    name: 'Золотой слиток',
+    type: 'ingot',
+    icon: <img src="/png/gold_ingot.png" alt="Золотой слиток" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+  },
+  {
+    id: 'minecraft:netherite_ingot',
+    name: 'Незеритовый слиток',
+    type: 'ingot',
+    icon: <img src="/png/netherite_ingot.png" alt="Незеритовый слиток" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+  },
+  {
+    id: 'minecraft:netherite_block',
+    name: 'Незеритовый блок',
+    type: 'ingot',
+    icon: <img src="/png/netherite_block.png" alt="Незеритовый блок" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+  },
 ];
 
 export const MINECRAFT_ENCHANTMENTS: IMinecraftEnchantOption[] = [

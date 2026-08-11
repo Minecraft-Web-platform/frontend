@@ -131,18 +131,35 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
     }
   };
 
+  const [ipoExchangeStateId, setIpoExchangeStateId] = useState('');
+
+  const handleOpenIpoModal = async (id: string) => {
+    try {
+      setIpoCompanyId(id);
+      const stRes = await statesService.getStates();
+      setStatesList(stRes);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleIpoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!ipoCompanyId) return;
+    if (!ipoCompanyId || !ipoExchangeStateId) {
+      alert('Выберите биржу (государство) для листинга!');
+      return;
+    }
     try {
       await economyService.conductIPO(ipoCompanyId, {
         totalShares: parseInt(totalShares, 10),
         initialPrice: parseFloat(initialPrice),
+        exchangeStateId: ipoExchangeStateId,
       });
       setIpoCompanyId(null);
+      setIpoExchangeStateId('');
       loadCompanies();
     } catch (err: any) {
-      alert(err?.message || 'Ошибка вывода на биржу (IPO)');
+      alert(err?.response?.data?.message || err?.message || 'Ошибка вывода на биржу (IPO)');
     }
   };
 
@@ -237,13 +254,13 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
           ) : (
             <div className="economy-grid">
               {companies.map((company) => (
-                <CompanyCard
-                  key={company.id}
-                  company={company}
-                  isOwner={true}
-                  onIpoClick={(id) => setIpoCompanyId(id)}
-                  onDividendsClick={(id) => setDivCompanyId(id)}
-                />
+                  <CompanyCard
+                    key={company.id}
+                    company={company}
+                    isOwner={true}
+                    onIpoClick={handleOpenIpoModal}
+                    onDividendsClick={(id) => setDivCompanyId(id)}
+                  />
               ))}
             </div>
           )}
@@ -497,10 +514,29 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
                     />
                   </label>
 
+                  <label>
+                    <span>Государство (Биржа)</span>
+                    <select
+                      value={ipoExchangeStateId}
+                      onChange={(e) => setIpoExchangeStateId(e.target.value)}
+                      required
+                    >
+                      <option value="">-- Выберите биржу --</option>
+                      {statesList.map((st) => (
+                        <option key={st.id} value={st.id}>
+                          Биржа государства {st.name} (Пошлина: {st.ipoFee || 0})
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
                   <div className="modal-actions">
                     <button
                       type="button"
-                      onClick={() => setIpoCompanyId(null)}
+                      onClick={() => {
+                        setIpoCompanyId(null);
+                        setIpoExchangeStateId('');
+                      }}
                       className="economy-btn economy-btn--secondary"
                     >
                       Отмена

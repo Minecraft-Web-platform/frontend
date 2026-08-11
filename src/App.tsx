@@ -10,6 +10,7 @@ import LandingPage from "./modules/landing/landing.page";
 import DownloadPage from "./modules/download/download.page";
 import GuestOnly from "./shared/wraps/guests-only.wrap";
 import Profile from "./modules/profile/pages/profile.page";
+import { CalendarPage } from './modules/profile/pages/calendar.page';
 import PlayersPage from "./modules/players/pages/players.page";
 import PlayerPassport from "./modules/players/pages/player-passport.page";
 import NewsPage from "./modules/news/pages/news.page";
@@ -20,6 +21,7 @@ import NotFoundPage from "./modules/not-found/pages/not-found.page";
 import {
   StatesListPage,
   StateDetailPage,
+  NationalBankPage,
   CitiesListPage,
   CityDetailPage,
 } from "./modules/states";
@@ -94,6 +96,15 @@ function App() {
         />
 
         <Route
+          path="/calendar"
+          element={
+            <RequireAuth>
+              <CalendarPage />
+            </RequireAuth>
+          }
+        />
+
+        <Route
           path="/email-confirmation"
           element={
             <RequireAuth>
@@ -133,6 +144,14 @@ function App() {
           element={
             <RequireAuth>
               <StateDetailPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/states/:id/national-bank"
+          element={
+            <RequireAuth>
+              <NationalBankPage />
             </RequireAuth>
           }
         />

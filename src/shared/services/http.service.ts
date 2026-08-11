@@ -146,7 +146,7 @@ export class HttpService {
   }
 
   private getFullApiUrl(url: string): string {
-    return `${this.baseUrl}/${url}`;
+    return `${this.baseUrl.replace(/\/+$/, '')}/${url.replace(/^\/+/, '')}`;
   }
 
   private async checkResponseStatus<T>(result: IResponse<T>): Promise<void> {

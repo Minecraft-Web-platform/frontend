@@ -43,6 +43,14 @@ export class StatesService {
     return this.httpService.delete(`states/${id}`);
   }
 
+  public async resignPresident(id: string): Promise<void> {
+    return this.httpService.post(`states/${id}/resign`, {});
+  }
+
+  public async assignRoles(stateId: string, data: { treasurerUsername?: string; voivodeUsername?: string }): Promise<IState> {
+    return this.httpService.post(`states/${stateId}/roles`, data);
+  }
+
   // --- Decrees ---
   public async getDecrees(stateId: string): Promise<IStateDecree[]> {
     return this.httpService.get(`states/${stateId}/decrees`);
@@ -81,6 +89,10 @@ export class StatesService {
 
   public async deleteCity(id: string): Promise<void> {
     return this.httpService.delete(`cities/${id}`);
+  }
+
+  public async resignMayor(id: string): Promise<void> {
+    return this.httpService.post(`cities/${id}/resign`, {});
   }
 
   public async setCapital(cityId: string): Promise<ICity> {

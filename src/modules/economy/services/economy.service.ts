@@ -10,6 +10,7 @@ import {
   ICard,
   ICompany,
   ICompanyShare,
+  ICompanySharePriceHistory,
   ICurrency,
   IssueCardRequest,
   IssueCurrencyRequest,
@@ -83,6 +84,7 @@ export class EconomyService {
   public async getAllCompanies(filters?: {
     cityId?: string;
     stateId?: string;
+    ownerUsername?: string;
   }): Promise<ICompany[]> {
     const params = new URLSearchParams();
     if (filters?.cityId) params.append('cityId', filters.cityId);
@@ -139,6 +141,19 @@ export class EconomyService {
       `economy/stock-exchange/${companyId}/dividends`,
       data,
     );
+  }
+
+  public async getCompanySharePriceHistory(
+    companyId: string,
+  ): Promise<ICompanySharePriceHistory[]> {
+    return this.httpService.get(`economy/stock-exchange/${companyId}/history`);
+  }
+
+  public async changeCompanySharePrice(
+    companyId: string,
+    newPrice: number,
+  ): Promise<ICompany> {
+    return this.httpService.post(`economy/stock-exchange/${companyId}/price`, { newPrice });
   }
 }
 

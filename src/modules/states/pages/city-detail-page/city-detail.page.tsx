@@ -45,7 +45,12 @@ const CityDetailPage: FC = () => {
     Boolean(currentUsername) &&
     city?.mayorUsername?.toLowerCase() === currentUsername?.toLowerCase();
 
-  const isMayorOrAdmin = Boolean(isMayor) || isAdmin;
+  const isStatePresident =
+    Boolean(city?.state?.leaderUsername) &&
+    Boolean(currentUsername) &&
+    city?.state?.leaderUsername?.toLowerCase() === currentUsername?.toLowerCase();
+
+  const isMayorOrAdmin = Boolean(isMayor) || isAdmin || isStatePresident;
 
   const isCitizenOfThisCity =
     Boolean(currentUsername) &&
@@ -98,15 +103,15 @@ const CityDetailPage: FC = () => {
 
   const handleLeaveCity = async () => {
     if (!id) return;
-    if (!window.confirm('Вы уверены, что хотите покинуть этот город?')) return;
+    if (!window.confirm('Вы уверены, что хотите выписаться из этого города?')) return;
     setApplying(true);
     try {
       await statesService.leaveCity(id);
-      alert('Вы успешно покинули город!');
+      alert('Вы успешно выписались из города!');
       await loadData();
     } catch (err: any) {
       console.error(err);
-      const msg = err?.response?.data?.message || 'Не удалось покинуть город.';
+      const msg = err?.response?.data?.message || 'Не удалось выписаться из города.';
       alert(msg);
     } finally {
       setApplying(false);
@@ -129,11 +134,22 @@ const CityDetailPage: FC = () => {
     if (!window.confirm('ВНИМАНИЕ! Это действие необратимо. Удалить город?')) return;
     try {
       await statesService.deleteCity(id);
-      alert('Город успешно удален');
-      navigate('/cities');
+      navigate('/states');
     } catch (err: any) {
       console.error(err);
-      alert(err?.response?.data?.message || 'Не удалось удалить город');
+      alert(err?.response?.data?.message || 'Ошибка удаления города');
+    }
+  };
+
+  const handleResignMayor = async () => {
+    if (!id) return;
+    if (!window.confirm('Вы уверены, что хотите сложить полномочия мэра?')) return;
+    try {
+      await statesService.resignMayor(id);
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      alert(err?.response?.data?.message || 'Ошибка отставки');
     }
   };
 
@@ -318,13 +334,23 @@ const CityDetailPage: FC = () => {
                     >
                       <span>🏠</span> Вы житель этого города
                     </button>
-                    <button
-                      className="city-detail-page__btn city-detail-page__btn--danger"
-                      onClick={handleLeaveCity}
-                      disabled={applying}
-                    >
-                      <span>🚪</span> Покинуть город
-                    </button>
+                    {!isMayor ? (
+                      <button
+                        className="city-detail-page__btn city-detail-page__btn--danger"
+                        onClick={handleLeaveCity}
+                        disabled={applying}
+                      >
+                        <span>🚪</span> Выписаться из города
+                      </button>
+                    ) : (
+                      <button
+                        className="city-detail-page__btn city-detail-page__btn--danger"
+                        disabled
+                        title="Мэр не может выписаться из города. Сначала сложите полномочия."
+                      >
+                        <span>🚪</span> Выписаться из города
+                      </button>
+                    )}
                   </>
                 ) : (
                   <button
@@ -340,6 +366,14 @@ const CityDetailPage: FC = () => {
                 )}
                 {isMayorOrAdmin && (
                   <>
+                    {currentUsername === city.mayorUsername?.toLowerCase() && (
+                      <button
+                        className="city-detail-page__btn city-detail-page__btn--danger"
+                        onClick={handleResignMayor}
+                      >
+                        Сложить полномочия
+                      </button>
+                    )}
                     <button
                       className="city-detail-page__btn city-detail-page__btn--primary"
                       onClick={() => setShowEditModal(true)}

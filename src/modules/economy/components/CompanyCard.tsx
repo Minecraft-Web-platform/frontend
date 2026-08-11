@@ -9,6 +9,8 @@ interface CompanyCardProps {
   onSellClick?: (companyId: string) => void;
   onIpoClick?: (companyId: string) => void;
   onDividendsClick?: (companyId: string) => void;
+  onChartClick?: (companyId: string) => void;
+  onChangePriceClick?: (companyId: string) => void;
 }
 
 export const CompanyCard: React.FC<CompanyCardProps> = ({
@@ -18,6 +20,8 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
   onSellClick,
   onIpoClick,
   onDividendsClick,
+  onChartClick,
+  onChangePriceClick,
 }) => {
   const isPositive = company.priceChange24h >= 0;
   const marketCap = company.totalShares * company.sharePrice;
@@ -76,41 +80,49 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           </p>
         )}
 
-        <div className="company-card__stats">
-          <div className="stat-box">
-            <div className="stat-label">Цена акции</div>
-            <div className="stat-value">
-              <span>{company.sharePrice.toFixed(2)} ед.</span>
-              <span
-                className={`change-pill ${
-                  isPositive ? 'change-pill--pos' : 'change-pill--neg'
-                }`}
-              >
-                {isPositive ? '+' : ''}
-                {company.priceChange24h.toFixed(1)}%
-              </span>
-            </div>
-          </div>
-
-          <div className="stat-box">
-            <div className="stat-label">Капитализация</div>
-            <div className="stat-value stat-value--gold">
-              {marketCap.toLocaleString('ru-RU')} ед.
-            </div>
-          </div>
-        </div>
-
-        <div className="company-card__shares-bar">
-          <span className="label">Доступно акций на бирже:</span>
-          <span className="value">
-            {company.availableShares} / {company.totalShares}
-          </span>
-        </div>
-      </div>
-
-      <div className="company-card__actions">
         {company.isPublic ? (
           <>
+            <div className="company-card__stats">
+              <div className="stat-box">
+                <div className="stat-label">Цена акции</div>
+                <div className="stat-value">
+                  <span>{company.sharePrice.toFixed(2)} ед.</span>
+                  <span
+                    className={`change-pill ${
+                      isPositive ? 'change-pill--pos' : 'change-pill--neg'
+                    }`}
+                  >
+                    {isPositive ? '+' : ''}
+                    {company.priceChange24h.toFixed(1)}%
+                  </span>
+                </div>
+              </div>
+
+              <div className="stat-box">
+                <div className="stat-label">Капитализация</div>
+                <div className="stat-value stat-value--gold">
+                  {marketCap.toLocaleString('ru-RU')} ед.
+                </div>
+              </div>
+            </div>
+
+            <div className="company-card__shares-bar">
+              <span className="label">Доступно акций на бирже:</span>
+              <span className="value">
+                {company.availableShares} / {company.totalShares}
+              </span>
+            </div>
+          </>
+        ) : (
+          <div className="company-card__shares-bar" style={{ justifyContent: 'center', opacity: 0.7 }}>
+            <span className="label">Компания еще не вышла на биржу</span>
+          </div>
+        )}
+      </div>
+
+      <div className="company-card__actions" style={{ flexDirection: 'column' }}>
+        {company.isPublic ? (
+          <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
             {onBuyClick && (
               <button
                 onClick={() => onBuyClick(company.id)}
@@ -129,7 +141,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
                 Продать
               </button>
             )}
-          </>
+          </div>
         ) : (
           isOwner &&
           onIpoClick && (
@@ -146,14 +158,33 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
         {isOwner && onDividendsClick && (
           <button
             onClick={() => onDividendsClick(company.id)}
-            className="economy-btn economy-btn--success"
-            style={{ width: '100%', marginTop: '4px' }}
+            className="economy-btn economy-btn--secondary"
+            style={{ width: '100%', marginTop: '8px' }}
           >
             Выплатить дивиденды
+          </button>
+        )}
+        
+        {company.isPublic && onChartClick && (
+          <button
+            onClick={() => onChartClick(company.id)}
+            className="economy-btn economy-btn--secondary"
+            style={{ width: '100%', marginTop: '8px' }}
+          >
+            📈 График
+          </button>
+        )}
+
+        {company.isPublic && onChangePriceClick && (
+          <button
+            onClick={() => onChangePriceClick(company.id)}
+            className="economy-btn economy-btn--secondary"
+            style={{ width: '100%', marginTop: '8px', color: '#8b5cf6', borderColor: '#8b5cf6' }}
+          >
+            ⚙️ Изменить цену
           </button>
         )}
       </div>
     </div>
   );
 };
-

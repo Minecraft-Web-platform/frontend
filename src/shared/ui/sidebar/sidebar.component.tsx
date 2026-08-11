@@ -34,6 +34,10 @@ const Sidebar: FC = () => {
           <StateIcon />
         </IconComponent>
 
+        <IconComponent path="/calendar" label="Календарь" iconType="fill">
+          <span style={{ fontSize: '20px' }}>📅</span>
+        </IconComponent>
+
         <IconComponent path="/economy" label="Экономика" iconType="fill">
           <CompanyIcon />
         </IconComponent>
