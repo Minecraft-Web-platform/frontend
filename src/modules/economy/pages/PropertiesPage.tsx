@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IProperty, PropertyCategory, PropertyOwnerType, ICompany, ICurrency } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 import { profileService } from '../../profile/services/profile.service';
+import { statesService } from '../../states/services/states.service';
 import { PropagateLoader } from 'react-spinners';
 import './PropertiesPage.scss';
 
@@ -14,6 +15,8 @@ export const PropertiesPage: React.FC = () => {
   const [myStateId, setMyStateId] = useState<string | null>(null);
   const [myStateCurrency, setMyStateCurrency] = useState<ICurrency | null>(null);
   const [myCompanies, setMyCompanies] = useState<ICompany[]>([]);
+  const [cities, setCities] = useState<any[]>([]);
+  const [streets, setStreets] = useState<any[]>([]);
 
   // States for creating a property
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -30,7 +33,7 @@ export const PropertiesPage: React.FC = () => {
     centerCoordinates: '',
     photoUrlsText: '',
     parentPropertyId: '',
-    street: '',
+    streetId: '',
     houseNumber: '',
     area: '',
   });
@@ -58,6 +61,11 @@ export const PropertiesPage: React.FC = () => {
           const stateCur = currencies.find(c => c.stateId === data.stateId);
           if (stateCur) setMyStateCurrency(stateCur);
         }).catch(console.error);
+        
+        // Fetch cities
+        statesService.getCities(data.stateId).then(citiesData => {
+          setCities(citiesData);
+        }).catch(console.error);
       }
       if (data.username) {
         const companies = await economyService.getAllCompanies({ ownerUsername: data.username });
@@ -68,6 +76,18 @@ export const PropertiesPage: React.FC = () => {
       setError('Не удалось загрузить профиль пользователя');
     }
   };
+
+  useEffect(() => {
+    if (createForm.cityId) {
+      statesService.getStreets(createForm.cityId).then(streetsData => {
+        setStreets(streetsData);
+        setCreateForm(prev => ({ ...prev, streetId: '' }));
+      }).catch(console.error);
+    } else {
+      setStreets([]);
+      setCreateForm(prev => ({ ...prev, streetId: '' }));
+    }
+  }, [createForm.cityId]);
 
   const loadProperties = async () => {
     try {
@@ -266,7 +286,7 @@ export const PropertiesPage: React.FC = () => {
                 {(p.street || p.houseNumber) && (
                   <div className="detail-item">
                     <span>Адрес</span>
-                    <span>{p.street || ''} {p.houseNumber || ''}</span>
+                    <span>{p.street?.name || ''} {p.houseNumber || ''}</span>
                   </div>
                 )}
                 {p.area != null && (
@@ -418,13 +438,22 @@ export const PropertiesPage: React.FC = () => {
               )}
 
               <div className="form-group">
-                <label>Улица (Опционально)</label>
-                <input 
-                  placeholder="Название улицы"
-                  value={createForm.street} 
-                  onChange={e => setCreateForm({...createForm, street: e.target.value})} 
-                />
+                <label>Город (Опционально)</label>
+                <select value={createForm.cityId} onChange={e => setCreateForm({...createForm, cityId: e.target.value})}>
+                  <option value="">-- Без города (Вне города) --</option>
+                  {cities.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
               </div>
+
+              {createForm.cityId && (
+                <div className="form-group">
+                  <label>Улица (Опционально)</label>
+                  <select value={createForm.streetId} onChange={e => setCreateForm({...createForm, streetId: e.target.value})}>
+                    <option value="">-- Без улицы --</option>
+                    {streets.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  </select>
+                </div>
+              )}
 
               <div className="form-group">
                 <label>Номер дома/строения (Опционально)</label>

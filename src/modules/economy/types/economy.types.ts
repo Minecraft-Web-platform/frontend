@@ -183,7 +183,8 @@ export interface IProperty {
   centerCoordinates?: string;
   photoUrls?: string[];
   parentPropertyId?: string;
-  street?: string;
+  streetId?: string;
+  street?: { id: string; name: string };
   houseNumber?: string;
   area?: number;
 }
@@ -201,7 +202,7 @@ export interface CreatePropertyRequest {
   centerCoordinates?: string;
   photoUrls?: string[];
   parentPropertyId?: string;
-  street?: string;
+  streetId?: string;
   houseNumber?: string;
   area?: number;
 }

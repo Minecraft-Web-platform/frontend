@@ -16,6 +16,7 @@ import {
   ISetDiplomacyRequest,
   IState,
   IStateDecree,
+  IStreet,
   IVoteRequest,
 } from '../types/states.types';
 
@@ -175,6 +176,26 @@ export class StatesService {
 
   public async withdrawTreasury(stateId: string, data: { minecraftItemId: string; quantity: number }): Promise<{ message: string }> {
     return this.httpService.post(`states/${stateId}/treasury/withdraw`, data);
+  }
+
+  // --- Streets ---
+  async getStreets(cityId: string): Promise<IStreet[]> {
+    const response = await this.httpService.get<IStreet[]>(`cities/${cityId}/streets`);
+    return response.data;
+  }
+
+  async createStreet(cityId: string, name: string): Promise<IStreet> {
+    const response = await this.httpService.post<IStreet>(`cities/${cityId}/streets`, { name });
+    return response.data;
+  }
+
+  async updateStreet(cityId: string, streetId: string, name: string): Promise<IStreet> {
+    const response = await this.httpService.put<IStreet>(`cities/${cityId}/streets/${streetId}`, { name });
+    return response.data;
+  }
+
+  async deleteStreet(cityId: string, streetId: string): Promise<void> {
+    await this.httpService.delete(`cities/${cityId}/streets/${streetId}`);
   }
 }
 

@@ -10,6 +10,7 @@ import { statesService } from '../../services/states.service';
 import CitizenshipRequestsModal from '../../components/citizenship-requests-modal/citizenship-requests-modal.component';
 import ElectionsWidget from '../../components/elections-widget/elections-widget.component';
 import { EditCityModal } from '../../components/edit-city-modal/EditCityModal';
+import StreetsManager from '../../components/streets-manager/streets-manager.component';
 import useAuthStore from '../../../../store/auth.store';
 import { profileService } from '../../../profile/services/profile.service';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
@@ -547,6 +548,8 @@ const CityDetailPage: FC = () => {
               )}
             </div>
           </div>
+
+          <StreetsManager cityId={city.id} isMayorOrAdmin={isMayorOrAdmin} />
 
           {showRequestsModal && (
             <CitizenshipRequestsModal

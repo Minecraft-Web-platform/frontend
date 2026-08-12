@@ -12,6 +12,13 @@ export interface IStateCitizen {
   stateId?: string | null;
 }
 
+export interface IStreet {
+  id: string;
+  name: string;
+  cityId: string;
+  createdAt: string;
+}
+
 export interface ICity {
   id: string;
   name: string;
