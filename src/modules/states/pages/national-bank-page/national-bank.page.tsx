@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router';
 import { IState } from '../../types/states.types';
 import { statesService } from '../../services/states.service';
 import { economyService } from '../../../economy/services/economy.service';
-import { IAccount } from '../../../economy/types/economy.types';
+import { IAccount, IIpoRequest } from '../../../economy/types/economy.types';
 import useAuthStore from '../../../../store/auth.store';
 import { profileService } from '../../../profile/services/profile.service';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
@@ -17,6 +17,7 @@ const NationalBankPage: FC = () => {
 
   const [state, setState] = useState<IState | null>(null);
   const [treasuryAccount, setTreasuryAccount] = useState<IAccount | null>(null);
+  const [ipoRequests, setIpoRequests] = useState<IIpoRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
   const { isAuthenticated } = useAuthStore();
@@ -57,6 +58,13 @@ const NationalBankPage: FC = () => {
           setTreasuryAccount(treasury);
         }
       }
+
+      try {
+        const reqs = await economyService.getIpoRequests(stateData.id);
+        setIpoRequests(reqs);
+      } catch (err) {
+        console.error('Failed to load IPO requests', err);
+      }
     } catch (err: any) {
       console.error(err);
     } finally {
@@ -69,6 +77,25 @@ const NationalBankPage: FC = () => {
       loadData();
     }
   }, [id, currentUsername]);
+
+  const handleApproveIpo = async (reqId: string) => {
+    try {
+      await economyService.reviewIpoRequest(reqId, 'approved');
+      setIpoRequests((prev) => prev.filter((r) => r.id !== reqId));
+      loadData(); // reload treasury balance
+    } catch (err: any) {
+      alert(err.response?.data?.message || err.message);
+    }
+  };
+
+  const handleRejectIpo = async (reqId: string) => {
+    try {
+      await economyService.reviewIpoRequest(reqId, 'rejected');
+      setIpoRequests((prev) => prev.filter((r) => r.id !== reqId));
+    } catch (err: any) {
+      alert(err.response?.data?.message || err.message);
+    }
+  };
 
   if (loading) {
     return (
@@ -190,6 +217,28 @@ const NationalBankPage: FC = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {ipoRequests.length > 0 && (
+            <div className="ipo-requests-section" style={{ marginTop: '32px' }}>
+              <h3 className="economy-section-title">Заявки на IPO ({ipoRequests.length})</h3>
+              <div className="requests-grid" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {ipoRequests.map((req) => (
+                  <div key={req.id} className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <h4 style={{ margin: '0 0 8px 0' }}>{req.companyName}</h4>
+                      <div style={{ color: '#64748b', fontSize: '14px' }}>
+                        Акции: {req.totalShares} шт. | Стартовая цена: {req.initialPrice.toFixed(2)} | Пошлина: {req.feeAmount.toFixed(2)}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button className="economy-btn economy-btn--primary" onClick={() => handleApproveIpo(req.id)}>Одобрить</button>
+                      <button className="economy-btn economy-btn--secondary" style={{ color: '#ef4444', borderColor: '#ef4444' }} onClick={() => handleRejectIpo(req.id)}>Отклонить</button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}

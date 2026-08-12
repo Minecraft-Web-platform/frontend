@@ -12,6 +12,7 @@ import {
   ICompanyShare,
   ICompanySharePriceHistory,
   ICurrency,
+  IIpoRequest,
   IssueCardRequest,
   IssueCurrencyRequest,
   ITransfer,
@@ -121,6 +122,14 @@ export class EconomyService {
     data: ConductIPORequest,
   ): Promise<ICompany> {
     return this.httpService.post(`economy/stock-exchange/${companyId}/ipo`, data);
+  }
+
+  public async getIpoRequests(stateId: string): Promise<IIpoRequest[]> {
+    return this.httpService.get(`economy/stock-exchange/ipo-requests/state/${stateId}`);
+  }
+
+  public async reviewIpoRequest(requestId: string, action: 'approved' | 'rejected'): Promise<IIpoRequest> {
+    return this.httpService.post(`economy/stock-exchange/ipo-requests/${requestId}/review`, { action });
   }
 
   public async buyShares(

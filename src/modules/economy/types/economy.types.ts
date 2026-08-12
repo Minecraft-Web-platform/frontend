@@ -143,6 +143,18 @@ export interface PayDividendsRequest {
   totalAmount: number;
 }
 
+export interface IIpoRequest {
+  id: string;
+  companyId: string;
+  companyName: string;
+  stateId: string;
+  totalShares: number;
+  initialPrice: number;
+  feeAmount: number;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+}
+
 export interface ICompanySharePriceHistory {
   id: string;
   companyId: string;

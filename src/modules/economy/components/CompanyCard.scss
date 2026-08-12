@@ -25,7 +25,8 @@
       align-items: center;
       gap: 12px;
 
-      .logo-img, .logo-fallback {
+      .logo-img,
+      .logo-fallback {
         width: 48px;
         height: 48px;
         border-radius: 8px;
@@ -51,65 +52,67 @@
           color: #000000;
           margin: 0 0 4px 0;
         }
-    
-        .company-owner, .owner {
+
+        .company-owner,
+        .owner {
           font-size: 13px;
           color: #535353;
         }
       }
     }
 
-  &__badge {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 20px;
+    &__badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
 
-    &--public {
-      background-color: rgba(16, 185, 129, 0.15);
-      color: #059669;
-    }
-
-    &--private {
-      background-color: rgba(100, 116, 139, 0.15);
-      color: #475569;
-    }
-  }
-
-  &__stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 20px;
-    padding: 16px 0;
-    border-top: 1px solid #e2e8f0;
-    border-bottom: 1px solid #e2e8f0;
-
-    .company-stat {
-      .stat-label {
-        font-size: 12px;
-        color: #535353;
-        margin-bottom: 4px;
+      &--public {
+        background-color: rgba(16, 185, 129, 0.15);
+        color: #059669;
       }
 
-      .stat-val {
-        font-family: monospace;
-        font-size: 16px;
-        font-weight: 700;
-        color: #000000;
-      }
-
-      .stat-sub {
-        font-size: 11px;
-        color: #10b981;
-        margin-top: 2px;
+      &--private {
+        background-color: rgba(100, 116, 139, 0.15);
+        color: #475569;
       }
     }
-  }
 
-  &__actions {
-    display: flex;
-    gap: 10px;
+    &__stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding: 16px 0;
+      border-top: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+
+      .company-stat {
+        .stat-label {
+          font-size: 12px;
+          color: #535353;
+          margin-bottom: 4px;
+        }
+
+        .stat-val {
+          font-family: monospace;
+          font-size: 16px;
+          font-weight: 700;
+          color: #000000;
+        }
+
+        .stat-sub {
+          font-size: 11px;
+          color: #10b981;
+          margin-top: 2px;
+        }
+      }
+    }
+
+    &__actions {
+      display: flex;
+      gap: 10px;
+    }
   }
 }

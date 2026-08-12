@@ -150,7 +150,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
               className="economy-btn economy-btn--primary"
               style={{ width: '100%' }}
             >
-              Провести IPO
+              Подать заявку на IPO
             </button>
           )
         )}

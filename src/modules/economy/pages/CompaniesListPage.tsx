@@ -487,9 +487,13 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
             <div className="economy-modal-overlay">
               <div className="economy-modal">
                 <h3 className="modal-title">
-                  Первичное публичное размещение (IPO)
+                  Заявка на первичное публичное размещение (IPO)
                 </h3>
                 <form onSubmit={handleIpoSubmit} className="modal-form">
+                  <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '16px' }}>
+                    После подачи заявки, казначей выбранного государства должен будет её одобрить. 
+                    Пошлина будет списана с коммерческого счета фирмы только в момент одобрения.
+                  </p>
                   <label>
                     <span>Общее число выпускаемых акций</span>
                     <input
@@ -545,7 +549,7 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
                       type="submit"
                       className="economy-btn economy-btn--primary"
                     >
-                      Выпустить на биржу
+                      Подать заявку
                     </button>
                   </div>
                 </form>
