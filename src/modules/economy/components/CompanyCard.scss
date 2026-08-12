@@ -20,19 +20,44 @@
     align-items: flex-start;
     margin-bottom: 16px;
 
-    .company-title {
-      font-family: "Minecraft", sans-serif;
-      font-size: 20px;
-      font-weight: normal;
-      color: #000000;
-      margin: 0 0 4px 0;
-    }
+    .company-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
 
-    .company-owner {
-      font-size: 13px;
-      color: #535353;
+      .logo-img, .logo-fallback {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        object-fit: contain;
+        background-color: #fff;
+        border: 1px solid #e2e8f0;
+      }
+
+      .logo-fallback {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #64748b;
+        font-size: 1.2rem;
+      }
+
+      .title-box {
+        .company-title {
+          font-family: "Minecraft", sans-serif;
+          font-size: 20px;
+          font-weight: normal;
+          color: #000000;
+          margin: 0 0 4px 0;
+        }
+    
+        .company-owner, .owner {
+          font-size: 13px;
+          color: #535353;
+        }
+      }
     }
-  }
 
   &__badge {
     font-size: 11px;

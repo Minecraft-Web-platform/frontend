@@ -43,7 +43,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
               </div>
             )}
             <div className="title-box">
-              <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+              <h3 className="company-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
                 {company.name}
                 <button 
                   title="Скопировать ID фирмы"
