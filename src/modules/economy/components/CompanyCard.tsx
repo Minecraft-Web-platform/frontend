@@ -64,10 +64,10 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           </div>
 
           <span
-            className={`public-badge ${
+            className={`company-card__badge ${
               company.isPublic
-                ? 'public-badge--public'
-                : 'public-badge--private'
+                ? 'company-card__badge--public'
+                : 'company-card__badge--private'
             }`}
           >
             {company.isPublic ? 'Торгуется на бирже' : 'Частная'}
@@ -159,7 +159,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           <button
             onClick={() => onDividendsClick(company.id)}
             className="economy-btn economy-btn--secondary"
-            style={{ width: '100%', marginTop: '8px' }}
+            style={{ width: '100%' }}
           >
             Выплатить дивиденды
           </button>
@@ -169,7 +169,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           <button
             onClick={() => onChartClick(company.id)}
             className="economy-btn economy-btn--secondary"
-            style={{ width: '100%', marginTop: '8px' }}
+            style={{ width: '100%' }}
           >
             📈 График
           </button>
@@ -179,7 +179,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           <button
             onClick={() => onChangePriceClick(company.id)}
             className="economy-btn economy-btn--secondary"
-            style={{ width: '100%', marginTop: '8px', color: '#8b5cf6', borderColor: '#8b5cf6' }}
+            style={{ width: '100%', color: '#8b5cf6', borderColor: '#8b5cf6' }}
           >
             ⚙️ Изменить цену
           </button>
