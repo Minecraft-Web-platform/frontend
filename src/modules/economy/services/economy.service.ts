@@ -17,6 +17,9 @@ import {
   ITransfer,
   PayDividendsRequest,
   TransferMoneyRequest,
+  IProperty,
+  CreatePropertyRequest,
+  BuyPropertyRequest,
 } from '../types/economy.types';
 
 export class EconomyService {
@@ -89,6 +92,7 @@ export class EconomyService {
     const params = new URLSearchParams();
     if (filters?.cityId) params.append('cityId', filters.cityId);
     if (filters?.stateId) params.append('stateId', filters.stateId);
+    if (filters?.ownerUsername) params.append('ownerUsername', filters.ownerUsername);
     const query = params.toString() ? `?${params.toString()}` : '';
     return this.httpService.get(`economy/companies${query}`);
   }
@@ -154,6 +158,32 @@ export class EconomyService {
     newPrice: number,
   ): Promise<ICompany> {
     return this.httpService.post(`economy/stock-exchange/${companyId}/price`, { newPrice });
+  }
+
+  // --- Недвижимость и Имущество ---
+  public async getMarketProperties(stateId?: string): Promise<IProperty[]> {
+    const query = stateId ? `?stateId=${stateId}` : '';
+    return this.httpService.get(`economy/properties/market${query}`);
+  }
+
+  public async getMyProperties(): Promise<IProperty[]> {
+    return this.httpService.get(`economy/properties/my`);
+  }
+
+  public async createProperty(data: CreatePropertyRequest): Promise<IProperty> {
+    return this.httpService.post('economy/properties', data);
+  }
+
+  public async listPropertyForSale(propertyId: string, price: number): Promise<IProperty> {
+    return this.httpService.post(`economy/properties/${propertyId}/sell`, { price });
+  }
+
+  public async cancelListing(propertyId: string): Promise<IProperty> {
+    return this.httpService.post(`economy/properties/${propertyId}/cancel-sell`, {});
+  }
+
+  public async buyProperty(propertyId: string, data: BuyPropertyRequest): Promise<IProperty> {
+    return this.httpService.post(`economy/properties/${propertyId}/buy`, data);
   }
 }
 

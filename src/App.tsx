@@ -205,6 +205,10 @@ function App() {
           path="/exchange"
           element={<Navigate to="/economy?tab=exchange" replace />}
         />
+        <Route
+          path="/properties"
+          element={<Navigate to="/economy?tab=properties" replace />}
+        />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

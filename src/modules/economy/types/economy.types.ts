@@ -54,6 +54,8 @@ export interface ICurrency {
   reserves: number;
   exchangeRate: number;
   rateChange24h: number;
+  propertyCreationFeeRate: number;
+  propertySalesTaxRate: number;
   createdAt: string;
 }
 
@@ -147,4 +149,52 @@ export interface ICompanySharePriceHistory {
   price: number;
   changedByUsername: string;
   createdAt: string;
+}
+
+export type PropertyCategory = 'real_estate' | 'special_object';
+export type PropertyOwnerType = 'personal' | 'company' | 'government';
+
+export interface IProperty {
+  id: string;
+  name: string;
+  description: string | null;
+  propertyCategory: PropertyCategory;
+  type: string;
+  subType: string | null;
+  cityId: string | null;
+  stateId: string;
+  ownerId: string;
+  ownerType: PropertyOwnerType;
+  isForSale: boolean;
+  price: number | null;
+  createdAt: string;
+  centerCoordinates?: string;
+  photoUrls?: string[];
+  parentPropertyId?: string;
+  street?: string;
+  houseNumber?: string;
+  area?: number;
+}
+
+export interface CreatePropertyRequest {
+  name: string;
+  description?: string;
+  propertyCategory: PropertyCategory;
+  type: string;
+  subType?: string;
+  cityId?: string;
+  stateId: string;
+  ownerId: string;
+  ownerType: PropertyOwnerType;
+  centerCoordinates?: string;
+  photoUrls?: string[];
+  parentPropertyId?: string;
+  street?: string;
+  houseNumber?: string;
+  area?: number;
+}
+
+export interface BuyPropertyRequest {
+  newOwnerId: string;
+  newOwnerType: PropertyOwnerType;
 }

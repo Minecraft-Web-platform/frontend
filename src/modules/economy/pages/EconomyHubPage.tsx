@@ -6,9 +6,10 @@ import { CompaniesListPage } from './CompaniesListPage';
 import { StockExchangePage } from './StockExchangePage';
 import { CurrenciesPage } from './CurrenciesPage';
 import { CardsPage } from './CardsPage';
+import { PropertiesPage } from './PropertiesPage';
 import './EconomyHubPage.scss';
 
-export type EconomyTabId = 'bank' | 'cards' | 'companies' | 'exchange' | 'currencies';
+export type EconomyTabId = 'bank' | 'cards' | 'companies' | 'exchange' | 'currencies' | 'properties';
 
 export const EconomyHubPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -107,6 +108,21 @@ export const EconomyHubPage: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              <div
+                className={`economy-hub__card ${
+                  activeTab === 'properties' ? 'economy-hub__card--active' : ''
+                }`}
+                onClick={() => handleSelectTab('properties')}
+              >
+                <div className="card-icon">🏠</div>
+                <div className="card-info">
+                  <div className="card-title">Недвижимость</div>
+                  <div className="card-desc">
+                    Реестр и рынок земли, строений и спецобъектов
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -116,6 +132,7 @@ export const EconomyHubPage: React.FC = () => {
             {activeTab === 'companies' && <CompaniesListPage embedded={true} />}
             {activeTab === 'exchange' && <StockExchangePage embedded={true} />}
             {activeTab === 'currencies' && <CurrenciesPage embedded={true} />}
+            {activeTab === 'properties' && <PropertiesPage />}
           </div>
         </div>
       </main>
