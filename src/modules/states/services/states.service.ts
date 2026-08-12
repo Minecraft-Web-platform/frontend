@@ -180,18 +180,15 @@ export class StatesService {
 
   // --- Streets ---
   async getStreets(cityId: string): Promise<IStreet[]> {
-    const response = await this.httpService.get<IStreet[]>(`cities/${cityId}/streets`);
-    return response.data;
+    return this.httpService.get<IStreet[]>(`cities/${cityId}/streets`);
   }
 
   async createStreet(cityId: string, name: string): Promise<IStreet> {
-    const response = await this.httpService.post<IStreet>(`cities/${cityId}/streets`, { name });
-    return response.data;
+    return this.httpService.post<IStreet>(`cities/${cityId}/streets`, { name });
   }
 
   async updateStreet(cityId: string, streetId: string, name: string): Promise<IStreet> {
-    const response = await this.httpService.put<IStreet>(`cities/${cityId}/streets/${streetId}`, { name });
-    return response.data;
+    return this.httpService.put<IStreet>(`cities/${cityId}/streets/${streetId}`, { name });
   }
 
   async deleteStreet(cityId: string, streetId: string): Promise<void> {

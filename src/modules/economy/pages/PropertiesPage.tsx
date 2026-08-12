@@ -55,13 +55,13 @@ export const PropertiesPage: React.FC = () => {
       if (data.stateId) {
         setMyStateId(data.stateId);
         setCreateForm(prev => ({ ...prev, stateId: data.stateId! }));
-        
+
         // Fetch currency for calculation
         economyService.getAllCurrencies().then(currencies => {
           const stateCur = currencies.find(c => c.stateId === data.stateId);
           if (stateCur) setMyStateCurrency(stateCur);
         }).catch(console.error);
-        
+
         // Fetch cities
         statesService.getCities(data.stateId).then(citiesData => {
           setCities(citiesData);
@@ -111,7 +111,7 @@ export const PropertiesPage: React.FC = () => {
   const handleCreateProperty = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!myUuid) return;
-    
+
     // Determine exact ownerId based on ownerType selection
     let finalOwnerId = myUuid;
     if (createForm.ownerType === 'company') {
@@ -124,13 +124,13 @@ export const PropertiesPage: React.FC = () => {
     try {
       setLoading(true);
       const photoUrls = createForm.photoUrlsText.split('\n').map(u => u.trim()).filter(u => u.length > 0);
-      
+
       await economyService.createProperty({
         ...createForm,
         ownerId: createForm.ownerId || finalOwnerId,
         photoUrls: photoUrls.length > 0 ? photoUrls : undefined,
         parentPropertyId: createForm.parentPropertyId || undefined,
-        street: createForm.street || undefined,
+        streetId: createForm.streetId || undefined,
         houseNumber: createForm.houseNumber || undefined,
         area: createForm.area ? parseFloat(createForm.area) : undefined,
       });
@@ -232,7 +232,7 @@ export const PropertiesPage: React.FC = () => {
         {properties.length === 0 && !loading && (
           <div className="empty-state">Нет данных для отображения</div>
         )}
-        
+
         {properties.map(p => (
           <div className="properties-page__card" key={p.id}>
             <div className="card-header">
@@ -246,10 +246,10 @@ export const PropertiesPage: React.FC = () => {
                 <div className="price-tag">{p.price.toFixed(2)}</div>
               )}
             </div>
-            
+
             <div className="card-body">
               {p.description && <div className="description">{p.description}</div>}
-              
+
               <div className="details">
                 <div className="detail-item">
                   <span>Тип</span>
@@ -339,14 +339,14 @@ export const PropertiesPage: React.FC = () => {
             <form onSubmit={handleCreateProperty}>
               <div className="form-group">
                 <label>Название</label>
-                <input required value={createForm.name} onChange={e => setCreateForm({...createForm, name: e.target.value})} />
+                <input required value={createForm.name} onChange={e => setCreateForm({ ...createForm, name: e.target.value })} />
               </div>
 
               <div className="form-group">
                 <label>От чьего лица оформляется</label>
                 <select value={createForm.ownerType} onChange={e => {
                   const val = e.target.value as PropertyOwnerType;
-                  setCreateForm({...createForm, ownerType: val, ownerId: val === 'personal' ? myUuid! : val === 'government' ? createForm.stateId : ''});
+                  setCreateForm({ ...createForm, ownerType: val, ownerId: val === 'personal' ? myUuid! : val === 'government' ? createForm.stateId : '' });
                 }}>
                   <option value="personal">Физлицо (Личное)</option>
                   <option value="company">Компания</option>
@@ -357,7 +357,7 @@ export const PropertiesPage: React.FC = () => {
               {createForm.ownerType === 'company' && (
                 <div className="form-group">
                   <label>Выберите компанию</label>
-                  <select required value={createForm.ownerId} onChange={e => setCreateForm({...createForm, ownerId: e.target.value})}>
+                  <select required value={createForm.ownerId} onChange={e => setCreateForm({ ...createForm, ownerId: e.target.value })}>
                     <option value="" disabled>-- Выберите компанию --</option>
                     {myCompanies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
@@ -369,9 +369,9 @@ export const PropertiesPage: React.FC = () => {
                 <select value={createForm.propertyCategory} onChange={e => {
                   const cat = e.target.value as any;
                   setCreateForm({
-                    ...createForm, 
-                    propertyCategory: cat, 
-                    type: cat === 'real_estate' ? 'land_plot' : 'railway' 
+                    ...createForm,
+                    propertyCategory: cat,
+                    type: cat === 'real_estate' ? 'land_plot' : 'railway'
                   });
                 }}>
                   <option value="real_estate">Недвижимость</option>
@@ -382,14 +382,14 @@ export const PropertiesPage: React.FC = () => {
               <div className="form-group">
                 <label>Тип</label>
                 {createForm.propertyCategory === 'real_estate' ? (
-                  <select required value={createForm.type} onChange={e => setCreateForm({...createForm, type: e.target.value})}>
+                  <select required value={createForm.type} onChange={e => setCreateForm({ ...createForm, type: e.target.value })}>
                     <option value="land_plot">Земельный участок</option>
                     <option value="residential">Жилое строение</option>
                     <option value="public_building">Здание общего пользования</option>
                     <option value="administrative">Административное здание</option>
                   </select>
                 ) : (
-                  <select required value={createForm.type} onChange={e => setCreateForm({...createForm, type: e.target.value})}>
+                  <select required value={createForm.type} onChange={e => setCreateForm({ ...createForm, type: e.target.value })}>
                     <option value="railway">Ж/Д вокзал</option>
                     <option value="airfield">Аэродром</option>
                     <option value="seaport">Морской порт</option>
@@ -401,7 +401,7 @@ export const PropertiesPage: React.FC = () => {
               {createForm.type === 'land_plot' && (
                 <div className="form-group">
                   <label>Подвид (Опционально)</label>
-                  <select value={createForm.subType} onChange={e => setCreateForm({...createForm, subType: e.target.value})}>
+                  <select value={createForm.subType} onChange={e => setCreateForm({ ...createForm, subType: e.target.value })}>
                     <option value="">-- Без подвида --</option>
                     <option value="ihs">ИЖС (Дом, коммерция)</option>
                     <option value="subsidiary">Подсобное хозяйство</option>
@@ -414,32 +414,32 @@ export const PropertiesPage: React.FC = () => {
               <div className="form-group">
                 <label>ID Государства</label>
                 <input required disabled value={createForm.stateId} />
-                {!myStateId && <small style={{color: 'red'}}>Вы должны быть жителем государства!</small>}
+                {!myStateId && <small style={{ color: 'red' }}>Вы должны быть жителем государства!</small>}
               </div>
 
               <div className="form-group">
                 <label>Координаты центра (Опционально)</label>
-                <input 
+                <input
                   placeholder="X, Y, Z (например: 150, 64, -230)"
-                  value={createForm.centerCoordinates} 
-                  onChange={e => setCreateForm({...createForm, centerCoordinates: e.target.value})} 
+                  value={createForm.centerCoordinates}
+                  onChange={e => setCreateForm({ ...createForm, centerCoordinates: e.target.value })}
                 />
               </div>
 
               {createForm.propertyCategory === 'real_estate' && createForm.type !== 'land_plot' && (
                 <div className="form-group">
                   <label>ID родительского земельного участка (Опционально)</label>
-                  <input 
+                  <input
                     placeholder="Укажите ID участка, на котором находится строение"
-                    value={createForm.parentPropertyId} 
-                    onChange={e => setCreateForm({...createForm, parentPropertyId: e.target.value})} 
+                    value={createForm.parentPropertyId}
+                    onChange={e => setCreateForm({ ...createForm, parentPropertyId: e.target.value })}
                   />
                 </div>
               )}
 
               <div className="form-group">
                 <label>Город (Опционально)</label>
-                <select value={createForm.cityId} onChange={e => setCreateForm({...createForm, cityId: e.target.value})}>
+                <select value={createForm.cityId} onChange={e => setCreateForm({ ...createForm, cityId: e.target.value })}>
                   <option value="">-- Без города (Вне города) --</option>
                   {cities.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
@@ -448,7 +448,7 @@ export const PropertiesPage: React.FC = () => {
               {createForm.cityId && (
                 <div className="form-group">
                   <label>Улица (Опционально)</label>
-                  <select value={createForm.streetId} onChange={e => setCreateForm({...createForm, streetId: e.target.value})}>
+                  <select value={createForm.streetId} onChange={e => setCreateForm({ ...createForm, streetId: e.target.value })}>
                     <option value="">-- Без улицы --</option>
                     {streets.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                   </select>
@@ -457,30 +457,30 @@ export const PropertiesPage: React.FC = () => {
 
               <div className="form-group">
                 <label>Номер дома/строения (Опционально)</label>
-                <input 
+                <input
                   placeholder="Например: 12Б"
-                  value={createForm.houseNumber} 
-                  onChange={e => setCreateForm({...createForm, houseNumber: e.target.value})} 
+                  value={createForm.houseNumber}
+                  onChange={e => setCreateForm({ ...createForm, houseNumber: e.target.value })}
                 />
               </div>
 
               <div className="form-group">
                 <label>Площадь (Опционально)</label>
-                <input 
+                <input
                   type="number"
                   placeholder="Площадь в кв.м."
-                  value={createForm.area} 
-                  onChange={e => setCreateForm({...createForm, area: e.target.value})} 
+                  value={createForm.area}
+                  onChange={e => setCreateForm({ ...createForm, area: e.target.value })}
                 />
               </div>
 
               <div className="form-group">
                 <label>Фотографии недвижимости (по одной ссылке на строку, до 10 фото)</label>
-                <textarea 
-                  rows={4} 
+                <textarea
+                  rows={4}
                   placeholder="https://example.com/photo1.png&#10;https://example.com/photo2.png"
-                  value={createForm.photoUrlsText} 
-                  onChange={e => setCreateForm({...createForm, photoUrlsText: e.target.value})}
+                  value={createForm.photoUrlsText}
+                  onChange={e => setCreateForm({ ...createForm, photoUrlsText: e.target.value })}
                 />
               </div>
 
