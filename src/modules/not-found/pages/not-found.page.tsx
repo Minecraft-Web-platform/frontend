@@ -7,6 +7,12 @@ let timerId: number = 0;
 
 const NotFoundPage: FC = () => {
   const [seconds, setSeconds] = useState<number>(10);
+  const secondsWord =
+    seconds === 1
+      ? "секунду"
+      : seconds >= 2 && seconds <= 4
+        ? "секунды"
+        : "секунд";
   const navigate = useNavigate();
 
   function timer() {
@@ -32,7 +38,7 @@ const NotFoundPage: FC = () => {
 
         <p>
           Ой... Ты забрёл куда-то не туда... Не переживай, ты будешь
-          перенаправлен на свой профиль через {seconds} секунд
+          перенаправлен на свой профиль через {seconds} {secondsWord} :)
         </p>
 
         <Button callback={() => navigate("/profile")}>Не могу ждать!</Button>

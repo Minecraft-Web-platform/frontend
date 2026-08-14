@@ -184,11 +184,11 @@ export class StatesService {
   }
 
   async createStreet(cityId: string, name: string): Promise<IStreet> {
-    return this.httpService.post<IStreet>(`cities/${cityId}/streets`, { name });
+    return this.httpService.post<IStreet, { name: string }>(`cities/${cityId}/streets`, { name });
   }
 
   async updateStreet(cityId: string, streetId: string, name: string): Promise<IStreet> {
-    return this.httpService.put<IStreet>(`cities/${cityId}/streets/${streetId}`, { name });
+    return this.httpService.put<IStreet, { name: string }>(`cities/${cityId}/streets/${streetId}`, { name });
   }
 
   async deleteStreet(cityId: string, streetId: string): Promise<void> {

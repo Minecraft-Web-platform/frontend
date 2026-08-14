@@ -45,7 +45,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
             <div className="title-box">
               <h3 className="company-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
                 {company.name}
-                <button 
+                <button
                   title="Скопировать ID фирмы"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -64,11 +64,10 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           </div>
 
           <span
-            className={`company-card__badge ${
-              company.isPublic
-                ? 'company-card__badge--public'
-                : 'company-card__badge--private'
-            }`}
+            className={`company-card__badge ${company.isPublic
+              ? 'company-card__badge--public'
+              : 'company-card__badge--private'
+              }`}
           >
             {company.isPublic ? 'Торгуется на бирже' : 'Частная'}
           </span>
@@ -88,9 +87,8 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
                 <div className="stat-value">
                   <span>{company.sharePrice.toFixed(2)} ед.</span>
                   <span
-                    className={`change-pill ${
-                      isPositive ? 'change-pill--pos' : 'change-pill--neg'
-                    }`}
+                    className={`change-pill ${isPositive ? 'change-pill--pos' : 'change-pill--neg'
+                      }`}
                   >
                     {isPositive ? '+' : ''}
                     {company.priceChange24h.toFixed(1)}%
@@ -161,10 +159,10 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
             className="economy-btn economy-btn--secondary"
             style={{ width: '100%' }}
           >
-            Выплатить дивиденды
+            Выплатить дивиденды {isOwner ? '1' : '0'}
           </button>
         )}
-        
+
         {company.isPublic && onChartClick && (
           <button
             onClick={() => onChartClick(company.id)}

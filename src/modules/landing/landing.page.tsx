@@ -6,7 +6,7 @@ const LandingPage: FC = () => {
   return (
     <>
       <header className="header">
-        <h1>Хроники края</h1>
+        <h1>Хроники края 2.0</h1>
         <p>Погрузись в мир приключений</p>
 
         <Link className="header__link-to-auth" to="/registration">
