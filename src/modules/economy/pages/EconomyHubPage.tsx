@@ -3,13 +3,14 @@ import { useSearchParams } from 'react-router';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import { BankPage } from './BankPage';
 import { CompaniesListPage } from './CompaniesListPage';
+import { ClientOrdersList } from '../components/ClientOrdersList';
 import { StockExchangePage } from './StockExchangePage';
 import { CurrenciesPage } from './CurrenciesPage';
 import { CardsPage } from './CardsPage';
 import { PropertiesPage } from './PropertiesPage';
 import './EconomyHubPage.scss';
 
-export type EconomyTabId = 'bank' | 'cards' | 'companies' | 'exchange' | 'currencies' | 'properties';
+export type EconomyTabId = 'bank' | 'cards' | 'companies' | 'exchange' | 'currencies' | 'properties' | 'orders';
 
 export const EconomyHubPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -81,6 +82,21 @@ export const EconomyHubPage: React.FC = () => {
 
               <div
                 className={`economy-hub__card ${
+                  activeTab === 'orders' ? 'economy-hub__card--active' : ''
+                }`}
+                onClick={() => handleSelectTab('orders')}
+              >
+                <div className="card-icon">🛍️</div>
+                <div className="card-info">
+                  <div className="card-title">Мои Заказы</div>
+                  <div className="card-desc">
+                    История заказов услуг у компаний и жалобы
+                  </div>
+                </div>
+              </div>
+
+              <div
+                className={`economy-hub__card ${
                   activeTab === 'exchange' ? 'economy-hub__card--active' : ''
                 }`}
                 onClick={() => handleSelectTab('exchange')}
@@ -133,6 +149,7 @@ export const EconomyHubPage: React.FC = () => {
             {activeTab === 'exchange' && <StockExchangePage embedded={true} />}
             {activeTab === 'currencies' && <CurrenciesPage embedded={true} />}
             {activeTab === 'properties' && <PropertiesPage />}
+            {activeTab === 'orders' && <ClientOrdersList />}
           </div>
         </div>
       </main>

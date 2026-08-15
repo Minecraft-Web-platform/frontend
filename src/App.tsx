@@ -25,7 +25,7 @@ import {
   CitiesListPage,
   CityDetailPage,
 } from "./modules/states";
-import { EconomyHubPage } from "./modules/economy";
+import { EconomyHubPage, CompanyDetailPage } from "./modules/economy";
 
 function App() {
   return (
@@ -200,6 +200,14 @@ function App() {
         <Route
           path="/companies"
           element={<Navigate to="/economy?tab=companies" replace />}
+        />
+        <Route
+          path="/companies/:id"
+          element={
+            <RequireAuth>
+              <CompanyDetailPage />
+            </RequireAuth>
+          }
         />
         <Route
           path="/exchange"

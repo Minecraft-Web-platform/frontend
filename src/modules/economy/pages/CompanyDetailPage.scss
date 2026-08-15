@@ -1,0 +1,192 @@
+.company-detail-page {
+  padding: 32px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+
+  .loading, .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: #64748b;
+    font-size: 1.2rem;
+    gap: 20px;
+  }
+
+  .cdp-header-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 24px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+
+    &__top {
+      margin-bottom: 24px;
+      display: flex;
+    }
+
+    &__main {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+
+      .cdp-logo, .cdp-logo-placeholder {
+        width: 96px;
+        height: 96px;
+        border-radius: 20px;
+        flex-shrink: 0;
+        object-fit: cover;
+        background-color: #f8fafc;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      }
+
+      .cdp-logo-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #64748b;
+        font-size: 2rem;
+      }
+
+      .cdp-title-info {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        h1 {
+          margin: 0;
+          font-size: 32px;
+          font-weight: 700;
+          color: #0f172a;
+          line-height: 1.2;
+        }
+
+        .cdp-badge {
+          display: inline-block;
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+          text-transform: uppercase;
+          padding: 6px 14px;
+          border-radius: 30px;
+          align-self: flex-start;
+
+          &.public {
+            background-color: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+          }
+
+          &.private {
+            background-color: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+          }
+        }
+      }
+    }
+  }
+
+  .cdp-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding: 6px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 16px;
+    width: fit-content;
+
+    .cdp-tab-btn {
+      background: transparent;
+      border: none;
+      color: #64748b;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: #0f172a;
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      &.active {
+        background: #fff;
+        color: #0f172a;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+    }
+  }
+
+  .cdp-tab-content {
+    .cdp-overview {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+
+      .cdp-info-card {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+
+        h3 {
+          margin: 0 0 16px 0;
+          font-size: 18px;
+          color: #0f172a;
+        }
+
+        p {
+          margin: 0;
+          color: #475569;
+          font-size: 15px;
+          line-height: 1.6;
+          white-space: pre-wrap;
+        }
+      }
+
+      .cdp-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+
+        .cdp-stat {
+          background: rgba(255, 255, 255, 0.9);
+          border: 1px solid rgba(0, 0, 0, 0.04);
+          border-radius: 20px;
+          padding: 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+
+          .label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+          }
+
+          .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            font-family: monospace;
+          }
+        }
+      }
+    }
+  }
+}

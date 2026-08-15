@@ -1,0 +1,197 @@
+.company-orders-tab {
+  h2 {
+    margin: 0 0 24px 0;
+    font-size: 24px;
+    color: #0f172a;
+  }
+
+  .loading, .error, .empty-state {
+    padding: 60px 40px;
+    text-align: center;
+    color: #64748b;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .error {
+    color: #ef4444;
+    background: #fef2f2;
+    border-color: #fca5a5;
+  }
+
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .order-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.04);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        transform: translateY(-4px);
+        border-color: rgba(0, 0, 0, 0.08);
+        box-shadow: 0 16px 50px -10px rgba(0, 0, 0, 0.08);
+      }
+
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #f1f5f9;
+
+        .order-id {
+          font-weight: 700;
+          color: #0f172a;
+          font-size: 16px;
+        }
+
+        .status-badge {
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          
+          &.new { background: #eff6ff; color: #2563eb; }
+          &.in_progress { background: #fef3c7; color: #d97706; }
+          &.completed { background: #ecfdf5; color: #059669; }
+          &.cancelled { background: #fef2f2; color: #dc2626; }
+          &.disputed { background: #fdf4ff; color: #c026d3; }
+          &.refunded { background: #f3f4f6; color: #4b5563; }
+        }
+      }
+
+      .order-details {
+        flex: 1;
+        margin-bottom: 24px;
+
+        p {
+          margin: 0 0 12px 0;
+          font-size: 14px;
+          color: #475569;
+          
+          strong {
+            color: #0f172a;
+            margin-right: 8px;
+            font-weight: 600;
+          }
+        }
+
+        .order-items {
+          margin-top: 16px;
+          padding-top: 16px;
+          border-top: 1px dashed #cbd5e1;
+          
+          strong {
+            font-size: 14px;
+            color: #0f172a;
+            font-weight: 600;
+          }
+          
+          ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            color: #475569;
+            font-size: 14px;
+            
+            li {
+              margin-bottom: 6px;
+            }
+          }
+        }
+
+        .client-comment {
+          margin-top: 16px;
+          padding: 16px;
+          background: #f1f5f9;
+          border-left: 4px solid #8b5cf6;
+          border-radius: 4px;
+
+          strong {
+            color: #0f172a;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 8px;
+          }
+
+          p {
+            margin: 0;
+            font-size: 14px;
+            color: #475569;
+            font-style: italic;
+          }
+        }
+      }
+
+      .order-actions {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        button {
+          flex: 1;
+          min-width: 200px;
+        }
+      }
+
+      .status-history {
+        font-size: 13px;
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 12px;
+        border: 1px solid #f1f5f9;
+        
+        details {
+          cursor: pointer;
+          
+          summary {
+            color: #64748b;
+            outline: none;
+            font-weight: 500;
+            user-select: none;
+            
+            &:hover {
+              color: #0f172a;
+            }
+          }
+          
+          ul {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0 0 0;
+            
+            li {
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+              margin-bottom: 8px;
+              padding: 12px;
+              background: #fff;
+              border-radius: 8px;
+              border: 1px solid #e2e8f0;
+              
+              .date { color: #94a3b8; font-size: 11px; font-weight: 500; }
+              .user { color: #8b5cf6; font-weight: 600; font-size: 12px; }
+              .status { color: #2563eb; font-weight: 600; }
+              .comment { color: #475569; font-style: italic; margin-top: 4px; }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ICompany } from '../types/economy.types';
+import Button from '../../../shared/ui/button/button.component';
 import './CompanyCard.scss';
 
 interface CompanyCardProps {
@@ -11,6 +12,7 @@ interface CompanyCardProps {
   onDividendsClick?: (companyId: string) => void;
   onChartClick?: (companyId: string) => void;
   onChangePriceClick?: (companyId: string) => void;
+  onDetailsClick?: (companyId: string) => void;
 }
 
 export const CompanyCard: React.FC<CompanyCardProps> = ({
@@ -22,15 +24,16 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
   onDividendsClick,
   onChartClick,
   onChangePriceClick,
+  onDetailsClick,
 }) => {
   const isPositive = company.priceChange24h >= 0;
   const marketCap = company.totalShares * company.sharePrice;
 
   return (
     <div className="company-card">
-      <div>
+      <div className="company-card__content">
         <div className="company-card__header">
-          <div className="company-info">
+          <div className="company-card__top-bar">
             {company.logoUrl ? (
               <img
                 src={company.logoUrl}
@@ -42,41 +45,40 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
                 {company.name.slice(0, 2).toUpperCase()}
               </div>
             )}
-            <div className="title-box">
-              <h3 className="company-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
-                {company.name}
-                <button
-                  title="Скопировать ID фирмы"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigator.clipboard.writeText(company.id);
-                    alert('ID фирмы скопирован: ' + company.id);
-                  }}
-                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0, fontSize: '1rem' }}
-                >
-                  📋
-                </button>
-              </h3>
-              <div className="owner">
-                Владелец: <strong>{company.ownerUsername}</strong>
-              </div>
-            </div>
+            <span
+              className={`company-card__badge ${
+                company.isPublic
+                  ? 'company-card__badge--public'
+                  : 'company-card__badge--private'
+              }`}
+            >
+              {company.isPublic ? 'Торгуется на бирже' : 'Частная'}
+            </span>
           </div>
 
-          <span
-            className={`company-card__badge ${company.isPublic
-              ? 'company-card__badge--public'
-              : 'company-card__badge--private'
-              }`}
-          >
-            {company.isPublic ? 'Торгуется на бирже' : 'Частная'}
-          </span>
+          <div className="company-card__title-box">
+            <h3 className="company-title">
+              <span>{company.name}</span>
+              <button
+                className="copy-btn"
+                title="Скопировать ID фирмы"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(company.id);
+                  alert('ID фирмы скопирован: ' + company.id);
+                }}
+              >
+                📋
+              </button>
+            </h3>
+            <div className="owner">
+              Владелец: <strong>{company.ownerUsername}</strong>
+            </div>
+          </div>
         </div>
 
         {company.description && (
-          <p className="company-card__desc">
-            {company.description}
-          </p>
+          <p className="company-card__desc">{company.description}</p>
         )}
 
         {company.isPublic ? (
@@ -87,8 +89,9 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
                 <div className="stat-value">
                   <span>{company.sharePrice.toFixed(2)} ед.</span>
                   <span
-                    className={`change-pill ${isPositive ? 'change-pill--pos' : 'change-pill--neg'
-                      }`}
+                    className={`change-pill ${
+                      isPositive ? 'change-pill--pos' : 'change-pill--neg'
+                    }`}
                   >
                     {isPositive ? '+' : ''}
                     {company.priceChange24h.toFixed(1)}%
@@ -112,75 +115,83 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
             </div>
           </>
         ) : (
-          <div className="company-card__shares-bar" style={{ justifyContent: 'center', opacity: 0.7 }}>
+          <div className="company-card__shares-bar company-card__shares-bar--unlisted">
             <span className="label">Компания еще не вышла на биржу</span>
           </div>
         )}
       </div>
 
-      <div className="company-card__actions" style={{ flexDirection: 'column' }}>
+      <div className="company-card__actions">
         {company.isPublic ? (
           <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
             {onBuyClick && (
-              <button
-                onClick={() => onBuyClick(company.id)}
-                className="economy-btn economy-btn--primary"
+              <Button
+                type="button"
+                callback={() => onBuyClick(company.id)}
                 style={{ flex: 1 }}
               >
                 Купить акции
-              </button>
+              </Button>
             )}
             {onSellClick && (
-              <button
-                onClick={() => onSellClick(company.id)}
-                className="economy-btn economy-btn--secondary"
+              <Button
+                type="button"
+                callback={() => onSellClick(company.id)}
+                secondary={true}
                 style={{ flex: 1 }}
               >
                 Продать
-              </button>
+              </Button>
             )}
           </div>
         ) : (
           isOwner &&
           onIpoClick && (
-            <button
-              onClick={() => onIpoClick(company.id)}
-              className="economy-btn economy-btn--primary"
-              style={{ width: '100%' }}
-            >
+            <Button type="button" callback={() => onIpoClick(company.id)}>
               Подать заявку на IPO
-            </button>
+            </Button>
           )
         )}
 
-        {isOwner && onDividendsClick && (
-          <button
-            onClick={() => onDividendsClick(company.id)}
-            className="economy-btn economy-btn--secondary"
-            style={{ width: '100%' }}
+        {isOwner && company.isPublic && company.availableShares < company.totalShares && onDividendsClick && (
+          <Button
+            type="button"
+            callback={() => onDividendsClick(company.id)}
+            secondary={true}
           >
-            Выплатить дивиденды {isOwner ? '1' : '0'}
-          </button>
+            Выплатить дивиденды
+          </Button>
         )}
 
         {company.isPublic && onChartClick && (
-          <button
-            onClick={() => onChartClick(company.id)}
-            className="economy-btn economy-btn--secondary"
-            style={{ width: '100%' }}
+          <Button
+            type="button"
+            callback={() => onChartClick(company.id)}
+            secondary={true}
           >
             📈 График
-          </button>
+          </Button>
         )}
 
         {company.isPublic && onChangePriceClick && (
-          <button
-            onClick={() => onChangePriceClick(company.id)}
-            className="economy-btn economy-btn--secondary"
-            style={{ width: '100%', color: '#8b5cf6', borderColor: '#8b5cf6' }}
+          <Button
+            type="button"
+            callback={() => onChangePriceClick(company.id)}
+            secondary={true}
+            style={{ color: '#8b5cf6', borderColor: '#8b5cf6' }}
           >
             ⚙️ Изменить цену
-          </button>
+          </Button>
+        )}
+
+        {onDetailsClick && (
+          <Button
+            type="button"
+            callback={() => onDetailsClick(company.id)}
+            secondary={true}
+          >
+            🏢 Подробнее о фирме
+          </Button>
         )}
       </div>
     </div>

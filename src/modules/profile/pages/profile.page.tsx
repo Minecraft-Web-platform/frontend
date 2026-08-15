@@ -7,6 +7,7 @@ import "./profile.page.scss";
 import { PropagateLoader } from "react-spinners";
 import Input from "../../../shared/ui/input/input.component";
 import Button from "../../../shared/ui/button/button.component";
+import { ImageUploader } from "../../../shared/ui/image-uploader/ImageUploader";
 import { useNavigate } from "react-router";
 
 const Profile: FC = () => {
@@ -168,42 +169,15 @@ const Profile: FC = () => {
 
               <div className="right">
                 <div className="avatar">
-                  <label htmlFor="avatar-upload">
-                    <img
-                      src={
-                        info?.avatar_img
-                          ? `${info.avatar_img}?t=${Date.now()}`
-                          : "/png/steve-head.png"
-                      }
-                      alt="avatar"
-                      title="Нажми, чтобы изменить аватар"
-                      style={{ cursor: "pointer" }}
-                    />
-                  </label>
-
-                  <input
-                    type="file"
-                    id="avatar-upload"
-                    accept="image/jpeg,image/png,image/webp"
-                    style={{ display: "none" }}
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-
-                      try {
-                        setLoading(true);
-                        const { avatarUrl } = await profileService.uploadAvatar(
-                          file,
-                          accessToken as string
-                        );
-                        setInfo((prev) =>
-                          prev ? { ...prev, avatarUrl } : prev
-                        );
-                      } catch (err) {
-                        alert("Ошибка загрузки аватара 😢");
-                      } finally {
-                        setLoading(false);
-                      }
+                  <ImageUploader 
+                    label="Аватар профиля"
+                    enableCrop
+                    aspect={1}
+                    value={info?.avatar_img ? `${info.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"}
+                    onChange={(url) => setInfo(prev => prev ? { ...prev, avatar_img: url as string } : prev)}
+                    customUploadFn={async (file) => {
+                      const { avatarUrl } = await profileService.uploadAvatar(file, accessToken as string);
+                      return avatarUrl;
                     }}
                   />
                 </div>

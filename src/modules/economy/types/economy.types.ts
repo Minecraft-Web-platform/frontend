@@ -35,6 +35,8 @@ export interface ITransfer {
   toOwnerName?: string;
   fromCoatOfArms?: string | null;
   toCoatOfArms?: string | null;
+  fromFallbackCoatOfArms?: string | null;
+  toFallbackCoatOfArms?: string | null;
   amount: number;
   currencyCode: string;
   taxAmount: number;
@@ -210,4 +212,96 @@ export interface CreatePropertyRequest {
 export interface BuyPropertyRequest {
   newOwnerId: string;
   newOwnerType: PropertyOwnerType;
+}
+
+export interface ICompanyServiceSubItem {
+  id: string;
+  serviceId: string;
+  name: string;
+  description: string | null;
+  price: number;
+  photoUrls: string[] | null;
+  displayOrder: number;
+}
+
+export interface ICompanyService {
+  id: string;
+  companyId: string;
+  name: string;
+  description: string | null;
+  isComposite: boolean;
+  price: number;
+  photoUrls: string[] | null;
+  subItems: ICompanyServiceSubItem[];
+  createdAt: string;
+}
+
+export enum CompanyOrderStatus {
+  NEW = 'NEW',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+  DISPUTED = 'DISPUTED',
+  REFUNDED = 'REFUNDED',
+}
+
+export interface ICompanyOrderStatusHistory {
+  id: string;
+  orderId: string;
+  status: CompanyOrderStatus;
+  comment: string | null;
+  changedByUsername: string | null;
+  createdAt: string;
+}
+
+export interface ICompanyOrderItem {
+  id: string;
+  orderId: string;
+  subItemId: string | null;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+export interface ICompanyOrder {
+  id: string;
+  companyId: string;
+  company?: ICompany;
+  serviceId: string;
+  service?: ICompanyService;
+  clientUsername: string;
+  clientComment: string | null;
+  payerType?: 'player' | 'company' | 'state';
+  payerCompanyId?: string | null;
+  payerStateId?: string | null;
+  totalPrice: number;
+  status: CompanyOrderStatus;
+  items: ICompanyOrderItem[];
+  statusHistory: ICompanyOrderStatusHistory[];
+  createdAt: string;
+}
+
+export interface CreateCompanyServiceRequest {
+  name: string;
+  description?: string;
+  isComposite: boolean;
+  price: number;
+  photoUrls?: string[];
+  subItems?: { name: string; description?: string; price: number; photoUrls?: string[]; displayOrder?: number }[];
+}
+
+export interface CreateCompanyOrderRequest {
+  companyId: string;
+  serviceId: string;
+  clientComment?: string;
+  subItemIds?: string[];
+  payerType?: 'player' | 'company' | 'state';
+  payerCompanyId?: string | null;
+  payerStateId?: string | null;
+}
+
+export interface IOrderIdentity {
+  type: 'player' | 'company' | 'state';
+  id: string;
+  label: string;
 }

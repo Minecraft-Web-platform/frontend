@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ICompany, ICurrency } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
+import Button from '../../../shared/ui/button/button.component';
+import { ImageUploader } from '../../../shared/ui/image-uploader/ImageUploader';
 import { CompanyCard } from '../components/CompanyCard';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import useAuthStore from '../../../store/auth.store';
@@ -8,10 +10,12 @@ import { profileService } from '../../profile/services/profile.service';
 import { statesService, IState, ICity } from '../../states';
 import '../economy-shared.scss';
 import { GetInfoAboutMeRespone } from '../../profile/types/get-info-about-me.response';
+import { useNavigate } from 'react-router-dom';
 
 export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
   embedded = false,
 }) => {
+  const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
   const [companies, setCompanies] = useState<ICompany[]>([]);
   const [loading, setLoading] = useState(true);
@@ -272,6 +276,7 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
               isOwner={company.ownerUsername == userInfo?.username}
               onIpoClick={handleOpenIpoModal}
               onDividendsClick={(id) => setDivCompanyId(id)}
+              onDetailsClick={(id) => navigate(`/companies/${id}`)}
             />
           ))}
         </div>
@@ -304,16 +309,12 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
                 />
               </label>
 
-              {/* TODO: сделать загрузку лого компании на s3 хранилище, но пока что этого не будем делать. */}
-              <label>
-                <span>URL логотипа (опционально)</span>
-                <input
-                  type="text"
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                  placeholder="https://..."
-                />
-              </label>
+              <ImageUploader 
+                folder="economy/companies"
+                label="Логотип (опционально)"
+                value={logoUrl}
+                onChange={(url) => setLogoUrl(url as string)}
+              />
 
               <div
                 style={{

@@ -5,6 +5,7 @@ import { newsCategoryService } from "../services/news-category.service";
 import { newsService } from "../services/news.service";
 import { NewsBlock } from "../types/news-block.type";
 import Button from "../../../shared/ui/button/button.component";
+import { ImageUploader } from "../../../shared/ui/image-uploader/ImageUploader";
 
 type Props = {
   closeModal: () => void;
@@ -48,24 +49,7 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
     setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, content } : b)));
   };
 
-  const handleImageUpload = async (id: string, file: File) => {
-    try {
-      const tempUrl = URL.createObjectURL(file);
-
-      updateBlockContent(id, tempUrl);
-
-      const { url } = await newsService.uploadImage(file);
-
-      if (url) {
-        setBlocks((prev) =>
-          prev.map((b) => (b.id === id ? { ...b, content: url } : b))
-        );
-      }
-    } catch (err) {
-      alert("Ошибка при загрузке изображения");
-    }
-  };
-
+  // customUploadFn is inline
   const handleSubmit = async () => {
     if (!newsTitle.trim() || blocks.length === 0) {
       alert("Введите заголовок и добавьте хотя бы один блок");
@@ -138,24 +122,16 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
                   value={block.content}
                   onChange={(e) => updateBlockContent(block.id, e.target.value)}
                 />
-              ) : block.content ? (
-                <img
-                  src={block.content}
-                  alt="preview"
-                  className="block-preview"
-                />
               ) : (
-                <label className="upload-label">
-                  Загрузить изображение
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleImageUpload(block.id, file);
-                    }}
-                  />
-                </label>
+                <ImageUploader
+                  label={block.content ? "" : "Загрузить изображение"}
+                  value={block.content}
+                  onChange={(url) => updateBlockContent(block.id, url as string)}
+                  customUploadFn={async (file) => {
+                    const { url } = await newsService.uploadImage(file);
+                    return url;
+                  }}
+                />
               )}
             </div>
           ))}

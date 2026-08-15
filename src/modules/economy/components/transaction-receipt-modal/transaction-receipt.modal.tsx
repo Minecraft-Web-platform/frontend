@@ -19,6 +19,14 @@ export const TransactionReceiptModal: FC<Props> = ({ transaction, currencies, on
   const currency = currencies.find((c) => c.code === transaction.currencyCode);
   const currencyIcon = getMinecraftItemInfo(currency?.minecraftItemId || 'minecraft:gold_ingot')?.icon;
 
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, fallbackSrc?: string | null) => {
+    if (fallbackSrc && e.currentTarget.src !== fallbackSrc) {
+      e.currentTarget.src = fallbackSrc;
+    } else {
+      e.currentTarget.style.display = 'none';
+    }
+  };
+
   const handleDownloadPdf = async () => {
     if (!receiptRef.current) return;
     setIsGenerating(true);
@@ -70,7 +78,15 @@ export const TransactionReceiptModal: FC<Props> = ({ transaction, currencies, on
                 <div className="receipt-user-text">
                   <div className="receipt-user-name-wrapper">
                     <span className="receipt-user-name">{transaction.fromOwnerName || 'Неизвестно'}</span>
-                    {transaction.fromCoatOfArms && <img src={transaction.fromCoatOfArms} alt="Герб" className="receipt-coat-of-arms" crossOrigin="anonymous" />}
+                    {transaction.fromCoatOfArms && (
+                      <img 
+                        src={transaction.fromCoatOfArms} 
+                        alt="Герб" 
+                        className="receipt-coat-of-arms" 
+                        crossOrigin="anonymous" 
+                        onError={(e) => handleImageError(e, transaction.fromFallbackCoatOfArms)}
+                      />
+                    )}
                   </div>
                   <span className="receipt-value" style={{ fontFamily: 'monospace', fontSize: '12px' }}>{transaction.fromAccountNumber}</span>
                 </div>
@@ -83,7 +99,15 @@ export const TransactionReceiptModal: FC<Props> = ({ transaction, currencies, on
                 <div className="receipt-user-text">
                   <div className="receipt-user-name-wrapper">
                     <span className="receipt-user-name">{transaction.toOwnerName || 'Неизвестно'}</span>
-                    {transaction.toCoatOfArms && <img src={transaction.toCoatOfArms} alt="Герб" className="receipt-coat-of-arms" crossOrigin="anonymous" />}
+                    {transaction.toCoatOfArms && (
+                      <img 
+                        src={transaction.toCoatOfArms} 
+                        alt="Герб" 
+                        className="receipt-coat-of-arms" 
+                        crossOrigin="anonymous" 
+                        onError={(e) => handleImageError(e, transaction.toFallbackCoatOfArms)}
+                      />
+                    )}
                   </div>
                   <span className="receipt-value" style={{ fontFamily: 'monospace', fontSize: '12px' }}>{transaction.toAccountNumber}</span>
                 </div>

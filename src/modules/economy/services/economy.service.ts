@@ -21,6 +21,12 @@ import {
   IProperty,
   CreatePropertyRequest,
   BuyPropertyRequest,
+  ICompanyService,
+  ICompanyOrder,
+  CreateCompanyServiceRequest,
+  CreateCompanyOrderRequest,
+  CompanyOrderStatus,
+  IOrderIdentity,
 } from '../types/economy.types';
 
 export class EconomyService {
@@ -193,6 +199,43 @@ export class EconomyService {
 
   public async buyProperty(propertyId: string, data: BuyPropertyRequest): Promise<IProperty> {
     return this.httpService.post(`economy/properties/${propertyId}/buy`, data);
+  }
+
+  // --- Услуги Компании и Заказы ---
+  public async getCompanyServices(companyId: string): Promise<ICompanyService[]> {
+    return this.httpService.get(`company-services/company/${companyId}`);
+  }
+
+  public async createCompanyService(companyId: string, data: CreateCompanyServiceRequest): Promise<ICompanyService> {
+    return this.httpService.post(`company-services/company/${companyId}`, data);
+  }
+
+  public async updateCompanyService(companyId: string, serviceId: string, data: CreateCompanyServiceRequest): Promise<ICompanyService> {
+    return this.httpService.put(`company-services/company/${companyId}/service/${serviceId}`, data);
+  }
+
+  public async getCompanyOrders(companyId: string): Promise<ICompanyOrder[]> {
+    return this.httpService.get(`company-services/company/${companyId}/orders`);
+  }
+
+  public async getClientOrders(): Promise<ICompanyOrder[]> {
+    return this.httpService.get(`company-services/client/orders`);
+  }
+
+  public async createCompanyOrder(data: CreateCompanyOrderRequest): Promise<ICompanyOrder> {
+    return this.httpService.post(`company-services/order`, data);
+  }
+
+  public async updateOrderStatus(orderId: string, status: CompanyOrderStatus, comment?: string): Promise<ICompanyOrder> {
+    return this.httpService.put(`company-services/order/${orderId}/status`, { status, comment });
+  }
+
+  public async arbitrateOrder(orderId: string, data: { decision: 'REFUND' | 'REJECT'; comment: string; finePercent?: number }): Promise<ICompanyOrder> {
+    return this.httpService.put(`company-services/order/${orderId}/arbitrate`, data);
+  }
+
+  public async getMyIdentities(): Promise<IOrderIdentity[]> {
+    return this.httpService.get(`company-services/identities`);
   }
 }
 

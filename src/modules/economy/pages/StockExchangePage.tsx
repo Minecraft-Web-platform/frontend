@@ -7,6 +7,7 @@ import { statesService, IState } from '../../states';
 import useAuthStore from '../../../store/auth.store';
 import { TradingChart } from '../components/TradingChart';
 import { ChangePriceModal } from '../components/ChangePriceModal';
+import Button from '../../../shared/ui/button/button.component';
 import '../economy-shared.scss';
 
 export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
@@ -283,17 +284,35 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                 </div>
                 
                 <div style={{ display: 'flex', gap: '12px' }}>
-                  <button onClick={() => setBuyCompanyId(selectedCompany.id)} className="economy-btn economy-btn--success" style={{ flex: 1, padding: '16px', fontSize: '16px', fontWeight: 600, border: 'none', background: '#10b981', color: 'white', borderRadius: '12px', cursor: 'pointer' }}>Купить акции</button>
-                  <button onClick={() => setSellCompanyId(selectedCompany.id)} className="economy-btn economy-btn--danger" style={{ flex: 1, padding: '16px', fontSize: '16px', fontWeight: 600, border: 'none', background: '#ef4444', color: 'white', borderRadius: '12px', cursor: 'pointer' }}>Продать акции</button>
+                  <Button
+                    type="button"
+                    callback={() => setBuyCompanyId(selectedCompany.id)}
+                    style={{ flex: 1 }}
+                  >
+                    Купить акции
+                  </Button>
+                  <Button
+                    type="button"
+                    callback={() => setSellCompanyId(selectedCompany.id)}
+                    secondary={true}
+                    style={{ flex: 1 }}
+                  >
+                    Продать акции
+                  </Button>
                   
                   {(() => {
                     const state = statesList.find(s => s.id === selectedCompany.exchangeStateId);
                     const isTreasurer = state?.treasurerUsername?.toLowerCase() === currentUsername;
                     if (isTreasurer) {
                       return (
-                        <button onClick={() => setChangePriceCompanyId(selectedCompany.id)} className="economy-btn economy-btn--secondary" style={{ flex: 1, padding: '16px', fontSize: '16px', fontWeight: 600, color: '#8b5cf6', border: '1px solid #8b5cf6', background: 'transparent', borderRadius: '12px', cursor: 'pointer' }}>
+                        <Button
+                          type="button"
+                          callback={() => setChangePriceCompanyId(selectedCompany.id)}
+                          secondary={true}
+                          style={{ flex: 1, borderColor: '#8b5cf6', color: '#8b5cf6' }}
+                        >
                           ⚙️ Изменить цену
-                        </button>
+                        </Button>
                       );
                     }
                     return null;
@@ -427,19 +446,16 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
               </p>
 
               <div className="modal-actions">
-                <button
+                <Button
                   type="button"
-                  onClick={() => setBuyCompanyId(null)}
-                  className="economy-btn economy-btn--secondary"
+                  callback={() => setBuyCompanyId(null)}
+                  secondary={true}
                 >
                   Отмена
-                </button>
-                <button
-                  type="submit"
-                  className="economy-btn economy-btn--success"
-                >
+                </Button>
+                <Button type="submit">
                   Купить
-                </button>
+                </Button>
               </div>
             </form>
           </div>
@@ -519,19 +535,16 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
               </p>
 
               <div className="modal-actions">
-                <button
+                <Button
                   type="button"
-                  onClick={() => setSellCompanyId(null)}
-                  className="economy-btn economy-btn--secondary"
+                  callback={() => setSellCompanyId(null)}
+                  secondary={true}
                 >
                   Отмена
-                </button>
-                <button
-                  type="submit"
-                  className="economy-btn economy-btn--danger"
-                >
+                </Button>
+                <Button type="submit" secondary={true}>
                   Продать
-                </button>
+                </Button>
               </div>
             </form>
           </div>

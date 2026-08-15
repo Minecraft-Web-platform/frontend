@@ -43,19 +43,27 @@
     .avatar {
       transition: transform 0.3s linear;
 
+      .image-uploader {
+        margin-top: 24px;
+        
+        .previews .preview-item {
+          width: 280px;
+          height: 280px;
+          border-radius: 8px;
+
+          .remove-btn {
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            font-size: 14px;
+          }
+        }
+      }
+
       &:hover {
         transform: scale(1.03);
         opacity: 0.9;
-      }
-
-      img {
-        border-radius: 8px;
-        display: block;
-        margin-top: 24px;
-        width: 280px;
-        height: 280px;
-        object-fit: cover;
-        object-position: 50% 0%;
       }
     }
   }
