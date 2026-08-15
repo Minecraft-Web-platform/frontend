@@ -87,7 +87,7 @@ export const TradingChart: React.FC<TradingChartProps> = ({ company }) => {
         }
         
         setLoading(false);
-      } catch (err) {
+      } catch (err: any) {
         if (isMounted) {
           setError('Ошибка загрузки графика');
           setLoading(false);

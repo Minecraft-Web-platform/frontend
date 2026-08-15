@@ -18,7 +18,7 @@ const CitizenshipRequestsModal: FC<CitizenshipRequestsModalProps> = ({
   const handleAction = async (requestId: string, status: 'approved' | 'rejected') => {
     try {
       await onReview(requestId, status);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       alert('Ошибка при изменении статуса заявки');
     }

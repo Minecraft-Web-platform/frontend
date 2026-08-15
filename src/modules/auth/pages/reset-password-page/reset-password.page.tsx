@@ -32,7 +32,7 @@ const ResetPasswordPage: FC = () => {
     try {
       await authService.initPasswordReset({ username: username.trim() });
       setStep("code-form");
-    } catch (e) {
+    } catch (e: any) {
       if (e instanceof AxiosError) {
         const status = e.response?.status;
         if (status === 404) {
@@ -64,7 +64,7 @@ const ResetPasswordPage: FC = () => {
         newPassword: newPassword,
       });
       setStep("success");
-    } catch (e) {
+    } catch (e: any) {
       if (e instanceof AxiosError) {
         const status = e.response?.status;
         const msg = e.response?.data?.message;

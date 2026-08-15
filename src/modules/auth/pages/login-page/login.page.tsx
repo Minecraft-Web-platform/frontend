@@ -1,4 +1,4 @@
-import { FC, FormEvent, useEffect, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import "./login.page.scss";
 import Input from "../../../../shared/ui/input/input.component";
 import { useNavigate, Link } from "react-router-dom";
@@ -18,7 +18,7 @@ const LoginPage: FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<number>();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const authStore = useAuthStore();
   const navigate = useNavigate();
@@ -27,6 +27,7 @@ const LoginPage: FC = () => {
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage(null);
 
     const body = {
       username,
@@ -37,25 +38,24 @@ const LoginPage: FC = () => {
       const { accessToken, refreshToken } = await authService.login(body);
 
       authStore.login(accessToken, refreshToken);
-    } catch (e) {
-      if (e instanceof AxiosError) setError(e.status);
+    } catch (e: unknown) {
+      if (e instanceof AxiosError) {
+        const code = e.status || e.response?.status;
+        setErrorMessage(code && errorCodes[code] ? errorCodes[code] : "Не удалось войти. Проверьте данные.");
+      } else {
+        setErrorMessage("Произошла неизвестная ошибка.");
+      }
     }
 
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (error) {
-      alert(errorCodes[error]);
-    }
-
-    setError(0);
-  }, [error])
-
   return (
     <main className="login-page">
       <form className="login-form" onSubmit={(e) => onSubmitHandler(e)}>
         <h1>{t("login-page.html-elements.sign-in-heading")}</h1>
+
+        {errorMessage && <div className="auth-error-message" style={{ color: '#dc2626', marginBottom: '16px', textAlign: 'center', fontWeight: 'bold' }}>{errorMessage}</div>}
 
         <Input
           value={username}

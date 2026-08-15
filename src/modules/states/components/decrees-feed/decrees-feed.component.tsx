@@ -28,7 +28,7 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
       setTitle('');
       setContent('');
       setShowForm(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       alert('Ошибка при публикации указа');
     } finally {

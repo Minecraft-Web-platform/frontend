@@ -27,7 +27,7 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
       await onNominate(programText);
       setProgramText('');
       setShowNominateForm(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       alert('Ошибка при выдвижении кандидатуры. Возможно, вы уже выдвинуты.');
     } finally {
@@ -38,7 +38,7 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
   const handleVote = async (candidateId: string) => {
     try {
       await onVote(candidateId);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       alert('Ошибка при голосовании. Возможно, вы уже проголосовали.');
     }

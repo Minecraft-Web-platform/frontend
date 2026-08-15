@@ -36,7 +36,7 @@ const CitiesListPage: FC = () => {
       ]);
       setCities(citiesData);
       setStates(statesData);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
     } finally {
       setLoading(false);
@@ -72,7 +72,7 @@ const CitiesListPage: FC = () => {
       setStateId('');
       setShowCreateModal(false);
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       alert('Ошибка при создании города');
     } finally {

@@ -20,7 +20,7 @@ const StreetsManager: React.FC<StreetsManagerProps> = ({ cityId, isMayorOrAdmin 
       setLoading(true);
       const data = await statesService.getStreets(cityId);
       setStreets(data || []);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load streets', err);
     } finally {
       setLoading(false);

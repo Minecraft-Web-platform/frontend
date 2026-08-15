@@ -1,8 +1,5 @@
-import { EnhancedWithAuthHttpService } from './http-auth.service';
-import { httpFactoryService } from './http-factory.service';
-
 export class UploadService {
-  constructor(private readonly httpService: EnhancedWithAuthHttpService) {}
+  constructor() { }
 
   public async uploadImage(file: File, folder: string = 'misc'): Promise<string> {
     const formData = new FormData();
@@ -33,4 +30,4 @@ export class UploadService {
   }
 }
 
-export const uploadService = new UploadService(httpFactoryService.createAuthHttpService());
+export const uploadService = new UploadService();

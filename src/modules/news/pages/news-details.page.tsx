@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import "./news.page.scss";
 import { newsService } from "../services/news.service";
 import { News } from "../types/news.type";
 import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
@@ -25,9 +26,17 @@ const NewsDetailsPage: FC = () => {
     <div className="news-details-page">
       <Sidebar />
 
-      {loading && <p>Загрузка новости...</p>}
+      {loading && (
+        <main className="content">
+          <p style={{ textAlign: "center", fontSize: "20px", marginTop: "40px" }}>Загрузка новости...</p>
+        </main>
+      )}
 
-      {!loading && !news && <p>Новость не найдена 😢</p>}
+      {!loading && !news && (
+        <main className="content">
+          <p style={{ textAlign: "center", fontSize: "20px", marginTop: "40px" }}>Новость не найдена 😢</p>
+        </main>
+      )}
 
       {!loading && news && (
         <main className="content">

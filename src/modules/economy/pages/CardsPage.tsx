@@ -359,14 +359,14 @@ export const CardsPage: React.FC = () => {
           </button>
         </div>
       ) : (
-        <div className="cards-page__wallet-stack">
+        <div className="cards-page__grid">
           {cards.map((card) => {
             const linkedAcc = card.account || accounts.find((a) => a.id === card.accountId);
 
             return (
               <div
                 key={card.id}
-                className="wallet-stack-item"
+                className="cards-page__grid-item"
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   setSearchParams({ tab: 'cards', cardId: card.id });

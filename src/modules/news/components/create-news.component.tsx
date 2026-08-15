@@ -69,7 +69,7 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
         })),
       });
       setShowSuccess(true);
-    } catch (err) {
+    } catch (err: any) {
       alert("Ошибка при создании новости");
       console.error(err);
     } finally {

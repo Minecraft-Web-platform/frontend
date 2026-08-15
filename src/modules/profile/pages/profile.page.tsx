@@ -1,7 +1,7 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
+import useSWR from "swr";
 import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import { profileService } from "../services/profile.service";
-import { GetInfoAboutMeRespone } from "../types/get-info-about-me.response";
 import useAuthStore from "../../../store/auth.store";
 import "./profile.page.scss";
 import { PropagateLoader } from "react-spinners";
@@ -11,41 +11,26 @@ import { ImageUploader } from "../../../shared/ui/image-uploader/ImageUploader";
 import { useNavigate } from "react-router";
 
 const Profile: FC = () => {
-  const [info, setInfo] = useState<GetInfoAboutMeRespone | null>(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const { accessToken, logout, setRoleInfo } = useAuthStore();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    let cancelled = false;
-
-    (async () => {
-      try {
-        const data = await profileService.getInfoAboutMe();
-
-        if (!cancelled) {
-          setInfo(data);
-          if (data.role) {
-            setRoleInfo(
-              data.role,
-              data.role === "admin" || data.isAdmin === true,
-              data.role === "economist" ||
-                data.role === "admin" ||
-                data.isEconomist === true
-            );
-          }
+  const { data: info, isLoading: loading, mutate } = useSWR(
+    "profile/me",
+    () => profileService.getInfoAboutMe(),
+    {
+      onSuccess: (data) => {
+        if (data.role) {
+          setRoleInfo(
+            data.role,
+            data.role === "admin" || data.isAdmin === true,
+            data.role === "economist" ||
+            data.role === "admin" ||
+            data.isEconomist === true
+          );
         }
-      } catch {
-        //
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+      },
+    }
+  );
 
   return (
     <div className="profile-page">
@@ -77,9 +62,8 @@ const Profile: FC = () => {
                 <Input
                   value={info?.email || "привяжи-почту@почта.ком"}
                   placeholder=""
-                  label={`Почта | ${
-                    info?.emailIsConfirmed ? "Подтверждена" : "Не подтверждена"
-                  }`}
+                  label={`Почта | ${info?.emailIsConfirmed ? "Подтверждена" : "Не подтверждена"
+                    }`}
                   element="input"
                   disabled
                 />
@@ -89,8 +73,8 @@ const Profile: FC = () => {
                     info?.role === "admin"
                       ? "Администратор"
                       : info?.role === "economist"
-                      ? "Экономист"
-                      : "Игрок"
+                        ? "Экономист"
+                        : "Игрок"
                   }
                   placeholder=""
                   label="Роль на проекте"
@@ -142,7 +126,7 @@ const Profile: FC = () => {
                     📋
                   </Button>
                 </div>
-                
+
                 {info?.stateId && (
                   <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
                     <div style={{ flex: 1 }}>
@@ -169,12 +153,12 @@ const Profile: FC = () => {
 
               <div className="right">
                 <div className="avatar">
-                  <ImageUploader 
+                  <ImageUploader
                     label="Аватар профиля"
                     enableCrop
                     aspect={1}
                     value={info?.avatar_img ? `${info.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"}
-                    onChange={(url) => setInfo(prev => prev ? { ...prev, avatar_img: url as string } : prev)}
+                    onChange={(url) => mutate({ ...info!, avatar_img: url as string }, false)}
                     customUploadFn={async (file) => {
                       const { avatarUrl } = await profileService.uploadAvatar(file, accessToken as string);
                       return avatarUrl;

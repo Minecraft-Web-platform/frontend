@@ -73,7 +73,7 @@ const CityDetailPage: FC = () => {
       setCity(cityData);
       setRequests(requestsData);
       setElections(electionsData);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
     } finally {
       setLoading(false);

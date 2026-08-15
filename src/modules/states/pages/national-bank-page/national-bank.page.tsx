@@ -62,7 +62,7 @@ const NationalBankPage: FC = () => {
       try {
         const reqs = await economyService.getIpoRequests(stateData.id);
         setIpoRequests(reqs);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Failed to load IPO requests', err);
       }
     } catch (err: any) {

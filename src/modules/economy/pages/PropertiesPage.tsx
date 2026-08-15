@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { IProperty, PropertyCategory, PropertyOwnerType, ICompany, ICurrency } from '../types/economy.types';
+import { PropertyCategory, PropertyOwnerType, ICompany, ICurrency } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 import { profileService } from '../../profile/services/profile.service';
 import { statesService } from '../../states/services/states.service';
+import { useMyProperties, useMarketProperties } from '../hooks/useEconomyData';
 import { PropagateLoader } from 'react-spinners';
 import './PropertiesPage.scss';
 
 export const PropertiesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'market' | 'my'>('market');
-  const [properties, setProperties] = useState<IProperty[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  
+  const { data: marketProperties = [], isLoading: loadingMarket, mutate: mutateMarket } = useMarketProperties();
+  const { data: myProperties = [], isLoading: loadingMy, mutate: mutateMy } = useMyProperties();
+  
+  const properties = activeTab === 'market' ? marketProperties : myProperties;
+  const isLoading = activeTab === 'market' ? loadingMarket : loadingMy;
+
   const [error, setError] = useState<string | null>(null);
   const [myUuid, setMyUuid] = useState<string | null>(null);
   const [myStateId, setMyStateId] = useState<string | null>(null);
@@ -17,6 +23,7 @@ export const PropertiesPage: React.FC = () => {
   const [myCompanies, setMyCompanies] = useState<ICompany[]>([]);
   const [cities, setCities] = useState<any[]>([]);
   const [streets, setStreets] = useState<any[]>([]);
+  const [actionLoading, setActionLoading] = useState(false);
 
   // States for creating a property
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -42,12 +49,6 @@ export const PropertiesPage: React.FC = () => {
     loadUser();
   }, []);
 
-  useEffect(() => {
-    if (myUuid) {
-      loadProperties();
-    }
-  }, [activeTab, myUuid]);
-
   const loadUser = async () => {
     try {
       const data = await profileService.getInfoAboutMe();
@@ -71,7 +72,7 @@ export const PropertiesPage: React.FC = () => {
         const companies = await economyService.getAllCompanies({ ownerUsername: data.username });
         setMyCompanies(companies);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       setError('Не удалось загрузить профиль пользователя');
     }
@@ -89,23 +90,9 @@ export const PropertiesPage: React.FC = () => {
     }
   }, [createForm.cityId]);
 
-  const loadProperties = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      if (activeTab === 'market') {
-        // Fetch all market properties (can filter by stateId later)
-        const res = await economyService.getMarketProperties();
-        setProperties(res);
-      } else {
-        const res = await economyService.getMyProperties();
-        setProperties(res);
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Ошибка загрузки недвижимости');
-    } finally {
-      setLoading(false);
-    }
+  const reloadProperties = () => {
+    mutateMarket();
+    mutateMy();
   };
 
   const handleCreateProperty = async (e: React.FormEvent) => {
@@ -122,7 +109,7 @@ export const PropertiesPage: React.FC = () => {
     }
 
     try {
-      setLoading(true);
+      setActionLoading(true);
       const photoUrls = createForm.photoUrlsText.split('\n').map(u => u.trim()).filter(u => u.length > 0);
 
       await economyService.createProperty({
@@ -136,10 +123,11 @@ export const PropertiesPage: React.FC = () => {
       });
       alert('Имущество успешно зарегистрировано!');
       setShowCreateModal(false);
-      loadProperties();
+      reloadProperties();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Ошибка при создании имущества');
-      setLoading(false);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -147,16 +135,17 @@ export const PropertiesPage: React.FC = () => {
     if (!myUuid) return;
     if (!confirm('Вы уверены, что хотите купить эту недвижимость? Будет списан налог.')) return;
     try {
-      setLoading(true);
+      setActionLoading(true);
       await economyService.buyProperty(propertyId, {
         newOwnerId: myUuid,
         newOwnerType: 'personal',
       });
       alert('Покупка успешна!');
-      loadProperties();
+      reloadProperties();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Ошибка при покупке');
-      setLoading(false);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -169,29 +158,31 @@ export const PropertiesPage: React.FC = () => {
       return;
     }
     try {
-      setLoading(true);
+      setActionLoading(true);
       await economyService.listPropertyForSale(propertyId, price);
       alert('Выставлено на продажу!');
-      loadProperties();
+      reloadProperties();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Ошибка');
-      setLoading(false);
+    } finally {
+      setActionLoading(false);
     }
   };
 
   const handleCancelSell = async (propertyId: string) => {
     try {
-      setLoading(true);
+      setActionLoading(true);
       await economyService.cancelListing(propertyId);
       alert('Снято с продажи!');
-      loadProperties();
+      reloadProperties();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Ошибка');
-      setLoading(false);
+    } finally {
+      setActionLoading(false);
     }
   };
 
-  if (loading && !properties.length) {
+  if (isLoading && !properties.length) {
     return (
       <div className="properties-page" style={{ alignItems: 'center', justifyContent: 'center', height: '300px' }}>
         <PropagateLoader color="#4caf50" />
@@ -229,7 +220,7 @@ export const PropertiesPage: React.FC = () => {
       {error && <div className="error-message">{error}</div>}
 
       <div className="properties-page__list">
-        {properties.length === 0 && !loading && (
+        {properties.length === 0 && !isLoading && (
           <div className="empty-state">Нет данных для отображения</div>
         )}
 
@@ -486,7 +477,7 @@ export const PropertiesPage: React.FC = () => {
 
               <div className="form-actions">
                 <button type="button" className="button button--outline" onClick={() => setShowCreateModal(false)}>Отмена</button>
-                <button type="submit" className="button button--primary" disabled={loading || !myStateId || (createForm.ownerType === 'company' && !createForm.ownerId)}>Создать</button>
+                <button type="submit" className="button button--primary" disabled={actionLoading || !myStateId || (createForm.ownerType === 'company' && !createForm.ownerId)}>Создать</button>
               </div>
             </form>
           </div>

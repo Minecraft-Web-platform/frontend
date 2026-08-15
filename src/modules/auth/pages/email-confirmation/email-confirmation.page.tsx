@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import { AxiosError } from "axios";
 import Sidebar from "../../../../shared/ui/sidebar/sidebar.component";
 import "./email-confirmation.page.scss";
 import Input from "../../../../shared/ui/input/input.component";
@@ -19,19 +20,41 @@ const EmailConfirmationPage: FC = () => {
   >("email-providing");
   const [email, setEmail] = useState<string>("");
   const [code, setCode] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { accessToken } = useAuthStore();
   const navigate = useNavigate();
 
   const initEmailConfirmationFunc = () => {
+    setErrorMessage(null);
+    setIsLoading(true);
     authService
       .initEmailConfirmation({ email }, accessToken as string)
-      .then(() => setStep("code-providing"));
+      .then(() => setStep("code-providing"))
+      .catch((e: unknown) => {
+        if (e instanceof AxiosError) {
+          setErrorMessage(e.response?.data?.message || "Не удалось отправить код. Проверьте почту.");
+        } else {
+          setErrorMessage("Произошла неизвестная ошибка.");
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const confirmEmailFunc = () => {
+    setErrorMessage(null);
+    setIsLoading(true);
     authService
       .confirmEmail({ confirmationCode: code }, accessToken as string)
-      .then(() => setStep("done"));
+      .then(() => setStep("done"))
+      .catch((e: unknown) => {
+        if (e instanceof AxiosError) {
+          setErrorMessage(e.response?.data?.message || "Неверный код или срок его действия истёк.");
+        } else {
+          setErrorMessage("Произошла неизвестная ошибка.");
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -46,6 +69,8 @@ const EmailConfirmationPage: FC = () => {
 
           <p className="step">{stepsDir[step]}</p>
 
+          {errorMessage && <div className="auth-error-message" style={{ color: '#dc2626', marginBottom: '16px', textAlign: 'center', fontWeight: 'bold' }}>{errorMessage}</div>}
+
           <div className="forms">
             <div className="form">
               <Input
@@ -59,7 +84,7 @@ const EmailConfirmationPage: FC = () => {
 
               <Button
                 secondary={step !== "email-providing"}
-                disabled={step !== "email-providing"}
+                disabled={step !== "email-providing" || isLoading}
                 callback={initEmailConfirmationFunc}
               >
                 Получить код
@@ -78,7 +103,7 @@ const EmailConfirmationPage: FC = () => {
 
                 <Button
                   secondary={step === "done"}
-                  disabled={step === "done"}
+                  disabled={step === "done" || isLoading}
                   callback={confirmEmailFunc}
                 >
                   Подтвердить

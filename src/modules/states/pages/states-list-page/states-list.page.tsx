@@ -29,7 +29,7 @@ const StatesListPage: FC = () => {
     try {
       const data = await statesService.getStates();
       setStates(data);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
     } finally {
       setLoading(false);
@@ -64,7 +64,7 @@ const StatesListPage: FC = () => {
       setCitizenshipName('');
       setShowCreateModal(false);
       await loadStates();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       alert('Ошибка при создании государства');
     } finally {

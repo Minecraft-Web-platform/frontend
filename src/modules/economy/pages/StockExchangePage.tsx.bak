@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
+import { ICompany, ICompanyShare, ICurrency } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
+import { PortfolioItem } from '../components/PortfolioItem';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
+import { statesService, IState } from '../../states';
 import useAuthStore from '../../../store/auth.store';
+import { TradingChart } from '../components/TradingChart';
 import { ChangePriceModal } from '../components/ChangePriceModal';
-import { MarketTab } from '../components/MarketTab';
-import { PortfolioTab } from '../components/PortfolioTab';
 import Button from '../../../shared/ui/button/button.component';
 import '../economy-shared.scss';
-
-import { usePublicCompanies, useMyPortfolio, useStates, useMyCompanies, useCurrencies } from '../hooks/useEconomyData';
 
 export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
   embedded = false,
 }) => {
   const [activeTab, setActiveTab] = useState<'market' | 'portfolio'>('market');
+  const [companies, setCompanies] = useState<ICompany[]>([]);
+  const [portfolio, setPortfolio] = useState<ICompanyShare[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Модальные окна покупки/продажи
   const [buyCompanyId, setBuyCompanyId] = useState<string | null>(null);
@@ -30,34 +34,14 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     try {
       const payload = JSON.parse(atob(accessToken.split('.')[1]));
       currentUsername = payload.username_lower || '';
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error('Failed to get user identities', e);
     }
   }
 
-  const { data: companies = [], isLoading: loadingCompanies, error: compError, mutate: mutateCompanies } = usePublicCompanies();
-  const { data: portfolio = [], isLoading: loadingPortfolio, mutate: mutatePortfolio } = useMyPortfolio();
-  const { data: statesList = [] } = useStates();
-  const { data: myCompanies = [] } = useMyCompanies();
-  const { data: currencies = [] } = useCurrencies();
-  
-  const loading = loadingCompanies || loadingPortfolio;
-  const error = compError ? compError.message : null;
-
-  const reloadData = () => {
-    mutateCompanies();
-    mutatePortfolio();
-  };
-
-  // Автовыбор первой компании
-  useEffect(() => {
-    if (companies.length > 0 && !selectedCompanyId) {
-      const publicCompanies = companies.filter(c => c.isPublic);
-      if (publicCompanies.length > 0) {
-        setSelectedCompanyId(publicCompanies[0].id);
-      }
-    }
-  }, [companies, selectedCompanyId]);
+  const [statesList, setStatesList] = useState<IState[]>([]);
+  const [myCompanies, setMyCompanies] = useState<ICompany[]>([]);
+  const [currencies, setCurrencies] = useState<ICurrency[]>([]);
 
   const buyerProfiles = [
     { type: 'player', id: currentUsername, label: 'Личный счет' }
@@ -80,6 +64,43 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
   const [selectedBuyerProfile, setSelectedBuyerProfile] = useState<string>(`player:${currentUsername}`);
   const [selectedSellerProfile, setSelectedSellerProfile] = useState<string>(`player:${currentUsername}`);
 
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const [compRes, portRes, statesRes, myCompRes, currRes] = await Promise.all([
+        economyService.getPublicCompanies(),
+        economyService.getMyPortfolio(),
+        statesService.getStates().catch(() => [] as IState[]),
+        economyService.getAllCompanies({ ownerUsername: currentUsername }).catch(() => [] as ICompany[]),
+        economyService.getAllCurrencies().catch(() => [] as ICurrency[]),
+      ]);
+      setCompanies(compRes);
+      setPortfolio(portRes);
+      setStatesList(statesRes);
+      setMyCompanies(myCompRes);
+      setCurrencies(currRes);
+    } catch (e: any) {
+      setError(e?.message || 'Ошибка загрузки биржевых данных');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // Автовыбор первой компании
+  useEffect(() => {
+    if (companies.length > 0 && !selectedCompanyId) {
+      const publicCompanies = companies.filter(c => c.isPublic);
+      if (publicCompanies.length > 0) {
+        setSelectedCompanyId(publicCompanies[0].id);
+      }
+    }
+  }, [companies, selectedCompanyId]);
+
   const handleBuySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!buyCompanyId || !sharesCount || parseInt(sharesCount, 10) <= 0) return;
@@ -95,9 +116,9 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
       });
       setBuyCompanyId(null);
       setSharesCount('10');
-      reloadData();
-    } catch (err: any) {
-      alert((err as any).response?.data?.message || (err as any).message || 'Ошибка покупки акций');
+      loadData();
+    } catch (err: unknown) {
+      alert(err.response?.data?.message || err.message || 'Ошибка покупки акций');
     }
   };
 
@@ -116,9 +137,9 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
       });
       setSellCompanyId(null);
       setSharesCount('10');
-      reloadData();
-    } catch (err: any) {
-      alert((err as any).response?.data?.message || (err as any).message || 'Ошибка продажи акций');
+      loadData();
+    } catch (err: unknown) {
+      alert(err.response?.data?.message || err.message || 'Ошибка продажи акций');
     }
   };
 
@@ -134,6 +155,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     ? currencies.find(curr => curr.stateId === firstCompany.exchangeStateId)?.code || 'ед.'
     : 'ед.';
 
+  const selectedCompany = companies.find(c => c.id === selectedCompanyId) || null;
 
   const content = (
     <div className={embedded ? "economy-page economy-page--embedded" : "economy-page"}>
@@ -244,25 +266,124 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
       {loading ? (
         <div className="economy-empty">Загрузка котировок...</div>
       ) : activeTab === 'market' ? (
-        <MarketTab 
-          companies={companies}
-          statesList={statesList}
-          currentUsername={currentUsername}
-          mainCurrencyCode={mainCurrencyCode}
-          selectedCompanyId={selectedCompanyId}
-          setSelectedCompanyId={setSelectedCompanyId}
-          setBuyCompanyId={setBuyCompanyId}
-          setSellCompanyId={setSellCompanyId}
-          setChangePriceCompanyId={setChangePriceCompanyId}
-        />
+        <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+          
+          {/* Левая колонка: График и действия */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {selectedCompany ? (
+              <>
+                <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #d2d2d8', padding: '24px', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)' }}>
+                  <h2 style={{ margin: '0 0 16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '24px', fontWeight: 600 }}>{selectedCompany.name}</span>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '28px', fontWeight: 'bold' }}>{selectedCompany.sharePrice} {mainCurrencyCode}</span>
+                      <div style={{ fontSize: '14px', color: selectedCompany.priceChange24h >= 0 ? '#10b981' : '#ef4444' }}>
+                        {selectedCompany.priceChange24h >= 0 ? '+' : ''}{selectedCompany.priceChange24h.toFixed(2)}% (24ч)
+                      </div>
+                    </div>
+                  </h2>
+                  <TradingChart company={selectedCompany} />
+                </div>
+                
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <Button
+                    type="button"
+                    callback={() => setBuyCompanyId(selectedCompany.id)}
+                    style={{ flex: 1 }}
+                  >
+                    Купить акции
+                  </Button>
+                  <Button
+                    type="button"
+                    callback={() => setSellCompanyId(selectedCompany.id)}
+                    secondary={true}
+                    style={{ flex: 1 }}
+                  >
+                    Продать акции
+                  </Button>
+                  
+                  {(() => {
+                    const state = statesList.find(s => s.id === selectedCompany.exchangeStateId);
+                    const isTreasurer = state?.treasurerUsername?.toLowerCase() === currentUsername;
+                    if (isTreasurer) {
+                      return (
+                        <Button
+                          type="button"
+                          callback={() => setChangePriceCompanyId(selectedCompany.id)}
+                          secondary={true}
+                          style={{ flex: 1, borderColor: '#8b5cf6', color: '#8b5cf6' }}
+                        >
+                          ⚙️ Изменить цену
+                        </Button>
+                      );
+                    }
+                    return null;
+                  })()}
+                </div>
+              </>
+            ) : (
+              <div className="economy-empty" style={{ background: '#fff', border: '1px solid #d2d2d8', borderRadius: '16px', padding: '40px' }}>
+                {companies.filter(c => c.isPublic).length === 0 
+                  ? "На бирже пока нет публичных компаний. Владельцы фирм могут провести IPO!"
+                  : "Выберите компанию в списке справа для просмотра котировок."}
+              </div>
+            )}
+          </div>
+
+          {/* Правая колонка: Список акций */}
+          <div style={{ width: '320px', flexShrink: 0, background: '#fff', borderRadius: '16px', border: '1px solid #d2d2d8', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)' }}>
+            <div style={{ padding: '16px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', fontWeight: 600, fontSize: '16px' }}>
+              Акции на рынке
+            </div>
+            <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+              {companies.filter(c => c.isPublic).map(company => (
+                <div 
+                  key={company.id}
+                  onClick={() => setSelectedCompanyId(company.id)}
+                  style={{ 
+                    padding: '16px', 
+                    borderBottom: '1px solid #f1f5f9', 
+                    cursor: 'pointer',
+                    background: selectedCompanyId === company.id ? '#f0f4ff' : 'transparent',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    transition: 'background 0.2s',
+                    borderLeft: selectedCompanyId === company.id ? '4px solid #3b82f6' : '4px solid transparent'
+                  }}
+                >
+                  <div style={{ fontWeight: 600, fontSize: '15px' }}>{company.name}</div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontWeight: 700 }}>{company.sharePrice}</div>
+                    <div style={{ fontSize: '12px', color: company.priceChange24h >= 0 ? '#10b981' : '#ef4444' }}>
+                      {company.priceChange24h >= 0 ? '+' : ''}{company.priceChange24h.toFixed(2)}%
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       ) : (
-        <PortfolioTab 
-          portfolio={portfolio}
-          companies={companies}
-          buyerProfiles={buyerProfiles}
-          mainCurrencyCode={mainCurrencyCode}
-          setSellCompanyId={setSellCompanyId}
-        />
+        <div className="portfolio-list">
+          {portfolio.length > 0 ? (
+            portfolio.map((item) => (
+              <PortfolioItem
+                key={item.id}
+                share={item}
+                company={companies.find((c) => c.id === item.companyId)!}
+                ownerLabel={buyerProfiles.find(p => p.id === item.ownerId && p.type === item.ownerType)?.label || 'Неизвестно'}
+                currencyCode={mainCurrencyCode}
+                onSellClick={(id) => setSellCompanyId(id)}
+              />
+            ))
+          ) : (
+            <div className="economy-empty">
+              Ваш инвестиционный портфель пуст. Купите акции на рынке, чтобы
+              получать дивиденды!
+            </div>
+          )}
+        </div>
       )}
 
       {/* Модальное окно покупки акций */}
@@ -438,7 +559,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
           onClose={() => setChangePriceCompanyId(null)}
           onSuccess={() => {
             setChangePriceCompanyId(null);
-            reloadData();
+            loadData();
           }}
         />
       )}

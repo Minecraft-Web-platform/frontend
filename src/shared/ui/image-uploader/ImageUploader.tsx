@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { uploadService } from '../../services/upload.service';
 import './ImageUploader.scss';
 import { ImageCropperModal } from './ImageCropperModal';

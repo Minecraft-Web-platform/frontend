@@ -23,7 +23,7 @@ export const CompanyServicesTab: React.FC<CompanyServicesTabProps> = ({ company,
     try {
       const payload = JSON.parse(atob(accessToken.split('.')[1]));
       username = payload.username || payload.username_lower || '';
-    } catch (e) {
+    } catch (e: any) {
       // ignore
     }
   }

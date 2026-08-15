@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { MoonLoader } from "react-spinners";
 import "./registration.page.scss";
@@ -7,6 +7,7 @@ import Button from "../../../../shared/ui/button/button.component";
 import Input from "../../../../shared/ui/input/input.component";
 import Checkbox from "../../../../shared/ui/checkbox/checkbox.component";
 
+import { AxiosError } from "axios";
 import { authService } from "../../services/auth.service";
 import { validator } from "../../../../shared/utils/validator.util";
 
@@ -23,7 +24,7 @@ const RegistrationPage: FC = () => {
     useState<boolean>(false);
   const [accountIsCreated, setAccountIsCreated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<number>();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -31,7 +32,7 @@ const RegistrationPage: FC = () => {
     username.length > 2 && password.length > 7 && isAcceptedAgreement;
 
   const showErrors = (errors: string[]) => {
-    alert(errors.join(".\n"));
+    setErrorMessage(errors.join(".\n"));
   };
 
   const onRegistrationHandler = async () => {
@@ -65,15 +66,16 @@ const RegistrationPage: FC = () => {
     authService
       .registrate(body)
       .then(() => setAccountIsCreated(true))
-      .catch((e) => setError(e.status));
-    setIsLoading(false);
+      .catch((e: unknown) => {
+        if (e instanceof AxiosError) {
+          const code = e.status || e.response?.status;
+          setErrorMessage(code && errorCodes[code] ? errorCodes[code] : "Не удалось зарегистрироваться. Попробуйте еще раз.");
+        } else {
+          setErrorMessage("Произошла неизвестная ошибка.");
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
-
-  useEffect(() => {
-    error && alert(errorCodes[error]);
-
-    setError(0);
-  }, [error]);
 
   return (
     <main className="registration-page">
@@ -103,6 +105,8 @@ const RegistrationPage: FC = () => {
           onSubmit={e => e.preventDefault()}
         >
           <h1>Регистрация</h1>
+
+          {errorMessage && <div className="auth-error-message" style={{ color: '#dc2626', marginBottom: '16px', textAlign: 'center', fontWeight: 'bold', whiteSpace: 'pre-line' }}>{errorMessage}</div>}
 
           <Input
             value={username}

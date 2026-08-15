@@ -47,7 +47,7 @@ const ModBuilder: FC = () => {
       a.download = "modpack.zip";
       a.click();
       URL.revokeObjectURL(url);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Ошибка при скачивании модпака:", err);
       alert(t('errors.http.internal-error'));
     } finally {

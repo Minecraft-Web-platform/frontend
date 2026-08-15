@@ -47,7 +47,7 @@ export const CalendarPage: FC = () => {
         const api = httpFactoryService.createAuthHttpService();
         const res = await api.get('/events');
         setEvents(res as IEvent[]);
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
       } finally {
         setLoading(false);

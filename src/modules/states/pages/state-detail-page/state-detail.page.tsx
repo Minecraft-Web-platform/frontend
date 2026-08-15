@@ -108,7 +108,7 @@ const StateDetailPage: FC = () => {
           (c) => !c.stateId || c.stateId === id,
         ),
       );
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
     } finally {
       setLoading(false);

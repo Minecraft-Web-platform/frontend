@@ -1,0 +1,37 @@
+.create-category-container {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 600px;
+  margin-top: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+
+  .create-category-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 24px;
+
+    .checkbox-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      
+      label {
+        font-family: "Inter", sans-serif;
+        font-size: 15px;
+        color: #333;
+        font-weight: 500;
+        cursor: pointer;
+      }
+    }
+
+    button {
+      margin-top: 8px;
+    }
+  }
+}

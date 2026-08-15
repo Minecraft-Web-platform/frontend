@@ -44,7 +44,7 @@ export const TransactionReceiptModal: FC<Props> = ({ transaction, currencies, on
       
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`receipt-${transaction.id.substring(0, 8)}.pdf`);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to generate PDF', err);
     } finally {
       setIsGenerating(false);

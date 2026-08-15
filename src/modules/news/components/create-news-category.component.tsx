@@ -6,6 +6,7 @@ import { CreateCategoryDto } from "../types/create-category.dto";
 import Button from "../../../shared/ui/button/button.component";
 import Input from "../../../shared/ui/input/input.component";
 import Checkbox from "../../../shared/ui/checkbox/checkbox.component";
+import "./create-news-category.scss";
 
 import { NewsCategory } from "../types/news-category.type";
 
@@ -35,7 +36,7 @@ const CreateNewsCategoryComponent: FC<Props> = ({ setCategories }) => {
   };
 
   return (
-    <>
+    <div className="create-category-container">
       <Button
         callback={
           categoryIsCreating
@@ -48,7 +49,7 @@ const CreateNewsCategoryComponent: FC<Props> = ({ setCategories }) => {
 
       {categoryIsCreating && (
         <form
-          style={{ maxWidth: "600px" }}
+          className="create-category-form"
           onSubmit={(e) => e.preventDefault()}
         >
           <Input
@@ -65,20 +66,26 @@ const CreateNewsCategoryComponent: FC<Props> = ({ setCategories }) => {
             placeholder="Описание категории"
           />
 
-          <label>Категория для админов?</label>
-          <Checkbox
-            checked={publishPermission === "admins"}
-            onClickHandler={() =>
-              publishPermission === "all"
-                ? setPublishPermission("admins")
-                : setPublishPermission("all")
-            }
-          />
+          <div className="checkbox-wrap">
+            <Checkbox
+              checked={publishPermission === "admins"}
+              onClickHandler={() =>
+                publishPermission === "all"
+                  ? setPublishPermission("admins")
+                  : setPublishPermission("all")
+              }
+            />
+            <label onClick={() =>
+                publishPermission === "all"
+                  ? setPublishPermission("admins")
+                  : setPublishPermission("all")
+              }>Только для администраторов</label>
+          </div>
 
           <Button callback={createCategory}>Создать</Button>
         </form>
       )}
-    </>
+    </div>
   );
 };
 

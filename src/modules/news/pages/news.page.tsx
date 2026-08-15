@@ -55,39 +55,39 @@ const NewsPage: FC = () => {
 
               <div className="category__news-list news-list">
                 {category.news.map((news) => {
-                  if (isAdmin) {
+                  if (news.isApproved || isAdmin) {
                     return (
                       <article
-                        className="news"
+                        className={`news-card ${news.isApproved ? "" : "news-card--pending"}`}
                         key={news.id}
                         onClick={() => navigate(`/news/${news.id}`)}
                       >
-                        <h3>{news.title}</h3>
-                        <p>Автор: {news.author}</p>
+                        <div className="news-card__content">
+                          <h3 className="news-card__title">{news.title}</h3>
+                          <div className="news-card__meta">
+                            <span className="news-card__author">
+                              <span className="news-card__icon">✍️</span> {news.author}
+                            </span>
+                            {!news.isApproved && isAdmin && (
+                              <span className="news-card__status badge-pending">На модерации</span>
+                            )}
+                          </div>
+                        </div>
                       </article>
                     );
                   }
-
-                  if (news.isApproved) {
-                    return (
-                      <article
-                        className="news"
-                        key={news.id}
-                        onClick={() => navigate(`/news/${news.id}`)}
-                      >
-                        <h3>{news.title}</h3>
-                        <p>Автор: {news.author}</p>
-                      </article>
-                    );
-                  }
+                  return null;
                 })}
                 <article
                   onClick={() =>
                     openModal(category.id, category.publish_permission)
                   }
-                  className="news news--create-btn"
+                  className="news-card news-card--create-btn"
                 >
-                  <p>Принести весточку</p>
+                  <div className="news-card__create-content">
+                    <span className="news-card__create-icon">+</span>
+                    <p>Принести весточку</p>
+                  </div>
                 </article>
               </div>
             </section>
