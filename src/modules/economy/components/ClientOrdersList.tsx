@@ -33,6 +33,19 @@ export const ClientOrdersList: React.FC = () => {
     }
   };
 
+  const handleEscalate = async (orderId: string) => {
+    const reason = prompt('Укажите причину, по которой вы не согласны с решением президента (будет передано администрации):');
+    if (reason) {
+      try {
+        await economyService.escalateOrder(orderId, reason);
+        fetchOrders();
+      } catch (err: any) {
+        console.error(err);
+        alert(err.response?.data?.message || 'Не удалось эскалировать жалобу');
+      }
+    }
+  };
+
   if (loading) return <div className="loading">Загрузка заказов...</div>;
   if (error) return <div className="error">{error}</div>;
   if (orders.length === 0) return <div className="empty-state">Вы еще ничего не заказывали.</div>;
@@ -73,6 +86,14 @@ export const ClientOrdersList: React.FC = () => {
                 <Button secondary={true} callback={() => handleDispute(order.id)}>Пожаловаться (Президенту)</Button>
               </div>
             )}
+
+            {(order.status === CompanyOrderStatus.REFUNDED || order.status === CompanyOrderStatus.COMPLETED) && 
+             order.statusHistory?.some(h => h.comment && h.comment.includes('[President Decision]')) && 
+             !order.isEscalatedToAdmin && (
+              <div className="order-actions" style={{ marginTop: '10px' }}>
+                <Button style={{ backgroundColor: '#ef4444', color: 'white' }} callback={() => handleEscalate(order.id)}>Оспорить решение (Администрации)</Button>
+              </div>
+            )}
             
             {order.statusHistory && order.statusHistory.length > 0 && (
               <div className="status-history">
@@ -83,7 +104,7 @@ export const ClientOrdersList: React.FC = () => {
                       <li key={h.id}>
                         <span className="date">{new Date(h.createdAt).toLocaleString()}</span>
                         <span className="status">{h.status}</span>
-                        {h.comment && <span className="comment">"{h.comment}"</span>}
+                        {h.comment && <span className="comment" style={{ whiteSpace: 'pre-wrap' }}>"{h.comment}"</span>}
                       </li>
                     ))}
                   </ul>

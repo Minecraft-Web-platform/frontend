@@ -8,9 +8,10 @@ import { StockExchangePage } from './StockExchangePage';
 import { CurrenciesPage } from './CurrenciesPage';
 import { CardsPage } from './CardsPage';
 import { PropertiesPage } from './PropertiesPage';
+import { DisputedOrdersTab } from '../components/DisputedOrdersTab';
 import './EconomyHubPage.scss';
 
-export type EconomyTabId = 'bank' | 'cards' | 'companies' | 'exchange' | 'currencies' | 'properties' | 'orders';
+export type EconomyTabId = 'bank' | 'cards' | 'companies' | 'exchange' | 'currencies' | 'properties' | 'orders' | 'arbitration';
 
 export const EconomyHubPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -97,6 +98,21 @@ export const EconomyHubPage: React.FC = () => {
 
               <div
                 className={`economy-hub__card ${
+                  activeTab === 'arbitration' ? 'economy-hub__card--active' : ''
+                }`}
+                onClick={() => handleSelectTab('arbitration')}
+              >
+                <div className="card-icon">⚖️</div>
+                <div className="card-info">
+                  <div className="card-title">Арбитраж</div>
+                  <div className="card-desc">
+                    Судебная система для рассмотрения жалоб
+                  </div>
+                </div>
+              </div>
+
+              <div
+                className={`economy-hub__card ${
                   activeTab === 'exchange' ? 'economy-hub__card--active' : ''
                 }`}
                 onClick={() => handleSelectTab('exchange')}
@@ -150,6 +166,7 @@ export const EconomyHubPage: React.FC = () => {
             {activeTab === 'currencies' && <CurrenciesPage embedded={true} />}
             {activeTab === 'properties' && <PropertiesPage />}
             {activeTab === 'orders' && <ClientOrdersList />}
+            {activeTab === 'arbitration' && <DisputedOrdersTab />}
           </div>
         </div>
       </main>

@@ -274,6 +274,9 @@ export interface ICompanyOrder {
   payerType?: 'player' | 'company' | 'state';
   payerCompanyId?: string | null;
   payerStateId?: string | null;
+  isEscalatedToAdmin?: boolean;
+  adminDecision?: string | null;
+  adminComment?: string | null;
   totalPrice: number;
   status: CompanyOrderStatus;
   items: ICompanyOrderItem[];

@@ -25,12 +25,32 @@ export const CompanyOrdersTab: React.FC<CompanyOrdersTabProps> = ({ company }) =
     fetchOrders();
   }, [company.id]);
 
-  const handleUpdateStatus = async (orderId: string, status: CompanyOrderStatus) => {
+  const handleUpdateStatus = async (orderId: string, newStatus: CompanyOrderStatus) => {
+    let comment = '';
+    if (newStatus === CompanyOrderStatus.CANCELLED) {
+      const input = prompt('Укажите причину отмены заказа:');
+      if (input === null) return;
+      comment = input;
+    }
+    
     try {
-      await economyService.updateOrderStatus(orderId, status);
+      await economyService.updateOrderStatus(orderId, newStatus, comment);
       fetchOrders();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Ошибка обновления статуса');
+    }
+  };
+
+  const handleEscalate = async (orderId: string) => {
+    const reason = prompt('Укажите причину, по которой вы не согласны с решением президента (будет передано администрации):');
+    if (reason) {
+      try {
+        await economyService.escalateOrder(orderId, reason);
+        fetchOrders();
+      } catch (err: any) {
+        console.error(err);
+        alert(err.response?.data?.message || 'Не удалось эскалировать жалобу');
+      }
     }
   };
 
@@ -91,6 +111,14 @@ export const CompanyOrdersTab: React.FC<CompanyOrdersTabProps> = ({ company }) =
                 <Button callback={() => handleUpdateStatus(order.id, CompanyOrderStatus.COMPLETED)}>Отметить как выполненный</Button>
               </div>
             )}
+
+            {(order.status === CompanyOrderStatus.REFUNDED || order.status === CompanyOrderStatus.COMPLETED) && 
+             order.statusHistory?.some(h => h.comment && h.comment.includes('[President Decision]')) && 
+             !order.isEscalatedToAdmin && (
+              <div className="order-actions" style={{ marginTop: '10px' }}>
+                <Button style={{ backgroundColor: '#ef4444', color: 'white' }} callback={() => handleEscalate(order.id)}>Оспорить решение (Администрации)</Button>
+              </div>
+            )}
             
             {order.statusHistory && order.statusHistory.length > 0 && (
               <div className="status-history">
@@ -102,7 +130,7 @@ export const CompanyOrdersTab: React.FC<CompanyOrdersTabProps> = ({ company }) =
                         <span className="date">{new Date(h.createdAt).toLocaleString()}</span>
                         <span className="user">{h.changedByUsername}</span>
                         <span className="status">{h.status}</span>
-                        {h.comment && <span className="comment">"{h.comment}"</span>}
+                        {h.comment && <span className="comment" style={{ whiteSpace: 'pre-wrap' }}>"{h.comment}"</span>}
                       </li>
                     ))}
                   </ul>

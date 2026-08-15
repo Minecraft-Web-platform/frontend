@@ -234,6 +234,14 @@ export class EconomyService {
     return this.httpService.put(`company-services/order/${orderId}/arbitrate`, data);
   }
 
+  public async escalateOrder(orderId: string, comment: string): Promise<ICompanyOrder> {
+    return this.httpService.put(`company-services/order/${orderId}/escalate`, { comment });
+  }
+
+  public async getDisputedOrders(): Promise<ICompanyOrder[]> {
+    return this.httpService.get(`company-services/orders/disputed`);
+  }
+
   public async getMyIdentities(): Promise<IOrderIdentity[]> {
     return this.httpService.get(`company-services/identities`);
   }
