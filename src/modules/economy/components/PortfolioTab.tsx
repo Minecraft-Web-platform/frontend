@@ -6,7 +6,7 @@ interface PortfolioTabProps {
   portfolio: ICompanyShare[];
   companies: ICompany[];
   buyerProfiles: { type: string; id: string; label: string }[];
-  mainCurrencyCode: string;
+  getCurrencyCode: (company?: { exchangeStateId?: string | null }) => string;
   setSellCompanyId: (id: string | null) => void;
 }
 
@@ -14,7 +14,7 @@ export const PortfolioTab: React.FC<PortfolioTabProps> = ({
   portfolio,
   companies,
   buyerProfiles,
-  mainCurrencyCode,
+  getCurrencyCode,
   setSellCompanyId,
 }) => {
   return (
@@ -26,7 +26,7 @@ export const PortfolioTab: React.FC<PortfolioTabProps> = ({
             share={item}
             company={companies.find((c) => c.id === item.companyId)!}
             ownerLabel={buyerProfiles.find(p => p.id === item.ownerId && p.type === item.ownerType)?.label || 'Неизвестно'}
-            currencyCode={mainCurrencyCode}
+            currencyCode={getCurrencyCode(companies.find((c) => c.id === item.companyId))}
             onSellClick={(id) => setSellCompanyId(id)}
           />
         ))

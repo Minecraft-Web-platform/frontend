@@ -1,0 +1,135 @@
+.achievements-block {
+  margin-top: 40px;
+  margin-bottom: 24px;
+  width: 100%;
+
+  &.empty {
+    text-align: center;
+    color: #666;
+    font-family: sans-serif;
+  }
+
+  .achievements-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #000;
+      font-family: "Minecraft";
+      text-align: left;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 8px;
+
+      button {
+        background: #fff;
+        border: 1px solid #000;
+        color: #000;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s linear background-color;
+        font-family: "Minecraft";
+        font-size: 0.9rem;
+
+        &:hover {
+          background: #f0f0f0;
+        }
+
+        &.active {
+          background: #000;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  .achievements-content {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+    
+    .achievement-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: #fff;
+      border: 1px solid #000;
+      border-radius: 8px;
+      transition: background 0.2s ease, transform 0.2s ease;
+      text-align: left;
+
+      &:hover {
+        background: #fdfdfd;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 0 #000;
+      }
+
+      .icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        flex-shrink: 0;
+        background: #fff;
+        border: 1px solid #000;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          border-radius: 6px;
+          padding: 4px;
+        }
+      }
+
+      .info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        
+        h4 {
+          margin: 0 0 4px 0;
+          font-size: 1.1rem;
+          color: #000;
+          font-family: "Minecraft";
+          text-align: left;
+        }
+        
+        p {
+          margin: 0 0 6px 0 !important;
+          color: #333 !important;
+          font-size: 0.95rem !important;
+          line-height: 1.4;
+          font-family: sans-serif;
+          text-align: left !important;
+          max-width: none !important;
+        }
+        
+        .date {
+          font-size: 0.85rem;
+          color: #666;
+          font-family: sans-serif;
+          text-align: left;
+        }
+      }
+    }
+
+    // Rarity styles overriding the default border color
+    .rarity-common .icon { border: 2px solid #666; }
+    .rarity-rare .icon { border: 2px solid #0070dd; }
+    .rarity-epic .icon { border: 2px solid #a335ee; }
+    .rarity-legendary .icon { border: 2px solid #ff8000; }
+  }
+}

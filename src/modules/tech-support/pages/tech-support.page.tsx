@@ -1,4 +1,5 @@
 import { FC, FormEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { profileService } from "../../profile/services/profile.service";
 import "./tech-support.page.scss";
 
@@ -10,6 +11,7 @@ import { Ticket } from "../types/ticket.type";
 import { PropagateLoader } from "react-spinners";
 
 const TechSupportPage: FC = () => {
+  const navigate = useNavigate();
   const [topic, setTopic] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -57,6 +59,12 @@ const TechSupportPage: FC = () => {
         <h1>Техподдержка</h1>
         <p>{status}</p>
         <p>Контактная форма для связи с техническим администратором</p>
+
+        <div style={{ marginBottom: 24 }}>
+          <Button callback={() => navigate("/download")}>
+            Скачать сборку и моды
+          </Button>
+        </div>
 
         {isLoading ? (
           <PropagateLoader

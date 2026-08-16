@@ -1,0 +1,172 @@
+.achievements-admin-page {
+  display: flex;
+  min-height: 100vh;
+  
+  .content {
+    flex: 1;
+    padding: 40px 64px;
+    font-family: sans-serif;
+    
+    h1 {
+      margin-top: 0;
+      color: #000;
+      font-family: "Minecraft";
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      color: #000;
+      margin-bottom: 16px;
+      font-family: "Minecraft";
+    }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 40px;
+
+      @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        padding: 32px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+        .form {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+
+          .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            
+            label {
+              color: #454545;
+              font-size: 0.9rem;
+              font-weight: 500;
+            }
+            
+            select {
+              background: #fff;
+              border: 1px solid #ccc;
+              color: #000;
+              padding: 12px;
+              border-radius: 8px;
+              outline: none;
+              font-size: 1rem;
+              transition: border-color 0.2s;
+              
+              &:focus {
+                border-color: #000;
+              }
+              
+              option {
+                background: #fff;
+                color: #000;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .achievements-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      .achievement-card {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        padding: 20px;
+        border-radius: 12px;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        transition: transform 0.2s, box-shadow 0.2s;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        
+        img {
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          object-fit: contain;
+          background: #f5f5f5;
+          border: 2px solid #ccc;
+          padding: 4px;
+        }
+
+        .info {
+          flex: 1;
+          h3 {
+            margin: 0 0 6px 0;
+            color: #000;
+            font-size: 1.1rem;
+            font-family: "Minecraft";
+          }
+          p {
+            margin: 0 0 8px 0;
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+          }
+          small {
+            color: #0066cc;
+            font-size: 0.8rem;
+            font-weight: 500;
+          }
+        }
+
+          .edit-btn {
+            background: #3b82f6;
+            color: #fff;
+            padding: 8px 16px;
+            border: 1px solid #3b82f6;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            flex-shrink: 0;
+
+            &:hover {
+              background: #2563eb;
+              border-color: #2563eb;
+            }
+          }
+
+          .delete-btn {
+            background: transparent;
+            color: #ef4444;
+            border: 1px solid #ef4444;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            flex-shrink: 0;
+
+            &:hover {
+              background: #ef4444;
+              color: #fff;
+            }
+          }
+
+        &.rarity-rare img { border-color: #0070dd; }
+        &.rarity-epic img { border-color: #a335ee; }
+        &.rarity-legendary img { border-color: #ff8000; }
+      }
+    }
+  }
+}

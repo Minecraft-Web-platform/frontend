@@ -1,0 +1,475 @@
+
+
+.player-profile-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f9fafb;
+  color: #111827;
+
+  .center-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .content {
+    flex: 1;
+    padding: 32px 32px 32px 0; // padding-right 32, padding-left 0 because content margin-left is 340 from App.css
+  }
+
+  .profile-header {
+    max-width: 1200px;
+    margin: 0 auto 24px auto;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    background: #ffffff;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f3f4f6;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    }
+
+    &__avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 16px;
+      background: #f3f4f6;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #e5e7eb;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .avatar-placeholder {
+        font-size: 48px;
+        color: #9ca3af;
+      }
+    }
+
+    &__info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      h1 {
+        margin: 0;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #1f2937;
+        letter-spacing: -0.5px;
+      }
+
+      .tags {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        span {
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: #f3f4f6;
+          color: #4b5563;
+          border: 1px solid #e5e7eb;
+
+          &.role-tag {
+            background: #f3e8ff;
+            color: #6b21a8;
+            border-color: #e9d5ff;
+
+            &.admin {
+              background: #fee2e2;
+              color: #991b1b;
+              border-color: #fecaca;
+            }
+          }
+
+          &.state-tag {
+            background: #eff6ff;
+            color: #1e40af;
+            border-color: #dbeafe;
+
+            .state-flag {
+              width: 16px;
+              height: 12px;
+              border-radius: 2px;
+              object-fit: cover;
+            }
+          }
+          
+          &.city-tag {
+             background: #fdf4ff;
+             color: #86198f;
+             border-color: #fae8ff;
+          }
+        }
+      }
+    }
+  }
+
+  .profile-tabs {
+    max-width: 1200px;
+    margin: 0 auto 24px auto;
+    display: flex;
+    gap: 8px;
+
+    .tab-btn {
+      padding: 10px 24px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      color: #6b7280;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+      &:hover {
+        color: #111827;
+        background: #f9fafb;
+      }
+
+      &.active {
+        color: #ffffff;
+        background: #3b82f6;
+        border-color: #3b82f6;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+      }
+    }
+  }
+
+  .profile-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px;
+    min-height: 400px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f3f4f6;
+
+    .empty-state {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      color: #6b7280;
+      font-size: 1.1rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+
+      .info-card {
+        background: #f9fafb;
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        position: relative;
+        overflow: hidden;
+
+        h3 {
+          margin-top: 0;
+          margin-bottom: 20px;
+          color: #3b82f6;
+          font-size: 1.1rem;
+          font-weight: 700;
+        }
+
+        p {
+          margin: 12px 0;
+          font-size: 0.95rem;
+          color: #111827;
+          display: flex;
+          justify-content: space-between;
+          border-bottom: 1px dashed #d1d5db;
+          padding-bottom: 8px;
+
+          a {
+            color: #111827;
+            text-decoration: none;
+            font-weight: 600;
+
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+
+          &:last-of-type {
+            border-bottom: none;
+          }
+
+          .label {
+            color: #6b7280;
+            font-weight: 500;
+          }
+        }
+
+        .coat-of-arms {
+          position: absolute;
+          top: -20px;
+          right: -20px;
+          width: 140px;
+          height: auto;
+          opacity: 0.05;
+          pointer-events: none;
+        }
+      }
+    }
+
+    .achievements-filters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding: 16px;
+      background: #f9fafb;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+
+      .rarity-filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+
+        .filter-btn {
+          padding: 8px 16px;
+          border-radius: 8px;
+          border: 1px solid #d1d5db;
+          background: #ffffff;
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #4b5563;
+          cursor: pointer;
+          transition: all 0.2s;
+
+          &:hover {
+            background: #f3f4f6;
+          }
+
+          &.active {
+            color: #ffffff;
+            border-color: transparent;
+
+            &.rarity-legendary { background: #f59e0b; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); }
+            &.rarity-epic { background: #a855f7; box-shadow: 0 4px 10px rgba(168, 85, 247, 0.3); }
+            &.rarity-rare { background: #3b82f6; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
+            &.rarity-common { background: #9ca3af; box-shadow: 0 4px 10px rgba(156, 163, 175, 0.3); }
+          }
+        }
+      }
+
+      .sort-select {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        font-size: 0.9rem;
+        color: #111827;
+        font-weight: 500;
+        cursor: pointer;
+        outline: none;
+
+        &:focus {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+      }
+    }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+
+      .achievement-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        border: 2px solid #e5e7eb;
+        transition: transform 0.2s, box-shadow 0.2s;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        &.rarity-legendary { border-color: #f59e0b; background: #fffbeb; }
+        &.rarity-epic { border-color: #a855f7; background: #faf5ff; }
+        &.rarity-rare { border-color: #3b82f6; background: #eff6ff; }
+        &.rarity-common { border-color: #9ca3af; background: #f9fafb; }
+
+        .achievement-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 8px;
+          background: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          flex-shrink: 0;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+          }
+
+          .placeholder {
+            font-size: 20px;
+            font-weight: bold;
+            color: #9ca3af;
+          }
+        }
+
+        .achievement-info {
+          flex: 1;
+
+          h4 {
+            margin: 0 0 6px 0;
+            font-size: 1rem;
+            color: #111827;
+            font-weight: 700;
+          }
+
+          p {
+            margin: 0 0 10px 0;
+            font-size: 0.85rem;
+            color: #4b5563;
+            line-height: 1.4;
+          }
+
+          .rarity-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #ffffff;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+          }
+        }
+      }
+    }
+
+    .companies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+
+      .company-card {
+        background: #ffffff;
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+          border-color: #d1d5db;
+        }
+
+        .company-logo {
+          width: 144px;
+          height: 144px;
+          border-radius: 16px;
+          margin-bottom: 16px;
+          object-fit: cover;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          border: 1px solid #f3f4f6;
+        }
+
+        .company-logo-placeholder {
+          width: 144px;
+          height: 144px;
+          border-radius: 16px;
+          margin-bottom: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 64px;
+          font-weight: bold;
+          color: rgba(255, 255, 255, 0.9);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          text-transform: uppercase;
+        }
+
+        h4 {
+          margin: 0 0 8px 0;
+          font-size: 1.15rem;
+          color: #111827;
+          font-weight: 700;
+        }
+
+        p {
+          margin: 0 0 20px 0;
+          font-size: 0.9rem;
+          color: #6b7280;
+          flex: 1;
+          line-height: 1.4;
+        }
+
+        .company-tags {
+          display: flex;
+          gap: 8px;
+          width: 100%;
+          justify-content: center;
+
+          span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+
+            &.tag-type { color: #1e40af; background: #dbeafe; border: 1px solid #bfdbfe; }
+            &.tag-location { color: #065f46; background: #d1fae5; border: 1px solid #a7f3d0; }
+          }
+        }
+      }
+    }
+    .documents-tab {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+  }
+}

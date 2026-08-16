@@ -9,6 +9,8 @@ import Input from "../../../shared/ui/input/input.component";
 import Button from "../../../shared/ui/button/button.component";
 import { ImageUploader } from "../../../shared/ui/image-uploader/ImageUploader";
 import { useNavigate } from "react-router";
+import AchievementsBlock from "../components/achievements-block/achievements-block.component";
+import { achievementsService } from "../../achievements/services/achievements.service";
 
 const Profile: FC = () => {
   const { accessToken, logout, setRoleInfo } = useAuthStore();
@@ -30,6 +32,11 @@ const Profile: FC = () => {
         }
       },
     }
+  );
+
+  const { data: achievements } = useSWR(
+    info?.username ? `achievements/user/${info.username}` : null,
+    () => achievementsService.getUserAchievements(info!.username)
   );
 
   return (
@@ -167,6 +174,8 @@ const Profile: FC = () => {
                 </div>
               </div>
             </div>
+
+            <AchievementsBlock achievements={achievements || []} />
 
             <div className="buttons">
               {!info?.emailIsConfirmed && (

@@ -7,6 +7,7 @@ import { BankAccountsList } from '../components/BankAccountsList';
 import { TransferModal } from '../components/TransferModal';
 import { CreateAccountModal } from '../components/CreateAccountModal';
 import { ICity } from '../../states';
+import { statesService } from '../../states/services/states.service';
 import '../economy-shared.scss';
 
 export const BankPage: React.FC<{ embedded?: boolean }> = ({
@@ -31,7 +32,7 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
       try {
         const [meRes, ctRes] = await Promise.all([
           profileService.getInfoAboutMe().catch(() => null),
-          fetch('/api/states/cities').then(r => r.json()).catch(() => [] as ICity[]) // Assuming this exists or statesService.getCities()
+          statesService.getCities().catch(() => [] as ICity[])
         ]);
         let userStateId = meRes?.stateId || null;
         if (!userStateId && meRes?.cityId) {

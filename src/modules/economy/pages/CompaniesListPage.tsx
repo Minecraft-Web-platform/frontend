@@ -5,6 +5,7 @@ import useAuthStore from '../../../store/auth.store';
 import { profileService } from '../../profile/services/profile.service';
 import { ICity } from '../../states';
 import { useAllCompanies, useStates, useCurrencies } from '../hooks/useEconomyData';
+import { statesService } from '../../states/services/states.service';
 import { CreateCompanyModal } from '../components/CreateCompanyModal';
 import { IpoModal } from '../components/IpoModal';
 import { DividendModal } from '../components/DividendModal';
@@ -48,7 +49,7 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
     try {
       const [me, ctRes] = await Promise.all([
         profileService.getInfoAboutMe(),
-        fetch('/api/states/cities').then(res => res.json()).catch(() => [] as ICity[]), // assuming this is how cities are fetched, since there is no useCities hook
+        statesService.getCities().catch(() => [] as ICity[]),
       ]);
       if (!me.emailIsConfirmed) {
         alert('Регистрировать фирму может только игрок с подтвержденной почтой');

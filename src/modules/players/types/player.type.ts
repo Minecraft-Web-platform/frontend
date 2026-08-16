@@ -6,6 +6,7 @@ export type PlayerType = {
   emailIsConfirmed: boolean;
   lastIp?: string;
   avatar_img: string | null;
+  lastLoginDate?: string;
   registrationDate: string;
   cityId?: string | null;
   stateId?: string | null;

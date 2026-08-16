@@ -8,7 +8,7 @@ interface MarketTabProps {
   companies: ICompany[];
   statesList: IState[];
   currentUsername: string;
-  mainCurrencyCode: string;
+  getCurrencyCode: (company?: { exchangeStateId?: string | null }) => string;
   selectedCompanyId: string | null;
   setSelectedCompanyId: (id: string | null) => void;
   setBuyCompanyId: (id: string | null) => void;
@@ -20,7 +20,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
   companies,
   statesList,
   currentUsername,
-  mainCurrencyCode,
+  getCurrencyCode,
   selectedCompanyId,
   setSelectedCompanyId,
   setBuyCompanyId,
@@ -39,7 +39,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
               <h2 style={{ margin: '0 0 16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '24px', fontWeight: 600 }}>{selectedCompany.name}</span>
                 <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '28px', fontWeight: 'bold' }}>{selectedCompany.sharePrice} {mainCurrencyCode}</span>
+                  <span style={{ fontSize: '28px', fontWeight: 'bold' }}>{selectedCompany.sharePrice} {getCurrencyCode(selectedCompany)}</span>
                   <div style={{ fontSize: '14px', color: selectedCompany.priceChange24h >= 0 ? '#10b981' : '#ef4444' }}>
                     {selectedCompany.priceChange24h >= 0 ? '+' : ''}{selectedCompany.priceChange24h.toFixed(2)}% (24ч)
                   </div>

@@ -8,7 +8,6 @@ import StateIcon from "../../../assets/svg/state.svg?react";
 import CompanyIcon from "../../../assets/svg/company.svg?react";
 import PlayersIcon from "../../../assets/svg/people.svg?react";
 // import MapIcon from "../../../assets/svg/map.svg?react";
-import CreeperIcon from "../../../assets/svg/creeper.svg?react";
 import ProfileIcon from "../../../assets/svg/profile.svg?react";
 import TechSupportIcon from "../../../assets/svg/contact.svg?react";
 import DocsIcon from "../../../assets/svg/docs.svg?react";
@@ -54,13 +53,6 @@ const Sidebar: FC = () => {
           <MapIcon />
         </IconComponent> */}
 
-        <IconComponent
-          path="/download"
-          label={t('buttons.download-page')}
-          iconType="fill"
-        >
-          <CreeperIcon />
-        </IconComponent>
       </div>
 
       <div className="sidebar__bottom">

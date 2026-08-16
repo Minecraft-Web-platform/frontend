@@ -122,18 +122,19 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     }
   };
 
-  // Расчет общей стоимости портфеля
-  const totalPortfolioValue = portfolio.reduce((acc, item) => {
+  const getCurrencyCode = (company?: { exchangeStateId?: string | null }) => {
+    if (!company?.exchangeStateId) return 'ед.';
+    return currencies.find(curr => curr.stateId === company.exchangeStateId)?.code || 'ед.';
+  };
+
+  // Расчет стоимости портфеля по валютам
+  const portfolioValuesByCurrency = portfolio.reduce((acc, item) => {
     const comp = companies.find((c) => c.id === item.companyId);
     const price = comp?.sharePrice || item.boughtAtPrice;
-    return acc + item.sharesCount * price;
-  }, 0);
-
-  const firstCompany = companies.find(c => c.isPublic);
-  const mainCurrencyCode = firstCompany
-    ? currencies.find(curr => curr.stateId === firstCompany.exchangeStateId)?.code || 'ед.'
-    : 'ед.';
-
+    const currency = getCurrencyCode(comp);
+    acc[currency] = (acc[currency] || 0) + (item.sharesCount * price);
+    return acc;
+  }, {} as Record<string, number>);
 
   const content = (
     <div className={embedded ? "economy-page economy-page--embedded" : "economy-page"}>
@@ -165,7 +166,15 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                 fontFamily: 'monospace',
               }}
             >
-              {totalPortfolioValue.toLocaleString('ru-RU')} {mainCurrencyCode}
+              {Object.keys(portfolioValuesByCurrency).length > 0 ? (
+                Object.entries(portfolioValuesByCurrency).map(([curr, val]) => (
+                  <div key={curr}>
+                    {val.toLocaleString('ru-RU')} {curr}
+                  </div>
+                ))
+              ) : (
+                <div>0 ед.</div>
+              )}
             </div>
           </div>
         </div>
@@ -199,7 +208,15 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                 fontFamily: 'monospace',
               }}
             >
-              {totalPortfolioValue.toLocaleString('ru-RU')} {mainCurrencyCode}
+              {Object.keys(portfolioValuesByCurrency).length > 0 ? (
+                Object.entries(portfolioValuesByCurrency).map(([curr, val]) => (
+                  <div key={curr}>
+                    {val.toLocaleString('ru-RU')} {curr}
+                  </div>
+                ))
+              ) : (
+                <div>0 ед.</div>
+              )}
             </div>
           </div>
         </div>
@@ -248,7 +265,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
           companies={companies}
           statesList={statesList}
           currentUsername={currentUsername}
-          mainCurrencyCode={mainCurrencyCode}
+          getCurrencyCode={getCurrencyCode}
           selectedCompanyId={selectedCompanyId}
           setSelectedCompanyId={setSelectedCompanyId}
           setBuyCompanyId={setBuyCompanyId}
@@ -260,7 +277,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
           portfolio={portfolio}
           companies={companies}
           buyerProfiles={buyerProfiles}
-          mainCurrencyCode={mainCurrencyCode}
+          getCurrencyCode={getCurrencyCode}
           setSellCompanyId={setSellCompanyId}
         />
       )}
@@ -305,11 +322,12 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                 const newPrice = oldPrice * priceMultiplier;
                 const executionPrice = (oldPrice + newPrice) / 2;
                 const total = count * executionPrice;
+                const companyCurrency = getCurrencyCode(company);
                 return (
                   <div style={{ marginTop: '12px', fontSize: '14px', fontWeight: 'bold' }}>
-                    Сумма сделки: {total.toLocaleString('ru-RU', { maximumFractionDigits: 2 })} {mainCurrencyCode}
+                    Сумма сделки: {total.toLocaleString('ru-RU', { maximumFractionDigits: 2 })} {companyCurrency}
                     <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: 'normal' }}>
-                      Ср. цена исполнения: {executionPrice.toFixed(2)} {mainCurrencyCode}
+                      Ср. цена исполнения: {executionPrice.toFixed(2)} {companyCurrency}
                     </div>
                   </div>
                 );
@@ -395,11 +413,12 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                 const newPrice = oldPrice * priceMultiplier;
                 const executionPrice = (oldPrice + newPrice) / 2;
                 const total = count * executionPrice;
+                const companyCurrency = getCurrencyCode(company);
                 return (
                   <div style={{ marginTop: '12px', fontSize: '14px', fontWeight: 'bold' }}>
-                    Сумма сделки: {total.toLocaleString('ru-RU', { maximumFractionDigits: 2 })} {mainCurrencyCode}
+                    Сумма сделки: {total.toLocaleString('ru-RU', { maximumFractionDigits: 2 })} {companyCurrency}
                     <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: 'normal' }}>
-                      Ср. цена исполнения: {executionPrice.toFixed(2)} {mainCurrencyCode}
+                      Ср. цена исполнения: {executionPrice.toFixed(2)} {companyCurrency}
                     </div>
                   </div>
                 );

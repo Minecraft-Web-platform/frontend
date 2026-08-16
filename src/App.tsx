@@ -4,6 +4,7 @@ import { PropagateLoader } from "react-spinners";
 import "./App.css";
 import { RequireAuth } from "./shared/wraps/require-auth.wrap";
 import GuestOnly from "./shared/wraps/guests-only.wrap";
+import { GlobalToastProvider } from "./shared/components/global-toast/GlobalToastProvider";
 
 const RegistrationPage = React.lazy(() => import("./modules/auth/pages/registration-page/registration.page"));
 const LoginPage = React.lazy(() => import("./modules/auth/pages/login-page/login.page"));
@@ -12,9 +13,10 @@ const AgreementPage = React.lazy(() => import("./modules/auth/pages/agreement-pa
 const LandingPage = React.lazy(() => import("./modules/landing/landing.page"));
 const DownloadPage = React.lazy(() => import("./modules/download/download.page"));
 const Profile = React.lazy(() => import("./modules/profile/pages/profile.page"));
+const AchievementsAdminPage = React.lazy(() => import("./modules/admin/pages/achievements-admin.page").then(module => ({ default: module.AchievementsAdminPage })));
 const CalendarPage = React.lazy(() => import("./modules/profile/pages/calendar.page").then(module => ({ default: module.CalendarPage })));
 const PlayersPage = React.lazy(() => import("./modules/players/pages/players.page"));
-const PlayerPassport = React.lazy(() => import("./modules/players/pages/player-passport.page"));
+const PlayerProfile = React.lazy(() => import("./modules/players/pages/player-profile.page"));
 const NewsPage = React.lazy(() => import("./modules/news/pages/news.page"));
 const TechSupportPage = React.lazy(() => import("./modules/tech-support/pages/tech-support.page"));
 const EmailConfirmationPage = React.lazy(() => import("./modules/auth/pages/email-confirmation/email-confirmation.page"));
@@ -37,8 +39,9 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={fallbackLoader}>
-        <Routes>
+      <GlobalToastProvider>
+        <Suspense fallback={fallbackLoader}>
+          <Routes>
           <Route path="/" index={true} element={<LandingPage />} />
 
           <Route
@@ -134,7 +137,7 @@ function App() {
             path="/players/:username"
             element={
               <RequireAuth>
-                <PlayerPassport />
+                <PlayerProfile />
               </RequireAuth>
             }
           />
@@ -225,10 +228,18 @@ function App() {
             path="/properties"
             element={<Navigate to="/economy?tab=properties" replace />}
           />
-
+          <Route
+            path="/admin/achievements"
+            element={
+              <RequireAuth>
+                <AchievementsAdminPage />
+              </RequireAuth>
+            }
+          />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-      </Suspense>
+        </Suspense>
+      </GlobalToastProvider>
     </BrowserRouter>
   );
 }
