@@ -3,6 +3,7 @@ import useSWR from 'swr';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import Button from '../../../shared/ui/button/button.component';
 import Input from '../../../shared/ui/input/input.component';
+import { ImageUploader } from '../../../shared/ui/image-uploader/ImageUploader';
 import { achievementsService } from '../../achievements/services/achievements.service';
 import { AchievementRarity } from '../../achievements/types/achievements.types';
 import './achievements-admin.page.scss';
@@ -121,7 +122,14 @@ export const AchievementsAdminPage: FC = () => {
             <div className="form">
               <Input placeholder="Название" element="input" type="text" value={title} setValue={setTitle} />
               <Input placeholder="Описание" element="input" type="text" value={description} setValue={setDescription} />
-              <Input placeholder="URL Иконки (необязательно)" element="input" type="text" value={iconUrl} setValue={setIconUrl} />
+              <div style={{ marginBottom: '15px' }}>
+                <ImageUploader 
+                  folder="achievements"
+                  label="Иконка (опционально)"
+                  value={iconUrl}
+                  onChange={(url: any) => setIconUrl(url as string)}
+                />
+              </div>
               
               <div className="input-group">
                 <label>Редкость</label>

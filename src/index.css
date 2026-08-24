@@ -1,0 +1,32 @@
+
+.action-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  color: #333;
+  cursor: pointer;
+  padding: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.action-icon-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #000;
+}
+
+.action-icon-btn--danger {
+  color: #dc3545;
+  border-color: rgba(220, 53, 69, 0.3);
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.action-icon-btn--danger:hover {
+  background-color: rgba(220, 53, 69, 0.2);
+  border-color: rgba(220, 53, 69, 0.5);
+  color: #c82333;
+}
+

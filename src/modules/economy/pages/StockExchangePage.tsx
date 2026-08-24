@@ -23,6 +23,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
   // Новые состояния для торгового терминала
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
   const [changePriceCompanyId, setChangePriceCompanyId] = useState<string | null>(null);
+  const [selectedExchangeId, setSelectedExchangeId] = useState<string | null>(null);
 
   const { accessToken } = useAuthStore();
   let currentUsername = '';
@@ -51,13 +52,13 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
 
   // Автовыбор первой компании
   useEffect(() => {
-    if (companies.length > 0 && !selectedCompanyId) {
-      const publicCompanies = companies.filter(c => c.isPublic);
+    if (companies.length > 0 && !selectedCompanyId && selectedExchangeId) {
+      const publicCompanies = companies.filter(c => c.isPublic && c.exchangeStateId === selectedExchangeId);
       if (publicCompanies.length > 0) {
         setSelectedCompanyId(publicCompanies[0].id);
       }
     }
-  }, [companies, selectedCompanyId]);
+  }, [companies, selectedCompanyId, selectedExchangeId]);
 
   const buyerProfiles = [
     { type: 'player', id: currentUsername, label: 'Личный счет' }
@@ -261,17 +262,109 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
       {loading ? (
         <div className="economy-empty">Загрузка котировок...</div>
       ) : activeTab === 'market' ? (
-        <MarketTab 
-          companies={companies}
-          statesList={statesList}
-          currentUsername={currentUsername}
-          getCurrencyCode={getCurrencyCode}
-          selectedCompanyId={selectedCompanyId}
-          setSelectedCompanyId={setSelectedCompanyId}
-          setBuyCompanyId={setBuyCompanyId}
-          setSellCompanyId={setSellCompanyId}
-          setChangePriceCompanyId={setChangePriceCompanyId}
-        />
+        selectedExchangeId ? (
+          <MarketTab 
+            companies={companies.filter(c => c.exchangeStateId === selectedExchangeId)}
+            statesList={statesList}
+            currentUsername={currentUsername}
+            getCurrencyCode={getCurrencyCode}
+            selectedCompanyId={selectedCompanyId}
+            setSelectedCompanyId={setSelectedCompanyId}
+            setBuyCompanyId={setBuyCompanyId}
+            setSellCompanyId={setSellCompanyId}
+            setChangePriceCompanyId={setChangePriceCompanyId}
+            onBack={() => {
+              setSelectedExchangeId(null);
+              setSelectedCompanyId(null);
+            }}
+          />
+        ) : (
+          <div className="economy-grid">
+            {statesList.filter(s => companies.some(c => c.isPublic && c.exchangeStateId === s.id)).map(state => {
+              const stateCompanies = companies.filter(c => c.isPublic && c.exchangeStateId === state.id);
+              return (
+                <div 
+                  key={state.id} 
+                  className="company-card"
+                  onClick={() => setSelectedExchangeId(state.id)}
+                  style={{ cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.06)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
+                >
+                  <div className="company-card__content">
+                    <div className="company-card__header">
+                      <div className="company-card__top-bar">
+                        {state.flagUrl ? (
+                          <img src={state.flagUrl} alt={state.name} className="logo-img" />
+                        ) : (
+                          <div className="logo-fallback">{state.name.slice(0, 2).toUpperCase()}</div>
+                        )}
+                        <span className="company-card__badge company-card__badge--public">
+                          Фондовая Биржа
+                        </span>
+                      </div>
+                      <div className="company-card__title-box">
+                        <h3 className="company-title">Биржа: {state.name}</h3>
+                      </div>
+                    </div>
+                    <div style={{ marginTop: '16px' }}>
+                      <div className="stat-label" style={{ marginBottom: '8px', fontSize: '12px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        Компании на бирже ({stateCompanies.length})
+                      </div>
+                      <div className="marquee-container" style={{ paddingBottom: '8px' }}>
+                        {(() => {
+                          const needsMarquee = stateCompanies.length > 5;
+                          const displayItems = needsMarquee ? [...stateCompanies, ...stateCompanies] : stateCompanies;
+                          
+                          return (
+                            <div className={`marquee-content ${needsMarquee ? 'marquee-content--animate' : ''}`}>
+                              {displayItems.map((c, i) => (
+                                <div 
+                                  key={`${c.id}-${i}`} 
+                                  title={c.name}
+                                  style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    flexShrink: 0,
+                                    borderRadius: '8px',
+                                    background: '#f1f5f9',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    overflow: 'hidden',
+                                    border: '1px solid #e2e8f0'
+                                  }}
+                                >
+                                  {c.logoUrl ? (
+                                    <img src={c.logoUrl} alt={c.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                  ) : (
+                                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#64748b' }}>
+                                      {c.name.slice(0, 2).toUpperCase()}
+                                    </span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="company-card__actions">
+                    <Button type="button" callback={() => setSelectedExchangeId(state.id)}>
+                      Войти в торговый терминал
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+            {statesList.filter(s => companies.some(c => c.isPublic && c.exchangeStateId === s.id)).length === 0 && (
+              <div className="economy-empty" style={{ gridColumn: '1 / -1' }}>
+                В данный момент ни на одной бирже не торгуются акции компаний.
+              </div>
+            )}
+          </div>
+        )
       ) : (
         <PortfolioTab 
           portfolio={portfolio}

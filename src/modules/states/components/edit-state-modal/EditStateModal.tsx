@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import './EditCityModal.scss';
-import { ICity } from '../../types/states.types';
+import './EditStateModal.scss';
+import { IState } from '../../types/states.types';
 import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploader';
 
-interface EditCityModalProps {
-  city: ICity;
+interface EditStateModalProps {
+  state: IState;
   onClose: () => void;
-  onSave: (data: { name?: string; description?: string; flagUrl?: string; images?: string[] }) => Promise<void>;
+  onSave: (data: { name?: string; description?: string; flagUrl?: string; coatOfArmsUrl?: string }) => Promise<void>;
 }
 
-export const EditCityModal: React.FC<EditCityModalProps> = ({ city, onClose, onSave }) => {
-  const [name, setName] = useState(city.name);
-  const [description, setDescription] = useState(city.description || '');
-  const [flagUrl, setFlagUrl] = useState(city.flagUrl || '');
-  const [images, setImages] = useState<string[]>(city.images || []);
+export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, onSave }) => {
+  const [name, setName] = useState(state.name);
+  const [description, setDescription] = useState(state.description || '');
+  const [flagUrl, setFlagUrl] = useState(state.flagUrl || '');
+  const [coatOfArmsUrl, setCoatOfArmsUrl] = useState(state.coatOfArmsUrl || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,7 +22,7 @@ export const EditCityModal: React.FC<EditCityModalProps> = ({ city, onClose, onS
     setLoading(true);
     setError(null);
     try {
-      await onSave({ name, description, flagUrl, images });
+      await onSave({ name, description, flagUrl, coatOfArmsUrl });
       onClose();
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Ошибка сохранения');
@@ -32,13 +32,13 @@ export const EditCityModal: React.FC<EditCityModalProps> = ({ city, onClose, onS
   };
 
   return (
-    <div className="edit-city-modal-overlay">
-      <div className="edit-city-modal">
-        <h2>Редактирование города</h2>
-        {error && <div className="edit-city-modal__error">{error}</div>}
+    <div className="edit-state-modal-overlay">
+      <div className="edit-state-modal">
+        <h2>Редактирование государства</h2>
+        {error && <div className="edit-state-modal__error">{error}</div>}
         <form onSubmit={handleSubmit}>
-          <div className="edit-city-modal__field">
-            <label>Название города:</label>
+          <div className="edit-state-modal__field">
+            <label>Название государства:</label>
             <input
               type="text"
               value={name}
@@ -46,7 +46,7 @@ export const EditCityModal: React.FC<EditCityModalProps> = ({ city, onClose, onS
               required
             />
           </div>
-          <div className="edit-city-modal__field">
+          <div className="edit-state-modal__field">
             <label>Описание:</label>
             <textarea
               value={description}
@@ -54,25 +54,23 @@ export const EditCityModal: React.FC<EditCityModalProps> = ({ city, onClose, onS
               rows={4}
             />
           </div>
-          <div className="edit-city-modal__field">
+          <div className="edit-state-modal__field">
             <ImageUploader 
               folder="states/flags"
-              label="Флаг/Эмблема"
+              label="Флаг"
               value={flagUrl}
               onChange={(url: any) => setFlagUrl(url as string)}
             />
           </div>
-          <div className="edit-city-modal__field">
+          <div className="edit-state-modal__field">
             <ImageUploader 
-              folder="states/cities"
-              label="Фотографии города (до 5 шт.)"
-              multiple={true}
-              maxFiles={5}
-              value={images}
-              onChange={(urls: any) => setImages(urls as string[])}
+              folder="states/flags"
+              label="Герб (если есть)"
+              value={coatOfArmsUrl}
+              onChange={(url: any) => setCoatOfArmsUrl(url as string)}
             />
           </div>
-          <div className="edit-city-modal__actions">
+          <div className="edit-state-modal__actions">
             <button type="button" className="btn-cancel" onClick={onClose} disabled={loading}>
               Отмена
             </button>

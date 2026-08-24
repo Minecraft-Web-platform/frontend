@@ -29,6 +29,8 @@ const CitiesListPage = React.lazy(() => import("./modules/states").then(module =
 const CityDetailPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.CityDetailPage })));
 const EconomyHubPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.EconomyHubPage })));
 const CompanyDetailPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.CompanyDetailPage })));
+const CurrencyDetailPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.CurrencyDetailPage })));
+const MapPage = React.lazy(() => import("./modules/map/pages/MapPage").then(module => ({ default: module.MapPage })));
 
 function App() {
   const fallbackLoader = (
@@ -91,6 +93,15 @@ function App() {
             element={
               <RequireAuth>
                 <NewsDetailsPage />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/map"
+            element={
+              <RequireAuth>
+                <MapPage />
               </RequireAuth>
             }
           />
@@ -211,6 +222,14 @@ function App() {
           <Route
             path="/companies"
             element={<Navigate to="/economy?tab=companies" replace />}
+          />
+          <Route
+            path="/economy/currency/:id"
+            element={
+              <RequireAuth>
+                <CurrencyDetailPage />
+              </RequireAuth>
+            }
           />
           <Route
             path="/companies/:id"

@@ -59,6 +59,14 @@ export interface ICurrency {
   propertyCreationFeeRate: number;
   propertySalesTaxRate: number;
   createdAt: string;
+  stateFlagUrl?: string | null;
+}
+
+export interface ICurrencyRateHistory {
+  id: string;
+  currencyId: string;
+  rate: number;
+  createdAt: string;
 }
 
 export interface ICompany {
@@ -76,6 +84,7 @@ export interface ICompany {
   availableShares: number;
   sharePrice: number;
   priceChange24h: number;
+  isArchived: boolean;
   createdAt: string;
 }
 

@@ -27,6 +27,7 @@ import {
   CreateCompanyOrderRequest,
   CompanyOrderStatus,
   IOrderIdentity,
+  ICurrencyRateHistory,
 } from '../types/economy.types';
 
 export class EconomyService {
@@ -83,11 +84,19 @@ export class EconomyService {
     return this.httpService.post('economy/currencies', data);
   }
 
+  public async getCurrencyById(currencyId: string): Promise<ICurrency> {
+    return this.httpService.get(`economy/currencies/${currencyId}`);
+  }
+
   public async issueCurrency(
     currencyId: string,
     data: IssueCurrencyRequest,
   ): Promise<ICurrency> {
     return this.httpService.post(`economy/currencies/${currencyId}/issue`, data);
+  }
+
+  public async getCurrencyRateHistory(currencyId: string): Promise<ICurrencyRateHistory[]> {
+    return this.httpService.get(`economy/currencies/${currencyId}/rate-history`);
   }
 
   // --- Компании и Юрисдикция ---
@@ -112,6 +121,17 @@ export class EconomyService {
     data: CreateCompanyRequest,
   ): Promise<ICompany> {
     return this.httpService.post('economy/companies', data);
+  }
+
+  public async updateCompany(
+    id: string,
+    data: { name?: string; description?: string; logoUrl?: string },
+  ): Promise<ICompany> {
+    return this.httpService.patch(`economy/companies/${id}`, data);
+  }
+
+  public async archiveCompany(id: string): Promise<void> {
+    return this.httpService.delete(`economy/companies/${id}`);
   }
 
   // --- Фондовая Биржа ---

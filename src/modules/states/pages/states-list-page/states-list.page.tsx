@@ -3,6 +3,7 @@ import './states-list.page.scss';
 import { IState } from '../../types/states.types';
 import { statesService } from '../../services/states.service';
 import StateCard from '../../components/state-card/state-card.component';
+import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploader';
 import useAuthStore from '../../../../store/auth.store';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 
@@ -136,58 +137,85 @@ const StatesListPage: FC = () => {
                 className="states-list-page__modal"
                 onClick={(e) => e.stopPropagation()}
               >
-                <h3>🏰 Основание нового государства</h3>
+                <div className="states-list-page__modal-header">
+                  <h3>🏰 Основание нового государства</h3>
+                  <div className="states-list-page__tooltip-wrapper">
+                    <span className="states-list-page__tooltip-icon">?</span>
+                    <div className="states-list-page__tooltip-content">
+                      Основание государства позволяет объединять города, 
+                      устанавливать налоги и развивать общую экономику.
+                    </div>
+                  </div>
+                </div>
+
                 <form onSubmit={handleCreateState}>
-                  <input
-                    type="text"
-                    placeholder="Название государства*"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
-                  <textarea
-                    placeholder="Описание / история государства..."
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                  <input
-                    type="url"
-                    placeholder="Ссылка на флаг (URL)"
-                    value={flagUrl}
-                    onChange={(e) => setFlagUrl(e.target.value)}
-                  />
-                  <input
-                    type="url"
-                    placeholder="Ссылка на герб (URL)"
-                    value={coatOfArmsUrl}
-                    onChange={(e) => setCoatOfArmsUrl(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Национальность (муж. род, напр. украинец)"
-                    value={nationalityMale}
-                    onChange={(e) => setNationalityMale(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Национальность (жен. род, напр. украинка)"
-                    value={nationalityFemale}
-                    onChange={(e) => setNationalityFemale(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Название гражданства (напр. украинское)"
-                    value={citizenshipName}
-                    onChange={(e) => setCitizenshipName(e.target.value)}
-                  />
+                  <div className="states-list-page__modal-columns">
+                    {/* Left Column */}
+                    <div className="states-list-page__modal-col">
+                      <input
+                        type="text"
+                        placeholder="Название государства*"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                      />
+                      <textarea
+                        placeholder="Описание / история государства..."
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        style={{ flex: 1, minHeight: '200px' }}
+                      />
+                    </div>
+
+                    {/* Right Column */}
+                    <div className="states-list-page__modal-col">
+                      <div className="states-list-page__modal-images">
+                        <div style={{ flex: 1 }}>
+                          <ImageUploader 
+                            folder="states/flags"
+                            label="Флаг (опционально)"
+                            value={flagUrl}
+                            onChange={(url: any) => setFlagUrl(url as string)}
+                          />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <ImageUploader 
+                            folder="states/coats"
+                            label="Герб (опционально)"
+                            value={coatOfArmsUrl}
+                            onChange={(url: any) => setCoatOfArmsUrl(url as string)}
+                          />
+                        </div>
+                      </div>
+                      
+                      <input
+                        type="text"
+                        placeholder="Национальность (муж. род, напр. украинец)"
+                        value={nationalityMale}
+                        onChange={(e) => setNationalityMale(e.target.value)}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Национальность (жен. род, напр. украинка)"
+                        value={nationalityFemale}
+                        onChange={(e) => setNationalityFemale(e.target.value)}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Название гражданства (напр. украинское)"
+                        value={citizenshipName}
+                        onChange={(e) => setCitizenshipName(e.target.value)}
+                      />
+                    </div>
+                  </div>
 
                   <div className="states-list-page__modal-actions">
                     <button
                       type="button"
                       className="states-list-page__create-btn"
                       style={{
-                        background: 'rgba(255, 255, 255, 0.1)',
-                        color: '#fff',
+                        background: '#e2e8f0',
+                        color: '#0f172a',
                       }}
                       onClick={() => setShowCreateModal(false)}
                     >

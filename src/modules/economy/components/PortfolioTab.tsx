@@ -18,7 +18,7 @@ export const PortfolioTab: React.FC<PortfolioTabProps> = ({
   setSellCompanyId,
 }) => {
   return (
-    <div className="portfolio-list">
+    <div className="portfolio-list" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {portfolio.length > 0 ? (
         portfolio.map((item) => (
           <PortfolioItem

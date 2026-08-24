@@ -23,6 +23,7 @@ import {
 } from '../../../economy/components/MinecraftItemSelector';
 import '../../../economy/economy-shared.scss';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
+import { EditStateModal } from '../../components/edit-state-modal/EditStateModal';
 
 const formatAccountNumber = (acc?: string) => {
   if (!acc) return 'Не учрежден';
@@ -64,6 +65,8 @@ const StateDetailPage: FC = () => {
   const [showRolesModal, setShowRolesModal] = useState(false);
   const [newTreasurer, setNewTreasurer] = useState('');
   const [newVoivode, setNewVoivode] = useState('');
+
+  const [showEditStateModal, setShowEditStateModal] = useState(false);
 
   const { isAuthenticated } = useAuthStore();
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
@@ -141,6 +144,27 @@ const StateDetailPage: FC = () => {
     }
   };
 
+  const handleEditState = async (data: { name?: string; description?: string; flagUrl?: string; coatOfArmsUrl?: string }) => {
+    if (!id) return;
+    try {
+      await statesService.updateState(id, data);
+      await loadData();
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Ошибка при редактировании государства');
+    }
+  };
+
+  const handleArchiveState = async () => {
+    if (!id) return;
+    if (!window.confirm('Вы уверены, что хотите распустить (архивировать) государство? Эта операция безвозвратна, казна будет удалена, но история государства сохранится.')) return;
+    try {
+      await statesService.deleteState(id);
+      navigate('/states');
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Ошибка при удалении государства');
+    }
+  };
+
   const handleDigitizeTreasury = async () => {
     if (!id || !canPublishDecree) return;
     try {
@@ -154,23 +178,6 @@ const StateDetailPage: FC = () => {
     }
   };
 
-  const handleWithdrawTreasury = async (minecraftItemId: string) => {
-    if (!id || !canPublishDecree) return;
-    const qtyStr = prompt('Введите количество предметов для вывода в сейф:');
-    if (!qtyStr) return;
-    const quantity = parseInt(qtyStr, 10);
-    if (isNaN(quantity) || quantity <= 0) return alert('Неверное количество');
-
-    try {
-      setLoading(true);
-      const res = await statesService.withdrawTreasury(id, { minecraftItemId, quantity });
-      alert(res.message || 'Предметы успешно выведены в сейф!');
-      loadData();
-    } catch (err: any) {
-      alert(err?.message || 'Ошибка при выводе из казны');
-      setLoading(false);
-    }
-  };
 
   const handleCreateCity = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -395,19 +402,44 @@ const StateDetailPage: FC = () => {
                   </div>
                 )}
                 <div className="state-detail-page__info">
-                  <h1 className="state-detail-page__name" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {state.name}
-                    <button 
-                      title="Скопировать ID" 
-                      onClick={() => {
-                        navigator.clipboard.writeText(state.id);
-                        alert('ID скопирован: ' + state.id);
-                      }}
-                      style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: 0 }}
-                    >
-                      📋
-                    </button>
-                  </h1>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                    <h1 className="state-detail-page__name" style={{ margin: 0, padding: 0 }}>
+                      {state.name}
+                    </h1>
+                    {state.isArchived && (
+                      <span style={{ fontSize: '0.6em', padding: '4px 8px', background: '#dc3545', color: '#fff', borderRadius: '4px', textTransform: 'uppercase', fontWeight: 600 }}>Архивировано</span>
+                    )}
+                    <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
+                      <button 
+                        title="Скопировать ID" 
+                        onClick={() => {
+                          navigator.clipboard.writeText(state.id);
+                          alert('ID скопирован: ' + state.id);
+                        }}
+                        className="action-icon-btn"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                      </button>
+                      {canPublishDecree && !state.isArchived && (
+                        <>
+                          <button 
+                            title="Редактировать государство" 
+                            onClick={() => setShowEditStateModal(true)}
+                            className="action-icon-btn"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                          </button>
+                          <button 
+                            title="Архивировать государство" 
+                            onClick={handleArchiveState}
+                            className="action-icon-btn action-icon-btn--danger"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
                   <p className="state-detail-page__desc">
                     {state.description || 'Описание отсутствует.'}
                   </p>
@@ -781,15 +813,6 @@ const StateDetailPage: FC = () => {
                       <div className="treasury-name">{info ? info.name : item.minecraftItemId}</div>
                       <div className="treasury-count">Количество: <strong>{item.quantity} шт.</strong></div>
                     </div>
-                    {canPublishDecree && (
-                      <button
-                        className="treasury-btn"
-                        onClick={() => handleWithdrawTreasury(item.minecraftItemId)}
-                        title="Вывести в игру"
-                      >
-                        📤 Вывести
-                      </button>
-                    )}
                   </div>
                 );
               })
@@ -1168,6 +1191,14 @@ const StateDetailPage: FC = () => {
                 </form>
               </div>
             </div>
+          )}
+
+          {showEditStateModal && (
+            <EditStateModal
+              state={state}
+              onClose={() => setShowEditStateModal(false)}
+              onSave={handleEditState}
+            />
           )}
         </div>
       </main>

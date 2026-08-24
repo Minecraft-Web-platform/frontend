@@ -1,13 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createChart, ColorType, IChartApi, ISeriesApi, AreaSeries } from 'lightweight-charts';
-import { ICompany } from '../types/economy.types';
-import { economyService } from '../services/economy.service';
 
 interface TradingChartProps {
-  company: ICompany;
+  fetchHistory: () => Promise<{ createdAt: string | Date; price?: number; rate?: number }[]>;
+  triggerRefetch?: string | number; // To trigger useEffect on changes (like sharePrice or exchangeRate)
+  lineColor?: string;
+  topColor?: string;
+  bottomColor?: string;
 }
 
-export const TradingChart: React.FC<TradingChartProps> = ({ company }) => {
+export const TradingChart: React.FC<TradingChartProps> = ({ 
+  fetchHistory, 
+  triggerRefetch,
+  lineColor = '#2962FF',
+  topColor = '#2962FF',
+  bottomColor = 'rgba(41, 98, 255, 0.28)'
+}) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
@@ -21,24 +29,18 @@ export const TradingChart: React.FC<TradingChartProps> = ({ company }) => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const history = await economyService.getCompanySharePriceHistory(company.id);
+        const history = await fetchHistory();
         
         if (!isMounted) return;
 
-        // Форматируем данные для lightweight-charts
-        // Данные должны быть отсортированы по времени
-        // lightweight-charts принимает time в формате UNIX timestamp (в секундах) или YYYY-MM-DD
         const chartData = history.map(h => {
-          // Если цены менялись несколько раз в секунду, могут быть дубликаты времени.
-          // Для простоты используем Date.getTime() / 1000
           const time = Math.floor(new Date(h.createdAt).getTime() / 1000);
           return {
-            time: time as any, // Приводим к any, чтобы TS не ругался на формат time
-            value: h.price,
+            time: time as any,
+            value: h.price ?? h.rate ?? 0,
           };
         });
 
-        // Убираем дубликаты по времени (lightweight-charts требует уникального времени)
         const uniqueData: any[] = [];
         const seenTimes = new Set();
         for (const item of chartData) {
@@ -49,7 +51,6 @@ export const TradingChart: React.FC<TradingChartProps> = ({ company }) => {
         }
 
         if (chartContainerRef.current) {
-          // Инициализация графика
           if (!chartRef.current) {
             const chart = createChart(chartContainerRef.current, {
               layout: {
@@ -72,9 +73,9 @@ export const TradingChart: React.FC<TradingChartProps> = ({ company }) => {
             chartRef.current = chart;
             
             const newSeries = chart.addSeries(AreaSeries, {
-              lineColor: '#2962FF',
-              topColor: '#2962FF',
-              bottomColor: 'rgba(41, 98, 255, 0.28)',
+              lineColor,
+              topColor,
+              bottomColor,
               lineWidth: 2,
             });
             seriesRef.current = newSeries;
@@ -100,7 +101,7 @@ export const TradingChart: React.FC<TradingChartProps> = ({ company }) => {
     return () => {
       isMounted = false;
     };
-  }, [company.id, company.sharePrice]);
+  }, [fetchHistory, triggerRefetch, lineColor, topColor, bottomColor]);
 
   // Обработка изменения размера окна
   useEffect(() => {

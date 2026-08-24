@@ -5,7 +5,11 @@ import { economyService } from '../services/economy.service';
 import Button from '../../../shared/ui/button/button.component';
 import { CompanyServicesTab } from '../components/CompanyServicesTab';
 import { CompanyOrdersTab } from '../components/CompanyOrdersTab';
+import { useCurrencies } from '../hooks/useEconomyData';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
+import useAuthStore from '../../../store/auth.store';
+import { profileService } from '../../profile/services/profile.service';
+import { EditCompanyModal } from '../components/edit-company-modal/EditCompanyModal';
 import './CompanyDetailPage.scss';
 
 export const CompanyDetailPage: React.FC = () => {
@@ -15,6 +19,27 @@ export const CompanyDetailPage: React.FC = () => {
   const [services, setServices] = useState<ICompanyService[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'orders'>('overview');
+  const [showEditCompanyModal, setShowEditCompanyModal] = useState(false);
+  const { isAuthenticated } = useAuthStore();
+  const [currentUsername, setCurrentUsername] = useState<string | null>(null);
+  const { data: currenciesList = [] } = useCurrencies();
+
+  let currencyCode = 'ед.';
+  if (company?.isPublic && company.exchangeStateId) {
+    const currency = currenciesList.find(c => c.stateId === company.exchangeStateId);
+    if (currency) currencyCode = currency.code;
+  }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      profileService
+        .getInfoAboutMe()
+        .then((res) => setCurrentUsername(res.username))
+        .catch(() => setCurrentUsername(null));
+    } else {
+      setCurrentUsername(null);
+    }
+  }, [isAuthenticated]);
 
   const fetchCompanyAndServices = () => {
     setLoading(true);
@@ -29,6 +54,27 @@ export const CompanyDetailPage: React.FC = () => {
     }).finally(() => {
       setLoading(false);
     });
+  };
+
+  const handleEditCompany = async (data: { name?: string; description?: string; logoUrl?: string }) => {
+    if (!id) return;
+    try {
+      await economyService.updateCompany(id, data);
+      fetchCompanyAndServices();
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Ошибка при редактировании компании');
+    }
+  };
+
+  const handleArchiveCompany = async () => {
+    if (!id) return;
+    if (!window.confirm('Вы уверены, что хотите закрыть (архивировать) компанию? Эта операция безвозвратна, счет будет удален.')) return;
+    try {
+      await economyService.archiveCompany(id);
+      navigate('/economy/companies');
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Ошибка при закрытии компании');
+    }
   };
 
   useEffect(() => {
@@ -83,8 +129,33 @@ export const CompanyDetailPage: React.FC = () => {
                   {company.name.slice(0, 2).toUpperCase()}
                 </div>
               )}
-              <div className="cdp-title-info">
-                <h1>{company.name}</h1>
+              <div className="cdp-title-info" style={{ width: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                  <h1 style={{ margin: 0, padding: 0 }}>{company.name}</h1>
+                  {company.isArchived && (
+                    <span className="cdp-badge" style={{ background: '#dc3545', color: '#fff' }}>Закрыта (Архив)</span>
+                  )}
+                  <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
+                    {company.ownerUsername.toLowerCase() === currentUsername?.toLowerCase() && !company.isArchived && (
+                      <>
+                        <button 
+                          title="Редактировать компанию" 
+                          onClick={() => setShowEditCompanyModal(true)}
+                          className="action-icon-btn"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        </button>
+                        <button 
+                          title="Закрыть компанию" 
+                          onClick={handleArchiveCompany}
+                          className="action-icon-btn action-icon-btn--danger"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
                 <span className={`cdp-badge ${company.isPublic ? 'public' : 'private'}`}>
                   {company.isPublic ? 'Торгуется на бирже' : 'Частная компания'}
                 </span>
@@ -134,7 +205,13 @@ export const CompanyDetailPage: React.FC = () => {
                     <>
                       <div className="cdp-stat">
                         <span className="label">Цена акции</span>
-                        <span className="value">{company.sharePrice.toFixed(2)} ед.</span>
+                        <span className="value">{company.sharePrice.toFixed(2)} {currencyCode}</span>
+                      </div>
+                      <div className="cdp-stat">
+                        <span className="label">Капитализация</span>
+                        <span className="value">
+                          {(company.sharePrice * company.totalShares).toLocaleString('ru-RU')} {currencyCode}
+                        </span>
                       </div>
                       <div className="cdp-stat">
                         <span className="label">Выпущено акций</span>
@@ -152,6 +229,14 @@ export const CompanyDetailPage: React.FC = () => {
               <CompanyOrdersTab company={company} />
             )}
           </div>
+
+          {showEditCompanyModal && (
+            <EditCompanyModal
+              company={company}
+              onClose={() => setShowEditCompanyModal(false)}
+              onSave={handleEditCompany}
+            />
+          )}
 
         </div>
       </main>

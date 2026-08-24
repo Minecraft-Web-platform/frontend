@@ -3,6 +3,11 @@ import "./landing.page.scss";
 import { Link } from "react-router";
 
 const LandingPage: FC = () => {
+  const copyIP = () => {
+    navigator.clipboard.writeText("mc.khroniki-kraya.com");
+    alert("IP скопирован в буфер обмена!");
+  };
+
   return (
     <>
       <header className="header">
@@ -16,6 +21,8 @@ const LandingPage: FC = () => {
         <a
           className="header__link-to-online-map"
           href="http://5.83.140.252:25900/#world:1949:85:1568:0:-0.8:1.07:0:0:free"
+          target="_blank"
+          rel="noreferrer"
         >
           Онлайн-карта
         </a>
@@ -89,20 +96,23 @@ const LandingPage: FC = () => {
 
         <div className="footer__links">
           <span>
-            Discord:{" "}
-            <a href="https://discord.gg/4FZzbqXvZf">
-              https://discord.gg/4FZzbqXvZf
+            Discord:
+            <a href="https://discord.gg/4FZzbqXvZf" target="_blank" rel="noreferrer">
+              Присоединиться
             </a>
           </span>
 
           <span>
-            Онлайн карта:{" "}
-            <a href="http://5.83.140.252:25900/#world:1949:85:1568:0:-0.8:1.07:0:0:free">
-              5.83.140.252:25900
+            Онлайн карта:
+            <a href="http://5.83.140.252:25900/#world:1949:85:1568:0:-0.8:1.07:0:0:free" target="_blank" rel="noreferrer">
+              Открыть карту
             </a>
           </span>
 
-          <span>Айпи сервера: mc.khroniki-kraya.com</span>
+          <span>
+            IP сервера: mc.khroniki-kraya.com
+            <button className="copy-btn" onClick={copyIP}>Скопировать</button>
+          </span>
         </div>
 
         <img src="/png/steve.png" alt="Steve" height={64} />

@@ -4,6 +4,7 @@ import './cities-list.page.scss';
 import { ICity, IState } from '../../types/states.types';
 import { statesService } from '../../services/states.service';
 import CityCard from '../../components/city-card/city-card.component';
+import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploader';
 import useAuthStore from '../../../../store/auth.store';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 
@@ -165,12 +166,14 @@ const CitiesListPage: FC = () => {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />
-                  <input
-                    type="url"
-                    placeholder="Ссылка на герб (URL)"
-                    value={flagUrl}
-                    onChange={(e) => setFlagUrl(e.target.value)}
-                  />
+                  <div style={{ marginBottom: '15px' }}>
+                    <ImageUploader 
+                      folder="states/flags"
+                      label="Эмблема/Флаг"
+                      value={flagUrl}
+                      onChange={(url: any) => setFlagUrl(url as string)}
+                    />
+                  </div>
                   <select
                     value={stateId}
                     onChange={(e) => setStateId(e.target.value)}

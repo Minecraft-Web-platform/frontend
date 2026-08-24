@@ -51,6 +51,8 @@ export const TransactionReceiptModal: FC<Props> = ({ transaction, currencies, on
     }
   };
 
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, '');
+
   return (
     <div className="receipt-modal-overlay" onClick={onClose}>
       <div className="receipt-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -80,11 +82,11 @@ export const TransactionReceiptModal: FC<Props> = ({ transaction, currencies, on
                     <span className="receipt-user-name">{transaction.fromOwnerName || 'Неизвестно'}</span>
                     {transaction.fromCoatOfArms && (
                       <img 
-                        src={transaction.fromCoatOfArms} 
+                        src={`${BACKEND_URL}/proxy/image?url=${encodeURIComponent(transaction.fromCoatOfArms)}`}
                         alt="Герб" 
                         className="receipt-coat-of-arms" 
-                        crossOrigin="anonymous" 
-                        onError={(e) => handleImageError(e, transaction.fromFallbackCoatOfArms)}
+                        crossOrigin="anonymous"
+                        onError={(e) => handleImageError(e, transaction.fromFallbackCoatOfArms ? `${BACKEND_URL}/proxy/image?url=${encodeURIComponent(transaction.fromFallbackCoatOfArms)}` : null)}
                       />
                     )}
                   </div>
@@ -101,11 +103,11 @@ export const TransactionReceiptModal: FC<Props> = ({ transaction, currencies, on
                     <span className="receipt-user-name">{transaction.toOwnerName || 'Неизвестно'}</span>
                     {transaction.toCoatOfArms && (
                       <img 
-                        src={transaction.toCoatOfArms} 
+                        src={`${BACKEND_URL}/proxy/image?url=${encodeURIComponent(transaction.toCoatOfArms)}`}
                         alt="Герб" 
                         className="receipt-coat-of-arms" 
-                        crossOrigin="anonymous" 
-                        onError={(e) => handleImageError(e, transaction.toFallbackCoatOfArms)}
+                        crossOrigin="anonymous"
+                        onError={(e) => handleImageError(e, transaction.toFallbackCoatOfArms ? `${BACKEND_URL}/proxy/image?url=${encodeURIComponent(transaction.toFallbackCoatOfArms)}` : null)}
                       />
                     )}
                   </div>

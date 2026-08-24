@@ -72,6 +72,7 @@ export interface IState {
   createdAt: string;
   cities?: ICity[];
   citizens?: IStateCitizen[];
+  isArchived: boolean;
   decrees?: IStateDecree[];
 }
 

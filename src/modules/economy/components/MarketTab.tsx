@@ -2,6 +2,7 @@ import React from 'react';
 import { ICompany } from '../types/economy.types';
 import { IState } from '../../states/types/states.types';
 import { TradingChart } from './TradingChart';
+import { economyService } from '../services/economy.service';
 import Button from '../../../shared/ui/button/button.component';
 
 interface MarketTabProps {
@@ -14,6 +15,7 @@ interface MarketTabProps {
   setBuyCompanyId: (id: string | null) => void;
   setSellCompanyId: (id: string | null) => void;
   setChangePriceCompanyId: (id: string | null) => void;
+  onBack?: () => void;
 }
 
 export const MarketTab: React.FC<MarketTabProps> = ({
@@ -26,15 +28,24 @@ export const MarketTab: React.FC<MarketTabProps> = ({
   setBuyCompanyId,
   setSellCompanyId,
   setChangePriceCompanyId,
+  onBack,
 }) => {
   const selectedCompany = companies.find(c => c.id === selectedCompanyId) || null;
 
   return (
-    <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
-      {/* Левая колонка: График и действия */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        {selectedCompany ? (
-          <>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      {onBack && (
+        <div style={{ alignSelf: 'flex-start' }}>
+          <Button type="button" secondary={true} callback={onBack}>
+            &larr; Назад к списку бирж
+          </Button>
+        </div>
+      )}
+      <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+        {/* Левая колонка: График и действия */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {selectedCompany ? (
+            <>
             <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #d2d2d8', padding: '24px', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)' }}>
               <h2 style={{ margin: '0 0 16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '24px', fontWeight: 600 }}>{selectedCompany.name}</span>
@@ -45,7 +56,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
                   </div>
                 </div>
               </h2>
-              <TradingChart company={selectedCompany} />
+              <TradingChart fetchHistory={() => economyService.getCompanySharePriceHistory(selectedCompany.id)} triggerRefetch={selectedCompany.sharePrice} />
             </div>
             
             <div style={{ display: 'flex', gap: '12px' }}>
@@ -127,5 +138,6 @@ export const MarketTab: React.FC<MarketTabProps> = ({
         </div>
       </div>
     </div>
+  </div>
   );
 };

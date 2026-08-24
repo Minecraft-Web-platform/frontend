@@ -128,16 +128,24 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
         </div>
       ) : (
         <div className="economy-grid">
-          {companies.map((company) => (
-            <CompanyCard
-              key={company.id}
-              company={company}
-              isOwner={company.ownerUsername?.toLowerCase() === currentUser}
-              onIpoClick={handleOpenIpoModal}
-              onDividendsClick={(id) => setDivCompanyId(id)}
-              onDetailsClick={(id) => navigate(`/companies/${id}`)}
-            />
-          ))}
+          {companies.map((company) => {
+            let currencyCode = 'ед.';
+            if (company.isPublic && company.exchangeStateId) {
+              const currency = currenciesList.find(c => c.stateId === company.exchangeStateId);
+              if (currency) currencyCode = currency.code;
+            }
+            return (
+              <CompanyCard
+                key={company.id}
+                company={company}
+                isOwner={company.ownerUsername?.toLowerCase() === currentUser}
+                currencyCode={currencyCode}
+                onIpoClick={handleOpenIpoModal}
+                onDividendsClick={(id) => setDivCompanyId(id)}
+                onDetailsClick={(id) => navigate(`/companies/${id}`)}
+              />
+            );
+          })}
         </div>
       )}
 

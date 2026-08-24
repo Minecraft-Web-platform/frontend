@@ -3,6 +3,7 @@ export * from './pages/BankPage';
 export * from './pages/CurrenciesPage';
 export * from './pages/PropertiesPage';
 export * from './pages/CompanyDetailPage';
+export * from './pages/CurrencyDetailPage';
 export * from './pages/CompaniesListPage';
 export * from './pages/StockExchangePage';
 export * from './types/economy.types';

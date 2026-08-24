@@ -6,6 +6,7 @@ import './CompanyCard.scss';
 interface CompanyCardProps {
   company: ICompany;
   isOwner?: boolean;
+  currencyCode?: string;
   onBuyClick?: (companyId: string) => void;
   onSellClick?: (companyId: string) => void;
   onIpoClick?: (companyId: string) => void;
@@ -18,6 +19,7 @@ interface CompanyCardProps {
 export const CompanyCard: React.FC<CompanyCardProps> = ({
   company,
   isOwner,
+  currencyCode = 'ед.',
   onBuyClick,
   onSellClick,
   onIpoClick,
@@ -87,7 +89,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
               <div className="stat-box">
                 <div className="stat-label">Цена акции</div>
                 <div className="stat-value">
-                  <span>{company.sharePrice.toFixed(2)} ед.</span>
+                  <span>{company.sharePrice.toFixed(2)} {currencyCode}</span>
                   <span
                     className={`change-pill ${
                       isPositive ? 'change-pill--pos' : 'change-pill--neg'
@@ -102,7 +104,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
               <div className="stat-box">
                 <div className="stat-label">Капитализация</div>
                 <div className="stat-value stat-value--gold">
-                  {marketCap.toLocaleString('ru-RU')} ед.
+                  {marketCap.toLocaleString('ru-RU')} {currencyCode}
                 </div>
               </div>
             </div>

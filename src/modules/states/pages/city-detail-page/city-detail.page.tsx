@@ -167,30 +167,6 @@ const CityDetailPage: FC = () => {
     }
   };
 
-  const handleAddImage = async () => {
-    if (!id) return;
-    const url = window.prompt('Введите URL картинки города:');
-    if (!url) return;
-    try {
-      await statesService.addCityImage(id, url);
-      await loadData();
-    } catch (err: any) {
-      console.error(err);
-      alert(err?.response?.data?.message || 'Не удалось добавить картинку');
-    }
-  };
-
-  const handleRemoveImage = async (url: string) => {
-    if (!id) return;
-    if (!window.confirm('Удалить эту картинку?')) return;
-    try {
-      await statesService.removeCityImage(id, url);
-      await loadData();
-    } catch (err: any) {
-      console.error(err);
-      alert(err?.response?.data?.message || 'Не удалось удалить картинку');
-    }
-  };
 
   const handleReviewRequest = async (requestId: string, status: 'approved' | 'rejected') => {
     if (!id) return;
@@ -437,20 +413,12 @@ const CityDetailPage: FC = () => {
           <div className="city-detail-page__section">
             <div className="city-detail-page__section-header">
               <h2 className="city-detail-page__section-title">🖼️ Фотографии города</h2>
-              {isMayorOrAdmin && (
-                <button className="city-detail-page__btn city-detail-page__btn--secondary" onClick={handleAddImage}>
-                  Добавить фото
-                </button>
-              )}
             </div>
             <div className="city-images-grid">
               {city.images && city.images.length > 0 ? (
                 city.images.map((img, idx) => (
                   <div key={idx} className="city-image-card">
                     <img src={img} alt={`City view ${idx + 1}`} />
-                    {isMayorOrAdmin && (
-                      <button className="city-image-delete" onClick={() => handleRemoveImage(img)}>×</button>
-                    )}
                   </div>
                 ))
               ) : (

@@ -1,9 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import { ICurrency } from '../types/economy.types';
 import {
   getMinecraftItemInfo,
   getMinecraftEnchantInfo,
 } from '../constants/minecraft-items';
+import { economyService } from '../services/economy.service';
+import { MiniHistoryChart } from './MiniHistoryChart';
 import './CurrencyCard.scss';
 
 interface CurrencyCardProps {
@@ -17,6 +20,7 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
   isRuler,
   onIssueClick,
 }) => {
+  const navigate = useNavigate();
   const isPositive = currency.rateChange24h >= 0;
 
   return (
@@ -24,8 +28,16 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
       <div>
         <div className="currency-card__header">
           <div className="code-box">
-            <div className="icon-box">
-              {currency.code}
+            <div className="icon-box" style={currency.stateFlagUrl ? { padding: 0, overflow: 'hidden' } : {}}>
+              {currency.stateFlagUrl ? (
+                <img 
+                  src={currency.stateFlagUrl} 
+                  alt={currency.code}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                currency.code
+              )}
             </div>
             <div className="title-box">
               <h3>{currency.name}</h3>
@@ -121,6 +133,20 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
           <div className="rate-hint">
             Формула: (Резерв + Мощь) / Эмиссия
           </div>
+        </div>
+        <MiniHistoryChart 
+          fetchHistory={() => economyService.getCurrencyRateHistory(currency.id)} 
+          triggerRefetch={currency.exchangeRate} 
+        />
+        
+        <div style={{ marginTop: '16px' }}>
+          <button
+            onClick={() => navigate(`/economy/currency/${currency.id}`)}
+            className="economy-btn economy-btn--outline"
+            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+          >
+            История валюты
+          </button>
         </div>
       </div>
 

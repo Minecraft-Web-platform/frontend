@@ -174,9 +174,7 @@ export class StatesService {
     return this.httpService.post(`states/${stateId}/treasury/digitize`, {});
   }
 
-  public async withdrawTreasury(stateId: string, data: { minecraftItemId: string; quantity: number }): Promise<{ message: string }> {
-    return this.httpService.post(`states/${stateId}/treasury/withdraw`, data);
-  }
+
 
   // --- Streets ---
   async getStreets(cityId: string): Promise<IStreet[]> {

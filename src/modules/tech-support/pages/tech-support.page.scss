@@ -1,34 +1,294 @@
+.tech-support-page {
+  display: flex;
+  min-height: 100vh;
+}
+
 .tech-support-main {
-  padding-top: 60px;
-  text-align: center;
-  font-family: sans-serif;
+  flex-grow: 1;
+  padding: 40px;
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
+  max-width: 1200px;
+  margin-left: 260px;
+  margin-right: auto;
 
-  h1 {
-    font-family: "Minecraft";
+  .tech-support-header {
+    text-align: center;
+    margin-bottom: 40px;
+
+    h1 {
+      font-family: "Minecraft", sans-serif;
+      font-size: 36px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #111827 0%, #4b5563 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: #6b7280;
+      font-size: 16px;
+    }
   }
 
-  p {
-    margin-top: 16px;
-    color: #454545;
-    font-family: sans-serif;
+  .tech-support-banner {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+    .banner-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      svg {
+        width: 24px;
+        height: 24px;
+        color: #3b82f6;
+      }
+    }
+
+    .banner-content {
+      flex-grow: 1;
+
+      h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      p {
+        color: #4b5563;
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+
+    .banner-action {
+      flex-shrink: 0;
+      margin-left: 20px;
+
+      .button {
+        margin: 0;
+      }
+    }
   }
 
-  form {
-    margin: 0 auto;
-    max-width: 600px;
+  .tech-support-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
   }
 
-  textarea {
-    resize: none;
-    height: 80px;
+  .support-form-card,
+  .support-faq-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    border: 1px solid #f3f4f6;
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #111827;
+      border-bottom: 1px solid #f3f4f6;
+      padding-bottom: 12px;
+    }
   }
 
-  input,
-  textarea {
-    font-size: 16px;
+  .support-form-card {
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+
+      textarea {
+        resize: vertical;
+        min-height: 120px;
+      }
+
+      input,
+      textarea {
+        transition: all 0.2s ease;
+
+        &:focus {
+          border-color: #111827;
+          box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+        }
+      }
+    }
+
+    .error-message {
+      background: #fef2f2;
+      color: #b91c1c;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      border: 1px solid #fecaca;
+    }
   }
 
-  .button {
-    margin-top: 24px;
+  .loader-container {
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+  }
+
+  .success-state,
+  .email-warning-state {
+    text-align: center;
+    padding: 20px 0;
+
+    .success-icon,
+    .warning-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+
+      svg {
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    .success-icon {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .warning-icon {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #111827;
+    }
+
+    p {
+      color: #4b5563;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+  }
+
+  .support-faq-card {
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .faq-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+
+      &[open] {
+        border-color: #111827;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+        .faq-question .chevron {
+          transform: rotate(180deg);
+        }
+      }
+
+      .faq-question {
+        padding: 16px;
+        font-weight: 600;
+        font-size: 15px;
+        color: #111827;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f9fafb;
+        list-style: none;
+        /* Hide default triangle */
+
+        &::-webkit-details-marker {
+          display: none;
+        }
+
+        &:hover {
+          background: #f3f4f6;
+        }
+
+        .chevron {
+          width: 20px;
+          height: 20px;
+          color: #6b7280;
+          transition: transform 0.3s ease;
+        }
+      }
+
+      .faq-answer {
+        padding: 16px;
+        border-top: 1px solid #e5e7eb;
+        color: #4b5563;
+        font-size: 14px;
+        line-height: 1.6;
+        background: #fff;
+      }
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 968px) {
+    .tech-support-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .tech-support-banner {
+      flex-direction: column;
+      text-align: center;
+      gap: 16px;
+
+      .banner-icon {
+        margin: 0 auto;
+      }
+
+      .banner-action {
+        margin: 0;
+        width: 100%;
+
+        .button {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 736px) {
+    margin-left: 100px;
+    padding: 20px;
   }
 }
