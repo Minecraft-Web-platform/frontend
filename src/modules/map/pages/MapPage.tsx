@@ -9,11 +9,8 @@ export const MapPage: React.FC = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [territories, setTerritories] = useState<ITerritory[]>([]);
   const [adapter, setAdapter] = useState<IMapProvider | null>(null);
-  const [mapType, setMapType] = useState<'dynmap' | 'bluemap'>('bluemap');
 
-  const mapUrl = mapType === 'dynmap' 
-    ? 'http://localhost:8123' 
-    : '/bluemap/'; 
+  const mapUrl = '/bluemap/'; 
 
   useEffect(() => {
     const fetchTerritories = async () => {
@@ -32,15 +29,8 @@ export const MapPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    let newAdapter: IMapProvider;
-    if (mapType === 'dynmap') {
-      newAdapter = new DynmapAdapter();
-    } else {
-      newAdapter = new BlueMapAdapter();
-    }
-    
-    setAdapter(newAdapter);
-  }, [mapType]);
+    setAdapter(new BlueMapAdapter());
+  }, []);
 
   const handleIframeLoad = () => {
     if (iframeRef.current && adapter) {
@@ -62,16 +52,6 @@ export const MapPage: React.FC = () => {
             <div className="map-title-glass">
               <h1>Карта Мира</h1>
               <p>Живое отображение территорий и игроков</p>
-            </div>
-
-            <div className="map-controls-glass">
-              <label>Тип карты</label>
-              <div className="select-wrapper">
-                <select value={mapType} onChange={e => setMapType(e.target.value as 'dynmap' | 'bluemap')}>
-                  <option value="bluemap">BlueMap 3D</option>
-                  <option value="dynmap">Dynmap 2D</option>
-                </select>
-              </div>
             </div>
           </div>
 
