@@ -24,36 +24,47 @@ export const GlobalToastProvider: React.FC<{ children: ReactNode }> = ({ childre
   useEffect(() => {
     if (!accessToken) return;
 
-    const eventSource = new EventSource(`${SERVER_URL}/achievements/stream?token=${accessToken}`);
+    let eventSource: EventSource | null = null;
 
-    eventSource.onmessage = (event) => {
-      try {
-        const payload = JSON.parse(event.data);
-        if (payload.achievement) {
-          const newToast: ToastItem = {
-            id: Date.now().toString(),
-            achievement: payload.achievement,
-          };
-          
-          setToasts((prev) => [...prev, newToast]);
-          
-          playAchievementSound(payload.achievement.rarity);
+    // Используем небольшую задержку, чтобы обойти двойной рендер React StrictMode
+    // Если компонент отмонтируется сразу же (как это бывает в StrictMode), 
+    // мы просто отменим таймер и не будем плодить "обрубленные" запросы,
+    // которые Firefox воспринимает как CORS error со Status: null.
+    const timer = setTimeout(() => {
+      eventSource = new EventSource(`${SERVER_URL}/achievements/stream?token=${accessToken}`);
 
-          setTimeout(() => {
-            setToasts((prev) => prev.filter((t) => t.id !== newToast.id));
-          }, 10000);
+      eventSource.onmessage = (event) => {
+        try {
+          const payload = JSON.parse(event.data);
+          if (payload.achievement) {
+            const newToast: ToastItem = {
+              id: Date.now().toString(),
+              achievement: payload.achievement,
+            };
+            
+            setToasts((prev) => [...prev, newToast]);
+            
+            playAchievementSound(payload.achievement.rarity);
+
+            setTimeout(() => {
+              setToasts((prev) => prev.filter((t) => t.id !== newToast.id));
+            }, 10000);
+          }
+        } catch (err) {
+          console.error('Failed to parse SSE data', err);
         }
-      } catch (err) {
-        console.error('Failed to parse SSE data', err);
-      }
-    };
+      };
 
-    eventSource.onerror = (error) => {
-      console.error('SSE Error (will auto-reconnect):', error);
-    };
+      eventSource.onerror = (error) => {
+        console.error('SSE Error (will auto-reconnect):', error);
+      };
+    }, 100);
 
     return () => {
-      eventSource.close();
+      clearTimeout(timer);
+      if (eventSource) {
+        eventSource.close();
+      }
     };
   }, [accessToken]);
 
