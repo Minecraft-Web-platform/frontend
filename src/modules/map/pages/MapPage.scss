@@ -1,8 +1,10 @@
-/* Сброс отступов для main.content в случае карты */
 .content.map-main {
   padding: 0 !important;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex: 1;
+  height: 100vh;
 }
 
 .map-page-container {
