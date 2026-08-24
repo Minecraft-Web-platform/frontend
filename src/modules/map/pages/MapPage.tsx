@@ -3,20 +3,19 @@ import './MapPage.scss';
 import { ITerritory, IMapProvider } from '../models/map.types';
 import { DynmapAdapter } from '../adapters/dynmap.adapter';
 import { BlueMapAdapter } from '../adapters/bluemap.adapter';
+import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 
 export const MapPage: React.FC = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [territories, setTerritories] = useState<ITerritory[]>([]);
   const [adapter, setAdapter] = useState<IMapProvider | null>(null);
-  const [mapType, setMapType] = useState<'dynmap' | 'bluemap'>('bluemap'); // Can be moved to env config
+  const [mapType, setMapType] = useState<'dynmap' | 'bluemap'>('bluemap');
 
-  // Map URLs should ideally come from env config, for example import.meta.env.VITE_MAP_URL
   const mapUrl = mapType === 'dynmap' 
-    ? 'http://localhost:8123' // Example dynmap local url
-    : '/bluemap/'; // Proxy through Vite to avoid CORS and iframe cross-origin issues
+    ? 'http://localhost:8123' 
+    : '/bluemap/'; 
 
   useEffect(() => {
-    // Fetch territories from backend
     const fetchTerritories = async () => {
       try {
         const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
@@ -33,7 +32,6 @@ export const MapPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Initialize correct adapter based on map type
     let newAdapter: IMapProvider;
     if (mapType === 'dynmap') {
       newAdapter = new DynmapAdapter();
@@ -47,7 +45,6 @@ export const MapPage: React.FC = () => {
   const handleIframeLoad = () => {
     if (iframeRef.current && adapter) {
       adapter.init(iframeRef.current);
-      // Give the map a moment to fully initialize its internal objects
       setTimeout(() => {
         adapter.drawTerritories(territories);
       }, 2000);
@@ -55,28 +52,42 @@ export const MapPage: React.FC = () => {
   };
 
   return (
-    <div className="map-page-container">
-      <div className="map-header">
-        <h1>Карта Мира</h1>
-        <div className="map-controls">
-          <label>Тип карты: </label>
-          <select value={mapType} onChange={e => setMapType(e.target.value as 'dynmap' | 'bluemap')}>
-            <option value="dynmap">Dynmap</option>
-            <option value="bluemap">BlueMap</option>
-          </select>
-        </div>
-      </div>
+    <div className="page map-root">
+      <Sidebar />
       
-      <div className="map-wrapper">
-        <iframe 
-          ref={iframeRef}
-          src={mapUrl}
-          title="Interactive Map"
-          className="map-iframe"
-          onLoad={handleIframeLoad}
-          allowFullScreen
-        ></iframe>
-      </div>
+      <main className="content map-main">
+        <div className="map-page-container">
+          
+          <div className="map-overlay-header">
+            <div className="map-title-glass">
+              <h1>Карта Мира</h1>
+              <p>Живое отображение территорий и игроков</p>
+            </div>
+
+            <div className="map-controls-glass">
+              <label>Тип карты</label>
+              <div className="select-wrapper">
+                <select value={mapType} onChange={e => setMapType(e.target.value as 'dynmap' | 'bluemap')}>
+                  <option value="bluemap">BlueMap 3D</option>
+                  <option value="dynmap">Dynmap 2D</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="map-wrapper">
+            <iframe 
+              ref={iframeRef}
+              src={mapUrl}
+              title="Interactive Map"
+              className="map-iframe"
+              onLoad={handleIframeLoad}
+              allowFullScreen
+            ></iframe>
+          </div>
+          
+        </div>
+      </main>
     </div>
   );
 };
