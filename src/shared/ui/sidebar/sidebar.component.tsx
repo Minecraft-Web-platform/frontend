@@ -7,7 +7,7 @@ import NewsIcon from "../../../assets/svg/news.svg?react";
 import StateIcon from "../../../assets/svg/state.svg?react";
 import CompanyIcon from "../../../assets/svg/company.svg?react";
 import PlayersIcon from "../../../assets/svg/people.svg?react";
-// import MapIcon from "../../../assets/svg/map.svg?react";
+import MapIcon from "../../../assets/svg/map.svg?react";
 import ProfileIcon from "../../../assets/svg/profile.svg?react";
 import TechSupportIcon from "../../../assets/svg/contact.svg?react";
 import DocsIcon from "../../../assets/svg/docs.svg?react";
@@ -45,13 +45,13 @@ const Sidebar: FC = () => {
           <PlayersIcon />
         </IconComponent>
 
-        {/* <IconComponent
-          path="http://5.83.140.252:25900/#world:1949:85:1568:0:-0.8:1.07:0:0:free"
+        <IconComponent
+          path="/map"
           label={t('buttons.world-map')}
           iconType="fill"
         >
           <MapIcon />
-        </IconComponent> */}
+        </IconComponent>
 
       </div>
 
