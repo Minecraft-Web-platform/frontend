@@ -1,10 +1,15 @@
 .content.map-main {
   padding: 0 !important;
+  margin-left: 260px !important; /* Убираем пустой gap, прижимаем к сайдбару (260px) */
   position: relative;
   overflow: hidden;
   display: flex;
   flex: 1;
   height: 100vh;
+
+  @media (max-width: 736px) {
+    margin-left: 100px !important;
+  }
 }
 
 .map-page-container {
