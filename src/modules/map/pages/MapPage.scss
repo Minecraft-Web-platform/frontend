@@ -1,6 +1,7 @@
 .content.map-main {
   padding: 0 !important;
-  margin-left: 260px !important; /* Убираем пустой gap, прижимаем к сайдбару (260px) */
+  margin-left: 260px !important;
+  /* Убираем пустой gap, прижимаем к сайдбару (260px) */
   position: relative;
   overflow: hidden;
   display: flex;
@@ -25,11 +26,13 @@
   left: 24px;
   z-index: 10;
   display: flex;
-  pointer-events: none; /* Пропускаем клики сквозь пустую область */
+  pointer-events: none;
+  /* Пропускаем клики сквозь пустую область */
 
   .map-title-glass {
-    pointer-events: auto; /* Возвращаем кликабельность самой панели */
-    background: rgba(20, 25, 30, 0.65);
+    pointer-events: auto;
+    /* Возвращаем кликабельность самой панели */
+    background-color: rgba(20, 25, 30, 0.65);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -37,10 +40,10 @@
     padding: 16px 24px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     color: #fff;
-    transition: transform 0.3s ease, background 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease;
 
     &:hover {
-      background: rgba(30, 35, 40, 0.75);
+      background-color: rgba(30, 35, 40, 0.75);
     }
 
     h1 {
@@ -48,10 +51,10 @@
       font-size: 24px;
       font-weight: 700;
       background: linear-gradient(90deg, #fff, #a5d8ff);
-      -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    
+
     p {
       margin: 0;
       font-size: 13px;
