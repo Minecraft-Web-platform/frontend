@@ -14,6 +14,7 @@ import CityCard from '../../components/city-card/city-card.component';
 import DecreesFeed from '../../components/decrees-feed/decrees-feed.component';
 import ElectionsWidget from '../../components/elections-widget/elections-widget.component';
 import DiplomacyBadge from '../../components/diplomacy-badge/diplomacy-badge.component';
+import { TerritoriesList } from '../../components/territories-list/TerritoriesList';
 import useAuthStore from '../../../../store/auth.store';
 import { profileService } from '../../../profile/services/profile.service';
 import { ICurrency } from '../../../economy/types/economy.types';
@@ -899,6 +900,10 @@ const StateDetailPage: FC = () => {
             canCreate={canPublishDecree}
             onCreateDecree={handleCreateDecree}
           />
+
+          <div className="state-detail-page__section" style={{ marginTop: '30px' }}>
+            <TerritoriesList ownerType="state" ownerId={state.id} />
+          </div>
 
           {/* Модальное окно создания города */}
           {showCreateCityModal && (

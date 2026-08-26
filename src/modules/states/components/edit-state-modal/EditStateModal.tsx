@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import './EditStateModal.scss';
 import { IState } from '../../types/states.types';
 import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploader';
+import { MapColorPicker } from '../map-color-picker/MapColorPicker';
 
 interface EditStateModalProps {
-  state: IState;
+  state: any;
   onClose: () => void;
-  onSave: (data: { name?: string; description?: string; flagUrl?: string; coatOfArmsUrl?: string }) => Promise<void>;
+  onSave: (data: { name?: string; description?: string; flagUrl?: string; coatOfArmsUrl?: string; color?: string }) => Promise<void>;
 }
 
 export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, onSave }) => {
@@ -14,6 +15,7 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
   const [description, setDescription] = useState(state.description || '');
   const [flagUrl, setFlagUrl] = useState(state.flagUrl || '');
   const [coatOfArmsUrl, setCoatOfArmsUrl] = useState(state.coatOfArmsUrl || '');
+  const [color, setColor] = useState<string>(state.color || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,7 +24,7 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
     setLoading(true);
     setError(null);
     try {
-      await onSave({ name, description, flagUrl, coatOfArmsUrl });
+      await onSave({ name, description, flagUrl, coatOfArmsUrl, color });
       onClose();
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Ошибка сохранения');
@@ -68,6 +70,14 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
               label="Герб (если есть)"
               value={coatOfArmsUrl}
               onChange={(url: any) => setCoatOfArmsUrl(url as string)}
+            />
+          </div>
+          <div className="edit-state-modal__field">
+            <label>Цвет территории на карте:</label>
+            <MapColorPicker
+              color={color}
+              onChange={setColor}
+              mode="state"
             />
           </div>
           <div className="edit-state-modal__actions">

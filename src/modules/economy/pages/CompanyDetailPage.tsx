@@ -10,6 +10,7 @@ import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import useAuthStore from '../../../store/auth.store';
 import { profileService } from '../../profile/services/profile.service';
 import { EditCompanyModal } from '../components/edit-company-modal/EditCompanyModal';
+import { TerritoriesList } from '../../states/components/territories-list/TerritoriesList';
 import './CompanyDetailPage.scss';
 
 export const CompanyDetailPage: React.FC = () => {
@@ -18,7 +19,7 @@ export const CompanyDetailPage: React.FC = () => {
   const [company, setCompany] = useState<ICompany | null>(null);
   const [services, setServices] = useState<ICompanyService[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'orders'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'orders' | 'territories'>('overview');
   const [showEditCompanyModal, setShowEditCompanyModal] = useState(false);
   const { isAuthenticated } = useAuthStore();
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
@@ -182,6 +183,12 @@ export const CompanyDetailPage: React.FC = () => {
             >
               Заказы
             </button>
+            <button 
+              className={`cdp-tab-btn ${activeTab === 'territories' ? 'active' : ''}`}
+              onClick={() => setActiveTab('territories')}
+            >
+              Территории
+            </button>
           </div>
 
           <div className="cdp-tab-content">
@@ -227,6 +234,11 @@ export const CompanyDetailPage: React.FC = () => {
             )}
             {activeTab === 'orders' && (
               <CompanyOrdersTab company={company} />
+            )}
+            {activeTab === 'territories' && (
+              <div style={{ marginTop: '20px' }}>
+                <TerritoriesList ownerType="company" ownerId={company.id} />
+              </div>
             )}
           </div>
 

@@ -192,6 +192,20 @@ export class StatesService {
   async deleteStreet(cityId: string, streetId: string): Promise<void> {
     await this.httpService.delete(`cities/${cityId}/streets/${streetId}`);
   }
+
+  // --- Territories ---
+  async getTerritories(): Promise<any[]> {
+    return this.httpService.get(`territories`);
+  }
+
+  async deleteTerritoryWeb(territoryId: string): Promise<{ success: boolean }> {
+    return this.httpService.delete(`territories/${territoryId}`);
+  }
+
+  async toggleTerritoryVisibility(territoryId: string, isHiddenOnMap: boolean): Promise<any> {
+    return this.httpService.patch(`territories/${territoryId}/visibility`, { isHiddenOnMap });
+  }
 }
 
 export const statesService = new StatesService(httpFactoryService.createAuthHttpService());
+

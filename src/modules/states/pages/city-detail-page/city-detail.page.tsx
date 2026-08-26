@@ -11,6 +11,7 @@ import CitizenshipRequestsModal from '../../components/citizenship-requests-moda
 import ElectionsWidget from '../../components/elections-widget/elections-widget.component';
 import { EditCityModal } from '../../components/edit-city-modal/EditCityModal';
 import StreetsManager from '../../components/streets-manager/streets-manager.component';
+import { TerritoriesList } from '../../components/territories-list/TerritoriesList';
 import useAuthStore from '../../../../store/auth.store';
 import { profileService } from '../../../profile/services/profile.service';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
@@ -518,6 +519,10 @@ const CityDetailPage: FC = () => {
           </div>
 
           <StreetsManager cityId={city.id} isMayorOrAdmin={isMayorOrAdmin} />
+
+          <div className="city-detail-page__section">
+            <TerritoriesList ownerType="city" ownerId={city.id} />
+          </div>
 
           {showRequestsModal && (
             <CitizenshipRequestsModal

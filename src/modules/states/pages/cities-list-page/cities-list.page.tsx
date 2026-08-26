@@ -5,6 +5,7 @@ import { ICity, IState } from '../../types/states.types';
 import { statesService } from '../../services/states.service';
 import CityCard from '../../components/city-card/city-card.component';
 import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploader';
+import { MapColorPicker } from '../../components/map-color-picker/MapColorPicker';
 import useAuthStore from '../../../../store/auth.store';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 
@@ -24,6 +25,7 @@ const CitiesListPage: FC = () => {
   const [description, setDescription] = useState('');
   const [flagUrl, setFlagUrl] = useState('');
   const [stateId, setStateId] = useState('');
+  const [color, setColor] = useState('');
   const [creating, setCreating] = useState(false);
 
   const { isAdmin } = useAuthStore();
@@ -66,11 +68,13 @@ const CitiesListPage: FC = () => {
         description,
         flagUrl: flagUrl || undefined,
         stateId: stateId || undefined,
+        color: color || undefined,
       });
       setName('');
       setDescription('');
       setFlagUrl('');
       setStateId('');
+      setColor('');
       setShowCreateModal(false);
       await loadData();
     } catch (err: any) {
@@ -172,6 +176,14 @@ const CitiesListPage: FC = () => {
                       label="Эмблема/Флаг"
                       value={flagUrl}
                       onChange={(url: any) => setFlagUrl(url as string)}
+                    />
+                  </div>
+                  <div style={{ marginBottom: '15px' }}>
+                    <label style={{ display: 'block', marginBottom: '5px', color: '#ccc' }}>Цвет на карте:</label>
+                    <MapColorPicker
+                      color={color}
+                      onChange={setColor}
+                      mode="city"
                     />
                   </div>
                   <select

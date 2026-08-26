@@ -4,6 +4,7 @@ import { IState } from '../../types/states.types';
 import { statesService } from '../../services/states.service';
 import StateCard from '../../components/state-card/state-card.component';
 import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploader';
+import { MapColorPicker } from '../../components/map-color-picker/MapColorPicker';
 import useAuthStore from '../../../../store/auth.store';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 
@@ -21,6 +22,7 @@ const StatesListPage: FC = () => {
   const [nationalityMale, setNationalityMale] = useState('');
   const [nationalityFemale, setNationalityFemale] = useState('');
   const [citizenshipName, setCitizenshipName] = useState('');
+  const [color, setColor] = useState('');
   const [creating, setCreating] = useState(false);
 
   const { isAuthenticated } = useAuthStore();
@@ -55,6 +57,7 @@ const StatesListPage: FC = () => {
         nationalityMale: nationalityMale || undefined,
         nationalityFemale: nationalityFemale || undefined,
         citizenshipName: citizenshipName || undefined,
+        color: color || undefined,
       });
       setName('');
       setDescription('');
@@ -63,6 +66,7 @@ const StatesListPage: FC = () => {
       setNationalityMale('');
       setNationalityFemale('');
       setCitizenshipName('');
+      setColor('');
       setShowCreateModal(false);
       await loadStates();
     } catch (err: any) {
@@ -186,6 +190,15 @@ const StatesListPage: FC = () => {
                             onChange={(url: any) => setCoatOfArmsUrl(url as string)}
                           />
                         </div>
+                      </div>
+                      
+                      <div style={{ marginBottom: '15px' }}>
+                        <label style={{ display: 'block', marginBottom: '5px', color: '#64748b', fontWeight: 'bold' }}>Цвет на карте:</label>
+                        <MapColorPicker
+                          color={color}
+                          onChange={setColor}
+                          mode="state"
+                        />
                       </div>
                       
                       <input

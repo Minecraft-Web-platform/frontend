@@ -24,6 +24,7 @@ export interface ICity {
   name: string;
   description?: string;
   flagUrl?: string | null;
+  color?: string | null;
   mayorUsername?: string | null;
   stateId?: string | null;
   createdAt: string;
@@ -57,6 +58,7 @@ export interface IState {
   description?: string;
   flagUrl?: string | null;
   coatOfArmsUrl?: string | null;
+  color?: string | null;
   nationalityMale?: string | null;
   nationalityFemale?: string | null;
   citizenshipName?: string | null;
@@ -110,6 +112,7 @@ export interface ICreateStateRequest {
   description?: string;
   flagUrl?: string;
   coatOfArmsUrl?: string;
+  color?: string;
   nationalityMale?: string;
   nationalityFemale?: string;
   citizenshipName?: string;
@@ -126,6 +129,7 @@ export interface ICreateCityRequest {
   name: string;
   description?: string;
   flagUrl?: string;
+  color?: string;
   mayorUsername?: string;
   stateId?: string;
 }

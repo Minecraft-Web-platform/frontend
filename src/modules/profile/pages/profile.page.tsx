@@ -1,5 +1,6 @@
 import { FC } from "react";
 import useSWR from "swr";
+import { TerritoriesList } from "../../states/components/territories-list/TerritoriesList";
 import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import { profileService } from "../services/profile.service";
 import useAuthStore from "../../../store/auth.store";
@@ -176,6 +177,10 @@ const Profile: FC = () => {
             </div>
 
             <AchievementsBlock achievements={achievements || []} />
+
+            {info?.id && (
+              <TerritoriesList ownerType="player" ownerId={info.id} />
+            )}
 
             <div className="buttons">
               {!info?.emailIsConfirmed && (
