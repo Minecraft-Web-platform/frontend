@@ -41,8 +41,8 @@ const LandingPage: FC = () => {
           </p>
 
           <img
-            src="/png/city.png"
-            alt="Merida city"
+            src="/png/settlement.png"
+            alt="Merida settlement"
             className="img-large-right"
           />
         </section>

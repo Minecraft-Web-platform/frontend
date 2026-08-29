@@ -1,11 +1,13 @@
+import {  } from 'axios';
 import React, { useState } from 'react';
 import { economyService } from '../services/economy.service';
 import { ImageUploader } from '../../../shared/ui/image-uploader/ImageUploader';
-import { IState, ICity } from '../../states';
+import { IState, ISettlement } from '../../states';
 
 interface CreateCompanyModalProps {
   statesList: IState[];
-  citiesList: ICity[];
+  settlementsList: ISettlement[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   currenciesList: any[]; // Or ICurrency[] if passed correctly
   myStateId: string | null;
   onClose: () => void;
@@ -14,7 +16,7 @@ interface CreateCompanyModalProps {
 
 export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
   statesList,
-  citiesList,
+  settlementsList,
   currenciesList,
   myStateId,
   onClose,
@@ -23,7 +25,7 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
-  const [cityId, setCityId] = useState('');
+  const [settlementId, setSettlementId] = useState('');
   const [stateId, setStateId] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -39,10 +41,11 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
         name,
         description,
         logoUrl: logoUrl || undefined,
-        cityId: cityId || undefined,
+        settlementId: settlementId || undefined,
         stateId: stateId || undefined,
       });
       onSuccess();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Ошибка регистрации компании';
       alert(msg);
@@ -89,6 +92,7 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
             folder="economy/companies"
             label="Логотип (опционально)"
             value={logoUrl}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
             onChange={(url: any) => setLogoUrl(url as string)}
           />
 
@@ -106,7 +110,7 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
                 onChange={(e) => {
                   const val = e.target.value;
                   setStateId(val);
-                  setCityId('');
+                  setSettlementId('');
                 }}
                 required
                 disabled={loading}
@@ -123,10 +127,10 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
               </select>
             </label>
             <label>
-              <span>Город</span>
+              <span>Поселение</span>
               <select
-                value={cityId}
-                onChange={(e) => setCityId(e.target.value)}
+                value={settlementId}
+                onChange={(e) => setSettlementId(e.target.value)}
                 disabled={!stateId || loading}
                 style={{
                   opacity: !stateId ? 0.6 : 1,
@@ -138,7 +142,7 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
                     ? '-- Сначала выберите государство --'
                     : '-- Не выбрано --'}
                 </option>
-                {citiesList
+                {settlementsList
                   .filter((c) => c.stateId === stateId)
                   .map((ct) => (
                     <option key={ct.id} value={ct.id}>

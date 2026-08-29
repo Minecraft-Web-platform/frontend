@@ -1,0 +1,140 @@
+
+> frontend@0.0.0 lint
+> eslint .
+
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/admin/pages/achievements-admin.page.tsx
+   77:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  106:14  error  'err' is defined but never used           @typescript-eslint/no-unused-vars
+  130:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/ClientOrdersList.tsx
+   16:14  error  '_err' is defined but never used          @typescript-eslint/no-unused-vars
+   76:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  103:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/CompanyOrdersTab.tsx
+   20:14  error    '_err' is defined but never used                                                                                @typescript-eslint/no-unused-vars
+   26:6   warning  React Hook useEffect has a missing dependency: 'fetchOrders'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   87:45  error    Unexpected any. Specify a different type                                                                        @typescript-eslint/no-explicit-any
+  128:50  error    Unexpected any. Specify a different type                                                                        @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/CompanyServicesTab.tsx
+  26:14  error  'e' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/CreateCompanyModal.tsx
+   9:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  92:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/CreateServiceModal.tsx
+  38:69  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  40:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/DisputedOrdersTab.tsx
+  109:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/MiniHistoryChart.tsx
+   31:71  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   35:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  105:16  error  'err' is defined but never used           @typescript-eslint/no-unused-vars
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/OrderServiceModal.tsx
+   49:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  102:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/TradingChart.tsx
+  39:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  44:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  91:16  error  'err' is defined but never used           @typescript-eslint/no-unused-vars
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/edit-company-modal/EditCompanyModal.tsx
+  61:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/hooks/useEconomyData.ts
+  43:14  error  'e' is defined but never used  @typescript-eslint/no-unused-vars
+  43:26  error  Empty block statement          no-empty
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/BankPage.tsx
+  39:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/CardsPage.tsx
+  45:6  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/CompaniesListPage.tsx
+  30:14  error  'e' is defined but never used             @typescript-eslint/no-unused-vars
+  30:26  error  Empty block statement                     no-empty
+  64:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/CompanyDetailPage.tsx
+  84:6  warning  React Hook useEffect has a missing dependency: 'fetchCompanyAndServices'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/PropertiesPage.tsx
+   24:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   25:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  361:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/StockExchangePage.tsx
+   94:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  101:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  101:61  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  115:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  122:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  122:61  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/not-found/pages/not-found.page.tsx
+  32:6  warning  React Hook useEffect has a missing dependency: 'navigate'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/players/pages/player-profile.page.tsx
+   71:9   error    'result' is never reassigned. Use 'const' instead                                                               prefer-const
+   78:6   warning  React Hook useMemo has a missing dependency: 'rarityWeights'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  212:67  error    Unexpected any. Specify a different type                                                                        @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/components/edit-settlement-modal/EditSettlementModal.tsx
+   11:15  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   13:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   98:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  135:60  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  176:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/components/edit-state-modal/EditStateModal.tsx
+   7:10  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  63:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  71:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/components/map-color-picker/MapColorPicker.tsx
+  21:6  warning  React Hook useEffect has a missing dependency: 'internalColor'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/components/streets-manager/streets-manager.component.tsx
+  34:6  warning  React Hook useEffect has a missing dependency: 'loadStreets'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/components/territories-list/TerritoriesList.tsx
+  43:6  warning  React Hook useEffect has a missing dependency: 'fetchTerritories'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/pages/settlements-list-page/settlements-list.page.tsx
+  189:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  203:68  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/pages/state-detail-page/state-detail.page.tsx
+   44:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  993:78  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/pages/states-list-page/states-list.page.tsx
+  182:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  190:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/services/states.service.ts
+  178:86  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  183:59  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  187:85  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  211:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  219:89  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/tech-support/pages/tech-support.page.tsx
+  99:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/shared/utils/audio.utils.ts
+  43:60  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 70 problems (62 errors, 8 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

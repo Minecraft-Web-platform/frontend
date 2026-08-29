@@ -40,6 +40,11 @@ mainAxios.interceptors.response.use(
       }
     }
 
+    if (error.response?.status === 403 && error.response?.data?.message === 'BANNED') {
+      const { setBanInfo } = useAuthStore.getState();
+      setBanInfo(true, error.response.data.reason);
+    }
+
     return Promise.reject(error);
   }
 );

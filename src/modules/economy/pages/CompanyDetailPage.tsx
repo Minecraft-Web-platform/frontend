@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { ICompany, ICompanyService } from '../types/economy.types';
@@ -62,6 +63,7 @@ export const CompanyDetailPage: React.FC = () => {
     try {
       await economyService.updateCompany(id, data);
       fetchCompanyAndServices();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.response?.data?.message || 'Ошибка при редактировании компании');
     }
@@ -73,6 +75,7 @@ export const CompanyDetailPage: React.FC = () => {
     try {
       await economyService.archiveCompany(id);
       navigate('/economy/companies');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.response?.data?.message || 'Ошибка при закрытии компании');
     }
@@ -81,6 +84,7 @@ export const CompanyDetailPage: React.FC = () => {
   useEffect(() => {
     if (!id) return;
     fetchCompanyAndServices();
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (loading) {

@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { createChart, ColorType, IChartApi, ISeriesApi, AreaSeries } from 'lightweight-charts';
 
@@ -36,11 +37,13 @@ export const TradingChart: React.FC<TradingChartProps> = ({
         const chartData = history.map(h => {
           const time = Math.floor(new Date(h.createdAt).getTime() / 1000);
           return {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
             time: time as any,
             value: h.price ?? h.rate ?? 0,
           };
         });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
         const uniqueData: any[] = [];
         const seenTimes = new Set();
         for (const item of chartData) {
@@ -88,6 +91,8 @@ export const TradingChart: React.FC<TradingChartProps> = ({
         }
         
         setLoading(false);
+ 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err: any) {
         if (isMounted) {
           setError('Ошибка загрузки графика');

@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { FC, useState } from 'react';
 import useSWR from 'swr';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
@@ -61,8 +62,9 @@ export const AchievementsAdminPage: FC = () => {
       }
       handleCancelEdit();
       mutate();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setMessage(err.response?.data?.message || 'Ошибка сохранения ачивки');
+      setMessage((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка сохранения ачивки');
     }
   };
 
@@ -74,6 +76,7 @@ export const AchievementsAdminPage: FC = () => {
     setTriggerEvent('');
   };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEditClick = (a: any) => {
     setEditId(a.id);
     setTitle(a.title);
@@ -92,8 +95,9 @@ export const AchievementsAdminPage: FC = () => {
       });
       setMessage('Ачивка успешно выдана!');
       setGrantUsername('');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setMessage(err.response?.data?.message || 'Ошибка выдачи ачивки');
+      setMessage((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка выдачи ачивки');
     }
   };
 
@@ -103,6 +107,8 @@ export const AchievementsAdminPage: FC = () => {
       await achievementsService.deleteAchievement(id);
       setMessage('Удалено');
       mutate();
+ 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err: any) {
       setMessage('Ошибка удаления');
     }
@@ -127,6 +133,7 @@ export const AchievementsAdminPage: FC = () => {
                   folder="achievements"
                   label="Иконка (опционально)"
                   value={iconUrl}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
                   onChange={(url: any) => setIconUrl(url as string)}
                 />
               </div>

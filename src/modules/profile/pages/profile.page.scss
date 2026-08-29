@@ -69,8 +69,66 @@
   }
 
   .buttons {
-    display: grid;
-    grid-template-columns: 1fr 280px;
-    column-gap: 64px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 32px;
   }
+
+  .ban-banner {
+    position: relative;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 32px auto;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.1);
+    backdrop-filter: blur(10px);
+    animation: pulseGlow 3s infinite alternate;
+
+    &::before {
+      content: '⚠️';
+      display: block;
+      font-size: 36px;
+      margin-bottom: 12px;
+      animation: float 2.5s ease-in-out infinite;
+    }
+
+    h2 {
+      color: #ef4444;
+      font-family: "Minecraft", sans-serif;
+      font-size: 26px;
+      margin-top: 0;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    p {
+      color: #374151;
+      font-size: 16px;
+      max-width: 100%;
+      margin: 8px 0;
+      line-height: 1.5;
+
+      strong {
+        color: #b91c1c;
+      }
+    }
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.05);
+  }
+  100% {
+    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.15);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }

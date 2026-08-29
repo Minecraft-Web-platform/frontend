@@ -1,4 +1,4 @@
-.city-card {
+.settlement-card {
   position: relative;
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   border: 1px solid #e2e8f0;
@@ -18,11 +18,11 @@
     transform: translateY(-4px);
     box-shadow: 0 12px 28px rgba(16, 185, 129, 0.12);
 
-    .city-card__title {
+    .settlement-card__title {
       color: #10b981;
     }
 
-    .city-card__more {
+    .settlement-card__more {
       color: #059669;
       transform: translateX(3px);
     }

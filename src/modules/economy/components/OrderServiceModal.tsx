@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import React, { useState, useMemo, useEffect } from 'react';
 import { ICompanyService, IOrderIdentity } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
@@ -46,6 +47,7 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
   const totalPrice = useMemo(() => {
     let total = service.price; // Base price or single service price
     if (service.isComposite && service.subItems) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
       service.subItems.forEach((item: any) => {
         if (selectedSubItemIds.has(item.id)) {
           total += item.price;
@@ -78,8 +80,9 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
         payerStateId: selectedIdentity?.type === 'state' ? selectedIdentity.id : undefined,
       });
       onSuccess();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Ошибка при оформлении заказа');
+      setError((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || 'Ошибка при оформлении заказа');
     } finally {
       setLoading(false);
     }
@@ -99,6 +102,7 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
           {service.isComposite && service.subItems && service.subItems.length > 0 && (
             <div className="sub-items-selection">
               <h3>Выберите подуслуги (Базовая стоимость: {service.price})</h3>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
               {service.subItems.map((item: any) => (
                 <label key={item.id} className="sub-item-checkbox">
                   <input 

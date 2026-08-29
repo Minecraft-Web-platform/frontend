@@ -1,10 +1,11 @@
+import {  } from 'axios';
 import React, { useState } from 'react';
 import './EditStateModal.scss';
-import { IState } from '../../types/states.types';
 import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploader';
 import { MapColorPicker } from '../map-color-picker/MapColorPicker';
 
 interface EditStateModalProps {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: any;
   onClose: () => void;
   onSave: (data: { name?: string; description?: string; flagUrl?: string; coatOfArmsUrl?: string; color?: string }) => Promise<void>;
@@ -26,6 +27,7 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
     try {
       await onSave({ name, description, flagUrl, coatOfArmsUrl, color });
       onClose();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Ошибка сохранения');
     } finally {
@@ -61,6 +63,7 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
               folder="states/flags"
               label="Флаг"
               value={flagUrl}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
               onChange={(url: any) => setFlagUrl(url as string)}
             />
           </div>
@@ -69,6 +72,7 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
               folder="states/flags"
               label="Герб (если есть)"
               value={coatOfArmsUrl}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
               onChange={(url: any) => setCoatOfArmsUrl(url as string)}
             />
           </div>

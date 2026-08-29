@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import { FC, useEffect, useState, useMemo } from 'react';
 import { httpFactoryService } from '../../../shared/services/http-factory.service';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
@@ -11,7 +12,7 @@ interface IEvent {
   targetUsername?: string;
   type?: 'election' | 'resignation' | 'citizenship' | 'diplomacy' | 'other';
   stateId?: string;
-  cityId?: string;
+  settlementId?: string;
   createdAt: string;
 }
 
@@ -47,6 +48,7 @@ export const CalendarPage: FC = () => {
         const api = httpFactoryService.createAuthHttpService();
         const res = await api.get('/events');
         setEvents(res as IEvent[]);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error(err);
       } finally {

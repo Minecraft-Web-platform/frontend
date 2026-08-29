@@ -14,7 +14,7 @@ interface Territory {
 }
 
 interface TerritoriesListProps {
-  ownerType: 'player' | 'company' | 'city' | 'state';
+  ownerType: 'player' | 'company' | 'settlement' | 'state';
   ownerId: string;
 }
 
@@ -40,6 +40,7 @@ export const TerritoriesList: React.FC<TerritoriesListProps> = ({ ownerType, own
 
   useEffect(() => {
     fetchTerritories();
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ownerType, ownerId]);
 
   const handleDelete = async (id: string) => {

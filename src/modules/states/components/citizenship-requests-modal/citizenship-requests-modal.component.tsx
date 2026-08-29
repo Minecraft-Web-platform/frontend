@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import { FC } from 'react';
 import './citizenship-requests-modal.component.scss';
 import { ICitizenshipRequest } from '../../types/states.types';
@@ -18,6 +19,7 @@ const CitizenshipRequestsModal: FC<CitizenshipRequestsModalProps> = ({
   const handleAction = async (requestId: string, status: 'approved' | 'rejected') => {
     try {
       await onReview(requestId, status);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       alert('Ошибка при изменении статуса заявки');
@@ -28,7 +30,7 @@ const CitizenshipRequestsModal: FC<CitizenshipRequestsModalProps> = ({
     <div className="citizenship-modal" onClick={onClose}>
       <div className="citizenship-modal__content" onClick={(e) => e.stopPropagation()}>
         <div className="citizenship-modal__header">
-          <h3>📬 Заявки на заселение в город</h3>
+          <h3>📬 Заявки на заселение в поселение</h3>
           <button className="citizenship-modal__close" onClick={onClose}>
             &times;
           </button>

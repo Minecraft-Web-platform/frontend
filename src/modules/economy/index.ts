@@ -2,6 +2,7 @@ export * from './pages/EconomyHubPage';
 export * from './pages/BankPage';
 export * from './pages/CurrenciesPage';
 export * from './pages/PropertiesPage';
+export * from './pages/PropertyDetailPage';
 export * from './pages/CompanyDetailPage';
 export * from './pages/CurrencyDetailPage';
 export * from './pages/CompaniesListPage';

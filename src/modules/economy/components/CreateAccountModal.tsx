@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useState } from 'react';
 import { AccountType, ICurrency } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
@@ -35,6 +36,7 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
         currencyCode: newAccCurrency,
       });
       onSuccess();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка создания счета');
     } finally {

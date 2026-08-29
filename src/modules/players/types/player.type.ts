@@ -8,9 +8,9 @@ export type PlayerType = {
   avatar_img: string | null;
   lastLoginDate?: string;
   registrationDate: string;
-  cityId?: string | null;
+  settlementId?: string | null;
   stateId?: string | null;
-  cityName?: string | null;
+  settlementName?: string | null;
   stateName?: string | null;
   citizenshipName?: string | null;
   stateFlagUrl?: string | null;
@@ -20,4 +20,6 @@ export type PlayerType = {
   role?: "player" | "economist" | "admin";
   isAdmin?: boolean;
   isEconomist?: boolean;
+  isBanned?: boolean;
+  banReason?: string | null;
 };

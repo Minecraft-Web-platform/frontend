@@ -38,9 +38,10 @@ const LoginPage: FC = () => {
       const { accessToken, refreshToken } = await authService.login(body);
 
       authStore.login(accessToken, refreshToken);
-    } catch (e: unknown) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       if (e instanceof AxiosError) {
-        const code = e.status || e.response?.status;
+        const code = e.status || (e as AxiosError<{message?: string}>).response?.status;
         setErrorMessage(code && errorCodes[code] ? errorCodes[code] : "Не удалось войти. Проверьте данные.");
       } else {
         setErrorMessage("Произошла неизвестная ошибка.");

@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useState } from 'react';
 import { economyService } from '../services/economy.service';
 import { IState } from '../../states';
@@ -34,6 +35,7 @@ export const IpoModal: React.FC<IpoModalProps> = ({
         exchangeStateId: ipoExchangeStateId,
       });
       onSuccess();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.response?.data?.message || err?.message || 'Ошибка вывода на биржу (IPO)');
     } finally {

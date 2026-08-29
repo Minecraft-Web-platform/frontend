@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import { FC, useEffect, useState } from "react";
 import "./create-news.category.scss";
 import Input from "../../../shared/ui/input/input.component";
@@ -69,6 +70,7 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
         })),
       });
       setShowSuccess(true);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert("Ошибка при создании новости");
       console.error(err);

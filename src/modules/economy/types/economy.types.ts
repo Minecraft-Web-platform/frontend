@@ -75,7 +75,7 @@ export interface ICompany {
   description: string | null;
   logoUrl: string | null;
   ownerUsername: string;
-  cityId: string | null;
+  settlementId: string | null;
   stateId: string | null;
   accountId: string | null;
   isPublic: boolean;
@@ -132,7 +132,7 @@ export interface CreateCompanyRequest {
   name: string;
   description?: string;
   logoUrl?: string;
-  cityId?: string;
+  settlementId?: string;
   stateId?: string;
 }
 
@@ -184,10 +184,11 @@ export interface IProperty {
   propertyCategory: PropertyCategory;
   type: string;
   subType: string | null;
-  cityId: string | null;
+  settlementId: string | null;
   stateId: string;
   ownerId: string;
   ownerType: PropertyOwnerType;
+  ownerName?: string;
   isForSale: boolean;
   price: number | null;
   createdAt: string;
@@ -195,9 +196,20 @@ export interface IProperty {
   photoUrls?: string[];
   parentPropertyId?: string;
   streetId?: string;
-  street?: { id: string; name: string };
   houseNumber?: string;
   area?: number;
+  territoryId?: string;
+  forSaleToId?: string;
+  
+  // Relations
+  state?: { id: string; name: string };
+  settlement?: { id: string; name: string };
+  street?: { id: string; name: string };
+}
+
+export interface IEligibleBuyer {
+  uuid: string;
+  username: string;
 }
 
 export interface CreatePropertyRequest {
@@ -206,7 +218,7 @@ export interface CreatePropertyRequest {
   propertyCategory: PropertyCategory;
   type: string;
   subType?: string;
-  cityId?: string;
+  settlementId?: string;
   stateId: string;
   ownerId: string;
   ownerType: PropertyOwnerType;
@@ -216,6 +228,14 @@ export interface CreatePropertyRequest {
   streetId?: string;
   houseNumber?: string;
   area?: number;
+  territoryId?: string;
+}
+
+export interface UpdatePropertyRequest {
+  name?: string;
+  description?: string;
+  photoUrls?: string[];
+  territoryId?: string;
 }
 
 export interface BuyPropertyRequest {

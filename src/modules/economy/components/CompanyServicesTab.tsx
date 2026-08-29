@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useState } from 'react';
 import { ICompany, ICompanyService } from '../types/economy.types';
 import Button from '../../../shared/ui/button/button.component';
@@ -23,6 +24,8 @@ export const CompanyServicesTab: React.FC<CompanyServicesTabProps> = ({ company,
     try {
       const payload = JSON.parse(atob(accessToken.split('.')[1]));
       username = payload.username || payload.username_lower || '';
+ 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e: any) {
       // ignore
     }

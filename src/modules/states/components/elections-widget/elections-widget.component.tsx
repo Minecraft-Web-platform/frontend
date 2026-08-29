@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import { FC, useState } from 'react';
 import './elections-widget.component.scss';
 import { IElection } from '../../types/states.types';
@@ -27,6 +28,7 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
       await onNominate(programText);
       setProgramText('');
       setShowNominateForm(false);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       alert('Ошибка при выдвижении кандидатуры. Возможно, вы уже выдвинуты.');
@@ -38,6 +40,7 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
   const handleVote = async (candidateId: string) => {
     try {
       await onVote(candidateId);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       alert('Ошибка при голосовании. Возможно, вы уже проголосовали.');

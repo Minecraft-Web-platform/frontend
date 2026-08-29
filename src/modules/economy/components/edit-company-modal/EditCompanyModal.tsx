@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useState } from 'react';
 import './EditCompanyModal.scss';
 import { ICompany } from '../../types/economy.types';
@@ -23,6 +24,7 @@ export const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ company, onC
     try {
       await onSave({ name, description, logoUrl });
       onClose();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Ошибка сохранения');
     } finally {
@@ -58,6 +60,7 @@ export const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ company, onC
               folder="economy/companies"
               label="Логотип"
               value={logoUrl}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
               onChange={(url: any) => setLogoUrl(url as string)}
             />
           </div>

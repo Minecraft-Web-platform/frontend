@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { ICompanyOrder } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
@@ -22,8 +23,9 @@ export const DisputedOrdersTab: React.FC = () => {
       const data = await economyService.getDisputedOrders();
       setOrders(data);
       setError('');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Ошибка загрузки жалоб');
+      setError((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка загрузки жалоб');
       setOrders([]);
     } finally {
       setLoading(false);
@@ -42,8 +44,9 @@ export const DisputedOrdersTab: React.FC = () => {
       alert('Вердикт успешно вынесен');
       setArbitrationComment(prev => ({ ...prev, [orderId]: '' }));
       fetchOrders();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Ошибка при вынесении вердикта');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка при вынесении вердикта');
     }
   };
 
@@ -106,6 +109,7 @@ export const DisputedOrdersTab: React.FC = () => {
                 <details open>
                   <summary>История и суть жалобы</summary>
                   <ul>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
                     {order.statusHistory.map((h: any) => (
                       <li key={h.id}>
                         <span className="date">{new Date(h.createdAt).toLocaleString()}</span>

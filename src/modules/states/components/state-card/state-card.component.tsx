@@ -10,12 +10,12 @@ interface StateCardProps {
 const StateCard: FC<StateCardProps> = ({ state }) => {
   const navigate = useNavigate();
 
-  const citiesCount = state.cities?.length || 0;
+  const settlementsCount = state.settlements?.length || 0;
   const citizensCount = state.citizens?.length || 0;
   const firstLetter = state.name ? state.name.charAt(0).toUpperCase() : 'S';
 
   const calculatePower = () => {
-    const activeCities = state.cities?.filter((c) => (c.citizens?.length || 0) >= 1).length || 0;
+    const activeSettlements = state.settlements?.filter((c) => (c.citizens?.length || 0) >= 1).length || 0;
     const taxRate = state.playerToCompanyTransferFee || 5;
     let taxCoefficient = 1.0;
     if (taxRate <= 10) {
@@ -26,7 +26,7 @@ const StateCard: FC<StateCardProps> = ({ state }) => {
       taxCoefficient = 0.85;
     }
 
-    let basePower = citizensCount * 10 + activeCities * 100;
+    let basePower = citizensCount * 10 + activeSettlements * 100;
     if (state.createdAt) {
       const ageInDays =
         (Date.now() - new Date(state.createdAt).getTime()) /
@@ -82,7 +82,7 @@ const StateCard: FC<StateCardProps> = ({ state }) => {
       <div className="state-card__footer">
         <div className="state-card__stats">
           <span className="state-card__stat">
-            🏙️ Городов: <strong>{citiesCount}</strong>
+            🏙️ Поселений: <strong>{settlementsCount}</strong>
           </span>
           <span className="state-card__stat">
             👥 Граждан: <strong>{citizensCount}</strong>

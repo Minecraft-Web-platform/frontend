@@ -2,6 +2,7 @@ import { FC } from "react";
 import "./sidebar.component.scss";
 import IconComponent from "./icon-component/icon-component.component";
 import { useTranslation } from 'react-i18next';
+import useAuthStore from "../../../store/auth.store";
 
 import NewsIcon from "../../../assets/svg/news.svg?react";
 import StateIcon from "../../../assets/svg/state.svg?react";
@@ -15,9 +16,10 @@ import { Link } from "react-router";
 
 const Sidebar: FC = () => {
   const { t } = useTranslation('navigation');
+  const isBanned = useAuthStore((state) => state.isBanned);
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isBanned ? 'sidebar--banned' : ''}`}>
       <div className="sidebar__logo-block">
         <Link to="/" style={{ textDecoration: "none" }}>
           <p>{t('heading')}</p>
@@ -25,34 +27,37 @@ const Sidebar: FC = () => {
       </div>
 
       <div className="sidebar__middle">
-        <IconComponent path="/news" label={t('buttons.news')} iconType="stroke">
-          <NewsIcon />
-        </IconComponent>
+        {!isBanned && (
+          <>
+            <IconComponent path="/news" label={t('buttons.news')} iconType="stroke">
+              <NewsIcon />
+            </IconComponent>
 
-        <IconComponent path="/states" label="Государства" iconType="fill">
-          <StateIcon />
-        </IconComponent>
+            <IconComponent path="/states" label="Государства" iconType="fill">
+              <StateIcon />
+            </IconComponent>
 
-        <IconComponent path="/calendar" label="Календарь" iconType="fill">
-          <span style={{ fontSize: '20px' }}>📅</span>
-        </IconComponent>
+            <IconComponent path="/calendar" label="Календарь" iconType="fill">
+              <span style={{ fontSize: '20px' }}>📅</span>
+            </IconComponent>
 
-        <IconComponent path="/economy" label="Экономика" iconType="fill">
-          <CompanyIcon />
-        </IconComponent>
+            <IconComponent path="/economy" label="Экономика" iconType="fill">
+              <CompanyIcon />
+            </IconComponent>
 
-        <IconComponent path="/players" label={t('buttons.players-list')} iconType="fill">
-          <PlayersIcon />
-        </IconComponent>
+            <IconComponent path="/players" label={t('buttons.players-list')} iconType="fill">
+              <PlayersIcon />
+            </IconComponent>
 
-        <IconComponent
-          path="/map"
-          label={t('buttons.world-map')}
-          iconType="fill"
-        >
-          <MapIcon />
-        </IconComponent>
-
+            <IconComponent
+              path="/map"
+              label={t('buttons.world-map')}
+              iconType="fill"
+            >
+              <MapIcon />
+            </IconComponent>
+          </>
+        )}
       </div>
 
       <div className="sidebar__bottom">

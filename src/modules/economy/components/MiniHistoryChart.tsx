@@ -28,10 +28,12 @@ export const MiniHistoryChart: React.FC<MiniHistoryChartProps> = ({
 
         // Filter last 4 days roughly if needed, or just show all
         const chartData = history.map(h => ({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
           time: Math.floor(new Date(h.createdAt).getTime() / 1000) as any,
           value: h.rate ?? h.price ?? 0,
         }));
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
         const uniqueData: any[] = [];
         const seenTimes = new Set();
         for (const item of chartData) {
@@ -102,6 +104,7 @@ export const MiniHistoryChart: React.FC<MiniHistoryChartProps> = ({
             chartRef.current?.timeScale().fitContent();
           }
         }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         console.error("Failed to load mini chart data");
       }

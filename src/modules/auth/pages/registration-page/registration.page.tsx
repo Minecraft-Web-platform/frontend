@@ -66,7 +66,8 @@ const RegistrationPage: FC = () => {
     authService
       .registrate(body)
       .then(() => setAccountIsCreated(true))
-      .catch((e: unknown) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .catch((e: any) => {
         if (e instanceof AxiosError) {
           const code = e.status || e.response?.status;
           setErrorMessage(code && errorCodes[code] ? errorCodes[code] : "Не удалось зарегистрироваться. Попробуйте еще раз.");

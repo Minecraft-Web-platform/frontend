@@ -5,7 +5,7 @@ import './MapColorPicker.scss';
 interface MapColorPickerProps {
   color: string;
   onChange: (color: string) => void;
-  mode: 'city' | 'state';
+  mode: 'settlement' | 'state';
   defaultColor?: string;
 }
 
@@ -18,6 +18,7 @@ export const MapColorPicker: React.FC<MapColorPickerProps> = ({ color, onChange,
       setInternalColor(color);
       setHexInput(color.replace('#', ''));
     }
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [color]);
 
   const handleColorChange = (newColor: string) => {
@@ -36,9 +37,9 @@ export const MapColorPicker: React.FC<MapColorPickerProps> = ({ color, onChange,
     }
   };
 
-  // Прозрачность для превью. У городов 5% заливки, у государств 2% заливки.
+  // Прозрачность для превью. У поселений 5% заливки, у государств 2% заливки.
   // Рамки всегда 100% (alpha = 1).
-  const fillOpacity = mode === 'city' ? 0.05 : 0.02;
+  const fillOpacity = mode === 'settlement' ? 0.05 : 0.02;
 
   // Конвертация HEX в rgba для стилей превью
   const getRgba = (hex: string, alpha: number) => {
@@ -63,7 +64,7 @@ export const MapColorPicker: React.FC<MapColorPickerProps> = ({ color, onChange,
         </div>
       </div>
       <div className="preview-section">
-        <label>Превью на карте (непрозрачность: {mode === 'city' ? '5%' : '2%'})</label>
+        <label>Превью на карте (непрозрачность: {mode === 'settlement' ? '5%' : '2%'})</label>
         <div className="preview-box">
           <div 
             className="map-polygon"
@@ -73,7 +74,7 @@ export const MapColorPicker: React.FC<MapColorPickerProps> = ({ color, onChange,
             }}
           />
           <div className="preview-label">
-            Пример отображения границ {mode === 'city' ? 'города' : 'государства'}
+            Пример отображения границ {mode === 'settlement' ? 'поселения' : 'государства'}
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-.city-detail-page {
+.settlement-detail-page {
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 32px;
@@ -337,19 +337,19 @@
       align-items: center;
       margin-bottom: 20px;
       
-      .city-detail-page__section-title {
+      .settlement-detail-page__section-title {
         margin-bottom: 0;
       }
     }
   }
 
-  .city-images-grid {
+  .settlement-images-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 16px;
     margin-top: 20px;
 
-    .city-image-card {
+    .settlement-image-card {
       position: relative;
       border-radius: 12px;
       overflow: hidden;
@@ -367,7 +367,7 @@
         transform: scale(1.05);
       }
 
-      .city-image-delete {
+      .settlement-image-delete {
         position: absolute;
         top: 8px;
         right: 8px;
@@ -391,7 +391,7 @@
         }
       }
 
-      &:hover .city-image-delete {
+      &:hover .settlement-image-delete {
         opacity: 1;
       }
     }

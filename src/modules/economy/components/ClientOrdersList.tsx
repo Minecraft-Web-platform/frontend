@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { ICompanyOrder, CompanyOrderStatus } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
@@ -13,6 +14,7 @@ export const ClientOrdersList: React.FC = () => {
     setLoading(true);
     economyService.getClientOrders()
       .then(res => setOrders(res))
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
       .catch(_err => setError('Не удалось загрузить ваши заказы'))
       .finally(() => setLoading(false));
   };
@@ -28,8 +30,9 @@ export const ClientOrdersList: React.FC = () => {
     try {
       await economyService.updateOrderStatus(orderId, CompanyOrderStatus.DISPUTED, comment);
       fetchOrders();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Ошибка подачи жалобы');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка подачи жалобы');
     }
   };
 
@@ -39,9 +42,10 @@ export const ClientOrdersList: React.FC = () => {
       try {
         await economyService.escalateOrder(orderId, reason);
         fetchOrders();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error(err);
-        alert(err.response?.data?.message || 'Не удалось эскалировать жалобу');
+        alert((err as AxiosError<{message?: string}>).response?.data?.message || 'Не удалось эскалировать жалобу');
       }
     }
   };
@@ -73,6 +77,7 @@ export const ClientOrdersList: React.FC = () => {
                 <div className="order-items">
                   <strong>Выбранные подуслуги:</strong>
                   <ul>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
                     {order.items.map((item: any) => (
                       <li key={item.id}>{item.name} (+{item.price})</li>
                     ))}
@@ -100,6 +105,7 @@ export const ClientOrdersList: React.FC = () => {
                 <details>
                   <summary>История статусов</summary>
                   <ul>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
                     {order.statusHistory.map((h: any) => (
                       <li key={h.id}>
                         <span className="date">{new Date(h.createdAt).toLocaleString()}</span>

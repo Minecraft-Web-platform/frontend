@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import { FC, useEffect, useState } from 'react';
 import './states-list.page.scss';
 import { IState } from '../../types/states.types';
@@ -32,6 +33,7 @@ const StatesListPage: FC = () => {
     try {
       const data = await statesService.getStates();
       setStates(data);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
     } finally {
@@ -69,6 +71,7 @@ const StatesListPage: FC = () => {
       setColor('');
       setShowCreateModal(false);
       await loadStates();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       alert('Ошибка при создании государства');
@@ -146,7 +149,7 @@ const StatesListPage: FC = () => {
                   <div className="states-list-page__tooltip-wrapper">
                     <span className="states-list-page__tooltip-icon">?</span>
                     <div className="states-list-page__tooltip-content">
-                      Основание государства позволяет объединять города, 
+                      Основание государства позволяет объединять поселения, 
                       устанавливать налоги и развивать общую экономику.
                     </div>
                   </div>
@@ -179,6 +182,7 @@ const StatesListPage: FC = () => {
                             folder="states/flags"
                             label="Флаг (опционально)"
                             value={flagUrl}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
                             onChange={(url: any) => setFlagUrl(url as string)}
                           />
                         </div>
@@ -187,6 +191,7 @@ const StatesListPage: FC = () => {
                             folder="states/coats"
                             label="Герб (опционально)"
                             value={coatOfArmsUrl}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
                             onChange={(url: any) => setCoatOfArmsUrl(url as string)}
                           />
                         </div>

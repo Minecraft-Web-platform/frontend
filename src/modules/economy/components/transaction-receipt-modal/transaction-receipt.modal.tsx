@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import { FC, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -44,6 +45,7 @@ export const TransactionReceiptModal: FC<Props> = ({ transaction, currencies, on
       
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`receipt-${transaction.id.substring(0, 8)}.pdf`);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Failed to generate PDF', err);
     } finally {

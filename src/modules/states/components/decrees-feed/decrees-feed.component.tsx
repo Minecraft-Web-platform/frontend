@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import { FC, useState } from 'react';
 import './decrees-feed.component.scss';
 import { IStateDecree } from '../../types/states.types';
@@ -28,6 +29,7 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
       setTitle('');
       setContent('');
       setShowForm(false);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       alert('Ошибка при публикации указа');

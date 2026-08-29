@@ -31,7 +31,8 @@ const EmailConfirmationPage: FC = () => {
     authService
       .initEmailConfirmation({ email }, accessToken as string)
       .then(() => setStep("code-providing"))
-      .catch((e: unknown) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .catch((e: any) => {
         if (e instanceof AxiosError) {
           setErrorMessage(e.response?.data?.message || "Не удалось отправить код. Проверьте почту.");
         } else {
@@ -47,7 +48,8 @@ const EmailConfirmationPage: FC = () => {
     authService
       .confirmEmail({ confirmationCode: code }, accessToken as string)
       .then(() => setStep("done"))
-      .catch((e: unknown) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .catch((e: any) => {
         if (e instanceof AxiosError) {
           setErrorMessage(e.response?.data?.message || "Неверный код или срок его действия истёк.");
         } else {

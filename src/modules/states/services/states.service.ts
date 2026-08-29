@@ -2,9 +2,10 @@ import { EnhancedWithAuthHttpService } from '../../../shared/services/http-auth.
 import { httpFactoryService } from '../../../shared/services/http-factory.service';
 import {
   ICitizenshipRequest,
-  ICity,
+  ISettlement,
+  ISettlementType,
   ICreateCitizenshipRequest,
-  ICreateCityRequest,
+  ICreateSettlementRequest,
   ICreateDecreeRequest,
   ICreateElectionRequest,
   ICreateStateRequest,
@@ -70,66 +71,79 @@ export class StatesService {
     return this.httpService.put(`states/${stateId}/diplomacy`, data);
   }
 
-  // --- Cities ---
-  public async getCities(stateId?: string): Promise<ICity[]> {
-    const url = stateId ? `cities?stateId=${stateId}` : 'cities';
+  // --- Settlements ---
+  public async getSettlements(stateId?: string): Promise<ISettlement[]> {
+    const url = stateId ? `settlements?stateId=${stateId}` : 'settlements';
     return this.httpService.get(url);
   }
 
-  public async getCityById(id: string): Promise<ICity> {
-    return this.httpService.get(`cities/${id}`);
+  public async getSettlementById(id: string): Promise<ISettlement> {
+    return this.httpService.get(`settlements/${id}`);
   }
 
-  public async createCity(data: ICreateCityRequest): Promise<ICity> {
-    return this.httpService.post('cities', data);
+  public async createSettlement(data: ICreateSettlementRequest): Promise<ISettlement> {
+    return this.httpService.post('settlements', data);
   }
 
-  public async updateCity(id: string, data: Partial<ICreateCityRequest>): Promise<ICity> {
-    return this.httpService.put(`cities/${id}`, data);
+  public async updateSettlement(id: string, data: Partial<ICreateSettlementRequest>): Promise<ISettlement> {
+    return this.httpService.put(`settlements/${id}`, data);
   }
 
-  public async deleteCity(id: string): Promise<void> {
-    return this.httpService.delete(`cities/${id}`);
+  public async deleteSettlement(id: string): Promise<void> {
+    return this.httpService.delete(`settlements/${id}`);
   }
 
   public async resignMayor(id: string): Promise<void> {
-    return this.httpService.post(`cities/${id}/resign`, {});
+    return this.httpService.post(`settlements/${id}/resign`, {});
   }
 
-  public async setCapital(cityId: string): Promise<ICity> {
-    return this.httpService.post(`cities/${cityId}/capital`, {});
+  public async setCapital(settlementId: string): Promise<ISettlement> {
+    return this.httpService.post(`settlements/${settlementId}/capital`, {});
   }
 
-  public async addCityImage(cityId: string, imageUrl: string): Promise<ICity> {
-    return this.httpService.post(`cities/${cityId}/images`, { imageUrl });
+  public async addSettlementImage(settlementId: string, imageUrl: string): Promise<ISettlement> {
+    return this.httpService.post(`settlements/${settlementId}/images`, { imageUrl });
   }
 
-  public async removeCityImage(cityId: string, imageUrl: string): Promise<ICity> {
+  public async removeSettlementImage(settlementId: string, imageUrl: string): Promise<ISettlement> {
     // Axios DELETE with body requires passing data in config.
     // EnhancedWithAuthHttpService might just use standard Axios config.
     // If it's a simple wrapper, we can pass it as data.
-    return this.httpService.delete(`cities/${cityId}/images`, { data: { imageUrl } });
+    return this.httpService.delete(`settlements/${settlementId}/images`, { data: { imageUrl } });
+  }
+
+  // --- Settlement Types ---
+  public async getSettlementTypes(all = false): Promise<ISettlementType[]> {
+    return this.httpService.get(`settlements/types${all ? '?all=true' : ''}`);
+  }
+
+  public async proposeSettlementType(name: string): Promise<ISettlementType> {
+    return this.httpService.post('settlements/types', { name });
+  }
+
+  public async moderateSettlementType(id: string, isApproved: boolean): Promise<ISettlementType> {
+    return this.httpService.put(`settlements/types/${id}/moderate`, { isApproved });
   }
 
   // --- Citizenship Requests ---
-  public async getRequests(cityId: string): Promise<ICitizenshipRequest[]> {
-    return this.httpService.get(`cities/${cityId}/requests`);
+  public async getRequests(settlementId: string): Promise<ICitizenshipRequest[]> {
+    return this.httpService.get(`settlements/${settlementId}/requests`);
   }
 
-  public async createRequest(cityId: string, data: ICreateCitizenshipRequest): Promise<ICitizenshipRequest> {
-    return this.httpService.post(`cities/${cityId}/requests`, data);
+  public async createRequest(settlementId: string, data: ICreateCitizenshipRequest): Promise<ICitizenshipRequest> {
+    return this.httpService.post(`settlements/${settlementId}/requests`, data);
   }
 
   public async reviewRequest(
-    cityId: string,
+    settlementId: string,
     requestId: string,
     data: IReviewCitizenshipRequest,
   ): Promise<ICitizenshipRequest> {
-    return this.httpService.put(`cities/${cityId}/requests/${requestId}`, data);
+    return this.httpService.put(`settlements/${settlementId}/requests/${requestId}`, data);
   }
 
-  public async leaveCity(cityId: string): Promise<{ success: boolean; message: string }> {
-    return this.httpService.post(`cities/${cityId}/leave`, {});
+  public async leaveSettlement(settlementId: string): Promise<{ success: boolean; message: string }> {
+    return this.httpService.post(`settlements/${settlementId}/leave`, {});
   }
 
   // --- Elections ---
@@ -161,15 +175,18 @@ export class StatesService {
   }
 
   // --- National Bank ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async createNationalBank(stateId: string, data: { name?: string }): Promise<any> {
     return this.httpService.post(`states/${stateId}/bank`, data);
   }
 
   // --- Treasury ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async getStateTreasury(stateId: string): Promise<any[]> {
     return this.httpService.get(`states/${stateId}/treasury`);
   }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async digitizeTreasury(stateId: string): Promise<{ message: string; items: any[] }> {
     return this.httpService.post(`states/${stateId}/treasury/digitize`, {});
   }
@@ -177,23 +194,24 @@ export class StatesService {
 
 
   // --- Streets ---
-  async getStreets(cityId: string): Promise<IStreet[]> {
-    return this.httpService.get<IStreet[]>(`cities/${cityId}/streets`);
+  async getStreets(settlementId: string): Promise<IStreet[]> {
+    return this.httpService.get<IStreet[]>(`settlements/${settlementId}/streets`);
   }
 
-  async createStreet(cityId: string, name: string): Promise<IStreet> {
-    return this.httpService.post<IStreet, { name: string }>(`cities/${cityId}/streets`, { name });
+  async createStreet(settlementId: string, name: string): Promise<IStreet> {
+    return this.httpService.post<IStreet, { name: string }>(`settlements/${settlementId}/streets`, { name });
   }
 
-  async updateStreet(cityId: string, streetId: string, name: string): Promise<IStreet> {
-    return this.httpService.put<IStreet, { name: string }>(`cities/${cityId}/streets/${streetId}`, { name });
+  async updateStreet(settlementId: string, streetId: string, name: string): Promise<IStreet> {
+    return this.httpService.put<IStreet, { name: string }>(`settlements/${settlementId}/streets/${streetId}`, { name });
   }
 
-  async deleteStreet(cityId: string, streetId: string): Promise<void> {
-    await this.httpService.delete(`cities/${cityId}/streets/${streetId}`);
+  async deleteStreet(settlementId: string, streetId: string): Promise<void> {
+    await this.httpService.delete(`settlements/${settlementId}/streets/${streetId}`);
   }
 
   // --- Territories ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getTerritories(): Promise<any[]> {
     return this.httpService.get(`territories`);
   }
@@ -202,6 +220,7 @@ export class StatesService {
     return this.httpService.delete(`territories/${territoryId}`);
   }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   async toggleTerritoryVisibility(territoryId: string, isHiddenOnMap: boolean): Promise<any> {
     return this.httpService.patch(`territories/${territoryId}/visibility`, { isHiddenOnMap });
   }

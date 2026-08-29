@@ -40,7 +40,7 @@ export const useMyCompanies = () => {
     try {
       const payload = JSON.parse(atob(accessToken.split('.')[1]));
       currentUsername = payload.username_lower || '';
-    } catch (e: any) {}
+    } catch { /* empty */ }
   }
   return useSWR(
     currentUsername ? ECONOMY_KEYS.myCompanies(currentUsername) : null,
@@ -70,4 +70,8 @@ export const useMyProperties = () => {
 
 export const useMarketProperties = () => {
   return useSWR('economy/properties/market', () => economyService.getMarketProperties());
+};
+
+export const useProperty = (id: string | undefined) => {
+  return useSWR(id ? `economy/property/${id}` : null, () => economyService.getPropertyById(id!));
 };

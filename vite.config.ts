@@ -11,7 +11,7 @@ export default defineConfig({
         target: 'http://backend:5000/territories/bluemap-markers',
         changeOrigin: true,
         rewrite: (path) => {
-          const mapMatch = path.match(/\/maps\/([^\/]+)/);
+          const mapMatch = path.match(/\/maps\/([^/]+)/);
           const mapName = mapMatch ? mapMatch[1] : 'world';
           return `?map=${mapName}`;
         }

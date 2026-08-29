@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import { FC, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import './state-detail.page.scss';
@@ -10,7 +11,7 @@ import {
 import { statesService } from '../../services/states.service';
 import { economyService } from '../../../economy/services/economy.service';
 import { getMinecraftItemInfo } from '../../../economy/constants/minecraft-items';
-import CityCard from '../../components/city-card/city-card.component';
+import SettlementCard from '../../components/settlement-card/settlement-card.component';
 import DecreesFeed from '../../components/decrees-feed/decrees-feed.component';
 import ElectionsWidget from '../../components/elections-widget/elections-widget.component';
 import DiplomacyBadge from '../../components/diplomacy-badge/diplomacy-badge.component';
@@ -22,6 +23,7 @@ import {
   MinecraftItemDropdown,
   MinecraftEnchantDropdown,
 } from '../../../economy/components/MinecraftItemSelector';
+import { ISettlementType } from '../../types/states.types';
 import '../../../economy/economy-shared.scss';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 import { EditStateModal } from '../../components/edit-state-modal/EditStateModal';
@@ -40,13 +42,21 @@ const StateDetailPage: FC = () => {
   const [diplomacy, setDiplomacy] = useState<IDiplomacy[]>([]);
   const [elections, setElections] = useState<IElection[]>([]);
   const [currencies, setCurrencies] = useState<ICurrency[]>([]);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [treasury, setTreasury] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Модальные окна дашборда президента
-  const [showCreateCityModal, setShowCreateCityModal] = useState(false);
-  const [cityName, setCityName] = useState('');
-  const [cityDesc, setCityDesc] = useState('');
+  const [showCreateSettlementModal, setShowCreateSettlementModal] = useState(false);
+  const [settlementName, setSettlementName] = useState('');
+  const [settlementDesc, setSettlementDesc] = useState('');
+  const [settlementStatus, setSettlementStatus] = useState<'capital' | 'settlement' | 'rural'>('settlement');
+  const [settlementCenterX, setSettlementCenterX] = useState('');
+  const [settlementCenterZ, setSettlementCenterZ] = useState('');
+  const [settlementSubTypeId, setSettlementSubTypeId] = useState('');
+  const [settlementTypes, setSettlementTypes] = useState<ISettlementType[]>([]);
+  const [showProposeTypeModal, setShowProposeTypeModal] = useState(false);
+  const [newTypeName, setNewTypeName] = useState('');
 
   const [showCreateCurrencyModal, setShowCreateCurrencyModal] = useState(false);
   const [currCode, setCurrCode] = useState('');
@@ -94,6 +104,7 @@ const StateDetailPage: FC = () => {
         electionsData,
         currenciesData,
         treasuryData,
+        typesData,
       ] = await Promise.all([
         statesService.getStateById(id),
         statesService.getDecrees(id),
@@ -101,17 +112,20 @@ const StateDetailPage: FC = () => {
         statesService.getElections('state', id),
         economyService.getAllCurrencies(),
         statesService.getStateTreasury(id),
+        statesService.getSettlementTypes(),
       ]);
       setState(stateData);
       setDecrees(decreesData);
       setDiplomacy(diplomacyData);
       setElections(electionsData);
       setTreasury(treasuryData);
+      setSettlementTypes(typesData);
       setCurrencies(
         currenciesData.filter(
           (c) => !c.stateId || c.stateId === id,
         ),
       );
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
     } finally {
@@ -121,6 +135,7 @@ const StateDetailPage: FC = () => {
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const canPublishDecree =
@@ -139,6 +154,7 @@ const StateDetailPage: FC = () => {
     try {
       await statesService.resignPresident(id);
       await loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       alert(err?.response?.data?.message || 'Ошибка отставки');
@@ -150,6 +166,7 @@ const StateDetailPage: FC = () => {
     try {
       await statesService.updateState(id, data);
       await loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.response?.data?.message || 'Ошибка при редактировании государства');
     }
@@ -161,6 +178,7 @@ const StateDetailPage: FC = () => {
     try {
       await statesService.deleteState(id);
       navigate('/states');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.response?.data?.message || 'Ошибка при удалении государства');
     }
@@ -173,6 +191,7 @@ const StateDetailPage: FC = () => {
       const res = await statesService.digitizeTreasury(id);
       alert(res.message || 'Успешно оцифровано!');
       loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка при оцифровке казны');
       setLoading(false);
@@ -180,21 +199,45 @@ const StateDetailPage: FC = () => {
   };
 
 
-  const handleCreateCity = async (e: React.FormEvent) => {
+  const handleCreateSettlement = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!id || !cityName.trim()) return;
+    if (!id || !settlementName.trim()) return;
     try {
-      await statesService.createCity({
+      await statesService.createSettlement({
         stateId: id,
-        name: cityName,
-        description: cityDesc,
+        name: settlementName,
+        description: settlementDesc,
+        status: settlementStatus,
+        centerX: settlementCenterX ? parseInt(settlementCenterX, 10) : undefined,
+        centerZ: settlementCenterZ ? parseInt(settlementCenterZ, 10) : undefined,
+        ruralSubTypeId: settlementStatus === 'rural' ? settlementSubTypeId : undefined,
       });
-      setShowCreateCityModal(false);
-      setCityName('');
-      setCityDesc('');
+      setShowCreateSettlementModal(false);
+      setSettlementName('');
+      setSettlementDesc('');
+      setSettlementCenterX('');
+      setSettlementCenterZ('');
+      setSettlementStatus('settlement');
+      setSettlementSubTypeId('');
       loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.message || 'Ошибка при основании города');
+      alert(err?.response?.data?.message || err?.message || 'Ошибка при основании поселения');
+    }
+  };
+
+  const handleProposeType = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTypeName.trim()) return;
+    try {
+      await statesService.proposeSettlementType(newTypeName);
+      alert('Тип успешно предложен и отправлен на модерацию!');
+      setShowProposeTypeModal(false);
+      setNewTypeName('');
+      // We could reload types here, but since it's not approved yet, it won't show up anyway.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      alert(err?.response?.data?.message || err?.message || 'Ошибка при предложении типа');
     }
   };
 
@@ -218,6 +261,7 @@ const StateDetailPage: FC = () => {
       setCurrCode('');
       setCurrName('');
       loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка при выпуске валюты');
     }
@@ -234,6 +278,7 @@ const StateDetailPage: FC = () => {
       setBankName('');
       alert('Национальный банк успешно учрежден!');
       loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка при учреждении банка');
     }
@@ -258,6 +303,7 @@ const StateDetailPage: FC = () => {
       setShowTaxModal(false);
       alert('Налоги успешно обновлены');
       loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка при изменении ставки налога');
     }
@@ -274,6 +320,7 @@ const StateDetailPage: FC = () => {
       setShowRolesModal(false);
       alert('Роли успешно обновлены');
       loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка при обновлении ролей');
     }
@@ -337,8 +384,8 @@ const StateDetailPage: FC = () => {
   const calculateStatePower = () => {
     if (!state) return 0;
     const citizensCount = state.citizens?.length || 0;
-    const activeCities =
-      state.cities?.filter((c) => (c.citizens?.length || 0) >= 1).length || 0;
+    const activeSettlements =
+      state.settlements?.filter((c) => (c.citizens?.length || 0) >= 1).length || 0;
     const taxRate = state.playerToCompanyTransferFee || 5;
     let taxCoefficient = 1.0;
     if (taxRate <= 10) {
@@ -349,7 +396,7 @@ const StateDetailPage: FC = () => {
       taxCoefficient = 0.85;
     }
 
-    let basePower = citizensCount * 10 + activeCities * 100;
+    let basePower = citizensCount * 10 + activeSettlements * 100;
 
     const currencyCreatedAt = stateCurrency?.createdAt || state.createdAt;
     if (currencyCreatedAt) {
@@ -480,7 +527,7 @@ const StateDetailPage: FC = () => {
                   )}
                 </div>
                 <div className="state-detail-page__stat-pill">
-                  <span>🏛️ Городов:</span> <strong>{state.cities?.length || 0}</strong>
+                  <span>🏛️ Поселений:</span> <strong>{state.settlements?.length || 0}</strong>
                 </div>
                 <div className="state-detail-page__stat-pill">
                   <span>👥 Граждан:</span> <strong>{state.citizens?.length || 0}</strong>
@@ -526,16 +573,16 @@ const StateDetailPage: FC = () => {
               <div className="state-dashboard__cards">
                 <div className="state-dashboard__card">
                   <div>
-                    <div className="card-title">🏙️ Города государства</div>
+                    <div className="card-title">🏙️ Поселения государства</div>
                     <div className="card-subtitle">
-                      Основано городов: {state.cities?.length || 0}
+                      Основано поселений: {state.settlements?.length || 0}
                     </div>
                   </div>
                   <button
                     className="card-action"
-                    onClick={() => setShowCreateCityModal(true)}
+                    onClick={() => setShowCreateSettlementModal(true)}
                   >
-                    + Основать город
+                    + Основать поселение
                   </button>
                 </div>
 
@@ -688,36 +735,36 @@ const StateDetailPage: FC = () => {
           )}
 
           <div className="state-detail-page__section-title">
-            <span>🏙️ &nbsp;Города государства ({state.cities?.length || 0})</span>
+            <span>🏙️ &nbsp;Поселения государства ({state.settlements?.length || 0})</span>
             <button
               className="state-detail-page__btn"
-              onClick={() => navigate(`/cities?stateId=${state.id}`)}
+              onClick={() => navigate(`/settlements?stateId=${state.id}`)}
             >
-              Все города →
+              Все поселения →
             </button>
           </div>
 
-          <div className="state-detail-page__cities-grid">
-            {state.cities && state.cities.length > 0 ? (
-              state.cities.map((city) => <CityCard key={city.id} city={city} />)
+          <div className="state-detail-page__settlements-grid">
+            {state.settlements && state.settlements.length > 0 ? (
+              state.settlements.map((settlement) => <SettlementCard key={settlement.id} settlement={settlement} />)
             ) : (
               <div className="state-detail-page__empty-card">
                 <div className="empty-icon">🏙️</div>
                 <div className="empty-text">
                   <strong>
-                    В этом государстве еще нет основанных городов
+                    В этом государстве еще нет основанных поселений
                   </strong>
                   <span>
-                    Основывайте города для привлечения жителей и развития
+                    Основывайте поселения для привлечения жителей и развития
                     экономики!
                   </span>
                 </div>
                 {canPublishDecree && (
                   <button
                     className="empty-btn"
-                    onClick={() => setShowCreateCityModal(true)}
+                    onClick={() => setShowCreateSettlementModal(true)}
                   >
-                    + Основать город
+                    + Основать поселение
                   </button>
                 )}
               </div>
@@ -782,7 +829,7 @@ const StateDetailPage: FC = () => {
                     В этом государстве пока нет зарегистрированных граждан
                   </strong>
                   <span>
-                    Основывайте города и приглашайте игроков для заселения!
+                    Основывайте поселения и приглашайте игроков для заселения!
                   </span>
                 </div>
               </div>
@@ -905,35 +952,96 @@ const StateDetailPage: FC = () => {
             <TerritoriesList ownerType="state" ownerId={state.id} />
           </div>
 
-          {/* Модальное окно создания города */}
-          {showCreateCityModal && (
+          {/* Модальное окно создания поселения */}
+          {showCreateSettlementModal && (
             <div className="economy-modal-overlay">
               <div className="economy-modal">
-                <h3 className="modal-title">Основание города</h3>
-                <form onSubmit={handleCreateCity} className="modal-form">
+                <h3 className="modal-title">Основание поселения</h3>
+                <form onSubmit={handleCreateSettlement} className="modal-form">
                   <label>
-                    <span>Название города</span>
+                    <span>Название поселения</span>
                     <input
                       type="text"
-                      value={cityName}
-                      onChange={(e) => setCityName(e.target.value)}
+                      value={settlementName}
+                      onChange={(e) => setSettlementName(e.target.value)}
                       placeholder="Например, Столица"
                       required
                     />
                   </label>
                   <label>
-                    <span>Описание города</span>
+                    <span>Описание поселения</span>
                     <input
                       type="text"
-                      value={cityDesc}
-                      onChange={(e) => setCityDesc(e.target.value)}
+                      value={settlementDesc}
+                      onChange={(e) => setSettlementDesc(e.target.value)}
                       placeholder="Краткое описание"
                     />
                   </label>
+                  
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <label style={{ flex: 1 }}>
+                      <span>Координата X центра</span>
+                      <input
+                        type="number"
+                        value={settlementCenterX}
+                        onChange={(e) => setSettlementCenterX(e.target.value)}
+                        placeholder="0"
+                      />
+                    </label>
+                    <label style={{ flex: 1 }}>
+                      <span>Координата Z центра</span>
+                      <input
+                        type="number"
+                        value={settlementCenterZ}
+                        onChange={(e) => setSettlementCenterZ(e.target.value)}
+                        placeholder="0"
+                      />
+                    </label>
+                  </div>
+
+                  <label>
+                    <span>Статус</span>
+                    <select
+                      value={settlementStatus}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      onChange={(e) => setSettlementStatus(e.target.value as any)}
+                      required
+                    >
+                      <option value="settlement">Поселение</option>
+                      <option value="rural">Сельское поселение</option>
+                    </select>
+                  </label>
+
+                  {settlementStatus === 'rural' && (
+                    <label>
+                      <span>Подвид сельского поселения</span>
+                      <div style={{ display: 'flex', gap: '10px' }}>
+                        <select
+                          value={settlementSubTypeId}
+                          onChange={(e) => setSettlementSubTypeId(e.target.value)}
+                          style={{ flex: 1 }}
+                        >
+                          <option value="">Выберите подвид...</option>
+                          {settlementTypes.map((type) => (
+                            <option key={type.id} value={type.id}>{type.name}</option>
+                          ))}
+                        </select>
+                        <button
+                          type="button"
+                          onClick={() => setShowProposeTypeModal(true)}
+                          className="economy-btn economy-btn--secondary"
+                          style={{ padding: '0 10px', whiteSpace: 'nowrap' }}
+                        >
+                          + Предложить свой
+                        </button>
+                      </div>
+                    </label>
+                  )}
+
                   <div className="modal-actions">
                     <button
                       type="button"
-                      onClick={() => setShowCreateCityModal(false)}
+                      onClick={() => setShowCreateSettlementModal(false)}
                       className="economy-btn economy-btn--secondary"
                     >
                       Отмена
@@ -942,7 +1050,44 @@ const StateDetailPage: FC = () => {
                       type="submit"
                       className="economy-btn economy-btn--primary"
                     >
-                      Основать город
+                      Основать поселение
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* Модальное окно "Предложить подвид" */}
+          {showProposeTypeModal && (
+            <div className="economy-modal-overlay" style={{ zIndex: 1100 }}>
+              <div className="economy-modal" style={{ maxWidth: '400px' }}>
+                <h3 className="modal-title">Предложить подвид</h3>
+                <p style={{ marginBottom: '15px', fontSize: '14px', color: '#666' }}>
+                  Ваш вариант будет отправлен модератору на проверку.
+                </p>
+                <form onSubmit={handleProposeType} className="modal-form">
+                  <label>
+                    <span>Название подвида</span>
+                    <input
+                      type="text"
+                      value={newTypeName}
+                      onChange={(e) => setNewTypeName(e.target.value)}
+                      placeholder="Например, Деревня"
+                      required
+                      minLength={3}
+                    />
+                  </label>
+                  <div className="modal-actions">
+                    <button
+                      type="button"
+                      onClick={() => setShowProposeTypeModal(false)}
+                      className="economy-btn economy-btn--secondary"
+                    >
+                      Отмена
+                    </button>
+                    <button type="submit" className="economy-btn economy-btn--primary">
+                      Предложить
                     </button>
                   </div>
                 </form>

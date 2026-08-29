@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useState, useEffect } from 'react';
 import { IAccount } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
@@ -45,6 +46,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
         description: transferComment || undefined,
       });
       onSuccess();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка перевода средств');
     } finally {

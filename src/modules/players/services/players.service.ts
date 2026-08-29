@@ -18,6 +18,14 @@ class PlayersService {
   public async getOnlinePlayers(): Promise<GetOnlinePlayersResponse> {
     return this.httpService.get<GetOnlinePlayersResponse>("server/players");
   }
+
+  public async banUser(username: string, reason: string): Promise<PlayerType> {
+    return this.httpService.post<PlayerType, { reason: string }>(`users/${username}/ban`, { reason });
+  }
+
+  public async unbanUser(username: string): Promise<PlayerType> {
+    return this.httpService.post<PlayerType, Record<string, never>>(`users/${username}/unban`, {});
+  }
 }
 
 export const playersService = new PlayersService(

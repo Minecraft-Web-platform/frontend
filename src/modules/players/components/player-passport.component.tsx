@@ -62,8 +62,8 @@ const PlayerPassportComponent = ({ player }: PlayerPassportProps) => {
             {player.citizenshipName || player.stateName || "-"}
           </p>
           <p>
-            <span className="label">Город:</span>{" "}
-            {player.cityName || "-"}
+            <span className="label">Поселение:</span>{" "}
+            {player.settlementName || "-"}
           </p>
           <p>
             <span className="label">Улица:</span> -

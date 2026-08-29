@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { useEffect, useState, ReactNode } from 'react';
 import useAuthStore from '../../../store/auth.store';
 import { IAchievement } from '../../../modules/achievements/types/achievements.types';
 import { playAchievementSound } from '../../utils/audio.utils';
@@ -6,11 +6,7 @@ import './global-toast.scss';
 
 const SERVER_URL = import.meta.env.VITE_BACKEND_URL;
 
-interface ToastContextType {}
 
-const ToastContext = createContext<ToastContextType>({});
-
-export const useToast = () => useContext(ToastContext);
 
 interface ToastItem {
   id: string;
@@ -69,7 +65,7 @@ export const GlobalToastProvider: React.FC<{ children: ReactNode }> = ({ childre
   }, [accessToken]);
 
   return (
-    <ToastContext.Provider value={{}}>
+    <>
       {children}
       <div className="toast-container">
         {toasts.map((toast) => {
@@ -97,6 +93,6 @@ export const GlobalToastProvider: React.FC<{ children: ReactNode }> = ({ childre
           );
         })}
       </div>
-    </ToastContext.Provider>
+    </>
   );
 };

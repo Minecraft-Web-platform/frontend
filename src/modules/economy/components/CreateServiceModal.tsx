@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import React, { useState } from 'react';
 import { economyService } from '../services/economy.service';
 import Button from '../../../shared/ui/button/button.component';
@@ -35,8 +36,10 @@ export const CreateServiceModal: React.FC<CreateServiceModalProps> = ({ companyI
     setSubItems([...subItems, { name: '', description: '', price: 0, photoUrls: [] }]);
   };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSubItemChange = (index: number, field: string, value: any) => {
     const updated = [...subItems];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     (updated[index] as any)[field] = value;
     setSubItems(updated);
   };
@@ -74,8 +77,9 @@ export const CreateServiceModal: React.FC<CreateServiceModalProps> = ({ companyI
         await economyService.createCompanyService(companyId, payload);
       }
       onSuccess();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || `Ошибка при ${editService ? 'редактировании' : 'создании'} услуги`);
+      setError((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || `Ошибка при ${editService ? 'редактировании' : 'создании'} услуги`);
     } finally {
       setLoading(false);
     }

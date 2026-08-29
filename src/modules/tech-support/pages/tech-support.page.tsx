@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import { FC, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { profileService } from "../../profile/services/profile.service";
@@ -9,6 +10,8 @@ import Button from "../../../shared/ui/button/button.component";
 import { techSupportService } from "../services/tech-support.service";
 import { Ticket } from "../types/ticket.type";
 import { PropagateLoader } from "react-spinners";
+import { statesService } from "../../states/services/states.service";
+import { ISettlementType } from "../../states/types/states.types";
 
 const faqs = [
   {
@@ -21,11 +24,23 @@ const faqs = [
   },
   {
     q: "Как стать гражданином?",
-    a: "Для получения гражданства вам необходимо обратиться к мэру любого города или напрямую к президенту государства. Найти список государств и их лидеров можно на вкладке «Государства» в левом меню."
+    a: "Для получения гражданства вам необходимо обратиться к мэру любого поселения или напрямую к президенту государства. Найти список государств и их лидеров можно на вкладке «Государства» в левом меню."
   },
   {
     q: "Как работает национальная валюта?",
     a: "Национальная валюта выпускается Национальными Банками государств. Каждая валюта имеет свой физический эквивалент — монеты из мода Create Deco (медные, цинковые, золотые). Курс валюты является плавающим и зависит от реального обеспечения ресурсами (алмазами, незеритом) в государственной казне."
+  },
+  {
+    q: "Как создать свою компанию?",
+    a: "Перейдите в раздел «Экономика», откройте вкладку со списком компаний и нажмите «Создать компанию». Заполните форму, указав название, юридический адрес (ваше государство) и первоначальный бюджет."
+  },
+  {
+    q: "Как торговать акциями на бирже?",
+    a: "Каждая публичная компания выпускает акции. Вы можете покупать их в разделе «Фондовая биржа», отслеживая графики изменения цен. Акции можно перепродавать другим игрокам или получать по ним дивиденды, если компания решит их выплатить."
+  },
+  {
+    q: "Зачем нужны достижения?",
+    a: "Достижения (ачивки) выдаются за вашу активность на сервере и на сайте. Они отображаются в вашем публичном профиле и повышают ваш престиж в глазах других игроков. Некоторые редкие достижения могут давать уникальные статусы."
   },
   {
     q: "Какой функционал мода Treasury?",
@@ -54,6 +69,18 @@ const faqs = [
   {
     q: "Я нашел баг или уязвимость (дюп)",
     a: "Ни в коем случае не используйте баги в корыстных целях! Пожалуйста, подробно опишите уязвимость в форме обращения. За репорт критических багов и дюпов предусмотрены эксклюзивные внутриигровые награды и достижения."
+  },
+  {
+    q: "В чем разница между городом, столицей и сельским поселением?",
+    a: "Столица — главный населенный пункт государства, в котором расположена резиденция президента (в государстве может быть только одна столица). Город — крупный самостоятельный населенный пункт. Сельское поселение — небольшое поселение (деревня, хутор и т.д.), для которого при основании можно выбрать специальный подвид."
+  },
+  {
+    q: "Как изменить статус поселения на Столицу?",
+    a: "Назначить столицу может только лидер (президент) государства. Для этого перейдите на страницу нужного города или сельского поселения в вашем государстве и нажмите кнопку «Сделать столицей»."
+  },
+  {
+    q: "Как добавить свой подвид сельского поселения?",
+    a: "Если при основании сельского поселения вы не нашли подходящего подвида в списке (например, вы строите «Аул» или «Форт»), нажмите кнопку «+ Предложить свой». Напишите название, и оно отправится на модерацию. Как только администратор одобрит вашу заявку, этот подвид станет доступен всем игрокам сервера!"
   }
 ];
 
@@ -70,13 +97,27 @@ const TechSupportPage: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [pendingTypes, setPendingTypes] = useState<ISettlementType[]>([]);
+
+  const loadPendingTypes = () => {
+    statesService.getSettlementTypes(true)
+      .then(types => setPendingTypes(types.filter(t => !t.isApproved)))
+      .catch(console.error);
+  };
+
   useEffect(() => {
     profileService
       .getInfoAboutMe()
-      .then((res) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .then((res: any) => {
         setUsername(res.username);
         setEmail(res.email);
         setEmailIsConfirmed(res.emailIsConfirmed);
+        if (res.role === 'admin' || res.isAdmin) {
+          setIsAdmin(true);
+          loadPendingTypes();
+        }
       })
       .finally(() => setIsLoading(false));
   }, []);
@@ -104,6 +145,17 @@ const TechSupportPage: FC = () => {
       })
       .catch(() => setIsError(true))
       .finally(() => setIsSubmitting(false));
+  };
+
+  const handleModerateType = async (id: string, isApproved: boolean) => {
+    try {
+      await statesService.moderateSettlementType(id, isApproved);
+      alert(`Подвид успешно ${isApproved ? 'одобрен' : 'отклонен'}!`);
+      loadPendingTypes();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      alert(err?.response?.data?.message || err?.message || 'Ошибка модерации');
+    }
   };
 
   return (
@@ -202,7 +254,34 @@ const TechSupportPage: FC = () => {
             )}
           </div>
 
-          <div className="support-faq-card">
+          {isAdmin && (
+            <div className="support-faq-card" style={{ marginTop: '20px' }}>
+              <h2>Модерация типов поселений</h2>
+              <p style={{ marginBottom: '15px', color: '#666' }}>
+                Пользователи могут предлагать новые подвиды сельских поселений. Здесь вы можете их одобрить или отклонить.
+              </p>
+              {pendingTypes.length === 0 ? (
+                <p>Нет ожидающих модерации подвидов.</p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {pendingTypes.map((type) => (
+                    <div key={type.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: '#f9f9f9', borderRadius: '8px', border: '1px solid #ddd' }}>
+                      <div>
+                        <strong>{type.name}</strong>
+                        <div style={{ fontSize: '12px', color: '#666' }}>Предложил: {type.proposedByUsername || 'Неизвестно'}</div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '10px' }}>
+                        <Button callback={() => handleModerateType(type.id, true)} style={{ padding: '5px 15px', fontSize: '14px', background: '#22c55e' }}>Одобрить</Button>
+                        <Button callback={() => handleModerateType(type.id, false)} secondary style={{ padding: '5px 15px', fontSize: '14px', color: '#ef4444', borderColor: '#ef4444' }}>Отклонить</Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="support-faq-card" style={{ marginTop: isAdmin ? '20px' : '0' }}>
             <h2>Частые вопросы</h2>
             <div className="faq-list">
               {faqs.map((faq, idx) => (

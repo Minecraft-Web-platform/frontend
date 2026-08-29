@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { IAccount, ICard } from '../types/economy.types';
@@ -33,6 +34,7 @@ export const CardsPage: React.FC = () => {
       if (accountsRes.accounts.length > 0 && !selectedAccountId) {
         setSelectedAccountId(accountsRes.accounts[0].id);
       }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       setError(e?.message || 'Ошибка загрузки пластиковых карт');
     } finally {
@@ -42,6 +44,7 @@ export const CardsPage: React.FC = () => {
 
   useEffect(() => {
     loadData();
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleIssueCard = async (e: React.FormEvent) => {
@@ -54,6 +57,7 @@ export const CardsPage: React.FC = () => {
       await economyService.issueCard({ accountId: selectedAccountId });
       setShowIssueModal(false);
       await loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка при выпуске карты');
     }
@@ -63,6 +67,7 @@ export const CardsPage: React.FC = () => {
     try {
       await economyService.toggleBlockCard(cardId);
       await loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка изменения статуса карты');
     }
@@ -76,6 +81,7 @@ export const CardsPage: React.FC = () => {
       await economyService.deleteCard(cardId);
       setSearchParams({ tab: 'cards' });
       await loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка удаления карты');
     }

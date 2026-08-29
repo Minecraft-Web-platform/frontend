@@ -14,7 +14,7 @@ import AchievementsBlock from "../components/achievements-block/achievements-blo
 import { achievementsService } from "../../achievements/services/achievements.service";
 
 const Profile: FC = () => {
-  const { accessToken, logout, setRoleInfo } = useAuthStore();
+  const { accessToken, logout, setRoleInfo, setBanInfo } = useAuthStore();
   const navigate = useNavigate();
 
   const { data: info, isLoading: loading, mutate } = useSWR(
@@ -31,6 +31,7 @@ const Profile: FC = () => {
             data.isEconomist === true
           );
         }
+        setBanInfo(data.isBanned || false, data.banReason || null);
       },
     }
   );
@@ -56,6 +57,13 @@ const Profile: FC = () => {
               Твой личный уголок. Со временем появится больше данных здесь, а
               пока что режим аскета - любуемся, чем можно.
             </p>
+            {info?.isBanned && (
+              <div className="ban-banner">
+                <h2>Ваш аккаунт заблокирован!</h2>
+                <p>Причина: <strong>{info?.banReason || "Не указана"}</strong></p>
+                <p>Ваш доступ к функциям сайта ограничен.</p>
+              </div>
+            )}
 
             <div className="profile-content">
               <div className="left">
@@ -90,21 +98,25 @@ const Profile: FC = () => {
                   disabled
                 />
 
-                <Input
-                  value={info?.citizenshipName || info?.stateName || "Нет"}
-                  placeholder=""
-                  label="Гражданство"
-                  element="input"
-                  disabled
-                />
+                {!info?.isBanned && (
+                  <>
+                    <Input
+                      value={info?.citizenshipName || info?.stateName || "Нет"}
+                      placeholder=""
+                      label="Гражданство"
+                      element="input"
+                      disabled
+                    />
 
-                <Input
-                  value={info?.cityName || "Нет"}
-                  placeholder=""
-                  label="Город"
-                  element="input"
-                  disabled
-                />
+                    <Input
+                      value={info?.settlementName || "Нет"}
+                      placeholder=""
+                      label="Поселение"
+                      element="input"
+                      disabled
+                    />
+                  </>
+                )}
 
                 <Input
                   value={info?.lastIp || "Никогда не играл(а)"}
@@ -135,51 +147,41 @@ const Profile: FC = () => {
                   </Button>
                 </div>
 
-                {info?.stateId && (
-                  <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
-                    <div style={{ flex: 1 }}>
-                      <Input
-                        value={info.stateId.toUpperCase()}
-                        placeholder=""
-                        label="UUID (государства)"
-                        element="input"
-                        disabled
-                      />
-                    </div>
-                    <Button
-                      callback={() => {
-                        navigator.clipboard.writeText(info.stateId || "");
-                        alert("Скопировано!");
-                      }}
-                      style={{ width: "48px", height: "48px", minWidth: "48px" }}
-                    >
-                      📋
-                    </Button>
-                  </div>
-                )}
               </div>
 
               <div className="right">
                 <div className="avatar">
-                  <ImageUploader
-                    label="Аватар профиля"
-                    enableCrop
-                    aspect={1}
-                    value={info?.avatar_img ? `${info.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"}
-                    onChange={(url) => mutate({ ...info!, avatar_img: url as string }, false)}
-                    customUploadFn={async (file) => {
-                      const { avatarUrl } = await profileService.uploadAvatar(file, accessToken as string);
-                      return avatarUrl;
-                    }}
-                  />
+                  {info?.isBanned ? (
+                    <img 
+                      src={info?.avatar_img ? `${info.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"} 
+                      alt="Аватар профиля"
+                      style={{ width: "280px", height: "280px", borderRadius: "8px", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <ImageUploader
+                      label="Аватар профиля"
+                      enableCrop
+                      aspect={1}
+                      value={info?.avatar_img ? `${info.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"}
+                      onChange={(url) => mutate({ ...info!, avatar_img: url as string }, false)}
+                      customUploadFn={async (file) => {
+                        const { avatarUrl } = await profileService.uploadAvatar(file, accessToken as string);
+                        return avatarUrl;
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>
 
-            <AchievementsBlock achievements={achievements || []} />
+            {!info?.isBanned && (
+              <>
+                <AchievementsBlock achievements={achievements || []} />
 
-            {info?.id && (
-              <TerritoriesList ownerType="player" ownerId={info.id} />
+                {info?.id && (
+                  <TerritoriesList ownerType="player" ownerId={info.id} />
+                )}
+              </>
             )}
 
             <div className="buttons">

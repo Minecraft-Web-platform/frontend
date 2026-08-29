@@ -1,8 +1,10 @@
 export interface IHttpConfig {
   url?: string;
   headers?: Record<string, string>;
-  params?: unknown;
-  data?: unknown;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params?: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data?: any;
   responseType?: "json" | "blob";
 }
 

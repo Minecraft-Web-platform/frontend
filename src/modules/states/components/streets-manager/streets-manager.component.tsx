@@ -1,14 +1,15 @@
+import { AxiosError } from 'axios';
 import React, { useState, useEffect } from 'react';
 import './streets-manager.component.scss';
 import { IStreet } from '../../types/states.types';
 import { statesService } from '../../services/states.service';
 
 interface StreetsManagerProps {
-  cityId: string;
+  settlementId: string;
   isMayorOrAdmin: boolean;
 }
 
-const StreetsManager: React.FC<StreetsManagerProps> = ({ cityId, isMayorOrAdmin }) => {
+const StreetsManager: React.FC<StreetsManagerProps> = ({ settlementId, isMayorOrAdmin }) => {
   const [streets, setStreets] = useState<IStreet[]>([]);
   const [loading, setLoading] = useState(true);
   const [newStreetName, setNewStreetName] = useState('');
@@ -18,8 +19,9 @@ const StreetsManager: React.FC<StreetsManagerProps> = ({ cityId, isMayorOrAdmin 
   const loadStreets = async () => {
     try {
       setLoading(true);
-      const data = await statesService.getStreets(cityId);
+      const data = await statesService.getStreets(settlementId);
       setStreets(data || []);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Failed to load streets', err);
     } finally {
@@ -28,42 +30,46 @@ const StreetsManager: React.FC<StreetsManagerProps> = ({ cityId, isMayorOrAdmin 
   };
 
   useEffect(() => {
-    if (cityId) {
+    if (settlementId) {
       loadStreets();
     }
-  }, [cityId]);
+// eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settlementId]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newStreetName.trim()) return;
     try {
-      await statesService.createStreet(cityId, newStreetName);
+      await statesService.createStreet(settlementId, newStreetName);
       setNewStreetName('');
       loadStreets();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err.response?.data?.message || err.message || 'Ошибка создания улицы');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || 'Ошибка создания улицы');
     }
   };
 
   const handleUpdate = async (streetId: string) => {
     if (!editStreetName.trim()) return;
     try {
-      await statesService.updateStreet(cityId, streetId, editStreetName);
+      await statesService.updateStreet(settlementId, streetId, editStreetName);
       setEditingStreetId(null);
       setEditStreetName('');
       loadStreets();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err.response?.data?.message || err.message || 'Ошибка обновления улицы');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || 'Ошибка обновления улицы');
     }
   };
 
   const handleDelete = async (streetId: string) => {
     if (!window.confirm('Вы уверены, что хотите удалить эту улицу? Вся недвижимость на ней может потерять привязку!')) return;
     try {
-      await statesService.deleteStreet(cityId, streetId);
+      await statesService.deleteStreet(settlementId, streetId);
       loadStreets();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err.response?.data?.message || err.message || 'Ошибка удаления улицы');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || 'Ошибка удаления улицы');
     }
   };
 
@@ -71,7 +77,7 @@ const StreetsManager: React.FC<StreetsManagerProps> = ({ cityId, isMayorOrAdmin 
 
   return (
     <div className="streets-manager">
-      <h2 className="streets-manager__title">🛣️ Улицы города ({streets.length})</h2>
+      <h2 className="streets-manager__title">🛣️ Улицы поселения ({streets.length})</h2>
       
       {isMayorOrAdmin && (
         <form className="streets-manager__create-form" onSubmit={handleCreate}>
@@ -131,7 +137,7 @@ const StreetsManager: React.FC<StreetsManagerProps> = ({ cityId, isMayorOrAdmin 
           ))}
         </div>
       ) : (
-        <div className="streets-manager__empty">В этом городе пока нет улиц</div>
+        <div className="streets-manager__empty">В этом поселении пока нет улиц</div>
       )}
     </div>
   );

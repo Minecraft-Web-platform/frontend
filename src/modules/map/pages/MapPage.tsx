@@ -1,11 +1,13 @@
 import React, { useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import './MapPage.scss';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 
 export const MapPage: React.FC = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const location = useLocation();
 
-  const mapUrl = '/bluemap/'; 
+  const mapUrl = `/bluemap/${location.hash}`; 
 
   return (
     <div className="page map-root">

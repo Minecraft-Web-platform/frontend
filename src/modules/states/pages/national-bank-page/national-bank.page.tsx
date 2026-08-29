@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { FC, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { IState } from '../../types/states.types';
@@ -62,9 +63,11 @@ const NationalBankPage: FC = () => {
       try {
         const reqs = await economyService.getIpoRequests(stateData.id);
         setIpoRequests(reqs);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error('Failed to load IPO requests', err);
       }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
     } finally {
@@ -76,6 +79,7 @@ const NationalBankPage: FC = () => {
     if (currentUsername) {
       loadData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, currentUsername]);
 
   const handleApproveIpo = async (reqId: string) => {
@@ -83,8 +87,9 @@ const NationalBankPage: FC = () => {
       await economyService.reviewIpoRequest(reqId, 'approved');
       setIpoRequests((prev) => prev.filter((r) => r.id !== reqId));
       loadData(); // reload treasury balance
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err.response?.data?.message || err.message);
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message);
     }
   };
 
@@ -92,8 +97,9 @@ const NationalBankPage: FC = () => {
     try {
       await economyService.reviewIpoRequest(reqId, 'rejected');
       setIpoRequests((prev) => prev.filter((r) => r.id !== reqId));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err.response?.data?.message || err.message);
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message);
     }
   };
 

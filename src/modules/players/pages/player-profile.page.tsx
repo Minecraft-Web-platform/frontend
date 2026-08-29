@@ -12,6 +12,7 @@ import MoonLoader from "react-spinners/MoonLoader";
 import "./player-profile.page.scss";
 import { IUserAchievement } from "../../achievements/types/achievements.types";
 import { ICompany } from "../../economy/types/economy.types";
+import useAuthStore from "../../../store/auth.store";
 
 const generateGradient = (name: string) => {
   let hash = 0;
@@ -39,6 +40,10 @@ const PlayerProfilePage = () => {
 
   const [selectedRarities, setSelectedRarities] = useState<string[]>(['legendary', 'epic', 'rare', 'common']);
   const [sortOrder, setSortOrder] = useState<"rarityDesc" | "rarityAsc">("rarityDesc");
+  const [modalState, setModalState] = useState<"none" | "ban" | "unban">("none");
+  const [banReasonInput, setBanReasonInput] = useState("");
+
+  const isAdmin = useAuthStore(state => state.isAdmin);
 
   // Load player info
   useEffect(() => {
@@ -68,13 +73,14 @@ const PlayerProfilePage = () => {
 
   const filteredAndSortedAchievements = useMemo(() => {
     if (!userAchievements) return [];
-    let result = userAchievements.filter(ua => selectedRarities.includes(ua.achievement.rarity));
+    const result = userAchievements.filter(ua => selectedRarities.includes(ua.achievement.rarity));
     result.sort((a, b) => {
       const weightA = rarityWeights[a.achievement.rarity] || 0;
       const weightB = rarityWeights[b.achievement.rarity] || 0;
       return sortOrder === "rarityDesc" ? weightB - weightA : weightA - weightB;
     });
     return result;
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAchievements, selectedRarities, sortOrder]);
 
   const toggleRarity = (rarity: string) => {
@@ -111,6 +117,8 @@ const PlayerProfilePage = () => {
     );
   }
 
+  const isOnline = false; // Placeholder if it was removed
+
   return (
     <div className="player-profile-page">
       <Sidebar />
@@ -136,7 +144,43 @@ const PlayerProfilePage = () => {
                   {player.citizenshipName}
                 </span>
               )}
-              {player.cityName && <span className="city-tag">{player.cityName}</span>}
+              {player.settlementName && <span className="settlement-tag">{player.settlementName}</span>}
+              {player.isBanned && (
+                <span className="banned-tag" style={{ backgroundColor: "#ef4444", color: "white", padding: "4px 8px", borderRadius: "4px", fontSize: "12px", marginLeft: "8px" }}>
+                  ЗАБЛОКИРОВАН
+                </span>
+              )}
+            </div>
+          </div>
+          
+          <div style={{ marginLeft: "auto", display: "flex", gap: "10px", alignItems: "center" }}>
+            {isAdmin && (
+              <>
+                {player.isBanned ? (
+                  <button 
+                    className="unban-btn"
+                    style={{ backgroundColor: "#10b981", color: "white", border: "none", padding: "8px 16px", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", transition: "0.2s" }}
+                    onClick={() => setModalState("unban")}
+                  >
+                    Разбанить
+                  </button>
+                ) : (
+                  <button 
+                    className="ban-btn"
+                    style={{ backgroundColor: "#ef4444", color: "white", border: "none", padding: "8px 16px", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", transition: "0.2s" }}
+                    onClick={() => {
+                      setBanReasonInput("");
+                      setModalState("ban");
+                    }}
+                  >
+                    Забанить
+                  </button>
+                )}
+              </>
+            )}
+            <div className="profile-header__status">
+              <span className={`status-indicator ${isOnline ? "online" : "offline"}`}></span>
+              <span>{isOnline ? "В игре" : "Не в сети"}</span>
             </div>
           </div>
         </div>
@@ -183,7 +227,7 @@ const PlayerProfilePage = () => {
                 <div className="info-card">
                   <h3>Гражданство</h3>
                   <p><span className="label">Государство:</span> {player.stateName ? <Link to={`/states/${player.stateId}`}>{player.stateName}</Link> : "-"}</p>
-                  <p><span className="label">Город:</span> {player.cityName || "-"}</p>
+                  <p><span className="label">Поселение:</span> {player.settlementName || "-"}</p>
                   {player.stateCoatOfArmsUrl && (
                     <img src={player.stateCoatOfArmsUrl} alt="Coat of arms" className="coat-of-arms" />
                   )}
@@ -209,6 +253,7 @@ const PlayerProfilePage = () => {
                 <select 
                   className="sort-select"
                   value={sortOrder} 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
                   onChange={(e) => setSortOrder(e.target.value as any)}
                 >
                   <option value="rarityDesc">Сначала редкие</option>
@@ -260,7 +305,7 @@ const PlayerProfilePage = () => {
                       <p>{company.description || "Нет описания"}</p>
                       <div className="company-tags">
                         <span className="tag-type">{company.isPublic ? "Публичная" : "Частная"}</span>
-                        <span className="tag-location">{company.cityId ? "Городская" : company.stateId ? "Государственная" : "Международная"}</span>
+                        <span className="tag-location">{company.settlementId ? "Городская" : company.stateId ? "Государственная" : "Международная"}</span>
                       </div>
                     </Link>
                   ))}
@@ -283,6 +328,60 @@ const PlayerProfilePage = () => {
           )}
         </div>
       </main>
+
+      {modalState !== "none" && (
+        <div className="admin-modal-overlay">
+          <div className="admin-modal">
+            {modalState === "ban" && (
+              <>
+                <h2>Заблокировать игрока {player.username}</h2>
+                <p>Вы собираетесь заблокировать этого игрока. Укажите причину блокировки, она будет видна игроку.</p>
+                <input 
+                  type="text" 
+                  placeholder="Причина блокировки" 
+                  value={banReasonInput}
+                  onChange={(e) => setBanReasonInput(e.target.value)}
+                  autoFocus
+                />
+                <div className="admin-modal-actions">
+                  <button className="cancel-btn" onClick={() => setModalState("none")}>Отмена</button>
+                  <button className="confirm-ban-btn" onClick={async () => {
+                    if (banReasonInput.trim() === '') {
+                      return;
+                    }
+                    try {
+                      const updatedPlayer = await playersService.banUser(player.username, banReasonInput);
+                      setPlayer(updatedPlayer);
+                      setModalState("none");
+                      setBanReasonInput("");
+                    } catch (e) {
+                      alert('Ошибка при бане');
+                    }
+                  }}>Заблокировать</button>
+                </div>
+              </>
+            )}
+            {modalState === "unban" && (
+              <>
+                <h2>Разблокировать игрока {player.username}</h2>
+                <p>Вы уверены, что хотите снять блокировку с этого игрока? Он снова сможет заходить на сайт и пользоваться всеми функциями.</p>
+                <div className="admin-modal-actions">
+                  <button className="cancel-btn" onClick={() => setModalState("none")}>Отмена</button>
+                  <button className="confirm-unban-btn" onClick={async () => {
+                    try {
+                      const updatedPlayer = await playersService.unbanUser(player.username);
+                      setPlayer(updatedPlayer);
+                      setModalState("none");
+                    } catch (e) {
+                      alert('Ошибка при разбане');
+                    }
+                  }}>Разблокировать</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -25,11 +25,12 @@ const NotFoundPage = React.lazy(() => import("./modules/not-found/pages/not-foun
 const StatesListPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.StatesListPage })));
 const StateDetailPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.StateDetailPage })));
 const NationalBankPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.NationalBankPage })));
-const CitiesListPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.CitiesListPage })));
-const CityDetailPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.CityDetailPage })));
+const SettlementsListPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.SettlementsListPage })));
+const SettlementDetailPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.SettlementDetailPage })));
 const EconomyHubPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.EconomyHubPage })));
 const CompanyDetailPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.CompanyDetailPage })));
 const CurrencyDetailPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.CurrencyDetailPage })));
+const PropertyDetailPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.PropertyDetailPage })));
 const MapPage = React.lazy(() => import("./modules/map/pages/MapPage").then(module => ({ default: module.MapPage })));
 
 function App() {
@@ -111,7 +112,7 @@ function App() {
           <Route
             path="/profile"
             element={
-              <RequireAuth>
+              <RequireAuth allowBanned={true}>
                 <Profile></Profile>
               </RequireAuth>
             }
@@ -129,7 +130,7 @@ function App() {
           <Route
             path="/email-confirmation"
             element={
-              <RequireAuth>
+              <RequireAuth allowBanned={true}>
                 <EmailConfirmationPage />
               </RequireAuth>
             }
@@ -178,18 +179,18 @@ function App() {
             }
           />
           <Route
-            path="/cities"
+            path="/settlements"
             element={
               <RequireAuth>
-                <CitiesListPage />
+                <SettlementsListPage />
               </RequireAuth>
             }
           />
           <Route
-            path="/cities/:id"
+            path="/settlements/:id"
             element={
               <RequireAuth>
-                <CityDetailPage />
+                <SettlementDetailPage />
               </RequireAuth>
             }
           />
@@ -197,7 +198,7 @@ function App() {
           <Route
             path="/tech-support"
             element={
-              <RequireAuth>
+              <RequireAuth allowBanned={true}>
                 <TechSupportPage />
               </RequireAuth>
             }
@@ -228,6 +229,14 @@ function App() {
             element={
               <RequireAuth>
                 <CurrencyDetailPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/economy/property/:id"
+            element={
+              <RequireAuth>
+                <PropertyDetailPage />
               </RequireAuth>
             }
           />

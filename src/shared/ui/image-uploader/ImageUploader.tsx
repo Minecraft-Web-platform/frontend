@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useState, useRef } from 'react';
 import { uploadService } from '../../services/upload.service';
 import './ImageUploader.scss';
@@ -107,8 +108,9 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       } else {
         onChange(newUrls[0]);
       }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message || 'Ошибка загрузки');
+      setError((err as Error).message || 'Ошибка загрузки');
     } finally {
       setIsUploading(false);
     }

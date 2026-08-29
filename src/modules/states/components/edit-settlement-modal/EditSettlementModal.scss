@@ -1,4 +1,4 @@
-.edit-city-modal-overlay {
+.edit-settlement-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -13,7 +13,7 @@
   animation: fadeIn 0.2s ease;
 }
 
-.edit-city-modal {
+.edit-settlement-modal {
   background: #fff;
   border-radius: 16px;
   width: 90%;
@@ -53,7 +53,7 @@
       font-size: 14px;
     }
 
-    input, textarea {
+    input, textarea, select {
       width: 100%;
       padding: 12px 16px;
       border: 1px solid #cbd5e1;
@@ -63,6 +63,7 @@
       transition: all 0.2s;
       background: #f8fafc;
       font-family: inherit;
+      box-sizing: border-box;
 
       &:focus {
         outline: none;
@@ -70,6 +71,16 @@
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         background: #fff;
       }
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 16px;
+      padding-right: 40px;
     }
 
     textarea {

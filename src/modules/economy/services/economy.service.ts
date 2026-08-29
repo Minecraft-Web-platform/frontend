@@ -21,6 +21,7 @@ import {
   IProperty,
   CreatePropertyRequest,
   BuyPropertyRequest,
+  UpdatePropertyRequest,
   ICompanyService,
   ICompanyOrder,
   CreateCompanyServiceRequest,
@@ -101,12 +102,12 @@ export class EconomyService {
 
   // --- Компании и Юрисдикция ---
   public async getAllCompanies(filters?: {
-    cityId?: string;
+    settlementId?: string;
     stateId?: string;
     ownerUsername?: string;
   }): Promise<ICompany[]> {
     const params = new URLSearchParams();
-    if (filters?.cityId) params.append('cityId', filters.cityId);
+    if (filters?.settlementId) params.append('settlementId', filters.settlementId);
     if (filters?.stateId) params.append('stateId', filters.stateId);
     if (filters?.ownerUsername) params.append('ownerUsername', filters.ownerUsername);
     const query = params.toString() ? `?${params.toString()}` : '';
@@ -209,12 +210,24 @@ export class EconomyService {
     return this.httpService.post('economy/properties', data);
   }
 
-  public async listPropertyForSale(propertyId: string, price: number): Promise<IProperty> {
-    return this.httpService.post(`economy/properties/${propertyId}/sell`, { price });
+  public async updateProperty(propertyId: string, data: UpdatePropertyRequest): Promise<IProperty> {
+    return this.httpService.patch(`economy/properties/${propertyId}`, data);
+  }
+
+  public async listPropertyForSale(propertyId: string, price: number, forSaleToId?: string): Promise<IProperty> {
+    return this.httpService.post(`economy/properties/${propertyId}/sell`, { price, forSaleToId });
+  }
+
+  public async getEligibleBuyers(propertyId: string): Promise<{uuid: string, username: string}[]> {
+    return this.httpService.get(`economy/properties/${propertyId}/eligible-buyers`);
   }
 
   public async cancelListing(propertyId: string): Promise<IProperty> {
     return this.httpService.post(`economy/properties/${propertyId}/cancel-sell`, {});
+  }
+
+  public async getPropertyById(propertyId: string): Promise<IProperty> {
+    return this.httpService.get(`economy/properties/${propertyId}`);
   }
 
   public async buyProperty(propertyId: string, data: BuyPropertyRequest): Promise<IProperty> {

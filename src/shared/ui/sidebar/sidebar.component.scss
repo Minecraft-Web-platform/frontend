@@ -31,6 +31,15 @@
   &__bottom {
     margin-top: auto;
   }
+
+  &--banned {
+    .sidebar__middle {
+      flex: none;
+    }
+    .sidebar__bottom {
+      margin-top: 24px;
+    }
+  }
 }
 
 @media (max-width: 736px) {
@@ -43,7 +52,7 @@
     }
   }
 
-  .navigation__link > span {
+  .navigation__link>span {
     display: none;
   }
 }

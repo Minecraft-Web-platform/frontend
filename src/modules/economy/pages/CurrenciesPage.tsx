@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { ICurrency } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
@@ -32,6 +33,7 @@ export const CurrenciesPage: React.FC<{ embedded?: boolean }> = ({
       setCurrencies(currRes);
       setStates(statesRes);
       setCurrentUsername(meRes ? meRes.username : null);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       setError(e?.message || 'Ошибка загрузки валют');
     } finally {
@@ -56,6 +58,7 @@ export const CurrenciesPage: React.FC<{ embedded?: boolean }> = ({
       setIssueCurrencyId(null);
       setIssueAmount('');
       loadCurrencies();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка эмиссии валюты');
     }
@@ -134,7 +137,7 @@ export const CurrenciesPage: React.FC<{ embedded?: boolean }> = ({
                 национальной валюты зависит от{' '}
                 <strong style={{ color: '#000000' }}>золотых резервов</strong> в
                 казне, <strong style={{ color: '#000000' }}>мощи государства</strong>{' '}
-                (число городов и граждан) и{' '}
+                (число поселений и граждан) и{' '}
                 <strong style={{ color: '#000000' }}>общего объема эмиссии</strong>:
               </p>
             </div>

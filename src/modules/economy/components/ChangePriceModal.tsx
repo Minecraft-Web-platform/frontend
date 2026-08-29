@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useState } from 'react';
 import { ICompany } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
@@ -23,8 +24,9 @@ export const ChangePriceModal: React.FC<ChangePriceModalProps> = ({ company, onC
     try {
       await economyService.changeCompanySharePrice(company.id, parsedPrice);
       onSuccess();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err.message || 'Ошибка при изменении цены');
+      alert((err as Error).message || 'Ошибка при изменении цены');
       setLoading(false);
     }
   };

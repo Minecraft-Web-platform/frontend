@@ -1,26 +1,28 @@
+import {  } from 'axios';
 import { FC, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import './city-detail.page.scss';
+import './settlement-detail.page.scss';
 import {
   ICitizenshipRequest,
-  ICity,
+  ISettlement,
   IElection,
+  ICreateSettlementRequest,
 } from '../../types/states.types';
 import { statesService } from '../../services/states.service';
 import CitizenshipRequestsModal from '../../components/citizenship-requests-modal/citizenship-requests-modal.component';
 import ElectionsWidget from '../../components/elections-widget/elections-widget.component';
-import { EditCityModal } from '../../components/edit-city-modal/EditCityModal';
+import { EditSettlementModal } from '../../components/edit-settlement-modal/EditSettlementModal';
 import StreetsManager from '../../components/streets-manager/streets-manager.component';
 import { TerritoriesList } from '../../components/territories-list/TerritoriesList';
 import useAuthStore from '../../../../store/auth.store';
 import { profileService } from '../../../profile/services/profile.service';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 
-const CityDetailPage: FC = () => {
+const SettlementDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [city, setCity] = useState<ICity | null>(null);
+  const [settlement, setSettlement] = useState<ISettlement | null>(null);
   const [requests, setRequests] = useState<ICitizenshipRequest[]>([]);
   const [elections, setElections] = useState<IElection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,21 +45,21 @@ const CityDetailPage: FC = () => {
   }, [isAuthenticated]);
 
   const isMayor =
-    Boolean(city?.mayorUsername) &&
+    Boolean(settlement?.mayorUsername) &&
     Boolean(currentUsername) &&
-    city?.mayorUsername?.toLowerCase() === currentUsername?.toLowerCase();
+    settlement?.mayorUsername?.toLowerCase() === currentUsername?.toLowerCase();
 
   const isStatePresident =
-    Boolean(city?.state?.leaderUsername) &&
+    Boolean(settlement?.state?.leaderUsername) &&
     Boolean(currentUsername) &&
-    city?.state?.leaderUsername?.toLowerCase() === currentUsername?.toLowerCase();
+    settlement?.state?.leaderUsername?.toLowerCase() === currentUsername?.toLowerCase();
 
   const isMayorOrAdmin = Boolean(isMayor) || isAdmin || isStatePresident;
 
-  const isCitizenOfThisCity =
+  const isCitizenOfThisSettlement =
     Boolean(currentUsername) &&
     Boolean(
-      city?.citizens?.some(
+      settlement?.citizens?.some(
         (c) => c.username.toLowerCase() === currentUsername?.toLowerCase(),
       ),
     );
@@ -66,14 +68,15 @@ const CityDetailPage: FC = () => {
     if (!id) return;
     setLoading(true);
     try {
-      const [cityData, requestsData, electionsData] = await Promise.all([
-        statesService.getCityById(id),
+      const [settlementData, requestsData, electionsData] = await Promise.all([
+        statesService.getSettlementById(id),
         statesService.getRequests(id),
-        statesService.getElections('city', id),
+        statesService.getElections('settlement', id),
       ]);
-      setCity(cityData);
+      setSettlement(settlementData);
       setRequests(requestsData);
       setElections(electionsData);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
     } finally {
@@ -83,15 +86,17 @@ const CityDetailPage: FC = () => {
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleApplyForCitizenship = async () => {
     if (!id) return;
     setApplying(true);
     try {
-      await statesService.createRequest(id, { cityId: id });
-      alert('Ваша заявка на проживание / переезд успешно отправлена мэру города!');
+      await statesService.createRequest(id, { settlementId: id });
+      alert('Ваша заявка на проживание / переезд успешно отправлена мэру поселения!');
       await loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       const msg =
@@ -103,43 +108,46 @@ const CityDetailPage: FC = () => {
     }
   };
 
-  const handleLeaveCity = async () => {
+  const handleLeaveSettlement = async () => {
     if (!id) return;
-    if (!window.confirm('Вы уверены, что хотите выписаться из этого города?')) return;
+    if (!window.confirm('Вы уверены, что хотите выписаться из этого поселения?')) return;
     setApplying(true);
     try {
-      await statesService.leaveCity(id);
-      alert('Вы успешно выписались из города!');
+      await statesService.leaveSettlement(id);
+      alert('Вы успешно выписались из поселения!');
       await loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      const msg = err?.response?.data?.message || 'Не удалось выписаться из города.';
+      const msg = err?.response?.data?.message || 'Не удалось выписаться из поселения.';
       alert(msg);
     } finally {
       setApplying(false);
     }
   };
 
-  const handleEditCity = async (data: { name?: string; description?: string; flagUrl?: string }) => {
+  const handleEditSettlement = async (data: Partial<ICreateSettlementRequest> & { images?: string[] }) => {
     if (!id) return;
     try {
-      await statesService.updateCity(id, data);
+      await statesService.updateSettlement(id, data);
       await loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       throw err; // throw so the modal can handle it
     }
   };
 
-  const handleDeleteCity = async () => {
+  const handleDeleteSettlement = async () => {
     if (!id) return;
-    if (!window.confirm('ВНИМАНИЕ! Это действие необратимо. Удалить город?')) return;
+    if (!window.confirm('ВНИМАНИЕ! Это действие необратимо. Удалить поселение?')) return;
     try {
-      await statesService.deleteCity(id);
+      await statesService.deleteSettlement(id);
       navigate('/states');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      alert(err?.response?.data?.message || 'Ошибка удаления города');
+      alert(err?.response?.data?.message || 'Ошибка удаления поселения');
     }
   };
 
@@ -149,6 +157,7 @@ const CityDetailPage: FC = () => {
     try {
       await statesService.resignMayor(id);
       await loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       alert(err?.response?.data?.message || 'Ошибка отставки');
@@ -157,11 +166,12 @@ const CityDetailPage: FC = () => {
 
   const handleSetCapital = async () => {
     if (!id) return;
-    if (!window.confirm('Сделать этот город столицей государства?')) return;
+    if (!window.confirm('Сделать этот поселение столицей государства?')) return;
     try {
       await statesService.setCapital(id);
-      alert('Город успешно назначен столицей!');
+      alert('Поселение успешно назначен столицей!');
       await loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       alert(err?.response?.data?.message || 'Не удалось назначить столицу');
@@ -178,7 +188,7 @@ const CityDetailPage: FC = () => {
   const handleVote = async (electionId: string, candidateId: string) => {
     await statesService.voteInElection(electionId, { candidateId });
     if (id) {
-      const updated = await statesService.getElections('city', id);
+      const updated = await statesService.getElections('settlement', id);
       setElections(updated);
     }
   };
@@ -186,7 +196,7 @@ const CityDetailPage: FC = () => {
   const handleNominate = async (electionId: string, programText: string) => {
     await statesService.nominateCandidate(electionId, { programText });
     if (id) {
-      const updated = await statesService.getElections('city', id);
+      const updated = await statesService.getElections('settlement', id);
       setElections(updated);
     }
   };
@@ -196,22 +206,22 @@ const CityDetailPage: FC = () => {
       <div className="page">
         <Sidebar />
         <main className="content">
-          <div className="city-detail-page">Загрузка паспорта города...</div>
+          <div className="settlement-detail-page">Загрузка паспорта поселения...</div>
         </main>
       </div>
     );
   }
 
-  if (!city) {
+  if (!settlement) {
     return (
       <div className="page">
         <Sidebar />
         <main className="content">
-          <div className="city-detail-page">
-            Город не найден.{' '}
+          <div className="settlement-detail-page">
+            Поселение не найден.{' '}
             <button
-              className="city-detail-page__back"
-              onClick={() => navigate('/cities')}
+              className="settlement-detail-page__back"
+              onClick={() => navigate('/settlements')}
             >
               ← Вернуться к списку
             </button>
@@ -227,112 +237,120 @@ const CityDetailPage: FC = () => {
     <div className="page">
       <Sidebar />
       <main className="content">
-        <div className="city-detail-page">
+        <div className="settlement-detail-page">
           <button
-            className="city-detail-page__back"
+            className="settlement-detail-page__back"
             onClick={() => {
-              const targetStateId = city?.stateId || city?.state?.id;
+              const targetStateId = settlement?.stateId || settlement?.state?.id;
               if (targetStateId) {
-                navigate(`/cities?stateId=${targetStateId}`);
+                navigate(`/settlements?stateId=${targetStateId}`);
               } else {
-                navigate('/cities');
+                navigate('/settlements');
               }
             }}
           >
-            ← К списку городов {city?.state?.name ? `(${city.state.name})` : ''}
+            ← К списку поселений {settlement?.state?.name ? `(${settlement.state.name})` : ''}
           </button>
 
-          <div className="city-detail-page__hero">
-            <div className="city-detail-page__hero-main">
-              <div className="city-detail-page__header-row">
-                <div className="city-detail-page__emblem-wrap">
-                  {city.flagUrl ? (
+          <div className="settlement-detail-page__hero">
+            <div className="settlement-detail-page__hero-main">
+              <div className="settlement-detail-page__header-row">
+                <div className="settlement-detail-page__emblem-wrap">
+                  {settlement.flagUrl ? (
                     <img
-                      src={city.flagUrl}
-                      alt={`${city.name} flag`}
-                      className="city-detail-page__flag"
+                      src={settlement.flagUrl}
+                      alt={`${settlement.name} flag`}
+                      className="settlement-detail-page__flag"
                     />
                   ) : (
-                    <div className="city-detail-page__flag-placeholder">
+                    <div className="settlement-detail-page__flag-placeholder">
                       <span>🏛️</span>
                     </div>
                   )}
                 </div>
 
-                <div className="city-detail-page__info">
-                  <h1 className="city-detail-page__title">{city.name}</h1>
-                  <p className="city-detail-page__desc">
-                    {city.description || 'Описание города пока не указано.'}
+                <div className="settlement-detail-page__info">
+                  <h1 className="settlement-detail-page__title">
+                    {settlement.name}
+                    {settlement.status === 'capital' && (
+                      <span style={{marginLeft: '12px', fontSize: '14px', padding: '4px 8px', background: '#eab308', color: '#fff', borderRadius: '6px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: 'bold'}}>Столица</span>
+                    )}
+                    {settlement.status === 'rural' && (
+                      <span style={{marginLeft: '12px', fontSize: '14px', padding: '4px 8px', background: '#22c55e', color: '#fff', borderRadius: '6px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: 'bold'}}>Сельское пос.</span>
+                    )}
+                  </h1>
+                  <p className="settlement-detail-page__desc">
+                    {settlement.description || 'Описание поселения пока не указано.'}
                   </p>
                 </div>
               </div>
 
-              <div className="city-detail-page__meta">
-                <div className="city-detail-page__stat-pill">
-                  <span>🏛️ Мэр города:</span>{' '}
-                  <strong>{city.mayorUsername || 'Вакантно (Выборы)'}</strong>
+              <div className="settlement-detail-page__meta">
+                <div className="settlement-detail-page__stat-pill">
+                  <span>🏛️ Мэр поселения:</span>{' '}
+                  <strong>{settlement.mayorUsername || 'Вакантно (Выборы)'}</strong>
                 </div>
-                {city.state ? (
+                {settlement.state ? (
                   <div
-                    className="city-detail-page__stat-pill city-detail-page__stat-pill--state"
-                    onClick={() => navigate(`/states/${city.state?.id}`)}
+                    className="settlement-detail-page__stat-pill settlement-detail-page__stat-pill--state"
+                    onClick={() => navigate(`/states/${settlement.state?.id}`)}
                     title="Перейти к странице государства"
                   >
                     <span>🏰 Государство:</span>{' '}
-                    <strong>{city.state.name} →</strong>
+                    <strong>{settlement.state.name} →</strong>
                   </div>
                 ) : (
-                  <div className="city-detail-page__stat-pill">
-                    <span>🏰 Государство:</span> <strong>Независимый город</strong>
+                  <div className="settlement-detail-page__stat-pill">
+                    <span>🏰 Государство:</span> <strong>Независимый поселение</strong>
                   </div>
                 )}
-                <div className="city-detail-page__stat-pill">
+                <div className="settlement-detail-page__stat-pill">
                   <span>👥 Население:</span>{' '}
-                  <strong>{city.citizens?.length || 0} жит.</strong>
+                  <strong>{settlement.citizens?.length || 0} жит.</strong>
                 </div>
                 <div
-                  className="city-detail-page__stat-pill city-detail-page__stat-pill--power"
-                  title="Экономический вклад города в мощь своего государства"
+                  className="settlement-detail-page__stat-pill settlement-detail-page__stat-pill--power"
+                  title="Экономический вклад поселения в мощь своего государства"
                 >
                   <span>⚡ Вклад в мощь:</span>{' '}
                   <strong>
-                    {(city.citizens?.length || 0) >= 1
+                    {(settlement.citizens?.length || 0) >= 1
                       ? '+100 ед.'
                       : '0 ед. (нет жителей)'}
                   </strong>
                 </div>
               </div>
 
-              <div className="city-detail-page__actions">
-                {isCitizenOfThisCity ? (
+              <div className="settlement-detail-page__actions">
+                {isCitizenOfThisSettlement ? (
                   <>
                     <button
-                      className="city-detail-page__btn city-detail-page__btn--resident"
+                      className="settlement-detail-page__btn settlement-detail-page__btn--resident"
                       disabled
                     >
-                      <span>🏠</span> Вы житель этого города
+                      <span>🏠</span> Вы житель этого поселения
                     </button>
                     {!isMayor ? (
                       <button
-                        className="city-detail-page__btn city-detail-page__btn--danger"
-                        onClick={handleLeaveCity}
+                        className="settlement-detail-page__btn settlement-detail-page__btn--danger"
+                        onClick={handleLeaveSettlement}
                         disabled={applying}
                       >
-                        <span>🚪</span> Выписаться из города
+                        <span>🚪</span> Выписаться из поселения
                       </button>
                     ) : (
                       <button
-                        className="city-detail-page__btn city-detail-page__btn--danger"
+                        className="settlement-detail-page__btn settlement-detail-page__btn--danger"
                         disabled
-                        title="Мэр не может выписаться из города. Сначала сложите полномочия."
+                        title="Мэр не может выписаться из поселения. Сначала сложите полномочия."
                       >
-                        <span>🚪</span> Выписаться из города
+                        <span>🚪</span> Выписаться из поселения
                       </button>
                     )}
                   </>
                 ) : (
                   <button
-                    className="city-detail-page__btn city-detail-page__btn--primary"
+                    className="settlement-detail-page__btn settlement-detail-page__btn--primary"
                     onClick={handleApplyForCitizenship}
                     disabled={applying}
                   >
@@ -344,56 +362,56 @@ const CityDetailPage: FC = () => {
                 )}
                 {isMayorOrAdmin && (
                   <>
-                    {currentUsername === city.mayorUsername?.toLowerCase() && (
+                    {currentUsername === settlement.mayorUsername?.toLowerCase() && (
                       <button
-                        className="city-detail-page__btn city-detail-page__btn--danger"
+                        className="settlement-detail-page__btn settlement-detail-page__btn--danger"
                         onClick={handleResignMayor}
                       >
                         Сложить полномочия
                       </button>
                     )}
                     <button
-                      className="city-detail-page__btn city-detail-page__btn--primary"
+                      className="settlement-detail-page__btn settlement-detail-page__btn--primary"
                       onClick={() => setShowEditModal(true)}
                     >
-                      <span>✏️</span> Редактировать город
+                      <span>✏️</span> Редактировать поселение
                     </button>
                     <button
-                      className="city-detail-page__btn city-detail-page__btn--secondary"
+                      className="settlement-detail-page__btn settlement-detail-page__btn--secondary"
                       onClick={() => setShowRequestsModal(true)}
                     >
                       <span>📬</span> Заявки на заселение ({pendingCount})
                     </button>
-                    {!city.isCapital && (
+                    {settlement.status !== 'capital' && (
                       <button
-                        className="city-detail-page__btn city-detail-page__btn--primary"
+                        className="settlement-detail-page__btn settlement-detail-page__btn--primary"
                         onClick={handleSetCapital}
                       >
                         <span>🏛️</span> Сделать столицей
                       </button>
                     )}
                     <button
-                      className="city-detail-page__btn city-detail-page__btn--danger"
-                      onClick={handleDeleteCity}
+                      className="settlement-detail-page__btn settlement-detail-page__btn--danger"
+                      onClick={handleDeleteSettlement}
                     >
-                      <span>🗑️</span> Удалить город
+                      <span>🗑️</span> Удалить поселение
                     </button>
                   </>
                 )}
               </div>
             </div>
 
-            <div className="city-detail-page__passport-card">
-              <div className="passport-label">📜 Паспорт города</div>
-              {city.isCapital && (
+            <div className="settlement-detail-page__passport-card">
+              <div className="passport-label">📜 Паспорт поселения</div>
+              {settlement.status === 'capital' && (
                 <div className="passport-capital-badge">
                   ⭐ СТОЛИЦА ГОСУДАРСТВА
                 </div>
               )}
               <div className="passport-status">
-                {(city.citizens?.length || 0) >= 1 ? (
+                {(settlement.citizens?.length || 0) >= 1 ? (
                   <span className="status-badge status-badge--active">
-                    ● Активный город
+                    ● Активный поселение
                   </span>
                 ) : (
                   <span className="status-badge status-badge--inactive">
@@ -403,31 +421,31 @@ const CityDetailPage: FC = () => {
               </div>
               <div className="passport-date">
                 Основан:{' '}
-                {city.createdAt
-                  ? new Date(city.createdAt).toLocaleDateString('ru-RU')
+                {settlement.createdAt
+                  ? new Date(settlement.createdAt).toLocaleDateString('ru-RU')
                   : 'Неизвестно'}
               </div>
             </div>
           </div>
 
-          {/* City Images */}
-          <div className="city-detail-page__section">
-            <div className="city-detail-page__section-header">
-              <h2 className="city-detail-page__section-title">🖼️ Фотографии города</h2>
+          {/* Settlement Images */}
+          <div className="settlement-detail-page__section">
+            <div className="settlement-detail-page__section-header">
+              <h2 className="settlement-detail-page__section-title">🖼️ Фотографии поселения</h2>
             </div>
-            <div className="city-images-grid">
-              {city.images && city.images.length > 0 ? (
-                city.images.map((img, idx) => (
-                  <div key={idx} className="city-image-card">
-                    <img src={img} alt={`City view ${idx + 1}`} />
+            <div className="settlement-images-grid">
+              {settlement.images && settlement.images.length > 0 ? (
+                settlement.images.map((img, idx) => (
+                  <div key={idx} className="settlement-image-card">
+                    <img src={img} alt={`Settlement view ${idx + 1}`} />
                   </div>
                 ))
               ) : (
-                <div className="city-detail-page__empty-card">
+                <div className="settlement-detail-page__empty-card">
                   <div className="empty-icon">📷</div>
                   <div className="empty-text">
                     <strong>Нет фотографий</strong>
-                    <span>Мэр пока не загрузил фотографии этого города</span>
+                    <span>Мэр пока не загрузил фотографии этого поселения</span>
                   </div>
                 </div>
               )}
@@ -435,11 +453,11 @@ const CityDetailPage: FC = () => {
           </div>
 
           {elections.length > 0 && (
-            <div className="city-detail-page__section">
-              <h2 className="city-detail-page__section-title">
-                🗳️ Выборы Мэра в городе
+            <div className="settlement-detail-page__section">
+              <h2 className="settlement-detail-page__section-title">
+                🗳️ Выборы Мэра в поселении
               </h2>
-              <div className="city-detail-page__elections-list">
+              <div className="settlement-detail-page__elections-list">
                 {elections.map((el) => (
                   <ElectionsWidget
                     key={el.id}
@@ -452,17 +470,17 @@ const CityDetailPage: FC = () => {
             </div>
           )}
 
-          <div className="city-detail-page__section">
-            <h2 className="city-detail-page__section-title">
-              👥 Жители города ({city.citizens?.length || 0})
+          <div className="settlement-detail-page__section">
+            <h2 className="settlement-detail-page__section-title">
+              👥 Жители поселения ({settlement.citizens?.length || 0})
             </h2>
-            <div className="city-detail-page__citizens-grid">
-              {city.citizens && city.citizens.length > 0 ? (
-                city.citizens.map((citizen) => {
+            <div className="settlement-detail-page__citizens-grid">
+              {settlement.citizens && settlement.citizens.length > 0 ? (
+                settlement.citizens.map((citizen) => {
                   const isThisMayor =
-                    city.mayorUsername &&
+                    settlement.mayorUsername &&
                     citizen.username.toLowerCase() ===
-                      city.mayorUsername.toLowerCase();
+                      settlement.mayorUsername.toLowerCase();
                   const isMe =
                     currentUsername &&
                     citizen.username.toLowerCase() ===
@@ -471,57 +489,57 @@ const CityDetailPage: FC = () => {
                   return (
                     <div
                       key={citizen.id}
-                      className={`city-detail-page__citizen-card ${
-                        isMe ? 'city-detail-page__citizen-card--me' : ''
+                      className={`settlement-detail-page__citizen-card ${
+                        isMe ? 'settlement-detail-page__citizen-card--me' : ''
                       }`}
                     >
                       <img
                         src={`https://minotar.net/helm/${citizen.username}/48.png`}
                         alt={citizen.username}
-                        className="city-detail-page__citizen-card-avatar"
+                        className="settlement-detail-page__citizen-card-avatar"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src =
                             'https://minotar.net/helm/MHF_Steve/48.png';
                         }}
                       />
-                      <div className="city-detail-page__citizen-card-info">
-                        <div className="city-detail-page__citizen-card-name">
+                      <div className="settlement-detail-page__citizen-card-info">
+                        <div className="settlement-detail-page__citizen-card-name">
                           {citizen.username}{' '}
                           {isMe && (
                             <span className="citizen-tag-me">(Вы)</span>
                           )}
                         </div>
                         <div
-                          className={`city-detail-page__citizen-card-role ${
+                          className={`settlement-detail-page__citizen-card-role ${
                             isThisMayor
-                              ? 'city-detail-page__citizen-card-role--mayor'
+                              ? 'settlement-detail-page__citizen-card-role--mayor'
                               : ''
                           }`}
                         >
-                          {isThisMayor ? '👑 Мэр города' : '👥 Житель'}
+                          {isThisMayor ? '👑 Мэр поселения' : '👥 Житель'}
                         </div>
                       </div>
                     </div>
                   );
                 })
               ) : (
-                <div className="city-detail-page__empty-card">
+                <div className="settlement-detail-page__empty-card">
                   <div className="empty-icon">🏙️</div>
                   <div className="empty-text">
                     <strong>
-                      В этом городе пока нет официально зарегистрированных жителей
+                      В этом поселении пока нет официально зарегистрированных жителей
                     </strong>
-                    <span>Подайте заявку первым и станьте жителем города!</span>
+                    <span>Подайте заявку первым и станьте жителем поселения!</span>
                   </div>
                 </div>
               )}
             </div>
           </div>
 
-          <StreetsManager cityId={city.id} isMayorOrAdmin={isMayorOrAdmin} />
+          <StreetsManager settlementId={settlement.id} isMayorOrAdmin={isMayorOrAdmin} />
 
-          <div className="city-detail-page__section">
-            <TerritoriesList ownerType="city" ownerId={city.id} />
+          <div className="settlement-detail-page__section">
+            <TerritoriesList ownerType="settlement" ownerId={settlement.id} />
           </div>
 
           {showRequestsModal && (
@@ -533,10 +551,10 @@ const CityDetailPage: FC = () => {
           )}
 
           {showEditModal && (
-            <EditCityModal
-              city={city}
+            <EditSettlementModal
+              settlement={settlement}
               onClose={() => setShowEditModal(false)}
-              onSave={handleEditCity}
+              onSave={handleEditSettlement}
             />
           )}
         </div>
@@ -545,4 +563,4 @@ const CityDetailPage: FC = () => {
   );
 };
 
-export default CityDetailPage;
+export default SettlementDetailPage;

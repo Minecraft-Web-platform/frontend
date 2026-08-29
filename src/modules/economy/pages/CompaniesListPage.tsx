@@ -1,9 +1,10 @@
+import {  } from 'axios';
 import React, { useState } from 'react';
 import { CompanyCard } from '../components/CompanyCard';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import useAuthStore from '../../../store/auth.store';
 import { profileService } from '../../profile/services/profile.service';
-import { ICity } from '../../states';
+import { ISettlement } from '../../states';
 import { useAllCompanies, useStates, useCurrencies } from '../hooks/useEconomyData';
 import { statesService } from '../../states/services/states.service';
 import { CreateCompanyModal } from '../components/CreateCompanyModal';
@@ -27,12 +28,12 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
     try {
       const payload = JSON.parse(atob(accessToken.split('.')[1]));
       currentUser = payload.username_lower || '';
-    } catch (e: any) {}
+    } catch { /* empty */ }
   }
 
   // Модальное окно создания компании
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [citiesList, setCitiesList] = useState<ICity[]>([]);
+  const [settlementsList, setSettlementsList] = useState<ISettlement[]>([]);
   const [myStateId, setMyStateId] = useState<string | null>(null);
 
   // Модальное окно IPO
@@ -49,27 +50,29 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
     try {
       const [me, ctRes] = await Promise.all([
         profileService.getInfoAboutMe(),
-        statesService.getCities().catch(() => [] as ICity[]),
+        statesService.getSettlements().catch(() => [] as ISettlement[]),
       ]);
       if (!me.emailIsConfirmed) {
         alert('Регистрировать фирму может только игрок с подтвержденной почтой');
         return;
       }
-      if (!me.cityId && !me.stateId) {
-        alert('Регистрировать фирму могут только граждане какого-либо государства или города');
+      if (!me.settlementId && !me.stateId) {
+        alert('Регистрировать фирму могут только граждане какого-либо государства или поселения');
         return;
       }
       let userStateId = me.stateId || '';
-      if (!userStateId && me.cityId) {
-        const myCity = ctRes.find((c: any) => c.id === me.cityId);
-        if (myCity?.stateId) {
-          userStateId = myCity.stateId;
+      if (!userStateId && me.settlementId) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mySettlement = ctRes.find((c: any) => c.id === me.settlementId);
+        if (mySettlement?.stateId) {
+          userStateId = mySettlement.stateId;
         }
       }
       setMyStateId(userStateId || null);
-      setCitiesList(ctRes);
+      setSettlementsList(ctRes);
 
       setShowCreateModal(true);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert('Не удалось проверить статус аккаунта: ' + (err?.message || 'Ошибка загрузки профиля'));
     }
@@ -103,7 +106,7 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
               <span>🏢</span> Реестр Коммерческих Фирм
             </h1>
             <p className="hero-subtitle">
-              Регистрация бизнеса с привязкой к юрисдикции городов/государств
+              Регистрация бизнеса с привязкой к юрисдикции поселений/государств
               и коммерческим счетам
             </p>
           </div>
@@ -152,7 +155,7 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
       {showCreateModal && (
         <CreateCompanyModal
           statesList={statesList}
-          citiesList={citiesList}
+          settlementsList={settlementsList}
           currenciesList={currenciesList}
           myStateId={myStateId}
           onClose={() => setShowCreateModal(false)}

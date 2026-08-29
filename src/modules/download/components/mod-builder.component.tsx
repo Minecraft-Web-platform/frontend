@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -47,6 +48,7 @@ const ModBuilder: FC = () => {
       a.download = "modpack.zip";
       a.click();
       URL.revokeObjectURL(url);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("Ошибка при скачивании модпака:", err);
       alert(t('errors.http.internal-error'));

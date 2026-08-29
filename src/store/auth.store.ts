@@ -8,6 +8,8 @@ interface AuthState {
   isAdmin: boolean;
   isEconomist: boolean;
   role: "player" | "economist" | "admin";
+  isBanned: boolean;
+  banReason: string | null;
   login: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
   turnAdmin: (v: boolean) => void;
@@ -16,6 +18,7 @@ interface AuthState {
     isAdmin: boolean,
     isEconomist: boolean
   ) => void;
+  setBanInfo: (isBanned: boolean, banReason: string | null) => void;
 }
 
 const useAuthStore = create<AuthState>()(
@@ -27,6 +30,8 @@ const useAuthStore = create<AuthState>()(
       isAdmin: false,
       isEconomist: false,
       role: "player",
+      isBanned: false,
+      banReason: null,
       login: (accessToken, refreshToken) =>
         set({
           accessToken,
@@ -41,10 +46,13 @@ const useAuthStore = create<AuthState>()(
           isAdmin: false,
           isEconomist: false,
           role: "player",
+          isBanned: false,
+          banReason: null,
         }),
       turnAdmin: (v: boolean) => set({ isAdmin: v }),
       setRoleInfo: (role, isAdmin, isEconomist) =>
         set({ role, isAdmin, isEconomist }),
+      setBanInfo: (isBanned, banReason) => set({ isBanned, banReason }),
     }),
     {
       name: "auth-storage",
@@ -55,6 +63,8 @@ const useAuthStore = create<AuthState>()(
         isAdmin: state.isAdmin,
         isEconomist: state.isEconomist,
         role: state.role,
+        isBanned: state.isBanned,
+        banReason: state.banReason,
       }),
     }
   )

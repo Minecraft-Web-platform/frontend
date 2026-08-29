@@ -32,9 +32,10 @@ const ResetPasswordPage: FC = () => {
     try {
       await authService.initPasswordReset({ username: username.trim() });
       setStep("code-form");
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (e instanceof AxiosError) {
-        const status = e.response?.status;
+        const status = (e as AxiosError<{message?: string}>).response?.status;
         if (status === 404) {
           setErrorMsg("Пользователь с таким никнеймом не найден");
         } else if (status === 403) {
@@ -64,10 +65,11 @@ const ResetPasswordPage: FC = () => {
         newPassword: newPassword,
       });
       setStep("success");
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (e instanceof AxiosError) {
-        const status = e.response?.status;
-        const msg = e.response?.data?.message;
+        const status = (e as AxiosError<{message?: string}>).response?.status;
+        const msg = (e as AxiosError<{message?: string}>).response?.data?.message;
         if (status === 400 && typeof msg === "string") {
           setErrorMsg(msg);
         } else if (status === 404) {

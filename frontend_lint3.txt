@@ -1,0 +1,36 @@
+
+> frontend@0.0.0 lint
+> eslint . --fix
+
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/admin/pages/achievements-admin.page.tsx
+  111:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/ClientOrdersList.tsx
+   80:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  108:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/CompanyOrdersTab.tsx
+   92:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  134:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/CompanyServicesTab.tsx
+  28:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/DisputedOrdersTab.tsx
+  112:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/OrderServiceModal.tsx
+  105:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/TradingChart.tsx
+  95:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/hooks/useEconomyData.ts
+  43:13  error  Empty block statement  no-empty
+
+/Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/CompaniesListPage.tsx
+  30:13  error  Empty block statement  no-empty
+
+✖ 11 problems (11 errors, 0 warnings)
+

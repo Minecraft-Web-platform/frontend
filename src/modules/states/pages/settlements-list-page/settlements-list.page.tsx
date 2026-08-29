@@ -1,17 +1,18 @@
+import {  } from 'axios';
 import { FC, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import './cities-list.page.scss';
-import { ICity, IState } from '../../types/states.types';
+import './settlements-list.page.scss';
+import { ISettlement, IState, ISettlementType } from '../../types/states.types';
 import { statesService } from '../../services/states.service';
-import CityCard from '../../components/city-card/city-card.component';
+import SettlementCard from '../../components/settlement-card/settlement-card.component';
 import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploader';
 import { MapColorPicker } from '../../components/map-color-picker/MapColorPicker';
 import useAuthStore from '../../../../store/auth.store';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 
-const CitiesListPage: FC = () => {
+const SettlementsListPage: FC = () => {
   const [searchParams] = useSearchParams();
-  const [cities, setCities] = useState<ICity[]>([]);
+  const [settlements, setSettlements] = useState<ISettlement[]>([]);
   const [states, setStates] = useState<IState[]>([]);
   const [search, setSearch] = useState('');
   const [selectedStateId, setSelectedStateId] = useState<string>(
@@ -26,6 +27,9 @@ const CitiesListPage: FC = () => {
   const [flagUrl, setFlagUrl] = useState('');
   const [stateId, setStateId] = useState('');
   const [color, setColor] = useState('');
+  const [status, setStatus] = useState<'settlement' | 'rural'>('settlement');
+  const [ruralSubTypeId, setRuralSubTypeId] = useState('');
+  const [settlementTypes, setSettlementTypes] = useState<ISettlementType[]>([]);
   const [creating, setCreating] = useState(false);
 
   const { isAdmin } = useAuthStore();
@@ -33,12 +37,15 @@ const CitiesListPage: FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [citiesData, statesData] = await Promise.all([
-        statesService.getCities(selectedStateId || undefined),
+      const [settlementsData, statesData, typesData] = await Promise.all([
+        statesService.getSettlements(selectedStateId || undefined),
         statesService.getStates(),
+        statesService.getSettlementTypes()
       ]);
-      setCities(citiesData);
+      setSettlements(settlementsData);
       setStates(statesData);
+      setSettlementTypes(typesData);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
     } finally {
@@ -51,41 +58,48 @@ const CitiesListPage: FC = () => {
     if (paramStateId !== null && paramStateId !== selectedStateId) {
       setSelectedStateId(paramStateId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedStateId]);
 
-  const handleCreateCity = async (e: React.FormEvent) => {
+  const handleCreateSettlement = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
     setCreating(true);
     try {
-      await statesService.createCity({
+      await statesService.createSettlement({
         name,
         description,
         flagUrl: flagUrl || undefined,
         stateId: stateId || undefined,
         color: color || undefined,
+        status,
+        ruralSubTypeId: status === 'rural' ? ruralSubTypeId : undefined
       });
       setName('');
       setDescription('');
       setFlagUrl('');
       setStateId('');
       setColor('');
+      setStatus('settlement');
+      setRuralSubTypeId('');
       setShowCreateModal(false);
       await loadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      alert('Ошибка при создании города');
+      alert('Ошибка при создании поселения');
     } finally {
       setCreating(false);
     }
   };
 
-  const filteredCities = cities.filter((c) =>
+  const filteredSettlements = settlements.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()),
   );
 
@@ -93,25 +107,25 @@ const CitiesListPage: FC = () => {
     <div className="page">
       <Sidebar />
       <main className="content">
-        <div className="cities-list-page">
-          <div className="cities-list-page__hero">
+        <div className="settlements-list-page">
+          <div className="settlements-list-page__hero">
             <div>
-              <h1 className="cities-list-page__title">🏙️ Города сервера</h1>
-              <p className="cities-list-page__subtitle">
+              <h1 className="settlements-list-page__title">🏙️ Поселения сервера</h1>
+              <p className="settlements-list-page__subtitle">
                 Столицы, мегаполисы и крепости, основанные гражданами
               </p>
             </div>
 
-            <div className="cities-list-page__controls">
+            <div className="settlements-list-page__controls">
               <input
                 type="text"
-                className="cities-list-page__search"
-                placeholder="🔍 Поиск города..."
+                className="settlements-list-page__search"
+                placeholder="🔍 Поиск поселения..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
               <select
-                className="cities-list-page__select"
+                className="settlements-list-page__select"
                 value={selectedStateId}
                 onChange={(e) => setSelectedStateId(e.target.value)}
               >
@@ -124,24 +138,24 @@ const CitiesListPage: FC = () => {
               </select>
               {isAdmin && (
                 <button
-                  className="cities-list-page__create-btn"
+                  className="settlements-list-page__create-btn"
                   onClick={() => setShowCreateModal(true)}
                 >
-                  + Создать город
+                  + Создать поселение
                 </button>
               )}
             </div>
           </div>
 
           {loading ? (
-            <div className="cities-list-page__empty">Загрузка городов...</div>
+            <div className="settlements-list-page__empty">Загрузка поселений...</div>
           ) : (
-            <div className="cities-list-page__grid">
-              {filteredCities.length > 0 ? (
-                filteredCities.map((city) => <CityCard key={city.id} city={city} />)
+            <div className="settlements-list-page__grid">
+              {filteredSettlements.length > 0 ? (
+                filteredSettlements.map((settlement) => <SettlementCard key={settlement.id} settlement={settlement} />)
               ) : (
-                <div className="cities-list-page__empty">
-                  Города не найдены. Создайте первый город на сервере!
+                <div className="settlements-list-page__empty">
+                  Поселения не найдены. Создайте первый поселение на сервере!
                 </div>
               )}
             </div>
@@ -149,24 +163,24 @@ const CitiesListPage: FC = () => {
 
           {showCreateModal && (
             <div
-              className="cities-list-page__modal-backdrop"
+              className="settlements-list-page__modal-backdrop"
               onClick={() => setShowCreateModal(false)}
             >
               <div
-                className="cities-list-page__modal"
+                className="settlements-list-page__modal"
                 onClick={(e) => e.stopPropagation()}
               >
-                <h3>🏙️ Основание нового города</h3>
-                <form onSubmit={handleCreateCity}>
+                <h3>🏙️ Основание нового поселения</h3>
+                <form onSubmit={handleCreateSettlement}>
                   <input
                     type="text"
-                    placeholder="Название города*"
+                    placeholder="Название поселения*"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
                   />
                   <textarea
-                    placeholder="Описание города / архитектурный стиль..."
+                    placeholder="Описание поселения / архитектурный стиль..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />
@@ -175,6 +189,7 @@ const CitiesListPage: FC = () => {
                       folder="states/flags"
                       label="Эмблема/Флаг"
                       value={flagUrl}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
                       onChange={(url: any) => setFlagUrl(url as string)}
                     />
                   </div>
@@ -183,9 +198,33 @@ const CitiesListPage: FC = () => {
                     <MapColorPicker
                       color={color}
                       onChange={setColor}
-                      mode="city"
+                      mode="settlement"
                     />
                   </div>
+                  <div style={{ marginBottom: '15px' }}>
+                    <select
+                      value={status}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      onChange={(e) => setStatus(e.target.value as any)}
+                    >
+                      <option value="settlement">Поселение</option>
+                      <option value="rural">Сельское поселение</option>
+                    </select>
+                  </div>
+                  {status === 'rural' && (
+                    <div style={{ marginBottom: '15px' }}>
+                      <select
+                        value={ruralSubTypeId}
+                        onChange={(e) => setRuralSubTypeId(e.target.value)}
+                        required={status === 'rural'}
+                      >
+                        <option value="">Выберите подвид...</option>
+                        {settlementTypes.map((type) => (
+                          <option key={type.id} value={type.id}>{type.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                   <select
                     value={stateId}
                     onChange={(e) => setStateId(e.target.value)}
@@ -198,10 +237,10 @@ const CitiesListPage: FC = () => {
                     ))}
                   </select>
 
-                  <div className="cities-list-page__modal-actions">
+                  <div className="settlements-list-page__modal-actions">
                     <button
                       type="button"
-                      className="cities-list-page__create-btn"
+                      className="settlements-list-page__create-btn"
                       style={{
                         background: 'rgba(255, 255, 255, 0.1)',
                         color: '#fff',
@@ -212,7 +251,7 @@ const CitiesListPage: FC = () => {
                     </button>
                     <button
                       type="submit"
-                      className="cities-list-page__create-btn"
+                      className="settlements-list-page__create-btn"
                       disabled={creating}
                     >
                       {creating ? 'Основание...' : 'Основать'}
@@ -228,4 +267,4 @@ const CitiesListPage: FC = () => {
   );
 };
 
-export default CitiesListPage;
+export default SettlementsListPage;

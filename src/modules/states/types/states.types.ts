@@ -1,6 +1,6 @@
 export type DiplomacyStatus = 'ally' | 'neutral' | 'war';
 export type CitizenshipRequestStatus = 'pending' | 'approved' | 'rejected';
-export type ElectionTargetType = 'state' | 'city';
+export type ElectionTargetType = 'state' | 'settlement';
 export type ElectionStatus = 'nomination' | 'voting' | 'completed';
 
 export interface IStateCitizen {
@@ -8,23 +8,36 @@ export interface IStateCitizen {
   username: string;
   username_lower: string;
   avatarUrl?: string | null;
-  cityId?: string | null;
+  settlementId?: string | null;
   stateId?: string | null;
 }
 
 export interface IStreet {
   id: string;
   name: string;
-  cityId: string;
+  settlementId: string;
   createdAt: string;
 }
 
-export interface ICity {
+export interface ISettlementType {
+  id: string;
+  name: string;
+  proposedByUsername?: string;
+  isApproved: boolean;
+  createdAt: string;
+}
+
+export interface ISettlement {
   id: string;
   name: string;
   description?: string;
   flagUrl?: string | null;
   color?: string | null;
+  centerX?: number | null;
+  centerZ?: number | null;
+  status?: 'capital' | 'settlement' | 'rural';
+  ruralSubTypeId?: string | null;
+  ruralSubType?: ISettlementType | null;
   mayorUsername?: string | null;
   stateId?: string | null;
   createdAt: string;
@@ -65,14 +78,14 @@ export interface IState {
   leaderUsername?: string | null;
   treasurerUsername?: string | null;
   voivodeUsername?: string | null;
-  capitalCityId?: string | null;
+  capitalSettlementId?: string | null;
   playerToPlayerTransferFee?: number;
   playerToCompanyTransferFee?: number;
   ipoFee?: number;
   exchangeTradingFee?: number;
   treasuryAccountNumber?: string;
   createdAt: string;
-  cities?: ICity[];
+  settlements?: ISettlement[];
   citizens?: IStateCitizen[];
   isArchived: boolean;
   decrees?: IStateDecree[];
@@ -81,7 +94,7 @@ export interface IState {
 export interface ICitizenshipRequest {
   id: string;
   username: string;
-  cityId: string;
+  settlementId: string;
   status: CitizenshipRequestStatus;
   createdAt: string;
 }
@@ -117,7 +130,7 @@ export interface ICreateStateRequest {
   nationalityFemale?: string;
   citizenshipName?: string;
   leaderUsername?: string;
-  capitalCityId?: string;
+  capitalSettlementId?: string;
   playerToPlayerTransferFee?: number;
   playerToCompanyTransferFee?: number;
   ipoFee?: number;
@@ -125,11 +138,15 @@ export interface ICreateStateRequest {
   treasuryAccountNumber?: string;
 }
 
-export interface ICreateCityRequest {
+export interface ICreateSettlementRequest {
   name: string;
   description?: string;
   flagUrl?: string;
   color?: string;
+  centerX?: number;
+  centerZ?: number;
+  status?: 'capital' | 'settlement' | 'rural';
+  ruralSubTypeId?: string;
   mayorUsername?: string;
   stateId?: string;
 }
@@ -145,7 +162,7 @@ export interface ICreateDecreeRequest {
 }
 
 export interface ICreateCitizenshipRequest {
-  cityId: string;
+  settlementId: string;
 }
 
 export interface IReviewCitizenshipRequest {

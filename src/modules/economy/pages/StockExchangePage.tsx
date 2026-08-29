@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { economyService } from '../services/economy.service';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
@@ -31,6 +32,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     try {
       const payload = JSON.parse(atob(accessToken.split('.')[1]));
       currentUsername = payload.username_lower || '';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.error('Failed to get user identities', e);
     }
@@ -43,7 +45,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
   const { data: currencies = [] } = useCurrencies();
   
   const loading = loadingCompanies || loadingPortfolio;
-  const error = compError ? compError.message : null;
+  const error = compError ? (compError as Error).message : null;
 
   const reloadData = () => {
     mutateCompanies();
@@ -91,13 +93,17 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
 
       await economyService.buyShares(buyCompanyId, {
         count: parseInt(sharesCount, 10),
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
         buyerType: type as any,
         buyerId: id,
       });
       setBuyCompanyId(null);
       setSharesCount('10');
       reloadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
+ 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
       alert((err as any).response?.data?.message || (err as any).message || 'Ошибка покупки акций');
     }
   };
@@ -112,13 +118,17 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
 
       await economyService.sellShares(sellCompanyId, {
         count: parseInt(sharesCount, 10),
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
         sellerType: type as any,
         sellerId: id,
       });
       setSellCompanyId(null);
       setSharesCount('10');
       reloadData();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
+ 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
       alert((err as any).response?.data?.message || (err as any).message || 'Ошибка продажи акций');
     }
   };

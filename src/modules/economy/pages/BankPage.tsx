@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import { economyService } from '../services/economy.service';
@@ -6,7 +7,7 @@ import { useMyAccounts, useMyTransfers, useCurrencies, useStates } from '../hook
 import { BankAccountsList } from '../components/BankAccountsList';
 import { TransferModal } from '../components/TransferModal';
 import { CreateAccountModal } from '../components/CreateAccountModal';
-import { ICity } from '../../states';
+import { ISettlement } from '../../states';
 import { statesService } from '../../states/services/states.service';
 import '../economy-shared.scss';
 
@@ -32,11 +33,12 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
       try {
         const [meRes, ctRes] = await Promise.all([
           profileService.getInfoAboutMe().catch(() => null),
-          statesService.getCities().catch(() => [] as ICity[])
+          statesService.getSettlements().catch(() => [] as ISettlement[])
         ]);
         let userStateId = meRes?.stateId || null;
-        if (!userStateId && meRes?.cityId) {
-          const cObj = ctRes.find((c: any) => c.id === meRes.cityId);
+        if (!userStateId && meRes?.settlementId) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const cObj = ctRes.find((c: any) => c.id === meRes.settlementId);
           if (cObj?.stateId) userStateId = cObj.stateId;
         }
         setMyStateId(userStateId);
@@ -51,6 +53,7 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
     try {
       await economyService.issueCard({ accountId });
       mutateAccounts();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка выпуска карты');
     }

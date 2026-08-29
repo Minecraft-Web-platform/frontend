@@ -1,3 +1,4 @@
+import {  } from 'axios';
 import React, { useState } from 'react';
 import { economyService } from '../services/economy.service';
 
@@ -25,6 +26,7 @@ export const DividendModal: React.FC<DividendModalProps> = ({
       });
       alert(`Дивиденды в размере ${res.distributed} ед. успешно распределены между ${res.shareholdersCount} акционерами!`);
       onSuccess();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err?.message || 'Ошибка выплаты дивидендов');
     } finally {
