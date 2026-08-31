@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import './MapPage.scss';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
-import { httpFactoryService } from '../../../shared/services/http-factory.service';
+import { serverService } from '../../../shared/services/server.service';
 
 export const MapPage: React.FC = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -12,8 +12,7 @@ export const MapPage: React.FC = () => {
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const http = httpFactoryService.createHttpService();
-        const res = await http.get('/server/ping');
+        const res = await serverService.getPing();
         setIsOnline(res.running);
       } catch (e) {
         setIsOnline(false);

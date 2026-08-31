@@ -1,4 +1,4 @@
-import { httpFactoryService } from "../../../shared/services/http-factory.service";
+import { serverService } from "../../../shared/services/server.service";
 import { FC, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { profileService } from "../../profile/services/profile.service";
@@ -123,8 +123,8 @@ const TechSupportPage: FC = () => {
       })
       .finally(() => setIsLoading(false));
 
-    httpFactoryService.createHttpService().get('/server/ping')
-      .then((res: any) => setIsOnline(res.running))
+    serverService.getPing()
+      .then((res) => setIsOnline(res.running))
       .catch(() => setIsOnline(false));
   }, []);
 
