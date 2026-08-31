@@ -28,7 +28,7 @@ export const TerritoriesList: React.FC<TerritoriesListProps> = ({ ownerType, own
       const allTerritories = await statesService.getTerritories();
       // Filter territories by owner on the frontend for now
       const filtered = allTerritories.filter(
-        (t) => t.ownerType === ownerType && t.ownerId === ownerId
+        (t) => t.ownerType === ownerType && String(t.ownerId) === String(ownerId)
       );
       setTerritories(filtered);
     } catch (e) {
@@ -67,55 +67,44 @@ export const TerritoriesList: React.FC<TerritoriesListProps> = ({ ownerType, own
   if (loading) return <div>Загрузка территорий...</div>;
 
   return (
-    <div className="territories-list">
-      <h3>Управление территориями (Приваты)</h3>
+    <div className="territories-list-container">
+      <h2 className="territories-title">Управление территориями (Приваты)</h2>
       {territories.length === 0 ? (
-        <p className="no-territories">У вас пока нет приватов.</p>
+        <p className="no-territories">У вас пока нет зарегистрированных приватов.</p>
       ) : (
-        <table className="territories-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Координаты</th>
-              <th>Площадь</th>
-              <th>Отображение на карте</th>
-              <th>Действия</th>
-            </tr>
-          </thead>
-          <tbody>
-            {territories.map((t) => {
-              const area = Math.abs(t.maxX - t.minX) * Math.abs(t.maxZ - t.minZ);
-              return (
-                <tr key={t.id}>
-                  <td>
-                    <span className="territory-id" title={t.id}>
-                      {t.id.split('-')[0]}...
-                    </span>
-                  </td>
-                  <td>
-                    X: {t.minX}..{t.maxX} | Z: {t.minZ}..{t.maxZ}
-                  </td>
-                  <td>{area} блоков²</td>
-                  <td>
-                    <label className="visibility-switch">
-                      <input
-                        type="checkbox"
-                        checked={!t.isHiddenOnMap}
-                        onChange={() => handleToggleVisibility(t.id, t.isHiddenOnMap)}
-                      />
-                      <span>Видимый</span>
-                    </label>
-                  </td>
-                  <td>
-                    <button className="btn-delete" onClick={() => handleDelete(t.id)}>
-                      Удалить
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="territories-grid">
+          {territories.map((t) => {
+            const area = Math.abs(t.maxX - t.minX) * Math.abs(t.maxZ - t.minZ);
+            return (
+              <div key={t.id} className="territory-card">
+                <div className="card-header">
+                  <span className="card-id" title={t.id}>
+                    ID: {t.id.split('-')[0]}
+                  </span>
+                  <button className="btn-delete" onClick={() => handleDelete(t.id)}>
+                    Удалить
+                  </button>
+                </div>
+                
+                <div className="card-body">
+                  <p><strong>Координаты:</strong> X: {t.minX}..{t.maxX} | Z: {t.minZ}..{t.maxZ}</p>
+                  <p><strong>Площадь:</strong> {area} блоков²</p>
+                </div>
+                
+                <div className="card-footer">
+                  <label className="visibility-switch">
+                    <input
+                      type="checkbox"
+                      checked={!t.isHiddenOnMap}
+                      onChange={() => handleToggleVisibility(t.id, t.isHiddenOnMap)}
+                    />
+                    <span>Отображать на карте</span>
+                  </label>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );

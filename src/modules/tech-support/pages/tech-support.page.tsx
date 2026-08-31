@@ -1,4 +1,4 @@
-import {  } from 'axios';
+import { httpFactoryService } from "../../../shared/services/http-factory.service";
 import { FC, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { profileService } from "../../profile/services/profile.service";
@@ -96,6 +96,8 @@ const TechSupportPage: FC = () => {
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  
+  const [isOnline, setIsOnline] = useState<boolean | null>(null);
 
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [pendingTypes, setPendingTypes] = useState<ISettlementType[]>([]);
@@ -120,6 +122,10 @@ const TechSupportPage: FC = () => {
         }
       })
       .finally(() => setIsLoading(false));
+
+    httpFactoryService.createHttpService().get('/server/ping')
+      .then((res: any) => setIsOnline(res.running))
+      .catch(() => setIsOnline(false));
   }, []);
 
   const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
@@ -166,6 +172,16 @@ const TechSupportPage: FC = () => {
         <div className="tech-support-header">
           <h1>Техническая поддержка</h1>
           <p>Служба помощи и решения проблем сервера "Хроники Края 2.0"</p>
+        </div>
+
+        <div className="server-status-banner" style={{ display: 'flex', alignItems: 'center', background: isOnline === true ? 'rgba(34, 197, 94, 0.1)' : isOnline === false ? 'rgba(239, 68, 68, 0.1)' : 'rgba(150,150,150,0.1)', padding: '16px', borderRadius: '12px', marginBottom: '24px', border: `1px solid ${isOnline === true ? 'rgba(34, 197, 94, 0.3)' : isOnline === false ? 'rgba(239, 68, 68, 0.3)' : 'rgba(150,150,150,0.3)'}` }}>
+          <div style={{ marginRight: '16px', display: 'flex' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: isOnline === true ? '#22c55e' : isOnline === false ? '#ef4444' : '#888', boxShadow: isOnline === true ? '0 0 10px rgba(34, 197, 94, 0.5)' : isOnline === false ? '0 0 10px rgba(239, 68, 68, 0.5)' : 'none' }}></div>
+          </div>
+          <div>
+            <h3 style={{ margin: '0 0 4px 0', fontSize: '16px' }}>Статус сервера: {isOnline === true ? 'Онлайн' : isOnline === false ? 'Оффлайн' : 'Загрузка...'}</h3>
+            <p style={{ margin: 0, fontSize: '14px', opacity: 0.7 }}>{isOnline === true ? 'Сервер работает стабильно, вы можете зайти и играть.' : isOnline === false ? 'Сервер в данный момент недоступен. Возможны технические работы.' : 'Проверка состояния сервера...'}</p>
+          </div>
         </div>
 
         <div className="tech-support-banner">
