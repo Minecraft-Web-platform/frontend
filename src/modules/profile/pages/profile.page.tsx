@@ -178,8 +178,8 @@ const Profile: FC = () => {
               <>
                 <AchievementsBlock achievements={achievements || []} />
 
-                {info?.id && (
-                  <TerritoriesList ownerType="player" ownerId={info.id} />
+                {info?.uuid && (
+                  <TerritoriesList ownerType="player" ownerId={info.uuid} />
                 )}
               </>
             )}
