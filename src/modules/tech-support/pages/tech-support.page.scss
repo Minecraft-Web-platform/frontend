@@ -146,6 +146,60 @@
       font-size: 14px;
       border: 1px solid #fecaca;
     }
+
+    .file-upload-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .file-upload-label {
+        font-size: 14px;
+        color: #4b5563;
+        font-weight: 500;
+      }
+
+      input[type="file"] {
+        padding: 8px;
+        border: 1px dashed #d1d5db;
+        border-radius: 8px;
+        background: #f9fafb;
+        cursor: pointer;
+        width: 100%;
+        box-sizing: border-box;
+
+        &::file-selector-button {
+          background: #111827;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          cursor: pointer;
+          margin-right: 12px;
+          transition: background 0.2s;
+
+          &:hover {
+            background: #374151;
+          }
+        }
+      }
+
+      .selected-files {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 8px;
+
+        .file-item {
+          font-size: 13px;
+          color: #374151;
+          background: #f3f4f6;
+          padding: 6px 12px;
+          border-radius: 6px;
+          display: inline-block;
+          border: 1px solid #e5e7eb;
+        }
+      }
+    }
   }
 
   .loader-container {

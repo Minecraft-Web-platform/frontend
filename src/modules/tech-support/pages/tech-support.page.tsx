@@ -8,7 +8,6 @@ import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import Input from "../../../shared/ui/input/input.component";
 import Button from "../../../shared/ui/button/button.component";
 import { techSupportService } from "../services/tech-support.service";
-import { Ticket } from "../types/ticket.type";
 import { PropagateLoader } from "react-spinners";
 import { statesService } from "../../states/services/states.service";
 import { ISettlementType } from "../../states/types/states.types";
@@ -91,6 +90,7 @@ const TechSupportPage: FC = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [emailIsConfirmed, setEmailIsConfirmed] = useState<boolean>(false);
+  const [files, setFiles] = useState<File[]>([]);
   
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
@@ -135,19 +135,23 @@ const TechSupportPage: FC = () => {
     setIsSubmitting(true);
     setIsError(false);
 
-    const data: Ticket = {
-      username,
-      email,
-      topic,
-      content,
-    };
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("email", email);
+    formData.append("topic", topic);
+    formData.append("content", content);
+    
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
 
     techSupportService
-      .send(data)
+      .send(formData)
       .then(() => {
         setIsSuccess(true);
         setTopic("");
         setContent("");
+        setFiles([]);
       })
       .catch(() => setIsError(true))
       .finally(() => setIsSubmitting(false));
@@ -262,6 +266,35 @@ const TechSupportPage: FC = () => {
                     element="textarea"
                     label="Текст обращения"
                   />
+                </div>
+                <div className="form-group">
+                  <div className="file-upload-wrapper">
+                    <label className="file-upload-label">
+                      Прикрепить скриншоты (макс. 3 файла, до 5МБ каждый)
+                    </label>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={(e) => {
+                        const selectedFiles = Array.from(e.target.files || []);
+                        const validFiles = selectedFiles.filter(f => f.size <= 5 * 1024 * 1024);
+                        if (validFiles.length < selectedFiles.length) {
+                          alert("Некоторые файлы были проигнорированы, так как они превышают лимит 5МБ.");
+                        }
+                        setFiles(validFiles.slice(0, 3));
+                      }}
+                    />
+                    {files.length > 0 && (
+                      <div className="selected-files">
+                        {files.map((f, i) => (
+                          <div key={i} className="file-item">
+                            📎 {f.name} ({(f.size / 1024 / 1024).toFixed(2)} MB)
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <Button disabled={isSubmitting || !topic.trim() || !content.trim()}>
                   {isSubmitting ? "Отправка..." : "Отправить"}

@@ -53,7 +53,7 @@ export class HttpService {
 
     const headers = {
       ...config?.headers,
-      ...(responseType === "json"
+      ...(responseType === "json" && !(data instanceof FormData)
         ? this.populateContentTypeHeaderConfig()
         : {}),
     };
@@ -96,7 +96,7 @@ export class HttpService {
         ...config,
         headers: {
           ...config?.headers,
-          ...this.populateContentTypeHeaderConfig(),
+          ...(data instanceof FormData ? {} : this.populateContentTypeHeaderConfig()),
         },
       })
       .then((result) => {
@@ -115,7 +115,7 @@ export class HttpService {
         ...config,
         headers: {
           ...config?.headers,
-          ...this.populateContentTypeHeaderConfig(),
+          ...(data instanceof FormData ? {} : this.populateContentTypeHeaderConfig()),
         },
       })
       .then((result) => {

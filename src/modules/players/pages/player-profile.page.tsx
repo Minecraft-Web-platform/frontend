@@ -5,7 +5,6 @@ import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import { playersService } from "../services/players.service";
 import { achievementsService } from "../../achievements/services/achievements.service";
 import { economyService } from "../../economy/services/economy.service";
-import { mainAxios } from "../../../shared/services/main-axios";
 import { PlayerType } from "../types/player.type";
 import PlayerPassportComponent from "../components/player-passport.component";
 import BusinessCertificateComponent from "../components/business-certificate.component";
@@ -65,7 +64,7 @@ const PlayerProfilePage = () => {
   );
 
   // Load companies
-  const { data: documents } = useSWR(
+  useSWR(
     username ? `documents-${username}` : null,
     async () => {
       // Mock data for now, ideally fetch from backend if you have an endpoint
