@@ -1,0 +1,48 @@
+{
+  "news": {
+    "title": "Yangiliklar",
+    "createCategoryBtn": "Yangi toifa",
+    "cancelCategoryBtn": "Bekor qilish",
+    "categoryNamePlaceholder": "Toifa nomi",
+    "categoryDescPlaceholder": "Toifa tavsifi",
+    "adminOnlyLabel": "Faqat administratorlar uchun",
+    "createBtn": "Yaratish",
+    "loading": "Yuklanmoqda...",
+    "createNews": {
+      "noContentAlert": "Sarlavha kiriting va kamida bitta blok qo'shing",
+      "errorAlert": "Yangilik yaratishda xatolik",
+      "successTitle": "✅ Yangilik moderatsiyaga yuborildi!",
+      "closeBtn": "Yopish",
+      "title": "Yangi yangilik",
+      "inCategory": "Toifada: {{name}}",
+      "titlePlaceholder": "Yangilik sarlavhasi",
+      "textBlock": "Matn bloki",
+      "imageBlock": "Rasm",
+      "textPlaceholder": "Matn kiriting...",
+      "imageLabel": "Rasm yuklash",
+      "addTextBtn": "+ Matn",
+      "addImageBtn": "🖼 Rasm",
+      "submitBtn": "Chop etish",
+      "submittingBtn": "Chop etilmoqda..."
+    },
+    "errors": {
+      "accessDenied": "Ruxsat berilmadi. Siz administrator emassiz."
+    },
+    "status": {
+      "pending": "Moderatsiyada",
+      "approved": "Tasdiqlangan",
+      "notApproved": "Tasdiqlanmagan"
+    },
+    "addNewsPrompt": "Xabar keltirish",
+    "details": {
+      "loading": "Yangilik yuklanmoqda...",
+      "notFound": "Yangilik topilmadi 😢",
+      "category": "Toifa:",
+      "author": "Muallif:",
+      "date": "Chop etilgan sana:",
+      "statusLabel": "Holati:",
+      "approveBtn": "Tasdiqlash",
+      "deleteBtn": "O'chirish"
+    }
+  }
+}

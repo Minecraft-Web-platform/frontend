@@ -70,6 +70,23 @@ import kzNews from './locales/kz/news.json';
 import kzAdmin from './locales/kz/admin.json';
 import kzPlayers from './locales/kz/players.json';
 
+// UZ
+import uzAuth from './locales/uz/auth.json';
+import uzDownloadPage from './locales/uz/download-page.json';
+import uzErrors from './locales/uz/errors.json';
+import uzLandingPage from './locales/uz/landing-page.json';
+import uzNavigation from './locales/uz/navigation.json';
+import uzPlayerProfile from './locales/uz/player-profile.json';
+import uzPlayersList from './locales/uz/players-list.json';
+import uzTechSupport from './locales/uz/tech-support-page.json';
+import uzProfile from './locales/uz/profile.json';
+import uzEconomy from './locales/uz/economy.json';
+import uzMap from './locales/uz/map.json';
+import uzStates from './locales/uz/states.json';
+import uzNews from './locales/uz/news.json';
+import uzAdmin from './locales/uz/admin.json';
+import uzPlayers from './locales/uz/players.json';
+
 // RU
 import ruAuth from './locales/ru/auth.json';
 import ruDownloadPage from './locales/ru/download-page.json';
@@ -125,6 +142,24 @@ const kzResources = {
   players: kzPlayers
 };
 
+const uzResources = {
+  auth: uzAuth,
+  'download-page': uzDownloadPage,
+  errors: uzErrors,
+  'landing-page': uzLandingPage,
+  navigation: uzNavigation,
+  'player-profile': uzPlayerProfile,
+  'players-list': uzPlayersList,
+  'tech-support-page': uzTechSupport,
+  profile: uzProfile,
+  economy: uzEconomy,
+  map: uzMap,
+  states: uzStates,
+  news: uzNews,
+  admin: uzAdmin,
+  players: uzPlayers
+};
+
 export const resources = {
   en: {
     auth: enAuth,
@@ -164,6 +199,7 @@ export const resources = {
   uk: uaResources,
   kz: kzResources,
   kk: kzResources,
+  uz: uzResources,
   ru: {
     auth: ruAuth,
     'download-page': ruDownloadPage,

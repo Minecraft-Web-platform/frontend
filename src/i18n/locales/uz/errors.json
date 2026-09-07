@@ -1,0 +1,10 @@
+{
+  "notFound": {
+    "title": "404",
+    "description": "Attang... Siz boshqa joyga adashib kelib qoldingiz... Xavotir olmang, siz {{seconds}} {{unit}} ichida profilingizga yo'naltirilasiz :)",
+    "cantWait": "Kuta olmayman!",
+    "seconds_one": "soniya",
+    "seconds_few": "soniya",
+    "seconds_many": "soniya"
+  }
+}

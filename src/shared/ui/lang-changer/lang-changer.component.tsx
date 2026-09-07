@@ -60,6 +60,7 @@ export const LangChanger = () => {
         <button
           type="button"
           className={`btn lang-changer__btn${activeLang === 'uz' ? ' btn--chosen' : ''}`}
+          onClick={() => changeLanguage('uz', setLang)}
         >
           UZ
         </button>

@@ -1,0 +1,74 @@
+{
+  "neverPlayed": "Hech qachon o'ynamagan",
+  "playerNotFound": "O'yinchi topilmadi",
+  "admin": "Administrator",
+  "player": "O'yinchi",
+  "banned": "BLOKLANGAN",
+  "unban": "Blokdan chiqarish",
+  "ban": "Bloklash",
+  "inGame": "O'yinda",
+  "offline": "Tarmoqda emas",
+  "tabs": {
+    "info": "Ma'lumot",
+    "achievements": "Yutuqlar",
+    "companies": "Kompaniyalar",
+    "documents": "Hujjatlar"
+  },
+  "info": {
+    "identification": "Identifikatsiya",
+    "nickname": "Taxallus:",
+    "uuid": "UUID:",
+    "registrationDate": "Ro'yxatdan o'tgan sana:",
+    "lastLogin": "Oxirgi marta o'ynagan:",
+    "email": "Pochta:",
+    "emailConfirmed": "✅ Tasdiqlangan",
+    "emailNotConfirmed": "❌ Tasdiqlanmagan",
+    "citizenship": "Fuqarolik",
+    "state": "Davlat:",
+    "settlement": "Aholi punkti:"
+  },
+  "achievements": {
+    "sortRareFirst": "Avval noyoblari",
+    "sortCommonFirst": "Avval oddiylari",
+    "empty": "O'yinchida hozircha yutuqlar yo'q."
+  },
+  "companies": {
+    "noDescription": "Tavsifi yo'q",
+    "public": "Ochiq (Ommaviy)",
+    "private": "Xususiy",
+    "city": "Shahar",
+    "state": "Davlat",
+    "international": "Xalqaro",
+    "empty": "O'yinchida hozircha kompaniyalar yo'q."
+  },
+  "modal": {
+    "banTitle": "O'yinchini bloklash",
+    "banDesc": "Siz ushbu o'yinchini bloklamoqchisiz. Bloklash sababini ko'rsating, u o'yinchiga ko'rinadi.",
+    "banReason": "Bloklash sababi",
+    "cancel": "Bekor qilish",
+    "ban": "Bloklash",
+    "unbanTitle": "O'yinchini blokdan chiqarish",
+    "unbanDesc": "Haqiqatan ham ushbu o'yinchini blokdan chiqarmoqchimisiz? U yana saytga kirishi va barcha imkoniyatlardan foydalanishi mumkin bo'ladi.",
+    "unban": "Blokdan chiqarish",
+    "banError": "Bloklashda xatolik",
+    "unbanError": "Blokdan chiqarishda xatolik"
+  },
+  "certificate": {
+    "ministry": "Iqtisodiyot Vazirligi",
+    "stateRegistry": "Davlat Reyestri",
+    "header": "GUVOHNOMA",
+    "title": "TADBIRKOR SIFATIDA RO'YXATDAN O'TGANLIK TO'G'RISIDA",
+    "confirms": "Ushbu guvohnoma quyidagi fuqaroning",
+    "uuidLabel": "Identifikatsiya raqami (UUID):",
+    "companiesLabel": "Ro'yxatdan o'tgan kompaniyalar soni:",
+    "registrationLabel": "Dastlabki ro'yxatdan o'tgan sana:",
+    "registeredStamp": "RO'YXATGA OLINDI",
+    "signature": "Ro'yxatga oluvchining imzosi",
+    "issuedTo": "Fuqaroga berildi:",
+    "issuedAt": "Birinchi guvohnoma berilgan sana:",
+    "count": "Egaligidagi kompaniyalar soni:",
+    "rights": "Tijorat faoliyatini yuritish, korporativ hisoblar ochish va fond bozorlarida ishtirok etish huquqini beradi.",
+    "gov": "ENDERGARD HUKUMATI",
+    "dept": "TIJORAT VA SOLIQLAR DEPARTAMENTI"
+  }
+}

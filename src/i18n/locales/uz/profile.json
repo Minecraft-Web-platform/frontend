@@ -1,0 +1,71 @@
+{
+  "profile-page": {
+    "title": "Profil",
+    "description": "Sizning shaxsiy burchagingiz. Vaqt o'tishi bilan bu yerda ko'proq ma'lumotlar paydo bo'ladi, hozircha oddiy rejim — boriga shukr qilib rohatlanamiz.",
+    "bannedTitle": "Sizning hisobingiz bloklangan!",
+    "banReason": "Sababi:",
+    "banReasonNotSpecified": "Ko'rsatilmagan",
+    "banDescription": "Sayt imkoniyatlaridan foydalanishingiz cheklandi.",
+    "nickname": "Taxallus",
+    "emailPlaceholder": "pochtangizni-ulang@pochta.com",
+    "email": "Pochta",
+    "emailConfirmed": "Tasdiqlangan",
+    "emailNotConfirmed": "Tasdiqlanmagan",
+    "roleAdmin": "Administrator",
+    "roleEconomist": "Iqtisodchi",
+    "rolePlayer": "O'yinchi",
+    "role": "Loyihadagi roli",
+    "none": "Yo'q",
+    "citizenship": "Fuqarolik",
+    "settlement": "Aholi punkti",
+    "neverPlayed": "Hech qachon o'ynamagan",
+    "lastIp": "Oxirgi IP",
+    "uuid": "UUID (o'yinchining)",
+    "copied": "Nusxalandi!",
+    "avatar": "Profil avatari",
+    "bindEmail": "Pochtani ulash",
+    "logout": "Hisobdan chiqish"
+  },
+  "calendar": {
+    "title": "Voqealar taqvimi",
+    "subtitle": "Siyosiy hayot va bildirishnomalaringizni kuzatib boring",
+    "eventsCount": "Voqealar soni:",
+    "loading": "Yuklanmoqda...",
+    "empty": "Bu kunda hech qanday qiziqarli voqea yuz bermadi.",
+    "months": [
+      "Yanvar",
+      "Fevral",
+      "Mart",
+      "Aprel",
+      "May",
+      "Iyun",
+      "Iyul",
+      "Avgust",
+      "Sentabr",
+      "Oktabr",
+      "Noyabr",
+      "Dekabr"
+    ],
+    "days": [
+      "Dush",
+      "Sesh",
+      "Chor",
+      "Pay",
+      "Jum",
+      "Shan",
+      "Yak"
+    ]
+  },
+  "achievements": {
+    "empty": "Sizda hozircha yutuqlar yo'q.",
+    "title": "Yutuqlar",
+    "earned": "Olingan sana:",
+    "unlocked": "YUTUQ QO'LGA KIRITILDI",
+    "rarities": {
+      "common": "ODDIY YUTUQ",
+      "rare": "NOYOB YUTUQ",
+      "epic": "EPIK YUTUQ",
+      "legendary": "AFSONAVIY YUTUQ"
+    }
+  }
+}

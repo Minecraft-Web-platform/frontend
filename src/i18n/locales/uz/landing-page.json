@@ -1,0 +1,27 @@
+{
+  "intro": {
+    "title": "Chekka Yilnomalari 2.0",
+    "subtitle": "Sarguzashtlar olamiga sho'ng'ing",
+    "play": "O'ynash",
+    "onlineMap": "Onlayn xarita"
+  },
+  "about": {
+    "heading": "Biz qanday jamoamiz?",
+    "building": "Biz chiroyli, qulay va o'z tarixiga ega bo'lgan binolar qurishga intiluvchi jamoamiz. Bugun qilgan ishlarimiz ertaga o'ynash uchun yoqimli bo'lishi uchun harakat qilamiz. Imoratlarni yagona uslubda qad rostlab, uyg'un ko'rinishga erishamiz.",
+    "farmingTitle": "Shuningdek ishlab chiqarish va barcha turdagi fermalarga katta e'tibor qaratamiz, xususan:",
+    "metals": "Metallar",
+    "stones": "Toshlar va qurilish materiallari",
+    "food": "Oziq-ovqat va boshqa foydali narsalar",
+    "logistics": "Shuningdek, qulay logistikani ham unutmaymiz",
+    "frogs": "Eng muhimi, biz vaqtimizni maroqli o'tkazamiz va baqalarga mehr bilan munosabatda bo'lamiz <3"
+  },
+  "footer": {
+    "discord": "Discord:",
+    "join": "Qo'shilish",
+    "onlineMap": "Onlayn xarita:",
+    "openMap": "Xaritani ochish",
+    "serverIp": "Server IP: mc.khroniki-kraya.com",
+    "copy": "Nusxalash",
+    "copied": "IP vaqtinchalik xotiraga nusxalandi!"
+  }
+}
