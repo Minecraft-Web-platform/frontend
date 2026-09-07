@@ -53,6 +53,23 @@ import uaNews from './locales/ua/news.json';
 import uaAdmin from './locales/ua/admin.json';
 import uaPlayers from './locales/ua/players.json';
 
+// KZ
+import kzAuth from './locales/kz/auth.json';
+import kzDownloadPage from './locales/kz/download-page.json';
+import kzErrors from './locales/kz/errors.json';
+import kzLandingPage from './locales/kz/landing-page.json';
+import kzNavigation from './locales/kz/navigation.json';
+import kzPlayerProfile from './locales/kz/player-profile.json';
+import kzPlayersList from './locales/kz/players-list.json';
+import kzTechSupport from './locales/kz/tech-support-page.json';
+import kzProfile from './locales/kz/profile.json';
+import kzEconomy from './locales/kz/economy.json';
+import kzMap from './locales/kz/map.json';
+import kzStates from './locales/kz/states.json';
+import kzNews from './locales/kz/news.json';
+import kzAdmin from './locales/kz/admin.json';
+import kzPlayers from './locales/kz/players.json';
+
 // RU
 import ruAuth from './locales/ru/auth.json';
 import ruDownloadPage from './locales/ru/download-page.json';
@@ -88,6 +105,24 @@ const uaResources = {
   news: uaNews,
   admin: uaAdmin,
   players: uaPlayers
+};
+
+const kzResources = {
+  auth: kzAuth,
+  'download-page': kzDownloadPage,
+  errors: kzErrors,
+  'landing-page': kzLandingPage,
+  navigation: kzNavigation,
+  'player-profile': kzPlayerProfile,
+  'players-list': kzPlayersList,
+  'tech-support-page': kzTechSupport,
+  profile: kzProfile,
+  economy: kzEconomy,
+  map: kzMap,
+  states: kzStates,
+  news: kzNews,
+  admin: kzAdmin,
+  players: kzPlayers
 };
 
 export const resources = {
@@ -127,6 +162,8 @@ export const resources = {
   },
   ua: uaResources,
   uk: uaResources,
+  kz: kzResources,
+  kk: kzResources,
   ru: {
     auth: ruAuth,
     'download-page': ruDownloadPage,

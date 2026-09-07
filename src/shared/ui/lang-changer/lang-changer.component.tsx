@@ -11,7 +11,7 @@ export const LangChanger = () => {
   const [lang, setLang] = useState(i18n.language);
   const [isOpened, setIsOpened] = useState<boolean>(false);
 
-  const activeLang = (lang === 'uk' || lang === 'ua') ? 'ua' : lang;
+  const activeLang = (lang === 'uk' || lang === 'ua') ? 'ua' : (lang === 'kk' || lang === 'kz') ? 'kz' : lang;
 
   return (
     <div className="lang-changer">
@@ -52,6 +52,7 @@ export const LangChanger = () => {
         <button
           type="button"
           className={`btn lang-changer__btn${activeLang === 'kz' ? ' btn--chosen' : ''}`}
+          onClick={() => changeLanguage('kz', setLang)}
         >
           KZ
         </button>

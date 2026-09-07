@@ -1,0 +1,29 @@
+{
+  "players": {
+    "title": "Ойыншылар",
+    "online": "Онлайн ойыншылар: {{online}}/{{total}}",
+    "show": "Көрсету:",
+    "all": "Барлығын",
+    "onlyServer": "Тек сервердегілерді",
+    "state": "Мемлекет:",
+    "allStates": "Барлық мемлекеттер",
+    "noState": "Мемлекетсіз",
+    "statusOnline": "Онлайн",
+    "statusOffline": "Офлайн",
+    "notFound": "Таңдалған сүзгілер бойынша ойыншылар табылмады...",
+    "passport": {
+      "defaultState": "Шет Жылнамалары Әлемі",
+      "noPhoto": "Сурет жоқ",
+      "nickname": "Лақап аты (Никнейм):",
+      "role": "Рөлі:",
+      "roleAdmin": "Әкімші",
+      "rolePlayer": "Ойыншы",
+      "citizenship": "Азаматтығы:",
+      "settlement": "Қонысы:",
+      "street": "Көшесі:",
+      "house": "Үйі:",
+      "issued": "Берілді:",
+      "validUntil": "Жарамдылық мерзімі:"
+    }
+  }
+}
