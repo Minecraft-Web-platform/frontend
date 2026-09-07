@@ -273,10 +273,10 @@ const SettlementDetailPage: FC = () => {
                   <h1 className="settlement-detail-page__title">
                     {settlement.name}
                     {settlement.status === 'capital' && (
-                      <span style={{marginLeft: '12px', fontSize: '14px', padding: '4px 8px', background: '#eab308', color: '#fff', borderRadius: '6px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: 'bold'}}>{t('settlementDetail.capitalBadge')}</span>
+                      <span style={{marginLeft: '12px', fontSize: '14px', padding: '4px 10px', background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a', borderRadius: '14px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.5px'}}>{t('settlementDetail.capitalBadge')}</span>
                     )}
                     {settlement.status === 'rural' && (
-                      <span style={{marginLeft: '12px', fontSize: '14px', padding: '4px 8px', background: '#22c55e', color: '#fff', borderRadius: '6px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: 'bold'}}>{t('settlementDetail.ruralBadge')}</span>
+                      <span style={{marginLeft: '12px', fontSize: '14px', padding: '4px 10px', background: '#dcfce7', color: '#166534', border: '1px solid #bbf7d0', borderRadius: '14px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.5px'}}>{t('settlementDetail.ruralBadge')}</span>
                     )}
                   </h1>
                   <p className="settlement-detail-page__desc">

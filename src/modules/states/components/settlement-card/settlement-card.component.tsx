@@ -39,10 +39,10 @@ const SettlementCard: FC<SettlementCardProps> = ({ settlement }) => {
           <h3 className="settlement-card__title">
             {settlement.name}
             {settlement.status === 'capital' && (
-              <span style={{marginLeft: '8px', fontSize: '10px', padding: '2px 6px', background: '#eab308', color: '#fff', borderRadius: '4px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: 'bold'}}>{t('settlementCard.capital')}</span>
+              <span style={{marginLeft: '8px', fontSize: '10px', padding: '3px 8px', background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a', borderRadius: '12px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.5px'}}>{t('settlementCard.capital')}</span>
             )}
             {settlement.status === 'rural' && (
-              <span style={{marginLeft: '8px', fontSize: '10px', padding: '2px 6px', background: '#22c55e', color: '#fff', borderRadius: '4px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: 'bold'}}>{t('settlementCard.rural')}</span>
+              <span style={{marginLeft: '8px', fontSize: '10px', padding: '3px 8px', background: '#dcfce7', color: '#166534', border: '1px solid #bbf7d0', borderRadius: '12px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.5px'}}>{t('settlementCard.rural')}</span>
             )}
           </h3>
           <span className="settlement-card__mayor">

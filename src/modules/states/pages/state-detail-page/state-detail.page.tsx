@@ -30,11 +30,13 @@ import { EditStateModal } from '../../components/edit-state-modal/EditStateModal
 import { useTranslation } from 'react-i18next';
 
 const formatAccountNumber = (treasuryAccount: any, t?: any) => {
+  if (!treasuryAccount) return t('stateDetailMissed.noAccount');
+  if (typeof treasuryAccount === 'string') {
+    return `#${treasuryAccount}`;
+  }
   const accountId = treasuryAccount?.id;
-  const acc = treasuryAccount;
   if (!accountId) return t('stateDetailMissed.noAccount');
-  if (!acc) return t('stateDetailMissed.noAccount');
-  return `${acc.balance.toLocaleString()} ${acc.currencyCode}`;
+  return `${treasuryAccount.balance.toLocaleString()} ${treasuryAccount.currencyCode}`;
 };
 
 const StateDetailPage: FC = () => {
@@ -51,7 +53,7 @@ const StateDetailPage: FC = () => {
   const [treasury, setTreasury] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Модальные окна дашборда президента
+  // President dashboard modals
   const [showCreateSettlementModal, setShowCreateSettlementModal] = useState(false);
   const [settlementName, setSettlementName] = useState('');
   const [settlementDesc, setSettlementDesc] = useState('');
@@ -467,7 +469,7 @@ const StateDetailPage: FC = () => {
                     )}
                     <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
                       <button 
-                        className="btn-copy-id" 
+                        className="state-detail-page__icon-btn" 
                         title={t('stateDetailMissed.copyId')} 
                         onClick={() => {
                           navigator.clipboard.writeText(state.id);
@@ -479,14 +481,14 @@ const StateDetailPage: FC = () => {
                       {canPublishDecree && !state.isArchived && (
                         <>
                           <button 
-                            className="state-detail__btn state-detail__btn--edit-icon"
+                            className="state-detail-page__icon-btn state-detail-page__icon-btn--edit"
                             title={t('stateDetailMissed.editState')} 
                             onClick={() => setShowEditStateModal(true)}
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                           </button>
                           <button 
-                            className="state-detail__btn state-detail__btn--danger-icon"
+                            className="state-detail-page__icon-btn state-detail-page__icon-btn--danger"
                             title={t('stateDetailMissed.archiveState')} 
                             onClick={handleDeleteState}
                           >
@@ -569,7 +571,7 @@ const StateDetailPage: FC = () => {
             </div>
           </div>
 
-          {/* Панель управления государством (Только для президента/лидера) */}
+          {/* State management panel (Leader/President only) */}
           {canPublishDecree && (
             <div className="state-dashboard">
               <h3 className="state-dashboard__title">
@@ -599,8 +601,7 @@ const StateDetailPage: FC = () => {
                     </div>
                   </div>
                   <button
-                    className="card-action"
-                    style={{ background: '#fee2e2', color: '#b91c1c' }}
+                    className="card-action card-action--danger"
                     onClick={handleResignPresident}
                   >
                     {t('state-detail.dashboard.power.btn')}
@@ -643,9 +644,8 @@ const StateDetailPage: FC = () => {
                   </div>
                   {!state.treasuryAccountNumber ? (
                     <button
-                      className="card-action"
+                      className="card-action card-action--disabled"
                       disabled
-                      style={{ opacity: 0.5, cursor: 'not-allowed' }}
                     >
                       {t('state-detail.dashboard.currency.btnBank')}
                     </button>
@@ -908,7 +908,7 @@ const StateDetailPage: FC = () => {
                         <strong>{Number(curr.totalIssued || 0).toLocaleString('ru-RU')} {curr.code}</strong>
                       </div>
                       <div className="state-detail__currency-stat">
-                        <span>{t('state-detail.currency.support')}</span>
+                        <span>{t('state-detail.currencyCard.power')}</span>
                         <strong>{calculateStatePower()}{t('stateDetailMissed.powerUnit')}</strong>
                       </div>
                     </div>
@@ -955,7 +955,7 @@ const StateDetailPage: FC = () => {
             <TerritoriesList ownerType="state" ownerId={state.id} />
           </div>
 
-          {/* Модальное окно создания поселения */}
+          {/* Settlement creation modal */}
           {showCreateSettlementModal && (
             <div className="economy-modal-overlay">
               <div className="economy-modal">
@@ -1061,7 +1061,7 @@ const StateDetailPage: FC = () => {
             </div>
           )}
 
-          {/* Модальное окно "Предложить подвид" */}
+          {/* "Suggest subtype" modal */}
           {showProposeTypeModal && (
             <div className="economy-modal-overlay" style={{ zIndex: 1100 }}>
               <div className="economy-modal" style={{ maxWidth: '400px' }}>
@@ -1098,7 +1098,7 @@ const StateDetailPage: FC = () => {
             </div>
           )}
 
-          {/* Модальное окно выпуска валюты */}
+          {/* Currency issuance modal */}
           {showCreateCurrencyModal && (
             <div className="economy-modal-overlay">
               <div className="economy-modal">
@@ -1185,7 +1185,7 @@ const StateDetailPage: FC = () => {
             </div>
           )}
 
-          {/* Модальное окно учреждения государственного банка */}
+          {/* State bank establishment modal */}
           {showCreateBankModal && (
             <div className="economy-modal-overlay">
               <div className="economy-modal">
@@ -1223,7 +1223,7 @@ const StateDetailPage: FC = () => {
             </div>
           )}
 
-          {/* Модальное окно изменения налогов */}
+          {/* Tax modification modal */}
           {showTaxModal && (
             <div className="economy-modal-overlay">
               <div className="economy-modal">
@@ -1288,7 +1288,7 @@ const StateDetailPage: FC = () => {
             </div>
           )}
 
-          {/* Модальное окно управления должностями */}
+          {/* Role/position management modal */}
           {showRolesModal && (
             <div className="economy-modal-overlay">
               <div className="economy-modal">

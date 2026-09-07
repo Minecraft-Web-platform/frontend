@@ -38,6 +38,13 @@
   "achievements": {
     "empty": "You have no achievements yet.",
     "title": "Achievements",
-    "earned": "Earned:"
+    "earned": "Earned:",
+    "unlocked": "ACHIEVEMENT UNLOCKED",
+    "rarities": {
+      "common": "COMMON ACHIEVEMENT",
+      "rare": "RARE ACHIEVEMENT",
+      "epic": "EPIC ACHIEVEMENT",
+      "legendary": "LEGENDARY ACHIEVEMENT"
+    }
   }
 }

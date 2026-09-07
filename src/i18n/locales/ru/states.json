@@ -311,9 +311,9 @@
         "rural": "Сельское пос.",
         "noMayor": "🏛️ Без мэра (Выборы)",
         "noDesc": "Описание поселения пока не указано.",
-        "residents": "👥 {count} жит.",
+        "residents": "👥 {{count}} жит.",
         "powerTitle": "Экономический вклад поселения в мощь государства",
-        "powerValue": "⚡ {count} ед.",
+        "powerValue": "⚡ {{count}} ед.",
         "moreBtn": "Подробнее →"
     },
     "citizenshipRequests": {
@@ -404,7 +404,7 @@
         "ipoFee": "Пошлина за IPO ({currency})",
         "tradingFee": "Комиссия с торгов (%)",
         "treasuryBalance": "Баланс казны",
-        "ipoRequestsTitle": "Заявки на IPO ({count})",
+        "ipoRequestsTitle": "Заявки на IPO ({{count}})",
         "ipoRequestInfo": "Акции: {shares} шт. | Стартовая цена: {price} | Пошлина: {fee}",
         "approveBtn": "Одобрить",
         "rejectBtn": "Отклонить",
@@ -429,7 +429,7 @@
         "editState": "Редактировать государство",
         "archiveState": "Архивировать государство",
         "powerUnit": " ед.",
-        "exchangeRateInfo": "1 {code} = {rate} ед."
+        "exchangeRateInfo": "1 {{code}} = {{rate}} ед."
     },
     "settlementDetail": {
         "loading": "Загрузка паспорта поселения...",
@@ -444,7 +444,7 @@
         "state": "🏰 Государство:",
         "independent": "Независимое поселение",
         "population": "👥 Население:",
-        "citizensCount": "{count} жит.",
+        "citizensCount": "{{count}} жит.",
         "powerContribution": "⚡ Вклад в мощь:",
         "powerValue": "+100 ед.",
         "zeroPower": "0 ед. (нет жителей)",
@@ -455,7 +455,7 @@
             "applying": "Отправка...",
             "resignMayor": "Сложить полномочия",
             "edit": "✏️ Редактировать поселение",
-            "requests": "📬 Заявки на заселение ({count})",
+            "requests": "📬 Заявки на заселение ({{count}})",
             "setCapital": "🏛️ Сделать столицей",
             "delete": "🗑️ Удалить поселение"
         },
@@ -476,7 +476,7 @@
             "title": "🗳️ Выборы Мэра в поселении"
         },
         "citizens": {
-            "title": "👥 Жители поселения ({count})",
+            "title": "👥 Жители поселения ({{count}})",
             "me": "(Вы)",
             "mayorRole": "👑 Мэр поселения",
             "citizenRole": "👥 Житель",
@@ -497,5 +497,24 @@
             "capitalSuccess": "Поселение успешно назначено столицей!",
             "capitalError": "Не удалось назначить столицу"
         }
+    },
+    "decrees": {
+        "publishNew": "+ Опубликовать новый указ",
+        "publishFirst": "+ Опубликовать первый указ",
+        "createTitle": "Создание официального указа государства",
+        "createSubtitle": "Указ будет опубликован в государственной ленте и станет виден всем игрокам",
+        "titleLabel": "Заголовок документа *",
+        "titlePlaceholder": "Например: Указ №1 «О создании Государственного Банка и эмиссии валюты»",
+        "contentLabel": "Текст официального указа *",
+        "contentPlaceholder": "Изложите полный текст решения, законы, регламенты или объявления для граждан...",
+        "cancel": "Отмена",
+        "publishing": "Публикация...",
+        "publishBtn": "📜 Опубликовать указ",
+        "decreeBadge": "📜 УКАЗ #{{number}}",
+        "authorRole": "Президент / Автор",
+        "certified": "Официальный государственный документ • Удостоверено Лидером",
+        "emptyTitle": "Официальных указов пока нет",
+        "emptySubtitle": "Лидер государства еще не публиковал документы, законы или указы.",
+        "errorPublish": "Ошибка при публикации указа"
     }
 }

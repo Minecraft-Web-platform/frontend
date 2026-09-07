@@ -1,5 +1,5 @@
-import {  } from 'axios';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { economyService } from '../services/economy.service';
 import { IState } from '../../states';
 
@@ -16,6 +16,7 @@ export const IpoModal: React.FC<IpoModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const { t } = useTranslation('economy');
   const [totalShares, setTotalShares] = useState('1000');
   const [initialPrice, setInitialPrice] = useState('10.0');
   const [ipoExchangeStateId, setIpoExchangeStateId] = useState('');
@@ -24,7 +25,7 @@ export const IpoModal: React.FC<IpoModalProps> = ({
   const handleIpoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ipoExchangeStateId) {
-      alert('Выберите биржу (государство) для листинга!');
+      alert(t('exchangeModals.ipo.selectExchangeAlert'));
       return;
     }
     try {
@@ -37,7 +38,7 @@ export const IpoModal: React.FC<IpoModalProps> = ({
       onSuccess();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.response?.data?.message || err?.message || 'Ошибка вывода на биржу (IPO)');
+      alert(err?.response?.data?.message || err?.message || t('exchangeModals.ipo.error'));
     } finally {
       setLoading(false);
     }
@@ -46,14 +47,14 @@ export const IpoModal: React.FC<IpoModalProps> = ({
   return (
     <div className="economy-modal-overlay">
       <div className="economy-modal">
-        <h3 className="modal-title">Заявка на первичное публичное размещение (IPO)</h3>
+        <h3 className="modal-title">{t('exchangeModals.ipo.title')}</h3>
         <form onSubmit={handleIpoSubmit} className="modal-form">
           <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '16px' }}>
-            После подачи заявки, казначей выбранного государства должен будет её одобрить.
-            Пошлина будет списана с коммерческого счета фирмы только в момент одобрения.
+            {t('exchangeModals.ipo.hint1')}{' '}
+            {t('exchangeModals.ipo.hint2')}
           </p>
           <label>
-            <span>Общее число выпускаемых акций</span>
+            <span>{t('exchangeModals.ipo.sharesCount')}</span>
             <input
               type="number"
               step="100"
@@ -66,7 +67,7 @@ export const IpoModal: React.FC<IpoModalProps> = ({
           </label>
 
           <label>
-            <span>Стартовая цена одной акции (в нац. валюте)</span>
+            <span>{t('exchangeModals.ipo.startPrice')}</span>
             <input
               type="number"
               step="0.1"
@@ -79,17 +80,17 @@ export const IpoModal: React.FC<IpoModalProps> = ({
           </label>
 
           <label>
-            <span>Государство (Биржа)</span>
+            <span>{t('exchangeModals.ipo.exchangeState')}</span>
             <select
               value={ipoExchangeStateId}
               onChange={(e) => setIpoExchangeStateId(e.target.value)}
               required
               disabled={loading}
             >
-              <option value="">-- Выберите биржу --</option>
+              <option value="">{t('exchangeModals.ipo.selectExchange')}</option>
               {statesList.map((st) => (
                 <option key={st.id} value={st.id}>
-                  Биржа государства {st.name} (Пошлина: {st.ipoFee || 0})
+                  {t('exchangeModals.ipo.exchangeOption', { state: st.name, fee: st.ipoFee || 0 })}
                 </option>
               ))}
             </select>
@@ -102,14 +103,14 @@ export const IpoModal: React.FC<IpoModalProps> = ({
               className="economy-btn economy-btn--secondary"
               disabled={loading}
             >
-              Отмена
+              {t('exchangeModals.ipo.cancel')}
             </button>
             <button
               type="submit"
               className="economy-btn economy-btn--primary"
               disabled={loading}
             >
-              {loading ? 'Обработка...' : 'Подать заявку'}
+              {loading ? t('exchangeModals.ipo.processing') : t('exchangeModals.ipo.submit')}
             </button>
           </div>
         </form>

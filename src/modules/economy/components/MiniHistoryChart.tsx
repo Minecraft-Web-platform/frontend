@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createChart, ColorType, IChartApi, ISeriesApi, AreaSeries } from 'lightweight-charts';
 
 interface MiniHistoryChartProps {
@@ -12,6 +13,7 @@ export const MiniHistoryChart: React.FC<MiniHistoryChartProps> = ({
   color = '#10b981', // emerald-500 default for currencies
   triggerRefetch
 }) => {
+  const { t } = useTranslation('economy');
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
@@ -121,7 +123,7 @@ export const MiniHistoryChart: React.FC<MiniHistoryChartProps> = ({
     <div style={{ width: '100%', height: '60px', marginTop: '12px', position: 'relative' }}>
       {!hasData && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '12px', fontStyle: 'italic', background: '#f8fafc', borderRadius: '8px', zIndex: 10 }}>
-          Нет истории
+          {t('exchange.noHistory')}
         </div>
       )}
       <div ref={chartContainerRef} style={{ width: '100%', height: '100%', opacity: hasData ? 1 : 0 }} />

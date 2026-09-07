@@ -29,11 +29,11 @@ export const BankAccountsList: React.FC<BankAccountsListProps> = ({
 
   const filteredTransfers = selectedAccountFilter === 'ALL' 
     ? transfers 
-    : transfers.filter(t => t.fromAccountNumber === selectedAccountFilter || t.toAccountNumber === selectedAccountFilter);
+    : transfers.filter(tr => tr.fromAccountNumber === selectedAccountFilter || tr.toAccountNumber === selectedAccountFilter);
 
   return (
     <>
-      {/* Список счетов */}
+      {/* Accounts list */}
       <div className="economy-section">
         <div
           className="section-header"
@@ -84,7 +84,7 @@ export const BankAccountsList: React.FC<BankAccountsListProps> = ({
         )}
       </div>
 
-      {/* История переводов */}
+      {/* Transfers history */}
       <div className="economy-section">
         <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h2 className="section-title" style={{ margin: 0 }}>
@@ -123,23 +123,23 @@ export const BankAccountsList: React.FC<BankAccountsListProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {filteredTransfers.map((t) => (
+                {filteredTransfers.map((tr) => (
                   <tr 
-                    key={t.id} 
+                    key={tr.id} 
                     style={{ cursor: 'pointer' }}
-                    onClick={() => setSelectedTransaction(t)}
-                    title="Нажмите для просмотра чека"
+                    onClick={() => setSelectedTransaction(tr)}
+                    title={t('bankAccounts.clickToViewReceipt')}
                   >
                     <td style={{ color: '#9ca3af', fontSize: '13px' }}>
-                      {new Date(t.createdAt).toLocaleString('ru-RU')}
+                      {new Date(tr.createdAt).toLocaleString('ru-RU')}
                     </td>
                     <td style={{ fontFamily: 'monospace' }}>
-                      {t.fromAccountNumber}
+                      {tr.fromAccountNumber}
                     </td>
                     <td style={{ fontFamily: 'monospace' }}>
-                      {t.toAccountNumber}
+                      {tr.toAccountNumber}
                     </td>
-                    <td>{t.description || '—'}</td>
+                    <td>{tr.description || '—'}</td>
                     <td
                       style={{
                         textAlign: 'right',
@@ -147,8 +147,8 @@ export const BankAccountsList: React.FC<BankAccountsListProps> = ({
                         fontFamily: 'monospace',
                       }}
                     >
-                      {t.taxAmount > 0
-                        ? `${t.taxAmount.toFixed(2)} ${t.currencyCode}`
+                      {tr.taxAmount > 0
+                        ? `${tr.taxAmount.toFixed(2)} ${tr.currencyCode}`
                         : '0.00'}
                     </td>
                     <td
@@ -158,9 +158,9 @@ export const BankAccountsList: React.FC<BankAccountsListProps> = ({
                         fontFamily: 'monospace',
                       }}
                     >
-                      {t.amount.toLocaleString('ru-RU')}{' '}
+                      {tr.amount.toLocaleString('ru-RU')}{' '}
                       <span style={{ color: '#fbbf24' }}>
-                        {t.currencyCode}
+                        {tr.currencyCode}
                       </span>
                     </td>
                   </tr>

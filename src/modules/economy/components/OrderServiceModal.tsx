@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import React, { useState, useMemo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ICompanyService, IOrderIdentity } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 import Button from '../../../shared/ui/button/button.component';
@@ -13,6 +14,7 @@ interface OrderServiceModalProps {
 }
 
 export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId, service, onClose, onSuccess }) => {
+  const { t } = useTranslation('economy');
   const [clientComment, setClientComment] = useState('');
   const [selectedSubItemIds, setSelectedSubItemIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
@@ -60,7 +62,7 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (service.isComposite && selectedSubItemIds.size === 0) {
-      setError('Выберите хотя бы одну подуслугу');
+      setError(t('companies.services.orderModal.selectSubItemAlert'));
       return;
     }
 
@@ -82,7 +84,7 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
       onSuccess();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || 'Ошибка при оформлении заказа');
+      setError((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || t('companies.services.orderModal.error'));
     } finally {
       setLoading(false);
     }
@@ -91,7 +93,7 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
   return (
     <div className="modal-backdrop">
       <div className="order-service-modal">
-        <h2>Оформление заказа: {service.name}</h2>
+        <h2>{t('companies.services.orderModal.title', { name: service.name })}</h2>
         {error && <div className="error-message">{error}</div>}
         
         <div className="service-details">
@@ -101,7 +103,7 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
         <form onSubmit={handleSubmit}>
           {service.isComposite && service.subItems && service.subItems.length > 0 && (
             <div className="sub-items-selection">
-              <h3>Выберите подуслуги (Базовая стоимость: {service.price})</h3>
+              <h3>{t('companies.services.orderModal.subItemsTitle', { price: service.price })}</h3>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               {service.subItems.map((item: any) => (
                 <label key={item.id} className="sub-item-checkbox">
@@ -121,18 +123,18 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
           )}
 
           <div className="form-group">
-            <label>Комментарий к заказу (адрес доставки, пожелания и т.д.)</label>
+            <label>{t('companies.services.orderModal.comment')}</label>
             <textarea 
               value={clientComment} 
               onChange={e => setClientComment(e.target.value)} 
               rows={4}
-              placeholder="Опишите детали заказа..."
+              placeholder={t('companies.services.orderModal.commentPlaceholder')}
             />
           </div>
 
           {identities.length > 1 && (
             <div className="form-group">
-              <label>Оформить от лица:</label>
+              <label>{t('companies.services.orderModal.orderAs')}</label>
               <select 
                 value={selectedIdentityId} 
                 onChange={e => setSelectedIdentityId(e.target.value)}
@@ -145,12 +147,12 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
           )}
 
           <div className="order-summary">
-            Итоговая стоимость: <span className="total-price">{totalPrice} монет</span>
+            {t('companies.services.orderModal.totalPrice')} <span className="total-price">{totalPrice} {t('companies.services.orderModal.coins')}</span>
           </div>
 
           <div className="modal-actions">
-            <Button type="button" callback={onClose} secondary={true}>Отмена</Button>
-            <Button type="submit" disabled={loading}>{loading ? 'Оформление...' : 'Оформить заказ'}</Button>
+            <Button type="button" callback={onClose} secondary={true}>{t('companies.services.orderModal.cancel')}</Button>
+            <Button type="submit" disabled={loading}>{loading ? t('companies.services.orderModal.ordering') : t('companies.services.orderModal.submit')}</Button>
           </div>
         </form>
       </div>

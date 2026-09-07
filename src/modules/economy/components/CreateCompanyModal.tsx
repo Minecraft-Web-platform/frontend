@@ -1,5 +1,5 @@
-import {  } from 'axios';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { economyService } from '../services/economy.service';
 import { ImageUploader } from '../../../shared/ui/image-uploader/ImageUploader';
 import { IState, ISettlement } from '../../states';
@@ -22,6 +22,7 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const { t } = useTranslation('economy');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
@@ -32,7 +33,7 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
   const handleCreateCompany = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name) {
-      alert('Введите название компании');
+      alert(t('companies.createModal.nameRequiredAlert'));
       return;
     }
     try {
@@ -47,7 +48,7 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
       onSuccess();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Ошибка регистрации компании';
+      const msg = err?.response?.data?.message || err?.message || t('companies.createModal.error');
       alert(msg);
     } finally {
       setLoading(false);
@@ -63,34 +64,34 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
   return (
     <div className="economy-modal-overlay">
       <div className="economy-modal">
-        <h3 className="modal-title">Регистрация новой фирмы</h3>
+        <h3 className="modal-title">{t('companies.createModal.title')}</h3>
         <form onSubmit={handleCreateCompany} className="modal-form">
           <label>
-            <span>Название фирмы</span>
+            <span>{t('companies.createModal.name')}</span>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Redstone Dynamics, Craft Corp..."
+              placeholder={t('companies.createModal.namePlaceholder')}
               disabled={loading}
             />
           </label>
 
           <label>
-            <span>Описание деятельности</span>
+            <span>{t('companies.createModal.desc')}</span>
             <textarea
               rows={2}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Добыча редстоуна и строительство автоматизированных ферм..."
+              placeholder={t('companies.createModal.descPlaceholder')}
               disabled={loading}
             />
           </label>
 
           <ImageUploader 
             folder="economy/companies"
-            label="Логотип (опционально)"
+            label={t('companies.createModal.logo')}
             value={logoUrl}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onChange={(url: any) => setLogoUrl(url as string)}
@@ -104,7 +105,7 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
             }}
           >
             <label>
-              <span>Государство <span style={{ color: '#e11d48' }}>*</span></span>
+              <span>{t('companies.createModal.state')} <span style={{ color: '#e11d48' }}>*</span></span>
               <select
                 value={stateId}
                 onChange={(e) => {
@@ -115,19 +116,19 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
                 required
                 disabled={loading}
               >
-                <option value="">-- Выберите государство --</option>
+                <option value="">{t('companies.createModal.selectState')}</option>
                 {statesList.map((st) => {
                   const isForeign = Boolean(myStateId && st.id !== myStateId);
                   return (
                     <option key={st.id} value={st.id}>
-                      {st.name} {isForeign ? '[Другое гос-во]' : ''}
+                      {st.name} {isForeign ? t('companies.createModal.foreignState') : ''}
                     </option>
                   );
                 })}
               </select>
             </label>
             <label>
-              <span>Поселение</span>
+              <span>{t('companies.createModal.settlement')}</span>
               <select
                 value={settlementId}
                 onChange={(e) => setSettlementId(e.target.value)}
@@ -139,8 +140,8 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
               >
                 <option value="">
                   {!stateId
-                    ? '-- Сначала выберите государство --'
-                    : '-- Не выбрано --'}
+                    ? t('companies.createModal.selectStateFirst')
+                    : t('companies.createModal.notSelected')}
                 </option>
                 {settlementsList
                   .filter((c) => c.stateId === stateId)
@@ -182,7 +183,9 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
                   }}
                 >
                   <span>
-                    Юрисдикция: {statesList.find((s) => s.id === stateId)?.name || 'Не выбрано'}
+                    {t('companies.createModal.jurisdiction', {
+                      name: statesList.find((s) => s.id === stateId)?.name || t('companies.createModal.notSelected')
+                    })}
                   </span>
                   {stateId !== myStateId && (
                     <span
@@ -195,7 +198,7 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
                         fontWeight: 700,
                       }}
                     >
-                      ДРУГОЕ ГОСУДАРСТВО
+                      {t('companies.createModal.foreignBadge')}
                     </span>
                   )}
                 </div>
@@ -208,8 +211,8 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
                   }}
                 >
                   {stateId !== myStateId
-                    ? 'Вы регистрируете фирму в иностранной юрисдикции. Коммерческий счёт компании будет автоматически открыт в банке и валюте этого государства.'
-                    : 'Вы регистрируете фирму в домашней юрисдикции.'}
+                    ? t('companies.createModal.foreignNotice')
+                    : t('companies.createModal.domesticNotice')}
                 </div>
               </div>
             </div>
@@ -233,9 +236,9 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
             >
               <span style={{ fontSize: '18px' }}>🏛️</span>
               <div>
-                <strong>В выбранном государстве нет Национального банка</strong>
+                <strong>{t('companies.createModal.noBankTitle')}</strong>
                 <div style={{ marginTop: '4px', color: '#b91c1c', fontSize: '13px' }}>
-                  Регистрация фирмы невозможна: без банка нельзя автоматически открыть коммерческий счёт. В государстве должна быть выпущена национальная валюта.
+                  {t('companies.createModal.noBankDesc')}
                 </div>
               </div>
             </div>
@@ -248,7 +251,7 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
               className="economy-btn economy-btn--secondary"
               disabled={loading}
             >
-              Отмена
+              {t('companies.createModal.cancel')}
             </button>
             <button
               type="submit"
@@ -259,7 +262,7 @@ export const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
                 cursor: (!selectedStateHasBank || loading) ? 'not-allowed' : 'pointer',
               }}
             >
-              {loading ? 'Создание...' : 'Зарегистрировать'}
+              {loading ? t('companies.createModal.creating') : t('companies.createModal.submit')}
             </button>
           </div>
         </form>

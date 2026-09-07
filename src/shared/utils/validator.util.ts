@@ -1,3 +1,5 @@
+import i18n from '../../i18n/i18n';
+
 type PasswordRuleFlags = {
   lengthIsValid: boolean;
   allowedCharactersOnly: boolean;
@@ -32,11 +34,11 @@ class Validator implements IValidator {
   public validatePasswordErrors(password: string): string[] {
     const errors: string[] = [];
     if (password.length < 8) {
-      errors.push("Пароль должен быть не короче 8 символов");
+      errors.push(i18n.t('auth:registration-page.errors.validation.password-too-short'));
     }
     if (!this.passwordRegex.test(password)) {
       errors.push(
-        "Пароль содержит недопустимые символы (разрешены только латиница, цифры, _ + -)"
+        i18n.t('auth:registration-page.errors.validation.password-allowed-chars')
       );
     }
     return errors;
@@ -45,11 +47,11 @@ class Validator implements IValidator {
   public validateUsernameErrors(username: string): string[] {
     const errors: string[] = [];
     if (username.length < 3 || username.length > 16) {
-      errors.push("Никнейм должен быть от 3 до 16 символов");
+      errors.push(i18n.t('auth:registration-page.errors.validation.username-length'));
     }
     if (!this.usernameRegex.test(username)) {
       errors.push(
-        "Никнейм содержит недопустимые символы (разрешены только латиница, цифры и _)"
+        i18n.t('auth:registration-page.errors.validation.username-allowed-chars')
       );
     }
     return errors;

@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ICompanyOrder } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 import Button from '../../../shared/ui/button/button.component';
@@ -7,6 +8,7 @@ import { PropagateLoader } from 'react-spinners';
 import './DisputedOrdersTab.scss';
 
 export const DisputedOrdersTab: React.FC = () => {
+  const { t } = useTranslation('economy');
   const [orders, setOrders] = useState<ICompanyOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -25,7 +27,7 @@ export const DisputedOrdersTab: React.FC = () => {
       setError('');
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка загрузки жалоб');
+      setError((err as AxiosError<{message?: string}>).response?.data?.message || t('companies.disputes.errorLoading'));
       setOrders([]);
     } finally {
       setLoading(false);
@@ -35,18 +37,18 @@ export const DisputedOrdersTab: React.FC = () => {
   const handleArbitrate = async (orderId: string, decision: 'REFUND' | 'REJECT') => {
     const comment = arbitrationComment[orderId] || '';
     if (!comment.trim()) {
-      alert('Пожалуйста, оставьте комментарий с обоснованием решения.');
+      alert(t('companies.disputes.verdictCommentPrompt'));
       return;
     }
 
     try {
       await economyService.arbitrateOrder(orderId, { decision, comment });
-      alert('Вердикт успешно вынесен');
+      alert(t('companies.disputes.verdictSuccess'));
       setArbitrationComment(prev => ({ ...prev, [orderId]: '' }));
       fetchOrders();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка при вынесении вердикта');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || t('companies.disputes.errorVerdict'));
     }
   };
 
@@ -65,8 +67,8 @@ export const DisputedOrdersTab: React.FC = () => {
   if (orders.length === 0) {
     return (
       <div className="empty-orders-message" style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
-        <h3>Нет активных жалоб 🎉</h3>
-        <p>В вашей юрисдикции в данный момент нет ни одного спорного заказа.</p>
+        <h3>{t('companies.disputes.emptyTitle')}</h3>
+        <p>{t('companies.disputes.emptyDesc')}</p>
       </div>
     );
   }
@@ -77,28 +79,28 @@ export const DisputedOrdersTab: React.FC = () => {
         {orders.map(order => (
           <div key={order.id} className={`order-card ${order.isEscalatedToAdmin ? 'escalated' : ''}`}>
             <div className="order-header">
-              <span className="order-id">Жалоба #{order.id.slice(0, 8)}</span>
+              <span className="order-id">{t('companies.disputes.complaintNumber', { id: order.id.slice(0, 8) })}</span>
               <span className={`status-badge status-${order.status.toLowerCase()} ${order.isEscalatedToAdmin ? 'status-escalated' : ''}`}>
                 {order.isEscalatedToAdmin ? 'ESCALATED' : order.status}
               </span>
             </div>
 
             <div className="order-details">
-              <p><strong>Компания:</strong> {order.company?.name}</p>
+              <p><strong>{t('companies.disputes.company')}</strong> {order.company?.name}</p>
               <div className="detail-item">
-                <span className="label">Клиент:</span>
+                <span className="label">{t('companies.disputes.client')}</span>
                 <span className="value">
                   {order.clientUsername}
-                  {order.payerType === 'company' && ' (Счет компании)'}
-                  {order.payerType === 'state' && ' (Государственная казна)'}
+                  {order.payerType === 'company' && ` ${t('companies.disputes.companyAccount')}`}
+                  {order.payerType === 'state' && ` ${t('companies.disputes.stateTreasury')}`}
                 </span>
               </div>
-              <p><strong>Услуга:</strong> {order.service?.name}</p>
-              <p><strong>Сумма спора:</strong> {order.totalPrice} монет</p>
+              <p><strong>{t('companies.disputes.service')}</strong> {order.service?.name}</p>
+              <p>{t('companies.disputes.disputeAmount', { price: order.totalPrice })}</p>
 
               {order.clientComment && (
                 <div className="client-comment">
-                  <strong>Комментарий при заказе:</strong>
+                  <strong>{t('companies.disputes.clientComment')}</strong>
                   <p>{order.clientComment}</p>
                 </div>
               )}
@@ -107,9 +109,9 @@ export const DisputedOrdersTab: React.FC = () => {
             {order.statusHistory && order.statusHistory.length > 0 && (
               <div className="status-history">
                 <details open>
-                  <summary>История и суть жалобы</summary>
+                  <summary>{t('companies.disputes.historyTitle')}</summary>
                   <ul>
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {order.statusHistory.map((h: any) => (
                       <li key={h.id}>
                         <span className="date">{new Date(h.createdAt).toLocaleString()}</span>
@@ -124,16 +126,16 @@ export const DisputedOrdersTab: React.FC = () => {
             )}
 
             <div className="arbitration-section">
-              <h4>Вынести вердикт</h4>
+              <h4>{t('companies.disputes.issueVerdict')}</h4>
               <textarea
-                placeholder="Обоснование решения (сохраняет переносы строк)..."
+                placeholder={t('companies.disputes.verdictPlaceholder')}
                 value={arbitrationComment[order.id] || ''}
                 onChange={(e) => setArbitrationComment(prev => ({ ...prev, [order.id]: e.target.value }))}
                 rows={4}
               />
               <div className="actions-row">
-                <Button callback={() => handleArbitrate(order.id, 'REFUND')} style={{ backgroundColor: '#ef4444', color: 'white' }}>Возврат средств</Button>
-                <Button callback={() => handleArbitrate(order.id, 'REJECT')} secondary={true}>Отклонить жалобу</Button>
+                <Button callback={() => handleArbitrate(order.id, 'REFUND')} style={{ backgroundColor: '#ef4444', color: 'white' }}>{t('companies.disputes.refund')}</Button>
+                <Button callback={() => handleArbitrate(order.id, 'REJECT')} secondary={true}>{t('companies.disputes.rejectComplaint')}</Button>
               </div>
             </div>
           </div>

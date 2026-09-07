@@ -91,7 +91,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
                   key={card.id}
                   className="card-item"
                   onClick={() => setSearchParams({ tab: 'cards', cardId: card.id })}
-                  title="Нажмите, чтобы открыть управление картой"
+                  title={t('accountCard.clickToManage')}
                   style={{ cursor: 'pointer' }}
                 >
                   <div className="card-info">

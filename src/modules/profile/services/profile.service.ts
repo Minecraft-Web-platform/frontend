@@ -29,7 +29,7 @@ class ProfileService {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Ошибка загрузки аватара: ${errorText}`);
+      throw new Error(`Failed to upload avatar: ${errorText}`);
     }
 
     return response.json();

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import useAuthStore from '../../../store/auth.store';
 import { IAchievement } from '../../../modules/achievements/types/achievements.types';
 import { playAchievementSound } from '../../utils/audio.utils';
@@ -6,14 +7,13 @@ import './global-toast.scss';
 
 const SERVER_URL = import.meta.env.VITE_BACKEND_URL;
 
-
-
 interface ToastItem {
   id: string;
   achievement: IAchievement;
 }
 
 export const GlobalToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { t } = useTranslation('profile');
   const { accessToken } = useAuthStore();
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
@@ -22,10 +22,10 @@ export const GlobalToastProvider: React.FC<{ children: ReactNode }> = ({ childre
 
     let eventSource: EventSource | null = null;
 
-    // Используем небольшую задержку, чтобы обойти двойной рендер React StrictMode
-    // Если компонент отмонтируется сразу же (как это бывает в StrictMode), 
-    // мы просто отменим таймер и не будем плодить "обрубленные" запросы,
-    // которые Firefox воспринимает как CORS error со Status: null.
+    // Use a small delay to handle React StrictMode double rendering
+    // If the component unmounts immediately (as in StrictMode), 
+    // we simply cancel the timer and avoid creating aborted requests,
+    // which Firefox reports as a CORS error with Status: null.
     const timer = setTimeout(() => {
       eventSource = new EventSource(`${SERVER_URL}/achievements/stream?token=${accessToken}`);
 
@@ -70,11 +70,7 @@ export const GlobalToastProvider: React.FC<{ children: ReactNode }> = ({ childre
       <div className="toast-container">
         {toasts.map((toast) => {
           const rarity = toast.achievement.rarity || 'common';
-          let rarityLabel = 'ДОСТИЖЕНИЕ ПОЛУЧЕНО';
-          if (rarity === 'common') rarityLabel = 'ОБЫЧНОЕ ДОСТИЖЕНИЕ';
-          if (rarity === 'rare') rarityLabel = 'РЕДКОЕ ДОСТИЖЕНИЕ';
-          if (rarity === 'epic') rarityLabel = 'ЭПИЧЕСКОЕ ДОСТИЖЕНИЕ';
-          if (rarity === 'legendary') rarityLabel = 'ЛЕГЕНДАРНОЕ ДОСТИЖЕНИЕ';
+          const rarityLabel = t(`achievements.rarities.${rarity}`, { defaultValue: t('achievements.unlocked') });
 
           return (
             <div key={toast.id} className={`achievement-toast rarity-${rarity}`}>

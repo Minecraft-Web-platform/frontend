@@ -1,5 +1,6 @@
 import {  } from 'axios';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IAccount } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 
@@ -16,6 +17,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const { t } = useTranslation('economy');
   const [transferFrom, setTransferFrom] = useState('');
   const [transferTo, setTransferTo] = useState('');
   const [transferAmount, setTransferAmount] = useState('');
@@ -34,7 +36,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
     e.preventDefault();
     const amountNum = parseFloat(transferAmount);
     if (!transferTo || !amountNum || amountNum <= 0) {
-      alert('Пожалуйста, введите корректные данные для перевода');
+      alert(t('transferModal.invalidData'));
       return;
     }
     try {
@@ -48,7 +50,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
       onSuccess();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.message || 'Ошибка перевода средств');
+      alert(err?.message || t('transferModal.error'));
     } finally {
       setLoading(false);
     }
@@ -57,10 +59,10 @@ export const TransferModal: React.FC<TransferModalProps> = ({
   return (
     <div className="economy-modal-overlay">
       <div className="economy-modal">
-        <h3 className="modal-title">Новый перевод</h3>
+        <h3 className="modal-title">{t('transferModal.title')}</h3>
         <form onSubmit={handleTransfer} className="modal-form">
           <label>
-            <span>Счет отправителя</span>
+            <span>{t('transferModal.senderAccount')}</span>
             <select
               value={transferFrom}
               onChange={(e) => setTransferFrom(e.target.value)}
@@ -75,7 +77,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
           </label>
 
           <label>
-            <span>Номер получателя</span>
+            <span>{t('transferModal.receiverNumber')}</span>
             <input
               type="text"
               value={transferTo}
@@ -86,7 +88,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
           </label>
 
           <label>
-            <span>Сумма</span>
+            <span>{t('transferModal.amount')}</span>
             <input
               type="number"
               value={transferAmount}
@@ -98,12 +100,12 @@ export const TransferModal: React.FC<TransferModalProps> = ({
           </label>
 
           <label>
-            <span>Назначение платежа</span>
+            <span>{t('transferModal.description')}</span>
             <input
               type="text"
               value={transferComment}
               onChange={(e) => setTransferComment(e.target.value)}
-              placeholder="Оплата товаров / Подарок..."
+              placeholder={t('transferModal.descriptionPlaceholder')}
               disabled={loading}
             />
           </label>
@@ -115,14 +117,14 @@ export const TransferModal: React.FC<TransferModalProps> = ({
               className="economy-btn economy-btn--secondary"
               disabled={loading}
             >
-              Отмена
+              {t('transferModal.cancel')}
             </button>
             <button
               type="submit"
               className="economy-btn economy-btn--primary"
               disabled={loading}
             >
-              {loading ? 'Обработка...' : 'Перевести'}
+              {loading ? t('transferModal.processing') : t('transferModal.submit')}
             </button>
           </div>
         </form>

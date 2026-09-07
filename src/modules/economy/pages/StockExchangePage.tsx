@@ -17,12 +17,12 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'market' | 'portfolio'>('market');
 
-  // Модальные окна покупки/продажи
+  // Buy/sell modals
   const [buyCompanyId, setBuyCompanyId] = useState<string | null>(null);
   const [sellCompanyId, setSellCompanyId] = useState<string | null>(null);
   const [sharesCount, setSharesCount] = useState('10');
 
-  // Новые состояния для торгового терминала
+  // Terminal states
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
   const [changePriceCompanyId, setChangePriceCompanyId] = useState<string | null>(null);
   const [selectedExchangeId, setSelectedExchangeId] = useState<string | null>(null);
@@ -55,7 +55,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     mutatePortfolio();
   };
 
-  // Автовыбор первой компании
+  // Auto-select first company
   useEffect(() => {
     if (companies.length > 0 && !selectedCompanyId && selectedExchangeId) {
       const publicCompanies = companies.filter(c => c.isPublic && c.exchangeStateId === selectedExchangeId);
@@ -141,7 +141,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     return currencies.find(curr => curr.stateId === company.exchangeStateId)?.code || t('exchange.unit');
   };
 
-  // Расчет стоимости портфеля по валютам
+  // Portfolio calculation by currencies
   const portfolioValuesByCurrency = portfolio.reduce((acc, item) => {
     const comp = companies.find((c) => c.id === item.companyId);
     const price = comp?.sharePrice || item.boughtAtPrice;
@@ -152,7 +152,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
 
   const content = (
     <div className={embedded ? "economy-page economy-page--embedded" : "economy-page"}>
-      {/* Заголовок или компактная плашка */}
+      {/* Header or compact plate */}
       {embedded ? (
         <div
           style={{
@@ -251,7 +251,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
         </div>
       )}
 
-      {/* Вкладки */}
+      {/* Tabs */}
       <div className="economy-tabs">
         <button
           onClick={() => setActiveTab('market')}
@@ -387,7 +387,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
         />
       )}
 
-      {/* Модальное окно покупки акций */}
+      {/* Buy shares modal */}
       {buyCompanyId && (
         <div className="economy-modal-overlay">
           <div className="economy-modal">
@@ -465,7 +465,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
         </div>
       )}
 
-      {/* Модальное окно продажи акций */}
+      {/* Sell shares modal */}
       {sellCompanyId && (
         <div className="economy-modal-overlay">
           <div className="economy-modal">

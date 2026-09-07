@@ -311,9 +311,9 @@
         "rural": "Rural set.",
         "noMayor": "🏛️ No Mayor (Elections)",
         "noDesc": "Settlement description is not specified yet.",
-        "residents": "👥 {count} res.",
+        "residents": "👥 {{count}} res.",
         "powerTitle": "Economic contribution of the settlement to the state power",
-        "powerValue": "⚡ {count} pts.",
+        "powerValue": "⚡ {{count}} pts.",
         "moreBtn": "More info →"
     },
     "citizenshipRequests": {
@@ -404,7 +404,7 @@
         "ipoFee": "IPO Fee ({currency})",
         "tradingFee": "Trading Fee (%)",
         "treasuryBalance": "Treasury Balance",
-        "ipoRequestsTitle": "IPO Requests ({count})",
+        "ipoRequestsTitle": "IPO Requests ({{count}})",
         "ipoRequestInfo": "Shares: {shares} pcs. | Starting price: {price} | Fee: {fee}",
         "approveBtn": "Approve",
         "rejectBtn": "Reject",
@@ -429,7 +429,7 @@
         "editState": "Edit State",
         "archiveState": "Archive State",
         "powerUnit": " pts.",
-        "exchangeRateInfo": "1 {code} = {rate} pts."
+        "exchangeRateInfo": "1 {{code}} = {{rate}} pts."
     },
     "settlementDetail": {
         "loading": "Loading settlement passport...",
@@ -444,7 +444,7 @@
         "state": "🏰 State:",
         "independent": "Independent settlement",
         "population": "👥 Population:",
-        "citizensCount": "{count} cit.",
+        "citizensCount": "{{count}} cit.",
         "powerContribution": "⚡ Power contribution:",
         "powerValue": "+100 pts.",
         "zeroPower": "0 pts. (no citizens)",
@@ -455,7 +455,7 @@
             "applying": "Sending...",
             "resignMayor": "Resign",
             "edit": "✏️ Edit settlement",
-            "requests": "📬 Residence requests ({count})",
+            "requests": "📬 Residence requests ({{count}})",
             "setCapital": "🏛️ Make Capital",
             "delete": "🗑️ Delete settlement"
         },
@@ -476,7 +476,7 @@
             "title": "🗳️ Mayor Elections in settlement"
         },
         "citizens": {
-            "title": "👥 Settlement Citizens ({count})",
+            "title": "👥 Settlement Citizens ({{count}})",
             "me": "(You)",
             "mayorRole": "👑 Settlement Mayor",
             "citizenRole": "👥 Citizen",
@@ -497,5 +497,24 @@
             "capitalSuccess": "Settlement successfully designated as capital!",
             "capitalError": "Failed to designate capital"
         }
+    },
+    "decrees": {
+        "publishNew": "+ Publish new decree",
+        "publishFirst": "+ Publish first decree",
+        "createTitle": "Draft Official State Decree",
+        "createSubtitle": "The decree will be published in the official state feed and visible to all players",
+        "titleLabel": "Document Title *",
+        "titlePlaceholder": "e.g., Decree No. 1 «On the Establishment of the State Bank and Currency Emission»",
+        "contentLabel": "Official Decree Text *",
+        "contentPlaceholder": "State the full decision text, laws, regulations, or citizen announcements...",
+        "cancel": "Cancel",
+        "publishing": "Publishing...",
+        "publishBtn": "📜 Publish Decree",
+        "decreeBadge": "📜 DECREE #{{number}}",
+        "authorRole": "President / Author",
+        "certified": "Official State Document • Certified by Leader",
+        "emptyTitle": "No official decrees yet",
+        "emptySubtitle": "The leader of the state has not yet published any official documents, laws, or decrees.",
+        "errorPublish": "Error publishing decree"
     }
 }

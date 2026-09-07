@@ -1,5 +1,5 @@
-import {  } from 'axios';
 import { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './decrees-feed.component.scss';
 import { IStateDecree } from '../../types/states.types';
 
@@ -14,6 +14,7 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
   canCreate,
   onCreateDecree,
 }) => {
+  const { t, i18n } = useTranslation('states');
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -32,7 +33,7 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      alert('Ошибка при публикации указа');
+      alert(t('decrees.errorPublish'));
     } finally {
       setLoading(false);
     }
@@ -45,7 +46,7 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
   const formatDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
-      return date.toLocaleDateString('ru-RU', {
+      return date.toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US', {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
@@ -64,7 +65,7 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
             onClick={() => setShowForm(true)}
           >
             <span>✍️</span>
-            <span>+ Опубликовать новый указ</span>
+            <span>{t('decrees.publishNew')}</span>
           </button>
         </div>
       )}
@@ -76,11 +77,10 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
               <span className="icon">📜</span>
               <div>
                 <div className="title">
-                  Создание официального указа государства
+                  {t('decrees.createTitle')}
                 </div>
                 <div className="subtitle">
-                  Указ будет опубликован в государственной ленте и станет виден
-                  всем игрокам
+                  {t('decrees.createSubtitle')}
                 </div>
               </div>
             </div>
@@ -88,10 +88,10 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
 
           <div className="form-card__body">
             <div className="form-group">
-              <label>Заголовок документа *</label>
+              <label>{t('decrees.titleLabel')}</label>
               <input
                 type="text"
-                placeholder="Например: Указ №1 «О создании Государственного Банка и эмиссии валюты»"
+                placeholder={t('decrees.titlePlaceholder')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
@@ -99,9 +99,9 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
             </div>
 
             <div className="form-group">
-              <label>Текст официального указа *</label>
+              <label>{t('decrees.contentLabel')}</label>
               <textarea
-                placeholder="Изложите полный текст решения, законы, регламенты или объявления для граждан..."
+                placeholder={t('decrees.contentPlaceholder')}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 required
@@ -115,14 +115,14 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
               className="btn-cancel"
               onClick={() => setShowForm(false)}
             >
-              Отмена
+              {t('decrees.cancel')}
             </button>
             <button
               type="submit"
               className="btn-submit"
               disabled={loading}
             >
-              {loading ? 'Публикация...' : '📜 Опубликовать указ'}
+              {loading ? t('decrees.publishing') : t('decrees.publishBtn')}
             </button>
           </div>
         </form>
@@ -136,7 +136,7 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
               <div className="decree-document__header">
                 <div className="decree-document__title-area">
                   <span className="decree-badge">
-                    📜 УКАЗ #{sortedDecrees.length - idx}
+                    {t('decrees.decreeBadge', { number: sortedDecrees.length - idx })}
                   </span>
                   <h4 className="decree-title">{decree.title}</h4>
                 </div>
@@ -152,7 +152,7 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
                     }}
                   />
                   <div className="author-info">
-                    <span className="author-role">Президент / Автор</span>
+                    <span className="author-role">{t('decrees.authorRole')}</span>
                     <strong className="author-name">
                       {decree.authorUsername}
                     </strong>
@@ -168,7 +168,7 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
                 <div className="seal">
                   <span>🏛️</span>
                   <span>
-                    Официальный государственный документ • Удостоверено Лидером
+                    {t('decrees.certified')}
                   </span>
                 </div>
                 <div className="date">
@@ -182,9 +182,9 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
         <div className="decrees-feed__empty-card">
           <div className="empty-icon">📜</div>
           <div className="empty-text">
-            <strong>Официальных указов пока нет</strong>
+            <strong>{t('decrees.emptyTitle')}</strong>
             <span>
-              Лидер государства еще не публиковал документы, законы или указы.
+              {t('decrees.emptySubtitle')}
             </span>
           </div>
           {canCreate && !showForm && (
@@ -192,7 +192,7 @@ const DecreesFeed: FC<DecreesFeedProps> = ({
               className="empty-btn"
               onClick={() => setShowForm(true)}
             >
-              + Опубликовать первый указ
+              {t('decrees.publishFirst')}
             </button>
           )}
         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ICompany } from '../types/economy.types';
 import Button from '../../../shared/ui/button/button.component';
 import './CompanyCard.scss';
@@ -19,7 +20,7 @@ interface CompanyCardProps {
 export const CompanyCard: React.FC<CompanyCardProps> = ({
   company,
   isOwner,
-  currencyCode = 'ед.',
+  currencyCode,
   onBuyClick,
   onSellClick,
   onIpoClick,
@@ -28,6 +29,8 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
   onChangePriceClick,
   onDetailsClick,
 }) => {
+  const { t } = useTranslation('economy');
+  const activeCurrencyCode = currencyCode || t('companies.unit');
   const isPositive = company.priceChange24h >= 0;
   const marketCap = company.totalShares * company.sharePrice;
 
@@ -54,7 +57,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
                   : 'company-card__badge--private'
               }`}
             >
-              {company.isPublic ? 'Торгуется на бирже' : 'Частная'}
+              {company.isPublic ? t('companies.card.publicBadge') : t('companies.card.privateBadge')}
             </span>
           </div>
 
@@ -63,18 +66,18 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
               <span>{company.name}</span>
               <button
                 className="copy-btn"
-                title="Скопировать ID фирмы"
+                title={t('companies.card.copyId')}
                 onClick={(e) => {
                   e.stopPropagation();
                   navigator.clipboard.writeText(company.id);
-                  alert('ID фирмы скопирован: ' + company.id);
+                  alert(t('companies.card.idCopied', { id: company.id }));
                 }}
               >
                 📋
               </button>
             </h3>
             <div className="owner">
-              Владелец: <strong>{company.ownerUsername}</strong>
+              {t('companies.card.owner', { owner: company.ownerUsername })}
             </div>
           </div>
         </div>
@@ -87,9 +90,9 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           <>
             <div className="company-card__stats">
               <div className="stat-box">
-                <div className="stat-label">Цена акции</div>
+                <div className="stat-label">{t('companies.card.sharePrice')}</div>
                 <div className="stat-value">
-                  <span>{company.sharePrice.toFixed(2)} {currencyCode}</span>
+                  <span>{company.sharePrice.toFixed(2)} {activeCurrencyCode}</span>
                   <span
                     className={`change-pill ${
                       isPositive ? 'change-pill--pos' : 'change-pill--neg'
@@ -102,15 +105,15 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
               </div>
 
               <div className="stat-box">
-                <div className="stat-label">Капитализация</div>
+                <div className="stat-label">{t('companies.card.marketCap')}</div>
                 <div className="stat-value stat-value--gold">
-                  {marketCap.toLocaleString('ru-RU')} {currencyCode}
+                  {marketCap.toLocaleString()} {activeCurrencyCode}
                 </div>
               </div>
             </div>
 
             <div className="company-card__shares-bar">
-              <span className="label">Доступно акций на бирже:</span>
+              <span className="label">{t('companies.card.sharesAvailable')}</span>
               <span className="value">
                 {company.availableShares} / {company.totalShares}
               </span>
@@ -118,7 +121,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           </>
         ) : (
           <div className="company-card__shares-bar company-card__shares-bar--unlisted">
-            <span className="label">Компания еще не вышла на биржу</span>
+            <span className="label">{t('companies.card.unlisted')}</span>
           </div>
         )}
       </div>
@@ -132,7 +135,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
                 callback={() => onBuyClick(company.id)}
                 style={{ flex: 1 }}
               >
-                Купить акции
+                {t('companies.card.buyShares')}
               </Button>
             )}
             {onSellClick && (
@@ -142,7 +145,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
                 secondary={true}
                 style={{ flex: 1 }}
               >
-                Продать
+                {t('companies.card.sellShares')}
               </Button>
             )}
           </div>
@@ -150,7 +153,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
           isOwner &&
           onIpoClick && (
             <Button type="button" callback={() => onIpoClick(company.id)}>
-              Подать заявку на IPO
+              {t('companies.card.applyIpo')}
             </Button>
           )
         )}
@@ -161,7 +164,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
             callback={() => onDividendsClick(company.id)}
             secondary={true}
           >
-            Выплатить дивиденды
+            {t('companies.card.payoutDividends')}
           </Button>
         )}
 
@@ -171,7 +174,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
             callback={() => onChartClick(company.id)}
             secondary={true}
           >
-            📈 График
+            {t('companies.card.chart')}
           </Button>
         )}
 
@@ -182,7 +185,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
             secondary={true}
             style={{ color: '#8b5cf6', borderColor: '#8b5cf6' }}
           >
-            ⚙️ Изменить цену
+            {t('companies.card.changePrice')}
           </Button>
         )}
 
@@ -192,7 +195,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
             callback={() => onDetailsClick(company.id)}
             secondary={true}
           >
-            🏢 Подробнее о фирме
+            {t('companies.card.details')}
           </Button>
         )}
       </div>

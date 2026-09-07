@@ -1,7 +1,7 @@
 {
     "players": {
         "title": "Игроки",
-        "online": "Игроков онлайн: {online}/{total}",
+        "online": "Игроков онлайн: {{online}}/{{total}}",
         "show": "Показывать:",
         "all": "Всех",
         "onlyServer": "Только на сервере",

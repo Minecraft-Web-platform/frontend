@@ -95,7 +95,7 @@ const PlayersPage: FC = () => {
             <select
               value={filterState}
               onChange={(e) => setFilterState(e.target.value)}
-              className="players-state-select"
+              className="filter-buttons__select"
             >
               <option value="all">{t("players.allStates")}</option>
               <option value="none">{t("players.noState")}</option>

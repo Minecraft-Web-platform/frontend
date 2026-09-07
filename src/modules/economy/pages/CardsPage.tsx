@@ -1,12 +1,14 @@
 import {  } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { IAccount, ICard } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 import { BankCard3D } from '../components/BankCard3D/BankCard3D';
 import './CardsPage.scss';
 
 export const CardsPage: React.FC = () => {
+  const { t } = useTranslation('economy');
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCardId = searchParams.get('cardId') || null;
 
@@ -15,7 +17,7 @@ export const CardsPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Модальное окно выпуска карты
+  // Modal issue card
   const [showIssueModal, setShowIssueModal] = useState<boolean>(false);
   const [selectedAccountId, setSelectedAccountId] = useState<string>('');
 
@@ -36,7 +38,7 @@ export const CardsPage: React.FC = () => {
       }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
-      setError(e?.message || 'Ошибка загрузки пластиковых карт');
+      setError(e?.message || t('cards.errors.load'));
     } finally {
       setLoading(false);
     }
@@ -50,7 +52,7 @@ export const CardsPage: React.FC = () => {
   const handleIssueCard = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAccountId) {
-      alert('Выберите счет для привязки карты');
+      alert(t('cards.errors.selectAccount'));
       return;
     }
     try {
@@ -59,7 +61,7 @@ export const CardsPage: React.FC = () => {
       await loadData();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.message || 'Ошибка при выпуске карты');
+      alert(err?.message || t('cards.errors.issue'));
     }
   };
 
@@ -69,12 +71,12 @@ export const CardsPage: React.FC = () => {
       await loadData();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.message || 'Ошибка изменения статуса карты');
+      alert(err?.message || t('cards.errors.status'));
     }
   };
 
   const handleDeleteCard = async (cardId: string) => {
-    if (!window.confirm('Вы уверены, что хотите удалить и закрыть эту пластиковую карту?')) {
+    if (!window.confirm(t('cards.deleteConfirm'))) {
       return;
     }
     try {
@@ -83,18 +85,17 @@ export const CardsPage: React.FC = () => {
       await loadData();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.message || 'Ошибка удаления карты');
+      alert(err?.message || t('cards.errors.delete'));
     }
   };
 
   const handleCopy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
-    setCopyToast(`Скопировано: ${label}`);
+    setCopyToast(t('cards.copied', { label }));
     setTimeout(() => {
       setCopyToast(null);
     }, 2500);
   };
-
 
   const formatCardNumberFull = (num: string) => {
     if (!num || num.length < 16) return num;
@@ -102,33 +103,31 @@ export const CardsPage: React.FC = () => {
   };
 
   const getAccountLabel = (acc?: IAccount) => {
-    if (!acc) return 'Неизвестный счет';
+    if (!acc) return t('cards.accountTypes.unknown');
     const typeName =
       acc.type === 'personal'
-        ? 'Личный счет'
+        ? t('cards.accountTypes.personal')
         : acc.type === 'company'
-        ? 'Коммерческий счет'
-        : 'Казначейский счет';
+        ? t('cards.accountTypes.company')
+        : t('cards.accountTypes.treasury');
     return `${typeName} №${acc.accountNumber.slice(0, 5)}...${acc.accountNumber.slice(-4)} (${acc.currencyCode})`;
   };
-
-
 
   const activeCount = cards.filter((c) => !c.isBlocked).length;
   const blockedCount = cards.filter((c) => c.isBlocked).length;
 
-  // Найти выбранную карту
+  // Find selected card
   const currentCard = cards.find((c) => c.id === selectedCardId);
 
   if (loading && cards.length === 0) {
     return (
       <div className="cards-page" style={{ textAlign: 'center', padding: '60px 0', color: '#64748b' }}>
-        Загрузка банковских карт...
+        {t('cards.loading')}
       </div>
     );
   }
 
-  // === РЕЖИМ 2: Детальный просмотр одной карты ===
+  // === MODE 2: Detailed single card view ===
   if (selectedCardId && currentCard) {
     const linkedAcc = currentCard.account || accounts.find((a) => a.id === currentCard.accountId);
 
@@ -157,7 +156,7 @@ export const CardsPage: React.FC = () => {
         <div className="cards-page__detail">
           <div className="back-nav">
             <button onClick={() => setSearchParams({ tab: 'cards' })}>
-              ← Назад к списку карт
+              {t('cards.backToList')}
             </button>
           </div>
 
@@ -166,40 +165,40 @@ export const CardsPage: React.FC = () => {
               <BankCard3D card={currentCard} account={linkedAcc} />
             </div>
 
-            {/* Правая колонка: Реквизиты, привязанный счет и действия */}
+            {/* Right column: Details, linked account and actions */}
             <div className="detail-info-column">
-              {/* Привязанный счет */}
+              {/* Linked account */}
               <div className="info-card">
                 <h3 className="info-card__title">
-                  🏦 Привязанный банковский счет
+                  {t('cards.linkedAccount')}
                 </h3>
                 {linkedAcc ? (
                   <>
                     <div className="info-row">
-                      <span className="row-label">Тип счета:</span>
+                      <span className="row-label">{t('cards.accountType')}</span>
                       <span className="row-value">
                         {linkedAcc.type === 'personal'
-                          ? 'Личный счет'
+                          ? t('cards.accountTypes.personal')
                           : linkedAcc.type === 'company'
-                          ? 'Коммерческий счет'
-                          : 'Казначейский счет'}
+                          ? t('cards.accountTypes.company')
+                          : t('cards.accountTypes.treasury')}
                       </span>
                     </div>
                     <div className="info-row">
-                      <span className="row-label">Номер счета:</span>
+                      <span className="row-label">{t('cards.accountNumber')}</span>
                       <span className="row-value">
                         № {linkedAcc.accountNumber}
                         <button
                           className="copy-btn"
-                          onClick={() => handleCopy(linkedAcc.accountNumber, 'Номер счета')}
-                          title="Скопировать"
+                          onClick={() => handleCopy(linkedAcc.accountNumber, t('cards.accountNumber'))}
+                          title={t('cards.copy')}
                         >
                           📋
                         </button>
                       </span>
                     </div>
                     <div className="info-row">
-                      <span className="row-label">Текущий баланс:</span>
+                      <span className="row-label">{t('cards.currentBalance')}</span>
                       <span className="row-value row-value--balance">
                         {linkedAcc.balance.toLocaleString('ru-RU')}{' '}
                         {linkedAcc.currencyCode}
@@ -208,50 +207,50 @@ export const CardsPage: React.FC = () => {
                   </>
                 ) : (
                   <p style={{ color: '#64748b' }}>
-                    Информация о счете загружается или счет был удален...
+                    {t('cards.loading')}
                   </p>
                 )}
               </div>
 
-              {/* Реквизиты карты с быстрым копированием */}
+              {/* Card details */}
               <div className="info-card">
                 <h3 className="info-card__title">
-                  📋 Реквизиты для оплаты и переводов
+                  {t('cards.paymentDetails')}
                 </h3>
                 <div className="info-row">
-                  <span className="row-label">Номер карты:</span>
+                  <span className="row-label">{t('cards.cardNumber')}</span>
                   <span className="row-value">
                     {formatCardNumberFull(currentCard.cardNumber)}
                     <button
                       className="copy-btn"
-                      onClick={() => handleCopy(currentCard.cardNumber, 'Номер карты')}
-                      title="Скопировать"
+                      onClick={() => handleCopy(currentCard.cardNumber, t('cards.cardNumber'))}
+                      title={t('cards.copy')}
                     >
                       📋
                     </button>
                   </span>
                 </div>
                 <div className="info-row">
-                  <span className="row-label">Срок действия:</span>
+                  <span className="row-label">{t('cards.validThru')}</span>
                   <span className="row-value">
                     {currentCard.expiresAt}
                     <button
                       className="copy-btn"
-                      onClick={() => handleCopy(currentCard.expiresAt, 'Срок действия')}
-                      title="Скопировать"
+                      onClick={() => handleCopy(currentCard.expiresAt, t('cards.validThru'))}
+                      title={t('cards.copy')}
                     >
                       📋
                     </button>
                   </span>
                 </div>
                 <div className="info-row">
-                  <span className="row-label">Код CVV/CVC:</span>
+                  <span className="row-label">{t('cards.cvvCode')}</span>
                   <span className="row-value">
                     {currentCard.cvv}
                     <button
                       className="copy-btn"
-                      onClick={() => handleCopy(currentCard.cvv, 'CVV код')}
-                      title="Скопировать"
+                      onClick={() => handleCopy(currentCard.cvv, t('cards.cvvCode'))}
+                      title={t('cards.copy')}
                     >
                       📋
                     </button>
@@ -259,10 +258,10 @@ export const CardsPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Управление и безопасность */}
+              {/* Management and Security */}
               <div className="info-card">
                 <h3 className="info-card__title">
-                  ⚙️ Управление картой и безопасность
+                  {t('cards.management')}
                 </h3>
                 <div className="actions-grid">
                   <button
@@ -273,21 +272,21 @@ export const CardsPage: React.FC = () => {
                     }`}
                     onClick={() => handleToggleBlock(currentCard.id)}
                   >
-                    {currentCard.isBlocked ? '🔓 Разблокировать карту' : '🔒 Заблокировать карту'}
+                    {currentCard.isBlocked ? t('cards.unblockCard') : t('cards.blockCard')}
                   </button>
 
                   <button
                     className="action-btn action-btn--transfer"
                     onClick={() => setSearchParams({ tab: 'bank' })}
                   >
-                    💸 Перевести со счета
+                    {t('cards.transferFromAccount')}
                   </button>
 
                   <button
                     className="action-btn action-btn--delete"
                     onClick={() => handleDeleteCard(currentCard.id)}
                   >
-                    🗑️ Закрыть и удалить карту
+                    {t('cards.deleteCard')}
                   </button>
                 </div>
               </div>
@@ -298,32 +297,29 @@ export const CardsPage: React.FC = () => {
     );
   }
 
-  // === РЕЖИМ 1: Общий список карт ===
+  // === MODE 1: General card list ===
   return (
     <div className="cards-page">
-      {/* Шапка / Герой */}
+      {/* Hero */}
       <div className="cards-page__hero">
         <div className="hero-text">
-          <h2>💳 Банковские и Пластиковые Карты</h2>
-          <p>
-            Пластиковые карты позволяют совершать быстрые расчеты, управлять доступом к счетам 
-            и контролировать безопасность ваших финансов.
-          </p>
+          <h2>{t('cards.title')}</h2>
+          <p>{t('cards.subtitle')}</p>
         </div>
 
         <div className="hero-stats">
           <div className="stat-pill">
-            <span className="label">Всего карт</span>
+            <span className="label">{t('cards.totalCards')}</span>
             <span className="value">{cards.length}</span>
           </div>
           <div className="stat-pill">
-            <span className="label">Активных</span>
+            <span className="label">{t('cards.active')}</span>
             <span className="value" style={{ color: '#34d399' }}>
               {activeCount}
             </span>
           </div>
           <div className="stat-pill">
-            <span className="label">Заблокир.</span>
+            <span className="label">{t('cards.blocked')}</span>
             <span className="value" style={{ color: '#f87171' }}>
               {blockedCount}
             </span>
@@ -336,7 +332,7 @@ export const CardsPage: React.FC = () => {
               className="economy-btn economy-btn--primary"
               onClick={() => setShowIssueModal(true)}
             >
-              + Выпустить карту
+              {t('cards.issueCard')}
             </button>
           </div>
         )}
@@ -348,20 +344,17 @@ export const CardsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Сетка карт */}
+      {/* Cards Grid */}
       {cards.length === 0 ? (
         <div className="cards-page__empty">
           <div className="icon">💳</div>
-          <h3>У вас пока нет пластиковых карт</h3>
-          <p>
-            Выпустите свою первую банковскую карту к любому из ваших личных или коммерческих счетов, 
-            чтобы управлять оплатой и переводами.
-          </p>
+          <h3>{t('cards.emptyTitle')}</h3>
+          <p>{t('cards.emptyDesc')}</p>
           <button
             className="economy-btn economy-btn--primary"
             onClick={() => setShowIssueModal(true)}
           >
-            + Выпустить первую карту
+            {t('cards.issueFirstCard')}
           </button>
         </div>
       ) : (
@@ -385,17 +378,17 @@ export const CardsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Модальное окно: Выпуск карты */}
+      {/* Modal: Issue Card */}
       {showIssueModal && (
         <div className="economy-modal-overlay" onClick={() => setShowIssueModal(false)}>
           <div className="economy-modal" onClick={(e) => e.stopPropagation()}>
-            <h3 className="modal-title">Выпуск новой пластиковой карты</h3>
+            <h3 className="modal-title">{t('cards.issueModal.title')}</h3>
             <form onSubmit={handleIssueCard} className="modal-form">
               <label>
-                <span>Выберите счет для привязки карты:</span>
+                <span>{t('cards.issueModal.selectAccount')}</span>
                 {accounts.length === 0 ? (
                   <p style={{ color: '#dc2626', fontSize: '14px', margin: '8px 0' }}>
-                    У вас нет открытых счетов. Сначала откройте счет на вкладке «Банки и Счета».
+                    {t('cards.issueModal.noAccounts')}
                   </p>
                 ) : (
                   <select
@@ -405,7 +398,7 @@ export const CardsPage: React.FC = () => {
                   >
                     {accounts.map((acc) => (
                       <option key={acc.id} value={acc.id}>
-                        {getAccountLabel(acc)} — Баланс: {acc.balance.toLocaleString('ru-RU')} {acc.currencyCode}
+                        {getAccountLabel(acc)} — {t('accountCard.balance')}: {acc.balance.toLocaleString('ru-RU')} {acc.currencyCode}
                       </option>
                     ))}
                   </select>
@@ -419,7 +412,7 @@ export const CardsPage: React.FC = () => {
                     className="economy-btn economy-btn--secondary"
                     onClick={() => setShowIssueModal(false)}
                   >
-                    Закрыть
+                    {t('cards.issueModal.close')}
                   </button>
                 ) : (
                   <>
@@ -428,13 +421,13 @@ export const CardsPage: React.FC = () => {
                       className="economy-btn economy-btn--secondary"
                       onClick={() => setShowIssueModal(false)}
                     >
-                      Отмена
+                      {t('cards.issueModal.cancel')}
                     </button>
                     <button
                       type="submit"
                       className="economy-btn economy-btn--primary"
                     >
-                      Выпустить карту
+                      {t('cards.issueModal.submit')}
                     </button>
                   </>
                 )}

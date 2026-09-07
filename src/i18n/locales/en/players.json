@@ -1,7 +1,7 @@
 {
     "players": {
         "title": "Players",
-        "online": "Players online: {online}/{total}",
+        "online": "Players online: {{online}}/{{total}}",
         "show": "Show:",
         "all": "All",
         "onlyServer": "Only on server",

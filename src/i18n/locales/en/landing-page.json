@@ -1,1 +1,27 @@
-{}
+{
+  "intro": {
+    "title": "End Chronicles 2.0",
+    "subtitle": "Immerse yourself in a world of adventure",
+    "play": "Play Now",
+    "onlineMap": "Online Map"
+  },
+  "about": {
+    "heading": "Who are we?",
+    "building": "We are the ones striving to build beautifully, practically, and with lore. Crafting today so it's a pleasure to play tomorrow. By unifying architectural styles, we achieve a harmonious aesthetic.",
+    "farmingTitle": "We also focus on production and all types of farms, specifically:",
+    "metals": "Metals",
+    "stones": "Stone & building materials",
+    "food": "Food & other essentials",
+    "logistics": "We also prioritize convenient, interconnected logistics",
+    "frogs": "And most importantly, we enjoy great times together and have a special love for frogs <3"
+  },
+  "footer": {
+    "discord": "Discord:",
+    "join": "Join",
+    "onlineMap": "Online Map:",
+    "openMap": "Open Map",
+    "serverIp": "Server IP: mc.khroniki-kraya.com",
+    "copy": "Copy",
+    "copied": "IP copied to clipboard!"
+  }
+}

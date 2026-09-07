@@ -1,5 +1,5 @@
-import {  } from 'axios';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ICompany } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 
@@ -10,6 +10,7 @@ interface ChangePriceModalProps {
 }
 
 export const ChangePriceModal: React.FC<ChangePriceModalProps> = ({ company, onClose, onSuccess }) => {
+  const { t } = useTranslation('economy');
   const [newPrice, setNewPrice] = useState(company.sharePrice.toString());
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +18,7 @@ export const ChangePriceModal: React.FC<ChangePriceModalProps> = ({ company, onC
     e.preventDefault();
     const parsedPrice = parseFloat(newPrice);
     if (isNaN(parsedPrice) || parsedPrice <= 0) {
-      alert('Введите корректную цену больше 0');
+      alert(t('exchangeModals.changePrice.invalidPrice'));
       return;
     }
     setLoading(true);
@@ -26,7 +27,7 @@ export const ChangePriceModal: React.FC<ChangePriceModalProps> = ({ company, onC
       onSuccess();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as Error).message || 'Ошибка при изменении цены');
+      alert((err as Error).message || t('exchangeModals.changePrice.error'));
       setLoading(false);
     }
   };
@@ -35,11 +36,11 @@ export const ChangePriceModal: React.FC<ChangePriceModalProps> = ({ company, onC
     <div className="economy-modal">
       <div className="economy-modal__content">
         <h3 style={{ marginBottom: '16px', fontSize: '20px' }}>
-          Изменить цену акций: {company.name}
+          {t('exchangeModals.changePrice.title', { company: company.name })}
         </h3>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <label style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <span>Новая цена за 1 акцию:</span>
+            <span>{t('exchangeModals.changePrice.newPrice')}</span>
             <input
               type="number"
               step="0.01"
@@ -51,10 +52,10 @@ export const ChangePriceModal: React.FC<ChangePriceModalProps> = ({ company, onC
           </label>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '8px' }}>
             <button type="button" onClick={onClose} className="economy-btn economy-btn--secondary">
-              Отмена
+              {t('exchangeModals.changePrice.cancel')}
             </button>
             <button type="submit" disabled={loading} className="economy-btn economy-btn--primary">
-              {loading ? 'Сохранение...' : 'Сохранить'}
+              {loading ? t('exchangeModals.changePrice.saving') : t('exchangeModals.changePrice.save')}
             </button>
           </div>
         </form>

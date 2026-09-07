@@ -1,5 +1,5 @@
-import {  } from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createChart, ColorType, IChartApi, ISeriesApi, AreaSeries } from 'lightweight-charts';
 
 interface TradingChartProps {
@@ -17,6 +17,7 @@ export const TradingChart: React.FC<TradingChartProps> = ({
   topColor = '#2962FF',
   bottomColor = 'rgba(41, 98, 255, 0.28)'
 }) => {
+  const { t } = useTranslation('economy');
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
@@ -95,7 +96,7 @@ export const TradingChart: React.FC<TradingChartProps> = ({
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err: any) {
         if (isMounted) {
-          setError('Ошибка загрузки графика');
+          setError(t('exchange.chartError'));
           setLoading(false);
         }
       }
@@ -106,9 +107,9 @@ export const TradingChart: React.FC<TradingChartProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [fetchHistory, triggerRefetch, lineColor, topColor, bottomColor]);
+  }, [fetchHistory, triggerRefetch, lineColor, topColor, bottomColor, t]);
 
-  // Обработка изменения размера окна
+  // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       if (chartContainerRef.current && chartRef.current) {
@@ -124,7 +125,7 @@ export const TradingChart: React.FC<TradingChartProps> = ({
     <div style={{ position: 'relative', width: '100%', height: '400px' }}>
       {loading && (
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.7)', zIndex: 10 }}>
-          Загрузка графика...
+          {t('exchange.chartLoading')}
         </div>
       )}
       {error && (

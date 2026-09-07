@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { PropertyCategory, PropertyOwnerType, ICompany, ICurrency } from '../types/economy.types';
 import { getMinecraftItemInfo } from '../constants/minecraft-items';
 import { economyService } from '../services/economy.service';
@@ -11,25 +12,8 @@ import { PropagateLoader } from 'react-spinners';
 import { ImageUploader } from '../../../shared/ui/image-uploader/ImageUploader';
 import './PropertiesPage.scss';
 
-const PROPERTY_TYPE_TRANSLATIONS: Record<string, string> = {
-  land_plot: 'Земельный участок',
-  residential: 'Жилое строение',
-  public_building: 'Здание общего пользования',
-  administrative: 'Административное здание',
-  railway: 'Ж/Д вокзал',
-  airfield: 'Аэродром',
-  seaport: 'Морской порт',
-  military: 'Военный объект'
-};
-
-const PROPERTY_SUBTYPE_TRANSLATIONS: Record<string, string> = {
-  ihs: 'ИЖС (Дом, коммерция)',
-  subsidiary: 'Подсобное хозяйство',
-  agricultural: 'Сельхоз-нужды',
-  industrial: 'Промышленный'
-};
-
 export const PropertiesPage: React.FC = () => {
+  const { t } = useTranslation('economy');
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'market' | 'my'>('market');
   
@@ -164,7 +148,7 @@ export const PropertiesPage: React.FC = () => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      setError('Не удалось загрузить профиль пользователя');
+      setError(t('properties.profileLoadError'));
     }
   };
 
@@ -211,12 +195,12 @@ export const PropertiesPage: React.FC = () => {
         area: createForm.area ? parseFloat(createForm.area) : undefined,
         territoryId: createForm.territoryId || undefined,
       });
-      alert('Имущество успешно зарегистрировано!');
+      alert(t('properties.createModal.success'));
       setShowCreateModal(false);
       reloadProperties();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка при создании имущества');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || t('properties.createModal.error'));
     } finally {
       setActionLoading(false);
     }
@@ -248,12 +232,12 @@ export const PropertiesPage: React.FC = () => {
         photoUrls: editForm.photoUrls.length > 0 ? editForm.photoUrls : undefined,
         territoryId: editForm.territoryId || '', // we send empty string to untie it, but wait, the backend expects empty string to mean "unbind"
       });
-      alert('Имущество успешно обновлено!');
+      alert(t('properties.editModal.success'));
       setShowEditModal(false);
       reloadProperties();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка при обновлении имущества');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || t('properties.editModal.error'));
     } finally {
       setActionLoading(false);
     }
@@ -261,18 +245,18 @@ export const PropertiesPage: React.FC = () => {
 
   const handleBuy = async (propertyId: string) => {
     if (!myUuid) return;
-    if (!confirm('Вы уверены, что хотите купить эту недвижимость? Будет списан налог.')) return;
+    if (!confirm(t('properties.confirmBuy', { price: '' }))) return;
     try {
       setActionLoading(true);
       await economyService.buyProperty(propertyId, {
         newOwnerId: myUuid,
         newOwnerType: 'personal',
       });
-      alert('Покупка успешна!');
+      alert(t('properties.buySuccess'));
       reloadProperties();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка при покупке');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || t('properties.buyError'));
     } finally {
       setActionLoading(false);
     }
@@ -298,19 +282,19 @@ export const PropertiesPage: React.FC = () => {
     if (!sellPropertyId) return;
     const price = parseFloat(sellPrice);
     if (isNaN(price) || price <= 0) {
-      alert('Неверная цена');
+      alert(t('properties.sellModal.invalidPrice'));
       return;
     }
     const targetId = sellType === 'direct' && forSaleToId ? forSaleToId : undefined;
     try {
       setActionLoading(true);
       await economyService.listPropertyForSale(sellPropertyId, price, targetId);
-      alert('Выставлено на продажу!');
+      alert(t('properties.sellModal.success'));
       setShowSellModal(false);
       reloadProperties();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || t('properties.sellModal.error'));
     } finally {
       setActionLoading(false);
     }
@@ -320,11 +304,11 @@ export const PropertiesPage: React.FC = () => {
     try {
       setActionLoading(true);
       await economyService.cancelListing(propertyId);
-      alert('Снято с продажи!');
+      alert(t('properties.delistSuccess'));
       reloadProperties();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || t('properties.delistError'));
     } finally {
       setActionLoading(false);
     }
@@ -342,11 +326,11 @@ export const PropertiesPage: React.FC = () => {
     <div className="properties-page">
       <div className="properties-page__header">
         <div className="header-info">
-          <h2>🏠 Недвижимость и Имущество</h2>
-          <p>Покупка, продажа и управление вашим имуществом</p>
+          <h2>{t('properties.heroTitle')}</h2>
+          <p>{t('properties.heroSubtitle')}</p>
         </div>
         <button className="button" onClick={() => setShowCreateModal(true)}>
-          Зарегистрировать имущество
+          {t('properties.registerBtn')}
         </button>
       </div>
 
@@ -355,13 +339,13 @@ export const PropertiesPage: React.FC = () => {
           className={`tab-btn ${activeTab === 'market' ? 'active' : ''}`}
           onClick={() => setActiveTab('market')}
         >
-          Рынок Недвижимости
+          {t('properties.marketTab')}
         </button>
         <button
           className={`tab-btn ${activeTab === 'my' ? 'active' : ''}`}
           onClick={() => setActiveTab('my')}
         >
-          Мое Имущество
+          {t('properties.myPropertiesTab')}
         </button>
       </div>
 
@@ -369,7 +353,7 @@ export const PropertiesPage: React.FC = () => {
 
       <div className="properties-page__list">
         {properties.length === 0 && !isLoading && (
-          <div className="empty-state">Нет данных для отображения</div>
+          <div className="empty-state">{t('properties.empty')}</div>
         )}
 
         {properties.map(p => (
@@ -378,13 +362,13 @@ export const PropertiesPage: React.FC = () => {
               <div className="title">
                 <h3>{p.name}</h3>
                 <span className={`category-badge ${p.propertyCategory}`}>
-                  {p.propertyCategory === 'real_estate' ? 'Недвижимость' : 'Спецобъект'}
+                  {p.propertyCategory === 'real_estate' ? t('properties.realEstate') : t('properties.specialObject')}
                 </span>
                 {p.forSaleToId && p.forSaleToId === myUuid && (
-                  <span className="category-badge" style={{ background: '#4caf50', color: 'white', marginLeft: '8px' }}>Вам</span>
+                  <span className="category-badge" style={{ background: '#4caf50', color: 'white', marginLeft: '8px' }}>{t('properties.forYouBadge')}</span>
                 )}
                 {p.forSaleToId && p.forSaleToId !== myUuid && (
-                  <span className="category-badge" style={{ background: '#f44336', color: 'white', marginLeft: '8px' }}>Адресное</span>
+                  <span className="category-badge" style={{ background: '#f44336', color: 'white', marginLeft: '8px' }}>{t('properties.targetedBadge')}</span>
                 )}
               </div>
               {p.isForSale && p.price && (() => {
@@ -407,47 +391,47 @@ export const PropertiesPage: React.FC = () => {
 
               <div className="details">
                 <div className="detail-item">
-                  <span>Тип</span>
-                  <span>{PROPERTY_TYPE_TRANSLATIONS[p.type] || p.type} {p.subType ? `(${PROPERTY_SUBTYPE_TRANSLATIONS[p.subType] || p.subType})` : ''}</span>
+                  <span>{t('properties.labels.type')}</span>
+                  <span>{t(`properties.types.${p.type}`, { defaultValue: p.type })} {p.subType ? `(${t(`properties.subtypes.${p.subType}`, { defaultValue: p.subType })})` : ''}</span>
                 </div>
                 <div className="detail-item">
-                  <span>Государство</span>
+                  <span>{t('properties.labels.state')}</span>
                   <span>{p.state?.name || p.stateId}</span>
                 </div>
                 {p.settlementId && (
                   <div className="detail-item">
-                    <span>Поселение</span>
+                    <span>{t('properties.labels.settlement')}</span>
                     <span>{p.settlement?.name || p.settlementId}</span>
                   </div>
                 )}
                 {p.centerCoordinates && (
                   <div className="detail-item">
-                    <span>Координаты</span>
+                    <span>{t('properties.labels.coords')}</span>
                     <span>{p.centerCoordinates}</span>
                   </div>
                 )}
                 {p.photoUrls && p.photoUrls.length > 0 && (
                   <div className="detail-item">
-                    <span>Фото</span>
-                    <span>{p.photoUrls.length} шт.</span>
+                    <span>{t('properties.labels.photos')}</span>
+                    <span>{p.photoUrls.length} {t('properties.units.pcs')}</span>
                   </div>
                 )}
                 {p.parentPropertyId && (
                   <div className="detail-item">
-                    <span>На участке (ID)</span>
+                    <span>{t('properties.labels.parentPlot')}</span>
                     <span>{p.parentPropertyId}</span>
                   </div>
                 )}
                 {(p.street || p.houseNumber) && (
                   <div className="detail-item">
-                    <span>Адрес</span>
+                    <span>{t('properties.labels.address')}</span>
                     <span>{p.street?.name || ''} {p.houseNumber || ''}</span>
                   </div>
                 )}
                 {p.area != null && (
                   <div className="detail-item">
-                    <span>Площадь</span>
-                    <span>{p.area} кв.м.</span>
+                    <span>{t('properties.labels.area')}</span>
+                    <span>{p.area} {t('properties.units.sqm')}</span>
                   </div>
                 )}
               </div>
@@ -458,29 +442,29 @@ export const PropertiesPage: React.FC = () => {
                 className="button button--secondary" 
                 onClick={() => navigate(`/economy/property/${p.id}`)}
               >
-                Подробнее
+                {t('properties.detailsBtn')}
               </button>
               {activeTab === 'market' && p.ownerId !== myUuid && (!p.forSaleToId || p.forSaleToId === myUuid) && (
                 <button 
                   className="button" 
                   onClick={() => handleBuy(p.id)}
                 >
-                  Купить
+                  {t('properties.buyBtn')}
                 </button>
               )}
               {activeTab === 'my' && !p.isForSale && (
                 <button className="button button--secondary" onClick={() => handleSellClick(p.id)}>
-                  Продать
+                  {t('properties.sellBtn')}
                 </button>
               )}
               {activeTab === 'my' && (
                 <button className="button" onClick={() => handleEditClick(p)}>
-                  Редактировать
+                  {t('properties.editBtn')}
                 </button>
               )}
               {activeTab === 'my' && p.isForSale && (
                 <button className="button button--secondary" onClick={() => handleCancelSell(p.id)}>
-                  Снять с продажи
+                  {t('properties.delistBtn')}
                 </button>
               )}
             </div>
@@ -491,50 +475,53 @@ export const PropertiesPage: React.FC = () => {
       {showCreateModal && (
         <div className="modal-overlay">
           <div className="modal-content" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
-            <h3>Регистрация имущества</h3>
+            <h3>{t('properties.createModal.title')}</h3>
             {createForm.ownerType === 'government' ? (
               <p className="modal-subtitle">
-                Внимание: Для государства налог на создание равен 0.
+                {t('properties.createModal.taxZero')}
               </p>
             ) : myStateCurrency ? (
               <p className="modal-subtitle">
-                Внимание: За создание будет списан налог {(myStateCurrency.totalIssued / (myStateCurrency.propertyCreationFeeRate || 500)).toFixed(2)} {myStateCurrency.code}.
+                {t('properties.createModal.taxAmount', {
+                  amount: (myStateCurrency.totalIssued / (myStateCurrency.propertyCreationFeeRate || 500)).toFixed(2),
+                  code: myStateCurrency.code
+                })}
               </p>
             ) : (
               <p className="modal-subtitle">
-                Внимание: За создание будет списан налог 1/500 от эмиссии валюты выбранного государства.
+                {t('properties.createModal.taxFormula')}
               </p>
             )}
             <form onSubmit={handleCreateProperty}>
               <div className="form-group">
-                <label>Название</label>
+                <label>{t('properties.createModal.name')}</label>
                 <input required value={createForm.name} onChange={e => setCreateForm({ ...createForm, name: e.target.value })} />
               </div>
 
               <div className="form-group">
-                <label>От чьего лица оформляется</label>
+                <label>{t('properties.createModal.ownerType')}</label>
                 <select value={createForm.ownerType} onChange={e => {
                   const val = e.target.value as PropertyOwnerType;
                   setCreateForm({ ...createForm, ownerType: val, ownerId: val === 'personal' ? myUuid! : val === 'government' ? createForm.stateId : '' });
                 }}>
-                  <option value="personal">Физлицо (Личное)</option>
-                  <option value="company">Компания</option>
-                  <option value="government">Государство (Казна)</option>
+                  <option value="personal">{t('properties.ownerTypes.personal')}</option>
+                  <option value="company">{t('properties.ownerTypes.company')}</option>
+                  <option value="government">{t('properties.ownerTypes.government')}</option>
                 </select>
               </div>
 
               {createForm.ownerType === 'company' && (
                 <div className="form-group">
-                  <label>Выберите компанию</label>
+                  <label>{t('properties.createModal.selectCompany')}</label>
                   <select required value={createForm.ownerId} onChange={e => setCreateForm({ ...createForm, ownerId: e.target.value })}>
-                    <option value="" disabled>-- Выберите компанию --</option>
+                    <option value="" disabled>{t('properties.createModal.selectCompanyPlaceholder')}</option>
                     {myCompanies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
                 </div>
               )}
 
               <div className="form-group">
-                <label>Категория</label>
+                <label>{t('properties.createModal.category')}</label>
                 <select value={createForm.propertyCategory} onChange={e => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   const cat = e.target.value as any;
@@ -544,80 +531,81 @@ export const PropertiesPage: React.FC = () => {
                     type: cat === 'real_estate' ? 'land_plot' : 'railway'
                   });
                 }}>
-                  <option value="real_estate">Недвижимость</option>
-                  <option value="special_object">Спецобъект</option>
+                  <option value="real_estate">{t('properties.categories.real_estate')}</option>
+                  <option value="special_object">{t('properties.categories.special_object')}</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Тип</label>
+                <label>{t('properties.createModal.type')}</label>
                 {createForm.propertyCategory === 'real_estate' ? (
                   <select required value={createForm.type} onChange={e => setCreateForm({ ...createForm, type: e.target.value })}>
-                    <option value="land_plot">Земельный участок</option>
-                    <option value="residential">Жилое строение</option>
-                    <option value="public_building">Здание общего пользования</option>
-                    <option value="administrative">Административное здание</option>
+                    <option value="land_plot">{t('properties.types.land_plot')}</option>
+                    <option value="residential">{t('properties.types.residential')}</option>
+                    <option value="public_building">{t('properties.types.public_building')}</option>
+                    <option value="administrative">{t('properties.types.administrative')}</option>
                   </select>
                 ) : (
                   <select required value={createForm.type} onChange={e => setCreateForm({ ...createForm, type: e.target.value })}>
-                    <option value="railway">Ж/Д вокзал</option>
-                    <option value="airfield">Аэродром</option>
-                    <option value="seaport">Морской порт</option>
-                    <option value="military">Военный объект</option>
+                    <option value="railway">{t('properties.types.railway')}</option>
+                    <option value="airfield">{t('properties.types.airfield')}</option>
+                    <option value="seaport">{t('properties.types.seaport')}</option>
+                    <option value="military">{t('properties.types.military')}</option>
                   </select>
                 )}
               </div>
 
               {createForm.type === 'land_plot' && (
                 <div className="form-group">
-                  <label>Подвид (Опционально)</label>
+                  <label>{t('properties.createModal.subtype')}</label>
                   <select value={createForm.subType} onChange={e => setCreateForm({ ...createForm, subType: e.target.value })}>
-                    <option value="">-- Без подвида --</option>
-                    <option value="ihs">ИЖС (Дом, коммерция)</option>
-                    <option value="subsidiary">Подсобное хозяйство</option>
-                    <option value="agricultural">Сельхоз-нужды</option>
-                    <option value="industrial">Промышленный</option>
+                    <option value="">{t('properties.subtypes.none')}</option>
+                    <option value="ihs">{t('properties.subtypes.ihs')}</option>
+                    <option value="subsidiary">{t('properties.subtypes.subsidiary')}</option>
+                    <option value="agricultural">{t('properties.subtypes.agricultural')}</option>
+                    <option value="industrial">{t('properties.subtypes.industrial')}</option>
                   </select>
                 </div>
               )}
 
               <div className="form-group">
-                <label>Приват (Опционально)</label>
+                <label>{t('properties.createModal.claim')}</label>
                 <select value={createForm.territoryId} onChange={e => setCreateForm({ ...createForm, territoryId: e.target.value })}>
-                  <option value="">-- Без привата --</option>
-                  {availableTerritories.map(t => (
-                    <option key={t.id} value={t.id}>
-                      {t.settlement ? `Приват в ${t.settlement.name} ` : 'Приват '}
-                      ({t.minX}, {t.minZ} - {t.maxX}, {t.maxZ})
+                  <option value="">{t('properties.createModal.noClaim')}</option>
+                  {availableTerritories.map(tItem => (
+                    <option key={tItem.id} value={tItem.id}>
+                      {tItem.settlement 
+                        ? t('properties.createModal.claimInSettlement', { settlement: tItem.settlement.name, id: `${tItem.minX}, ${tItem.minZ} - ${tItem.maxX}, ${tItem.maxZ}` })
+                        : t('properties.createModal.claimStandalone', { id: `${tItem.minX}, ${tItem.minZ} - ${tItem.maxX}, ${tItem.maxZ}` })}
                     </option>
                   ))}
                 </select>
-                <small>Можно привязать только свободный приват, который принадлежит вам (или вашей компании/государству).</small>
+                <small>{t('properties.createModal.claimHint')}</small>
               </div>
 
               <div className="form-group">
-                <label>ID Государства</label>
+                <label>{t('properties.createModal.stateId')}</label>
                 <input required disabled value={createForm.stateId} />
-                {!myStateId && <small style={{ color: 'red' }}>Вы должны быть жителем государства!</small>}
+                {!myStateId && <small style={{ color: 'red' }}>{t('properties.createModal.mustBeCitizen')}</small>}
               </div>
 
               {!createForm.territoryId && (
                 <div className="form-group">
-                  <label>Координаты центра (Опционально)</label>
+                  <label>{t('properties.createModal.coords')}</label>
                   <input
-                    placeholder="X, Y, Z (например: 150, 64, -230)"
+                    placeholder={t('properties.createModal.coordsPlaceholder')}
                     value={createForm.centerCoordinates}
                     onChange={e => setCreateForm({ ...createForm, centerCoordinates: e.target.value })}
                   />
-                  <small>Будут определены автоматически, если выбран приват.</small>
+                  <small>{t('properties.createModal.coordsHint')}</small>
                 </div>
               )}
 
               {createForm.propertyCategory === 'real_estate' && createForm.type !== 'land_plot' && (
                 <div className="form-group">
-                  <label>ID родительского земельного участка (Опционально)</label>
+                  <label>{t('properties.createModal.parentPlot')}</label>
                   <input
-                    placeholder="Укажите ID участка, на котором находится строение"
+                    placeholder={t('properties.createModal.parentPlotPlaceholder')}
                     value={createForm.parentPropertyId}
                     onChange={e => setCreateForm({ ...createForm, parentPropertyId: e.target.value })}
                   />
@@ -627,41 +615,41 @@ export const PropertiesPage: React.FC = () => {
               {!createForm.territoryId && (
                 <>
                   <div className="form-group">
-                    <label>Поселение (Опционально)</label>
+                    <label>{t('properties.createModal.settlement')}</label>
                     <select value={createForm.settlementId} onChange={e => setCreateForm({ ...createForm, settlementId: e.target.value })}>
-                      <option value="">-- Без поселения (Вне поселения) --</option>
+                      <option value="">{t('properties.createModal.outsideSettlement')}</option>
                       {settlements.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </select>
-                    <small>Если выбран приват, поселение и государство будут подтянуты автоматически.</small>
+                    <small>{t('properties.createModal.settlementHint')}</small>
                   </div>
 
                   {createForm.settlementId && (
                     <div className="form-group">
-                      <label>Улица (Опционально)</label>
+                      <label>{t('properties.createModal.street')}</label>
                       <select value={createForm.streetId} onChange={e => setCreateForm({ ...createForm, streetId: e.target.value })}>
-                        <option value="">-- Без улицы --</option>
+                        <option value="">{t('properties.createModal.noStreet')}</option>
                         {streets.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                       </select>
                     </div>
                   )}
                   
                   <div className="form-group">
-                    <label>Площадь (Опционально)</label>
+                    <label>{t('properties.createModal.area')}</label>
                     <input
                       type="number"
-                      placeholder="Площадь в кв.м."
+                      placeholder={t('properties.createModal.areaPlaceholder')}
                       value={createForm.area}
                       onChange={e => setCreateForm({ ...createForm, area: e.target.value })}
                     />
-                    <small>Площадь рассчитывается автоматически при выборе привата.</small>
+                    <small>{t('properties.createModal.areaHint')}</small>
                   </div>
                 </>
               )}
 
               <div className="form-group">
-                <label>Номер дома/строения (Опционально)</label>
+                <label>{t('properties.createModal.houseNumber')}</label>
                 <input
-                  placeholder="Например: 12Б"
+                  placeholder={t('properties.createModal.houseNumberPlaceholder')}
                   value={createForm.houseNumber}
                   onChange={e => setCreateForm({ ...createForm, houseNumber: e.target.value })}
                 />
@@ -669,7 +657,7 @@ export const PropertiesPage: React.FC = () => {
 
               <div className="form-group">
                 <ImageUploader 
-                  label="Фотографии недвижимости (до 10 фото)"
+                  label={t('properties.createModal.photos')}
                   multiple={true}
                   maxFiles={10}
                   folder="properties"
@@ -679,8 +667,8 @@ export const PropertiesPage: React.FC = () => {
               </div>
 
               <div className="modal-actions">
-                <button type="button" className="button button--secondary" onClick={() => setShowCreateModal(false)}>Отмена</button>
-                <button type="submit" className="button" disabled={actionLoading || !myStateId || (createForm.ownerType === 'company' && !createForm.ownerId)}>Создать</button>
+                <button type="button" className="button button--secondary" onClick={() => setShowCreateModal(false)}>{t('properties.createModal.cancel')}</button>
+                <button type="submit" className="button" disabled={actionLoading || !myStateId || (createForm.ownerType === 'company' && !createForm.ownerId)}>{t('properties.createModal.submit')}</button>
               </div>
             </form>
           </div>
@@ -690,15 +678,15 @@ export const PropertiesPage: React.FC = () => {
       {showEditModal && (
         <div className="modal-overlay">
           <div className="modal-content" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
-            <h3>Редактирование имущества</h3>
+            <h3>{t('properties.editModal.title')}</h3>
             <form onSubmit={handleUpdateProperty}>
               <div className="form-group">
-                <label>Название</label>
+                <label>{t('properties.editModal.name')}</label>
                 <input required value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} />
               </div>
 
               <div className="form-group">
-                <label>Описание (Опционально)</label>
+                <label>{t('properties.editModal.desc')}</label>
                 <textarea
                   value={editForm.description}
                   onChange={e => setEditForm({ ...editForm, description: e.target.value })}
@@ -706,22 +694,23 @@ export const PropertiesPage: React.FC = () => {
               </div>
 
               <div className="form-group">
-                <label>Приват (Опционально)</label>
+                <label>{t('properties.editModal.claim')}</label>
                 <select value={editForm.territoryId} onChange={e => setEditForm({ ...editForm, territoryId: e.target.value })}>
-                  <option value="">-- Без привата --</option>
-                  {availableEditTerritories.map(t => (
-                    <option key={t.id} value={t.id}>
-                      {t.settlement ? `Приват в ${t.settlement.name} ` : 'Приват '}
-                      ({t.minX}, {t.minZ} - {t.maxX}, {t.maxZ})
+                  <option value="">{t('properties.editModal.noClaim')}</option>
+                  {availableEditTerritories.map(tItem => (
+                    <option key={tItem.id} value={tItem.id}>
+                      {tItem.settlement 
+                        ? t('properties.createModal.claimInSettlement', { settlement: tItem.settlement.name, id: `${tItem.minX}, ${tItem.minZ} - ${tItem.maxX}, ${tItem.maxZ}` })
+                        : t('properties.createModal.claimStandalone', { id: `${tItem.minX}, ${tItem.minZ} - ${tItem.maxX}, ${tItem.maxZ}` })}
                     </option>
                   ))}
                 </select>
-                <small>Можно привязать только свободный приват (или текущий), который принадлежит вам (или вашей компании/государству).</small>
+                <small>{t('properties.editModal.claimHint')}</small>
               </div>
 
               <div className="form-group">
                 <ImageUploader 
-                  label="Фотографии недвижимости (до 10 фото)"
+                  label={t('properties.editModal.photos')}
                   multiple={true}
                   maxFiles={10}
                   folder="properties"
@@ -732,10 +721,10 @@ export const PropertiesPage: React.FC = () => {
 
               <div className="modal-actions">
                 <button type="button" className="button button--secondary" onClick={() => setShowEditModal(false)}>
-                  Отмена
+                  {t('properties.editModal.cancel')}
                 </button>
                 <button type="submit" className="button" disabled={actionLoading}>
-                  {actionLoading ? 'Загрузка...' : 'Сохранить'}
+                  {actionLoading ? t('properties.editModal.saving') : t('properties.editModal.save')}
                 </button>
               </div>
             </form>
@@ -746,22 +735,22 @@ export const PropertiesPage: React.FC = () => {
       {showSellModal && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h3>Продажа имущества</h3>
-            <p className="modal-subtitle" style={{ background: '#f3f4f6', color: '#111827' }}>За какую цену вы хотите выставить имущество на продажу?</p>
+            <h3>{t('properties.sellModal.title')}</h3>
+            <p className="modal-subtitle" style={{ background: '#f3f4f6', color: '#111827' }}>{t('properties.sellModal.subtitle')}</p>
             <form onSubmit={handleConfirmSell}>
               <div className="form-group">
-                <label>Способ продажи</label>
+                <label>{t('properties.sellModal.method')}</label>
                 <select value={sellType} onChange={e => setSellType(e.target.value as 'market' | 'direct')} required>
-                  <option value="market">На открытый рынок</option>
-                  <option value="direct">Прямое предложение игроку</option>
+                  <option value="market">{t('properties.sellModal.market')}</option>
+                  <option value="direct">{t('properties.sellModal.direct')}</option>
                 </select>
               </div>
 
               {sellType === 'direct' && (
                 <div className="form-group">
-                  <label>Выберите покупателя (только игроки со счетом в валюте)</label>
+                  <label>{t('properties.sellModal.selectBuyer')}</label>
                   <select value={forSaleToId} onChange={e => setForSaleToId(e.target.value)} required={sellType === 'direct'}>
-                    <option value="">-- Выберите игрока --</option>
+                    <option value="">{t('properties.sellModal.selectBuyerPlaceholder')}</option>
                     {eligibleBuyers.map(b => (
                       <option key={b.uuid} value={b.uuid}>{b.username}</option>
                     ))}
@@ -770,23 +759,23 @@ export const PropertiesPage: React.FC = () => {
               )}
 
               <div className="form-group">
-                <label>Цена</label>
+                <label>{t('properties.sellModal.price')}</label>
                 <input
                   type="number"
                   step="0.01"
                   min="0.01"
                   required
-                  placeholder="Например: 500"
+                  placeholder={t('properties.sellModal.pricePlaceholder')}
                   value={sellPrice}
                   onChange={e => setSellPrice(e.target.value)}
                 />
               </div>
               <div className="modal-actions">
                 <button type="button" className="button button--secondary" onClick={() => setShowSellModal(false)}>
-                  Отмена
+                  {t('properties.sellModal.cancel')}
                 </button>
                 <button type="submit" className="button" disabled={actionLoading}>
-                  {actionLoading ? 'Загрузка...' : 'Выставить на продажу'}
+                  {actionLoading ? t('properties.sellModal.listing') : t('properties.sellModal.submit')}
                 </button>
               </div>
             </form>

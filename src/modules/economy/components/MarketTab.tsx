@@ -44,7 +44,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
         </div>
       )}
       <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
-        {/* Левая колонка: График и действия */}
+        {/* Left column: Chart and actions */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {selectedCompany ? (
             <>
@@ -54,7 +54,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
                 <div style={{ textAlign: 'right' }}>
                   <span style={{ fontSize: '28px', fontWeight: 'bold' }}>{selectedCompany.sharePrice} {getCurrencyCode(selectedCompany)}</span>
                   <div style={{ fontSize: '14px', color: selectedCompany.priceChange24h >= 0 ? '#10b981' : '#ef4444' }}>
-                    {selectedCompany.priceChange24h >= 0 ? '+' : ''}{selectedCompany.priceChange24h.toFixed(2)}% (24ч)
+                    {selectedCompany.priceChange24h >= 0 ? '+' : ''}{selectedCompany.priceChange24h.toFixed(2)}% {t('exchange.hours24')}
                   </div>
                 </div>
               </h2>
@@ -65,17 +65,17 @@ export const MarketTab: React.FC<MarketTabProps> = ({
               <Button
                 type="button"
                 callback={() => setBuyCompanyId(selectedCompany.id)}
-                style={{ flex: 1 }}
+                style={{ flex: 1, height: '48px', fontSize: '16px' }}
               >
-                {t('exchange.buyShares', 'Buy shares')}
+                {t('exchange.buy.submit', 'Buy')}
               </Button>
               <Button
                 type="button"
-                callback={() => setSellCompanyId(selectedCompany.id)}
                 secondary={true}
-                style={{ flex: 1 }}
+                callback={() => setSellCompanyId(selectedCompany.id)}
+                style={{ flex: 1, height: '48px', fontSize: '16px' }}
               >
-                {t('exchange.sellShares', 'Sell shares')}
+                {t('exchange.sell.submit', 'Sell')}
               </Button>
               
               {(() => {
@@ -106,7 +106,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
         )}
       </div>
 
-      {/* Правая колонка: Список акций */}
+      {/* Right column: Shares list */}
       <div style={{ width: '320px', flexShrink: 0, background: '#fff', borderRadius: '16px', border: '1px solid #d2d2d8', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)' }}>
         <div style={{ padding: '16px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', fontWeight: 600, fontSize: '16px' }}>
           {t('exchange.sharesOnMarket', 'Shares on the market')}

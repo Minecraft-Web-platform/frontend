@@ -1,5 +1,6 @@
 import {  } from 'axios';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AccountType, ICurrency } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 import { IState } from '../../states';
@@ -19,6 +20,7 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const { t } = useTranslation('economy');
   const [newAccType] = useState<AccountType>('personal');
   const [newAccCurrency, setNewAccCurrency] = useState(currencies.length > 0 ? currencies[0].code : '');
   const [loading, setLoading] = useState(false);
@@ -26,7 +28,7 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
   const handleCreateAccount = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newAccCurrency) {
-      alert('Выберите валюту счета (на сервере должна быть хотя бы одна выпущенная валюта)');
+      alert(t('createAccountModal.selectCurrencyAlert'));
       return;
     }
     try {
@@ -38,7 +40,7 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
       onSuccess();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.message || 'Ошибка создания счета');
+      alert(err?.message || t('createAccountModal.error'));
     } finally {
       setLoading(false);
     }
@@ -47,38 +49,38 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
   return (
     <div className="economy-modal-overlay">
       <div className="economy-modal">
-        <h3 className="modal-title">Открытие банковского счета</h3>
+        <h3 className="modal-title">{t('createAccountModal.title')}</h3>
         <form onSubmit={handleCreateAccount} className="modal-form">
           <label>
-            <span>Тип счета</span>
+            <span>{t('createAccountModal.accountType')}</span>
             <input
               type="text"
-              value="Личный счет"
+              value={t('createAccountModal.personalAccount')}
               disabled
               style={{ opacity: 0.8, cursor: 'not-allowed', backgroundColor: '#f1f5f9', color: '#475569' }}
             />
             <p style={{ fontSize: '13px', color: '#94a3b8', margin: '4px 0' }}>
-              ℹ️ Коммерческий счет создается автоматически при регистрации компании, а казначейский — при учреждении Нацбанка.
+              {t('createAccountModal.commercialHint')}
             </p>
           </label>
 
           <label>
-            <span>Валюта счета</span>
+            <span>{t('createAccountModal.currency')}</span>
             <select
               value={newAccCurrency}
               onChange={(e) => setNewAccCurrency(e.target.value)}
               disabled={currencies.length === 0 || loading}
             >
               {currencies.length === 0 && (
-                <option value="">-- Нет доступных валют --</option>
+                <option value="">{t('createAccountModal.noCurrencies')}</option>
               )}
               {currencies.map((curr) => {
                 const st = statesList.find((s) => s.id === curr.stateId);
-                const stateName = st ? st.name : 'Общесерверная';
+                const stateName = st ? st.name : t('createAccountModal.serverWide');
                 const isForeign = Boolean(curr.stateId && curr.stateId !== myStateId);
                 return (
                   <option key={curr.id} value={curr.code}>
-                    {curr.code} ({curr.name}) — {stateName} {isForeign ? '[Другое гос-во]' : ''}
+                    {curr.code} ({curr.name}) — {stateName} {isForeign ? t('createAccountModal.foreignState') : ''}
                   </option>
                 );
               })}
@@ -118,7 +120,7 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
                     }}
                   >
                     <span>
-                      Юрисдикция: {selectedCurrState ? selectedCurrState.name : 'Общесерверная валюта'}
+                      {t('createAccountModal.jurisdiction', { name: selectedCurrState ? selectedCurrState.name : t('createAccountModal.serverWideCurrency') })}
                     </span>
                     {isForeignCurrency && (
                       <span
@@ -131,7 +133,7 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
                           fontWeight: 700,
                         }}
                       >
-                        ДРУГОЕ ГОСУДАРСТВО
+                        {t('createAccountModal.foreignBadge')}
                       </span>
                     )}
                   </div>
@@ -144,8 +146,8 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
                     }}
                   >
                     {isForeignCurrency
-                      ? 'Вы открываете счёт в иностранном государстве. Операции счёта и карты будут производиться в национальной валюте этой юрисдикции.'
-                      : 'Вы открываете счёт в домашней юрисдикции.'}
+                      ? t('createAccountModal.foreignNotice')
+                      : t('createAccountModal.domesticNotice')}
                   </div>
                 </div>
               </div>
@@ -159,14 +161,14 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
               className="economy-btn economy-btn--secondary"
               disabled={loading}
             >
-              Отмена
+              {t('createAccountModal.cancel')}
             </button>
             <button
               type="submit"
               className="economy-btn economy-btn--primary"
               disabled={loading}
             >
-              {loading ? 'Открытие...' : 'Открыть счет'}
+              {loading ? t('createAccountModal.opening') : t('createAccountModal.submit')}
             </button>
           </div>
         </form>

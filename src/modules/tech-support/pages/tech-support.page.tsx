@@ -253,7 +253,7 @@ const TechSupportPage: FC = () => {
                     <div key={type.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: '#f9f9f9', borderRadius: '8px', border: '1px solid #ddd' }}>
                       <div>
                         <strong>{type.name}</strong>
-                        <div style={{ fontSize: '12px', color: '#666' }}>{t("moderation.proposedBy", { username: type.proposedByUsername || 'Неизвестно' })}</div>
+                        <div style={{ fontSize: '12px', color: '#666' }}>{t("moderation.proposedBy", { username: type.proposedByUsername || t("moderation.unknown") })}</div>
                       </div>
                       <div style={{ display: 'flex', gap: '10px' }}>
                         <Button callback={() => handleModerateType(type.id, true)} style={{ padding: '5px 15px', fontSize: '14px', background: '#22c55e' }}>{t("moderation.approveBtn")}</Button>

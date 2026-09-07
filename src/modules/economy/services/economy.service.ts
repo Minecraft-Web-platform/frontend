@@ -34,7 +34,7 @@ import {
 export class EconomyService {
   constructor(private httpService: EnhancedWithAuthHttpService) {}
 
-  // --- Банки и Счета ---
+  // --- Banks and Accounts ---
   public async getMyAccounts(): Promise<{
     accounts: IAccount[];
     cards: ICard[];
@@ -74,7 +74,7 @@ export class EconomyService {
     return this.httpService.get('economy/transfers/my');
   }
 
-  // --- Национальные Валюты ---
+  // --- National Currencies ---
   public async getAllCurrencies(): Promise<ICurrency[]> {
     return this.httpService.get('economy/currencies');
   }
@@ -100,7 +100,7 @@ export class EconomyService {
     return this.httpService.get(`economy/currencies/${currencyId}/rate-history`);
   }
 
-  // --- Компании и Юрисдикция ---
+  // --- Companies and Jurisdiction ---
   public async getAllCompanies(filters?: {
     settlementId?: string;
     stateId?: string;
@@ -135,7 +135,7 @@ export class EconomyService {
     return this.httpService.delete(`economy/companies/${id}`);
   }
 
-  // --- Фондовая Биржа ---
+  // --- Stock Exchange ---
   public async getPublicCompanies(): Promise<ICompany[]> {
     return this.httpService.get('economy/stock-exchange/companies');
   }
@@ -196,7 +196,7 @@ export class EconomyService {
     return this.httpService.post(`economy/stock-exchange/${companyId}/price`, { newPrice });
   }
 
-  // --- Недвижимость и Имущество ---
+  // --- Real Estate and Properties ---
   public async getMarketProperties(stateId?: string): Promise<IProperty[]> {
     const query = stateId ? `?stateId=${stateId}` : '';
     return this.httpService.get(`economy/properties/market${query}`);
@@ -234,7 +234,7 @@ export class EconomyService {
     return this.httpService.post(`economy/properties/${propertyId}/buy`, data);
   }
 
-  // --- Услуги Компании и Заказы ---
+  // --- Company Services and Orders ---
   public async getCompanyServices(companyId: string): Promise<ICompanyService[]> {
     return this.httpService.get(`company-services/company/${companyId}`);
   }

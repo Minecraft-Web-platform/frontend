@@ -13,39 +13,39 @@ export class NewsService {
     this.SERVER_URL = import.meta.env.VITE_BACKEND_URL;
   }
 
-  /** Получить все новости (только одобренные) */
+  /** Get all news (approved only) */
   public async getAll(categoryId?: string): Promise<News[]> {
     const url = categoryId ? `news?categoryId=${categoryId}` : "news";
 
     return this.httpService.get(url);
   }
 
-  /** Получить новость по ID */
+  /** Get news by ID */
   public async getOne(id: string): Promise<News> {
     return this.httpService.get(`news/${id}`);
   }
 
-  /** Создать новость */
+  /** Create news */
   public async create(dto: CreateNewsDto): Promise<News> {
     return this.httpService.post<News, CreateNewsDto>("news", dto);
   }
 
-  /** Одобрить новость (только админ) */
+  /** Approve news (admin only) */
   public async approve(id: string): Promise<News> {
     return this.httpService.patch<News, void>(`news/${id}/approve`, undefined);
   }
 
-  /** Обновить новость (только админ) */
+  /** Update news (admin only) */
   public async update(id: string, dto: UpdateNewsDto): Promise<News> {
     return this.httpService.patch<News, UpdateNewsDto>(`news/${id}`, dto);
   }
 
-  /** Удалить новость (только админ) */
+  /** Delete news (admin only) */
   public async remove(id: string): Promise<void> {
     return this.httpService.delete<void>(`news/${id}`);
   }
 
-  /** Загрузить изображение в R2 Cloudflare */
+  /** Upload image to Cloudflare R2 */
   public async uploadImage(file: File): Promise<{ url: string }> {
     const { accessToken } = useAuthStore.getState();
     const formData = new FormData();
@@ -61,7 +61,7 @@ export class NewsService {
     });
 
     if (!res.ok) {
-      throw new Error("Ошибка при загрузке изображения");
+      throw new Error("Failed to upload image");
     }
 
     return res.json();

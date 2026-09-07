@@ -114,6 +114,7 @@
         "desc": "Users can propose new subtypes of rural settlements. Here you can approve or reject them.",
         "empty": "No subtypes pending moderation.",
         "proposedBy": "Proposed by: {username}",
+        "unknown": "Unknown",
         "approveBtn": "Approve",
         "rejectBtn": "Reject"
     }

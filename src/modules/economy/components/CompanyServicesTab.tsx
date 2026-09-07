@@ -1,5 +1,5 @@
-import {  } from 'axios';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ICompany, ICompanyService } from '../types/economy.types';
 import Button from '../../../shared/ui/button/button.component';
 import { CreateServiceModal } from './CreateServiceModal';
@@ -14,6 +14,7 @@ interface CompanyServicesTabProps {
 }
 
 export const CompanyServicesTab: React.FC<CompanyServicesTabProps> = ({ company, services, onRefresh }) => {
+  const { t } = useTranslation('economy');
   const { accessToken } = useAuthStore();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<ICompanyService | null>(null);
@@ -36,14 +37,14 @@ export const CompanyServicesTab: React.FC<CompanyServicesTabProps> = ({ company,
   return (
     <div className="company-services-tab">
       <div className="tab-header">
-        <h2>Услуги компании</h2>
+        <h2>{t('companies.services.title')}</h2>
         {isOwner && (
-          <Button callback={() => setIsCreateModalOpen(true)}>Создать услугу</Button>
+          <Button callback={() => setIsCreateModalOpen(true)}>{t('companies.services.create')}</Button>
         )}
       </div>
 
       {services.length === 0 ? (
-        <div className="empty-state">У этой компании пока нет услуг.</div>
+        <div className="empty-state">{t('companies.services.empty')}</div>
       ) : (
         <div className="services-grid">
           {services.map(service => (
@@ -55,7 +56,7 @@ export const CompanyServicesTab: React.FC<CompanyServicesTabProps> = ({ company,
                     e.stopPropagation();
                     setServiceToEdit(service);
                   }}
-                  title="Редактировать услугу"
+                  title={t('companies.services.edit')}
                 >
                   ✎
                 </button>
@@ -67,8 +68,12 @@ export const CompanyServicesTab: React.FC<CompanyServicesTabProps> = ({ company,
                 <h3>{service.name}</h3>
                 {service.description && <p className="description">{service.description}</p>}
                 <div className="service-meta">
-                  <span className="price">{service.isComposite ? `от ${service.price} монет` : `${service.price} монет`}</span>
-                  <span className="type">{service.isComposite ? 'Многосоставная' : 'Односоставная'}</span>
+                  <span className="price">
+                    {service.isComposite
+                      ? t('companies.services.fromPrice', { price: service.price })
+                      : t('companies.services.fixedPrice', { price: service.price })}
+                  </span>
+                  <span className="type">{service.isComposite ? t('companies.services.composite') : t('companies.services.single')}</span>
                 </div>
               </div>
             </div>

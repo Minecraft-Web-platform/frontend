@@ -1,5 +1,5 @@
-import {  } from 'axios';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './EditCompanyModal.scss';
 import { ICompany } from '../../types/economy.types';
 import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploader';
@@ -11,6 +11,7 @@ interface EditCompanyModalProps {
 }
 
 export const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ company, onClose, onSave }) => {
+  const { t } = useTranslation('economy');
   const [name, setName] = useState(company.name);
   const [description, setDescription] = useState(company.description || '');
   const [logoUrl, setLogoUrl] = useState(company.logoUrl || '');
@@ -26,7 +27,7 @@ export const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ company, onC
       onClose();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Ошибка сохранения');
+      setError(err?.response?.data?.message || t('companies.editModal.error'));
     } finally {
       setLoading(false);
     }
@@ -35,11 +36,11 @@ export const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ company, onC
   return (
     <div className="edit-company-modal-overlay">
       <div className="edit-company-modal">
-        <h2>Редактирование компании</h2>
+        <h2>{t('companies.editModal.title')}</h2>
         {error && <div className="edit-company-modal__error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="edit-company-modal__field">
-            <label>Название компании:</label>
+            <label>{t('companies.editModal.name')}</label>
             <input
               type="text"
               value={name}
@@ -48,7 +49,7 @@ export const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ company, onC
             />
           </div>
           <div className="edit-company-modal__field">
-            <label>Описание:</label>
+            <label>{t('companies.editModal.desc')}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -58,7 +59,7 @@ export const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ company, onC
           <div className="edit-company-modal__field">
             <ImageUploader 
               folder="economy/companies"
-              label="Логотип"
+              label={t('companies.editModal.logo')}
               value={logoUrl}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onChange={(url: any) => setLogoUrl(url as string)}
@@ -66,10 +67,10 @@ export const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ company, onC
           </div>
           <div className="edit-company-modal__actions">
             <button type="button" className="btn-cancel" onClick={onClose} disabled={loading}>
-              Отмена
+              {t('companies.editModal.cancel')}
             </button>
             <button type="submit" className="btn-save" disabled={loading}>
-              {loading ? 'Сохранение...' : 'Сохранить'}
+              {loading ? t('companies.editModal.saving') : t('companies.editModal.save')}
             </button>
           </div>
         </form>
