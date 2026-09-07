@@ -1,0 +1,48 @@
+{
+    "news": {
+        "title": "News",
+        "createCategoryBtn": "New Category",
+        "cancelCategoryBtn": "Cancel",
+        "categoryNamePlaceholder": "Category Name",
+        "categoryDescPlaceholder": "Category Description",
+        "adminOnlyLabel": "Admin only",
+        "createBtn": "Create",
+        "loading": "Loading...",
+        "createNews": {
+            "noContentAlert": "Please enter a title and add at least one block",
+            "errorAlert": "Error creating news",
+            "successTitle": "✅ News sent for moderation!",
+            "closeBtn": "Close",
+            "title": "New News",
+            "inCategory": "In category: {name}",
+            "titlePlaceholder": "News Title",
+            "textBlock": "Text Block",
+            "imageBlock": "Image",
+            "textPlaceholder": "Enter text...",
+            "imageLabel": "Upload Image",
+            "addTextBtn": "+ Text",
+            "addImageBtn": "🖼 Image",
+            "submitBtn": "Publish",
+            "submittingBtn": "Publishing..."
+        },
+        "errors": {
+            "accessDenied": "Access denied. You are not an administrator."
+        },
+        "status": {
+            "pending": "Under Moderation",
+            "approved": "Approved",
+            "notApproved": "Not Approved"
+        },
+        "addNewsPrompt": "Bring news",
+        "details": {
+            "loading": "Loading news...",
+            "notFound": "News not found 😢",
+            "category": "Category:",
+            "author": "Author:",
+            "date": "Publication Date:",
+            "statusLabel": "Status:",
+            "approveBtn": "Approve",
+            "deleteBtn": "Delete"
+        }
+    }
+}

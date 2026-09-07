@@ -1,5 +1,6 @@
 import "./business-certificate.component.scss";
 import { PlayerType } from "../types/player.type";
+import { useTranslation } from "react-i18next";
 
 interface BusinessCertificateProps {
   player: PlayerType;
@@ -16,6 +17,8 @@ const normalizeDate = (dateToNormalize: string): string => {
 };
 
 const BusinessCertificateComponent = ({ player, companiesCount }: BusinessCertificateProps) => {
+  const { t } = useTranslation('player-profile');
+
   return (
     <div className="business-certificate">
       <div className="certificate-header">
@@ -27,42 +30,42 @@ const BusinessCertificateComponent = ({ player, companiesCount }: BusinessCertif
            )}
         </div>
         <div className="header-text">
-          <h3>Министерство Экономики</h3>
-          <p>{player.stateName || "Государственный Реестр"}</p>
+          <h3>{t('certificate.ministry')}</h3>
+          <p>{player.stateName || t('certificate.stateRegistry')}</p>
         </div>
       </div>
 
       <div className="certificate-body">
-        <h2>СВИДЕТЕЛЬСТВО</h2>
-        <p className="subtitle">О РЕГИСТРАЦИИ В КАЧЕСТВЕ ПРЕДПРИНИМАТЕЛЯ</p>
+        <h2>{t('certificate.header')}</h2>
+        <p className="subtitle">{t('certificate.title')}</p>
 
         <div className="info-row">
-          <span className="label">Настоящее свидетельство подтверждает, что гражданин</span>
+          <span className="label">{t('certificate.confirms')}</span>
           <strong className="value highlighted">{player.username}</strong>
         </div>
 
         <div className="info-row">
-          <span className="label">Идентификационный номер (UUID):</span>
+          <span className="label">{t('certificate.uuidLabel')}</span>
           <span className="value monospace">{player.uuid}</span>
         </div>
 
         <div className="info-row">
-          <span className="label">Зарегистрированных компаний:</span>
+          <span className="label">{t('certificate.companiesLabel')}</span>
           <span className="value">{companiesCount}</span>
         </div>
 
         <div className="info-row">
-          <span className="label">Дата первичной регистрации:</span>
+          <span className="label">{t('certificate.registrationLabel')}</span>
           <span className="value">{normalizeDate(player.registrationDate)}</span>
         </div>
 
         <div className="seal-area">
           <div className="stamp">
-            <div className="stamp-inner">ЗАРЕГИСТРИРОВАНО</div>
+            <div className="stamp-inner">{t('certificate.registeredStamp')}</div>
           </div>
           <div className="signature">
              <div className="line"></div>
-             <span>Подпись регистратора</span>
+             <span>{t('certificate.signature')}</span>
           </div>
         </div>
       </div>

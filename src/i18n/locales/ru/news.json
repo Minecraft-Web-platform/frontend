@@ -1,0 +1,48 @@
+{
+    "news": {
+        "title": "Новости",
+        "createCategoryBtn": "Новая категория",
+        "cancelCategoryBtn": "Отменить",
+        "categoryNamePlaceholder": "Имя категории",
+        "categoryDescPlaceholder": "Описание категории",
+        "adminOnlyLabel": "Только для администраторов",
+        "createBtn": "Создать",
+        "loading": "Загрузка...",
+        "createNews": {
+            "noContentAlert": "Введите заголовок и добавьте хотя бы один блок",
+            "errorAlert": "Ошибка при создании новости",
+            "successTitle": "✅ Новость отправлена на модерацию!",
+            "closeBtn": "Закрыть",
+            "title": "Новая новость",
+            "inCategory": "В категории: {name}",
+            "titlePlaceholder": "Заголовок новости",
+            "textBlock": "Текстовый блок",
+            "imageBlock": "Изображение",
+            "textPlaceholder": "Введите текст...",
+            "imageLabel": "Загрузить изображение",
+            "addTextBtn": "+ Текст",
+            "addImageBtn": "🖼 Картинка",
+            "submitBtn": "Опубликовать",
+            "submittingBtn": "Публикуем..."
+        },
+        "errors": {
+            "accessDenied": "Отказано в доступе. Вы не администратор."
+        },
+        "status": {
+            "pending": "На модерации",
+            "approved": "Одобрена",
+            "notApproved": "Не одобрена"
+        },
+        "addNewsPrompt": "Принести весточку",
+        "details": {
+            "loading": "Загрузка новости...",
+            "notFound": "Новость не найдена 😢",
+            "category": "Категория:",
+            "author": "Автор:",
+            "date": "Дата публикации:",
+            "statusLabel": "Статус:",
+            "approveBtn": "Одобрить",
+            "deleteBtn": "Удалить"
+        }
+    }
+}

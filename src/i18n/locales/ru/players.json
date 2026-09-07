@@ -1,0 +1,29 @@
+{
+    "players": {
+        "title": "Игроки",
+        "online": "Игроков онлайн: {online}/{total}",
+        "show": "Показывать:",
+        "all": "Всех",
+        "onlyServer": "Только на сервере",
+        "state": "Государство:",
+        "allStates": "Все государства",
+        "noState": "Без государства",
+        "statusOnline": "Онлайн",
+        "statusOffline": "Оффлайн",
+        "notFound": "Игроки с выбранными фильтрами не найдены...",
+        "passport": {
+            "defaultState": "Мир Хроники Края",
+            "noPhoto": "Нет фото",
+            "nickname": "Никнейм:",
+            "role": "Роль:",
+            "roleAdmin": "Администратор",
+            "rolePlayer": "Игрок",
+            "citizenship": "Гражданство:",
+            "settlement": "Поселение:",
+            "street": "Улица:",
+            "house": "Дом:",
+            "issued": "Выдано:",
+            "validUntil": "Действителен до:"
+        }
+    }
+}

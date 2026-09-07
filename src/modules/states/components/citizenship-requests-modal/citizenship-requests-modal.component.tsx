@@ -2,6 +2,7 @@ import {  } from 'axios';
 import { FC } from 'react';
 import './citizenship-requests-modal.component.scss';
 import { ICitizenshipRequest } from '../../types/states.types';
+import { useTranslation } from 'react-i18next';
 
 interface CitizenshipRequestsModalProps {
   requests: ICitizenshipRequest[];
@@ -14,6 +15,7 @@ const CitizenshipRequestsModal: FC<CitizenshipRequestsModalProps> = ({
   onClose,
   onReview,
 }) => {
+  const { t } = useTranslation('states');
   const pendingRequests = requests.filter((r) => r.status === 'pending');
 
   const handleAction = async (requestId: string, status: 'approved' | 'rejected') => {
@@ -22,7 +24,7 @@ const CitizenshipRequestsModal: FC<CitizenshipRequestsModalProps> = ({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      alert('Ошибка при изменении статуса заявки');
+      alert(t('citizenshipRequests.errors.status'));
     }
   };
 
@@ -30,7 +32,7 @@ const CitizenshipRequestsModal: FC<CitizenshipRequestsModalProps> = ({
     <div className="citizenship-modal" onClick={onClose}>
       <div className="citizenship-modal__content" onClick={(e) => e.stopPropagation()}>
         <div className="citizenship-modal__header">
-          <h3>📬 Заявки на заселение в поселение</h3>
+          <h3>{t('citizenshipRequests.title')}</h3>
           <button className="citizenship-modal__close" onClick={onClose}>
             &times;
           </button>
@@ -38,7 +40,7 @@ const CitizenshipRequestsModal: FC<CitizenshipRequestsModalProps> = ({
 
         {pendingRequests.length === 0 ? (
           <div className="citizenship-modal__empty">
-            Нет активных входящих заявок на рассмотрении.
+            {t('citizenshipRequests.empty')}
           </div>
         ) : (
           <div className="citizenship-modal__list">
@@ -50,13 +52,13 @@ const CitizenshipRequestsModal: FC<CitizenshipRequestsModalProps> = ({
                     className="citizenship-modal__btn citizenship-modal__btn--approve"
                     onClick={() => handleAction(req.id, 'approved')}
                   >
-                    ✔ Одобрить
+                    {t('citizenshipRequests.approveBtn')}
                   </button>
                   <button
                     className="citizenship-modal__btn citizenship-modal__btn--reject"
                     onClick={() => handleAction(req.id, 'rejected')}
                   >
-                    ✖ Отклонить
+                    {t('citizenshipRequests.rejectBtn')}
                   </button>
                 </div>
               </div>

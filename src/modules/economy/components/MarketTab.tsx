@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ICompany } from '../types/economy.types';
 import { IState } from '../../states/types/states.types';
 import { TradingChart } from './TradingChart';
@@ -30,6 +31,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
   setChangePriceCompanyId,
   onBack,
 }) => {
+  const { t } = useTranslation('economy');
   const selectedCompany = companies.find(c => c.id === selectedCompanyId) || null;
 
   return (
@@ -37,7 +39,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
       {onBack && (
         <div style={{ alignSelf: 'flex-start' }}>
           <Button type="button" secondary={true} callback={onBack}>
-            &larr; Назад к списку бирж
+            &larr; {t('exchange.backToList', 'Back to exchanges')}
           </Button>
         </div>
       )}
@@ -65,7 +67,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
                 callback={() => setBuyCompanyId(selectedCompany.id)}
                 style={{ flex: 1 }}
               >
-                Купить акции
+                {t('exchange.buyShares', 'Buy shares')}
               </Button>
               <Button
                 type="button"
@@ -73,7 +75,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
                 secondary={true}
                 style={{ flex: 1 }}
               >
-                Продать акции
+                {t('exchange.sellShares', 'Sell shares')}
               </Button>
               
               {(() => {
@@ -87,7 +89,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
                       secondary={true}
                       style={{ flex: 1, borderColor: '#8b5cf6', color: '#8b5cf6' }}
                     >
-                      ⚙️ Изменить цену
+                      ⚙️ {t('exchange.changePrice', 'Change price')}
                     </Button>
                   );
                 }
@@ -98,8 +100,8 @@ export const MarketTab: React.FC<MarketTabProps> = ({
         ) : (
           <div className="economy-empty" style={{ background: '#fff', border: '1px solid #d2d2d8', borderRadius: '16px', padding: '40px' }}>
             {companies.filter(c => c.isPublic).length === 0 
-              ? "На бирже пока нет публичных компаний. Владельцы фирм могут провести IPO!"
-              : "Выберите компанию в списке справа для просмотра котировок."}
+              ? t('exchange.noPublicCompanies', 'There are no public companies on this exchange yet.')
+              : t('exchange.selectCompanyToView', 'Select a company from the list on the right to view quotes.')}
           </div>
         )}
       </div>
@@ -107,7 +109,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
       {/* Правая колонка: Список акций */}
       <div style={{ width: '320px', flexShrink: 0, background: '#fff', borderRadius: '16px', border: '1px solid #d2d2d8', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)' }}>
         <div style={{ padding: '16px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', fontWeight: 600, fontSize: '16px' }}>
-          Акции на рынке
+          {t('exchange.sharesOnMarket', 'Shares on the market')}
         </div>
         <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
           {companies.filter(c => c.isPublic).map(company => (

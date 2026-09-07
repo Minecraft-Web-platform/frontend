@@ -9,6 +9,7 @@ import Checkbox from "../../../shared/ui/checkbox/checkbox.component";
 import "./create-news-category.scss";
 
 import { NewsCategory } from "../types/news-category.type";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   setCategories: Dispatch<SetStateAction<NewsCategory[]>>;
@@ -22,6 +23,7 @@ const CreateNewsCategoryComponent: FC<Props> = ({ setCategories }) => {
     "all"
   );
   const [categoryIsCreating, setCategoryIsCreating] = useState<boolean>(false);
+  const { t } = useTranslation("news");
 
   const createCategory = async () => {
     const newCategoryData: CreateCategoryDto = {
@@ -44,7 +46,7 @@ const CreateNewsCategoryComponent: FC<Props> = ({ setCategories }) => {
             : () => setCategoryIsCreating(true)
         }
       >
-        {!categoryIsCreating ? "Новая категория" : "Отменить"}
+        {!categoryIsCreating ? t("news.createCategoryBtn") : t("news.cancelCategoryBtn")}
       </Button>
 
       {categoryIsCreating && (
@@ -56,14 +58,14 @@ const CreateNewsCategoryComponent: FC<Props> = ({ setCategories }) => {
             element="input"
             value={newCategoryName}
             setValue={setNewCategoryName}
-            placeholder="Имя категории"
+            placeholder={t("news.categoryNamePlaceholder")}
           />
 
           <Input
             element="textarea"
             value={newCategoryDescription}
             setValue={setNewCategoryDescription}
-            placeholder="Описание категории"
+            placeholder={t("news.categoryDescPlaceholder")}
           />
 
           <div className="checkbox-wrap">
@@ -79,10 +81,10 @@ const CreateNewsCategoryComponent: FC<Props> = ({ setCategories }) => {
                 publishPermission === "all"
                   ? setPublishPermission("admins")
                   : setPublishPermission("all")
-              }>Только для администраторов</label>
+              }>{t("news.adminOnlyLabel")}</label>
           </div>
 
-          <Button callback={createCategory}>Создать</Button>
+          <Button callback={createCategory}>{t("news.createBtn")}</Button>
         </form>
       )}
     </div>

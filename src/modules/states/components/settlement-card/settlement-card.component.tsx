@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { useNavigate } from 'react-router';
 import './settlement-card.component.scss';
 import { ISettlement } from '../../types/states.types';
+import { useTranslation } from 'react-i18next';
 
 interface SettlementCardProps {
   settlement: ISettlement;
@@ -9,6 +10,7 @@ interface SettlementCardProps {
 
 const SettlementCard: FC<SettlementCardProps> = ({ settlement }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation('states');
 
   const residentsCount = settlement.citizens?.length || 0;
 
@@ -37,10 +39,10 @@ const SettlementCard: FC<SettlementCardProps> = ({ settlement }) => {
           <h3 className="settlement-card__title">
             {settlement.name}
             {settlement.status === 'capital' && (
-              <span style={{marginLeft: '8px', fontSize: '10px', padding: '2px 6px', background: '#eab308', color: '#fff', borderRadius: '4px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: 'bold'}}>Столица</span>
+              <span style={{marginLeft: '8px', fontSize: '10px', padding: '2px 6px', background: '#eab308', color: '#fff', borderRadius: '4px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: 'bold'}}>{t('settlementCard.capital')}</span>
             )}
             {settlement.status === 'rural' && (
-              <span style={{marginLeft: '8px', fontSize: '10px', padding: '2px 6px', background: '#22c55e', color: '#fff', borderRadius: '4px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: 'bold'}}>Сельское пос.</span>
+              <span style={{marginLeft: '8px', fontSize: '10px', padding: '2px 6px', background: '#22c55e', color: '#fff', borderRadius: '4px', verticalAlign: 'middle', textTransform: 'uppercase', fontWeight: 'bold'}}>{t('settlementCard.rural')}</span>
             )}
           </h3>
           <span className="settlement-card__mayor">
@@ -58,7 +60,7 @@ const SettlementCard: FC<SettlementCardProps> = ({ settlement }) => {
                 <span>🏛️ {settlement.mayorUsername}</span>
               </>
             ) : (
-              <span>🏛️ Без мэра (Выборы)</span>
+              <span>{t('settlementCard.noMayor')}</span>
             )}
           </span>
         </div>
@@ -68,23 +70,23 @@ const SettlementCard: FC<SettlementCardProps> = ({ settlement }) => {
         <p className="settlement-card__description">{settlement.description}</p>
       ) : (
         <p className="settlement-card__description settlement-card__description--empty">
-          Описание поселения пока не указано.
+          {t('settlementCard.noDesc')}
         </p>
       )}
 
       <div className="settlement-card__footer">
         <div className="settlement-card__stats-group">
           <span className="settlement-card__stat-pill">
-            👥 {residentsCount} жит.
+            {t('settlementCard.residents', { count: residentsCount })}
           </span>
           <span
             className="settlement-card__stat-pill settlement-card__stat-pill--power"
-            title="Экономический вклад поселения в мощь государства"
+            title={t('settlementCard.powerTitle')}
           >
-            ⚡ {residentsCount >= 1 ? '+100 ед.' : '0 ед.'}
+            {t('settlementCard.powerValue', { count: residentsCount >= 1 ? '+100' : '0' })}
           </span>
         </div>
-        <span className="settlement-card__more">Подробнее →</span>
+        <span className="settlement-card__more">{t('settlementCard.moreBtn')}</span>
       </div>
     </div>
   );

@@ -1,0 +1,43 @@
+{
+    "title": "Achievements Management (Admin)",
+    "alerts": {
+        "updated": "Achievement successfully updated!",
+        "created": "Achievement successfully created!",
+        "errorSave": "Error saving achievement",
+        "granted": "Achievement successfully granted!",
+        "errorGrant": "Error granting achievement",
+        "confirmDelete": "Are you sure you want to delete this achievement?",
+        "deleted": "Deleted",
+        "errorDelete": "Error deleting"
+    },
+    "form": {
+        "editTitle": "Edit Achievement",
+        "createTitle": "Create Achievement",
+        "namePlaceholder": "Name",
+        "descPlaceholder": "Description",
+        "iconLabel": "Icon (optional)",
+        "rarityLabel": "Rarity",
+        "rarityCommon": "Common",
+        "rarityRare": "Rare",
+        "rarityEpic": "Epic",
+        "rarityLegendary": "Legendary",
+        "triggerPlaceholder": "Auto-grant event (state.created)",
+        "saveBtn": "Save",
+        "createBtn": "Create",
+        "cancelBtn": "Cancel"
+    },
+    "grant": {
+        "title": "Grant Achievement to Player",
+        "usernamePlaceholder": "Player Nickname",
+        "achievementLabel": "Achievement",
+        "selectPlaceholder": "-- Select achievement --",
+        "grantBtn": "Grant"
+    },
+    "list": {
+        "title": "Achievements List",
+        "triggerPrefix": "Trigger:",
+        "manualTrigger": "Manual grant",
+        "editBtn": "Edit",
+        "deleteBtn": "Delete"
+    }
+}

@@ -1,5 +1,5 @@
 {
-    "heading": "Kroniki Kresu",
+    "heading": "Kroniki Kresu 2.0",
     "buttons": {
         "news": "Aktualności",
         "players-list": "Gracze",
@@ -7,6 +7,9 @@
         "download-page": "Pobierz launcher i modpack",
         "profile": "Profil",
         "tech-support": "Wsparcie",
-        "regulations": "Regulamin"
+        "regulations": "Regulamin",
+        "states": "Państwa",
+        "calendar": "Kalendarz",
+        "economy": "Gospodarka"
     }
 }

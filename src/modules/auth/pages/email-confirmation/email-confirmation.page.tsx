@@ -8,11 +8,7 @@ import { useNavigate } from "react-router";
 import { authService } from "../../services/auth.service";
 import useAuthStore from "../../../../store/auth.store";
 
-const stepsDir = {
-  "email-providing": "Шаг первый",
-  "code-providing": "Шаг второй",
-  done: "Конец!",
-};
+import { useTranslation } from "react-i18next";
 
 const EmailConfirmationPage: FC = () => {
   const [step, setStep] = useState<
@@ -24,6 +20,13 @@ const EmailConfirmationPage: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { accessToken } = useAuthStore();
   const navigate = useNavigate();
+  const { t } = useTranslation('auth');
+
+  const stepsDir = {
+    "email-providing": t("email-confirmation-page.steps.email-providing"),
+    "code-providing": t("email-confirmation-page.steps.code-providing"),
+    done: t("email-confirmation-page.steps.done"),
+  };
 
   const initEmailConfirmationFunc = () => {
     setErrorMessage(null);
@@ -34,9 +37,9 @@ const EmailConfirmationPage: FC = () => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((e: any) => {
         if (e instanceof AxiosError) {
-          setErrorMessage(e.response?.data?.message || "Не удалось отправить код. Проверьте почту.");
+          setErrorMessage(e.response?.data?.message || t("email-confirmation-page.errors.failedToSend"));
         } else {
-          setErrorMessage("Произошла неизвестная ошибка.");
+          setErrorMessage(t("email-confirmation-page.errors.unknown"));
         }
       })
       .finally(() => setIsLoading(false));
@@ -51,9 +54,9 @@ const EmailConfirmationPage: FC = () => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((e: any) => {
         if (e instanceof AxiosError) {
-          setErrorMessage(e.response?.data?.message || "Неверный код или срок его действия истёк.");
+          setErrorMessage(e.response?.data?.message || t("email-confirmation-page.errors.invalidCode"));
         } else {
-          setErrorMessage("Произошла неизвестная ошибка.");
+          setErrorMessage(t("email-confirmation-page.errors.unknown"));
         }
       })
       .finally(() => setIsLoading(false));
@@ -65,9 +68,9 @@ const EmailConfirmationPage: FC = () => {
 
       <main className="content">
         <div className="email-confirmation">
-          <h1>Привязка почты</h1>
+          <h1>{t("email-confirmation-page.title")}</h1>
 
-          <p>По окончанию сия процесса ты станешь легализованным Барсиком </p>
+          <p>{t("email-confirmation-page.description")}</p>
 
           <p className="step">{stepsDir[step]}</p>
 
@@ -80,7 +83,7 @@ const EmailConfirmationPage: FC = () => {
                 setValue={setEmail}
                 element="input"
                 placeholder="example@mail.com"
-                label="Почта"
+                label={t("email-confirmation-page.inputs.emailLabel")}
                 disabled={step !== "email-providing"}
               />
 
@@ -89,7 +92,7 @@ const EmailConfirmationPage: FC = () => {
                 disabled={step !== "email-providing" || isLoading}
                 callback={initEmailConfirmationFunc}
               >
-                Получить код
+                {t("email-confirmation-page.buttons.getCode")}
               </Button>
             </div>
 
@@ -100,7 +103,7 @@ const EmailConfirmationPage: FC = () => {
                   setValue={setCode}
                   element="input"
                   placeholder="XXXXXX"
-                  label="Код подтверждения"
+                  label={t("email-confirmation-page.inputs.codeLabel")}
                 />
 
                 <Button
@@ -108,17 +111,17 @@ const EmailConfirmationPage: FC = () => {
                   disabled={step === "done" || isLoading}
                   callback={confirmEmailFunc}
                 >
-                  Подтвердить
+                  {t("email-confirmation-page.buttons.confirm")}
                 </Button>
               </div>
             )}
 
             {step === "done" && (
               <div className="form">
-                <h3>Почта подтверждена!</h3>
-                <p>Красава! Теперь можешь использовать сайт на полную!</p>
+                <h3>{t("email-confirmation-page.success.title")}</h3>
+                <p>{t("email-confirmation-page.success.description")}</p>
 
-                <Button callback={() => navigate("/profile")}>Профиль</Button>
+                <Button callback={() => navigate("/profile")}>{t("email-confirmation-page.buttons.profile")}</Button>
               </div>
             )}
           </div>

@@ -1,1 +1,120 @@
-{}
+{
+    "title": "Technical Support",
+    "subtitle": "Help and problem resolution service for the 'Edge Chronicles 2.0' server",
+    "faqTitle": "Frequently Asked Questions",
+    "faqItems": [
+        {
+            "q": "How does the court work?",
+            "a": "The judicial system allows you to dispute poor-quality services provided by companies. In the event of a dispute over an order, you can file a complaint. The President of the state or an Administrator will review it and may issue a forced refund."
+        },
+        {
+            "q": "I've been banned, what should I do?",
+            "a": "You can appeal to technical support. In the subject of the letter, state 'Appeal', and in the text describe the situation in detail. Appeals are considered by the technical administrator on a priority basis."
+        },
+        {
+            "q": "How to become a citizen?",
+            "a": "To obtain citizenship, you must contact the mayor of any settlement or the president of the state directly. A list of states and their leaders can be found on the 'States' tab in the left menu."
+        },
+        {
+            "q": "How does the national currency work?",
+            "a": "The national currency is issued by the National Banks of states. Each currency has its physical equivalent — coins from the Create Deco mod (copper, zinc, gold). The exchange rate is floating and depends on real resource backing (diamonds, netherite) in the state treasury."
+        },
+        {
+            "q": "How to create your own company?",
+            "a": "Go to the 'Economy' section, open the tab with a list of companies and click 'Create company'. Fill out the form, specifying the name, legal address (your state), and initial budget."
+        },
+        {
+            "q": "How to trade stocks on the exchange?",
+            "a": "Every public company issues shares. You can buy them in the 'Stock Exchange' section, tracking price change charts. Shares can be resold to other players or you can receive dividends on them if the company decides to pay them."
+        },
+        {
+            "q": "Why are achievements needed?",
+            "a": "Achievements (achievements) are given for your activity on the server and on the site. They are displayed in your public profile and increase your prestige in the eyes of other players. Some rare achievements can provide unique statuses."
+        },
+        {
+            "q": "What is the functionality of the Treasury mod?",
+            "a": "The Treasury mod is our own development for deep integration of the server economy with the site. It adds special Treasury blocks and ATMs through which players can safely 'digitize' their resources (diamonds, gold, netherite and minted coins), instantly crediting them to a bank account on the site, and also withdraw virtual funds back into the game."
+        },
+        {
+            "q": "How to start my company?",
+            "a": "Go to the 'Economy' tab -> 'Companies'. Company registration costs a certain amount (fee) in the currency of the chosen jurisdiction. After registration, you will be able to provide services to players, receive orders, and in the future — go to IPO and sell shares."
+        },
+        {
+            "q": "How to buy shares of companies?",
+            "a": "Go to the 'Exchange' tab (Economy section). There you will see a list of public companies that have gone to IPO. You can buy and sell their shares for state currency, as well as receive dividends from their profits."
+        },
+        {
+            "q": "How to create your own state?",
+            "a": "Go to the 'States' tab and click the create button. Just fill out the form, think of a name, choose a flag, and your state will be instantly created on the site!"
+        },
+        {
+            "q": "What should I do if I forgot my password?",
+            "a": "Go to the login page and click 'Forgot your password?'. A reset link will be sent to your linked email. If you have not linked an email in your profile in advance, it will be almost impossible to restore access to your account."
+        },
+        {
+            "q": "The most important thing",
+            "a": "All functionality on the site is created for convenience and promotes RolePlay, but it in no way prohibits you from coming up with your own RP! For example, a court case about failure to provide services can be fully played out in the game with a judge and lawyers, and the president will then simply technically press a button on the site and attach the minutes of the meeting. Try, play around, and create your own unique story!"
+        },
+        {
+            "q": "I found a bug or vulnerability (dupe)",
+            "a": "Under no circumstances use bugs for selfish purposes! Please describe the vulnerability in detail in the application form. For reporting critical bugs and dupes, exclusive in-game rewards and achievements are provided."
+        },
+        {
+            "q": "What is the difference between a city, a capital, and a rural settlement?",
+            "a": "A capital is the main settlement of a state, where the president's residence is located (there can be only one capital in a state). A city is a large independent settlement. A rural settlement is a small settlement (village, farmstead, etc.), for which you can choose a special subtype when founded."
+        },
+        {
+            "q": "How to change the status of a settlement to Capital?",
+            "a": "Only the leader (president) of the state can assign a capital. To do this, go to the page of the desired city or rural settlement in your state and click the 'Make Capital' button."
+        },
+        {
+            "q": "How to add my own rural settlement subtype?",
+            "a": "If, when founding a rural settlement, you did not find a suitable subtype in the list (for example, you are building an 'Aul' or a 'Fort'), click the '+ Propose your own' button. Write the name, and it will be sent for moderation. As soon as an administrator approves your request, this subtype will be available to all server players!"
+        }
+    ],
+    "alerts": {
+        "approved": "Subtype successfully approved!",
+        "rejected": "Subtype successfully rejected!",
+        "errorModeration": "Moderation error",
+        "fileSizeExceeded": "Some files were ignored as they exceed the 5MB limit."
+    },
+    "serverStatus": {
+        "online": "Server Status: Online",
+        "offline": "Server Status: Offline",
+        "loading": "Server Status: Loading...",
+        "onlineDesc": "The server is running stably, you can log in and play.",
+        "offlineDesc": "The server is currently unavailable. Maintenance is possible.",
+        "loadingDesc": "Checking server status..."
+    },
+    "launcherInfo": {
+        "title": "Having trouble logging in?",
+        "desc": "Make sure you have the latest version of the modpack installed.",
+        "btn": "Download Modpack"
+    },
+    "form": {
+        "title": "Submit a Request",
+        "successTitle": "Request Sent!",
+        "successDesc": "We have received your ticket. A reply will be sent to the linked email <b>{email}</b> shortly.",
+        "writeMoreBtn": "Write More",
+        "emailRequiredTitle": "Email Linking Required",
+        "emailRequiredDesc": "To create technical support requests, you must link and verify an email address so we can send you a reply.",
+        "goToProfileBtn": "Go to Profile",
+        "errorSubmit": "An error occurred while sending. Please try again later.",
+        "nicknameLabel": "Your Nickname",
+        "topicPlaceholder": "Example: Payment Issue",
+        "topicLabel": "Request Topic",
+        "textPlaceholder": "Describe your problem in detail...",
+        "textLabel": "Request Text",
+        "attachFilesLabel": "Attach screenshots (max. 3 files, up to 5MB each)",
+        "submittingBtn": "Sending...",
+        "submitBtn": "Send"
+    },
+    "moderation": {
+        "title": "Settlement Types Moderation",
+        "desc": "Users can propose new subtypes of rural settlements. Here you can approve or reject them.",
+        "empty": "No subtypes pending moderation.",
+        "proposedBy": "Proposed by: {username}",
+        "approveBtn": "Approve",
+        "rejectBtn": "Reject"
+    }
+}

@@ -1,5 +1,5 @@
 {
-    "heading": "",
+    "heading": "End Chronicles 2.0",
     "buttons": {
         "news": "News",
         "players-list": "Players",
@@ -7,6 +7,9 @@
         "download-page": "Download launcher & modpack",
         "profile": "Profile",
         "tech-support": "Support",
-        "regulations": "Rules"
+        "regulations": "Rules",
+        "states": "States",
+        "calendar": "Calendar",
+        "economy": "Economy"
     }
 }

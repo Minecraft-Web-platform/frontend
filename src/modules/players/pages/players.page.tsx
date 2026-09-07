@@ -8,13 +8,16 @@ import { PropagateLoader } from "react-spinners";
 import { GetOnlinePlayersResponse } from "../types/get-online-players.response";
 import { statesService } from "../../states/services/states.service";
 import { IState } from "../../states/types/states.types";
+import { useTranslation } from "react-i18next";
 
 const PlayersPage: FC = () => {
   const [users, setUsers] = useState<GetAllUsersResponse>([]);
   const [states, setStates] = useState<IState[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [filterQuery, setFilterQuery] = useState<"all" | "only-online">("all");
-  const [selectedStateId, setSelectedStateId] = useState<string>("all");
+  const [filterOnline, setFilterOnline] = useState<"all" | "online">("all");
+  const [filterState, setFilterState] = useState<string>("all");
+
+  const { t } = useTranslation("players");
 
   const [onlinePlayers, setOnlinePlayers] = useState<GetOnlinePlayersResponse>({
     online: false,
@@ -44,20 +47,20 @@ const PlayersPage: FC = () => {
       const onlinePlayersResponse = await playersService.getOnlinePlayers();
       setOnlinePlayers(onlinePlayersResponse);
     })();
-  }, [filterQuery]);
+  }, [filterOnline]);
 
   const filteredUsers = users.filter((user) => {
     const matchesOnline =
-      filterQuery === "all" ||
-      (filterQuery === "only-online" &&
+      filterOnline === "all" ||
+      (filterOnline === "online" &&
         onlinePlayers.players.includes(user.username));
 
     const matchesState =
-      selectedStateId === "all"
+      filterState === "all"
         ? true
-        : selectedStateId === "none"
+        : filterState === "none"
         ? !user.stateId
-        : user.stateId === selectedStateId;
+        : user.stateId === filterState;
 
     return matchesOnline && matchesState;
   });
@@ -67,41 +70,35 @@ const PlayersPage: FC = () => {
       <Sidebar />
 
       <main className="content">
-        <h1>Игроки</h1>
-        <p>
-          Игроков онлайн: {onlinePlayers.playersCount}/{users.length}
-        </p>
+        <h1>{t("players.title")}</h1>
+        <div className="players-online-badge">
+          {t("players.online", { online: onlinePlayers.playersCount, total: users.length })}
+        </div>
 
         <div className="filter-buttons">
-          <p>Показывать:</p>
+          <p>{t("players.show")}</p>
           <button
-            className={`filter-buttons__button ${
-              filterQuery === "all" ? "filter-buttons__button--active" : ""
-            }`}
-            onClick={() => setFilterQuery("all")}
+            className={`filter-buttons__button ${filterOnline === "all" ? "filter-buttons__button--active" : ""}`}
+            onClick={() => setFilterOnline("all")}
           >
-            Всех
+            {t("players.all")}
           </button>
           <button
-            className={`filter-buttons__button ${
-              filterQuery === "only-online"
-                ? "filter-buttons__button--active"
-                : ""
-            }`}
-            onClick={() => setFilterQuery("only-online")}
+            className={`filter-buttons__button ${filterOnline === "online" ? "filter-buttons__button--active" : ""}`}
+            onClick={() => setFilterOnline("online")}
           >
-            Только на сервере
+            {t("players.onlyServer")}
           </button>
 
           <div className="filter-buttons__state-filter">
-            <p>Государство:</p>
+            <p>{t("players.state")}</p>
             <select
-              value={selectedStateId}
-              onChange={(e) => setSelectedStateId(e.target.value)}
-              className="filter-buttons__select"
+              value={filterState}
+              onChange={(e) => setFilterState(e.target.value)}
+              className="players-state-select"
             >
-              <option value="all">Все государства</option>
-              <option value="none">Без государства</option>
+              <option value="all">{t("players.allStates")}</option>
+              <option value="none">{t("players.noState")}</option>
               {states.map((st) => (
                 <option key={st.id} value={st.id}>
                   {st.name}
@@ -116,7 +113,9 @@ const PlayersPage: FC = () => {
         ) : (
           <div className="players">
             {filteredUsers.length > 0 ? (
-              filteredUsers.map((user) => (
+              filteredUsers.map((user) => {
+                const isOnline = onlinePlayers.players.includes(user.username);
+                return (
                 <div className="player" key={user.id}>
                   <img
                     className="player__profile-picture"
@@ -143,13 +142,17 @@ const PlayersPage: FC = () => {
                     )}
                   </Link>
 
-                  {onlinePlayers.players.includes(user.username)
-                    ? "Онлайн"
-                    : "Оффлайн"}
+                  <div className={`player-card-status ${isOnline ? "online" : "offline"}`}>
+                    {isOnline
+                    ? t("players.statusOnline")
+                    : t("players.statusOffline")}
+                  </div>
                 </div>
-              ))
+              )})
             ) : (
-              <p>Игроки с выбранными фильтрами не найдены...</p>
+              <div className="players-not-found">
+                <p>{t("players.notFound")}</p>
+              </div>
             )}
           </div>
         )}

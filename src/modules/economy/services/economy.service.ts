@@ -278,6 +278,11 @@ export class EconomyService {
   public async getMyIdentities(): Promise<IOrderIdentity[]> {
     return this.httpService.get(`company-services/identities`);
   }
+
+  // --- Banks ---
+  public async createBank(data: any): Promise<any> {
+    return this.httpService.post(`economy/banks`, data);
+  }
 }
 
 export const economyService = new EconomyService(

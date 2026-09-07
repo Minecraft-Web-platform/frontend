@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HexColorPicker } from 'react-colorful';
+import { useTranslation } from 'react-i18next';
 import './MapColorPicker.scss';
 
 interface MapColorPickerProps {
@@ -10,6 +11,7 @@ interface MapColorPickerProps {
 }
 
 export const MapColorPicker: React.FC<MapColorPickerProps> = ({ color, onChange, mode, defaultColor }) => {
+  const { t } = useTranslation('states');
   const [internalColor, setInternalColor] = useState(color || defaultColor || '#ff0000');
   const [hexInput, setHexInput] = useState(internalColor.replace('#', ''));
 
@@ -37,11 +39,8 @@ export const MapColorPicker: React.FC<MapColorPickerProps> = ({ color, onChange,
     }
   };
 
-  // Прозрачность для превью. У поселений 5% заливки, у государств 2% заливки.
-  // Рамки всегда 100% (alpha = 1).
   const fillOpacity = mode === 'settlement' ? 0.05 : 0.02;
 
-  // Конвертация HEX в rgba для стилей превью
   const getRgba = (hex: string, alpha: number) => {
     const r = parseInt(hex.slice(1, 3), 16) || 255;
     const g = parseInt(hex.slice(3, 5), 16) || 0;
@@ -64,7 +63,7 @@ export const MapColorPicker: React.FC<MapColorPickerProps> = ({ color, onChange,
         </div>
       </div>
       <div className="preview-section">
-        <label>Превью на карте (непрозрачность: {mode === 'settlement' ? '5%' : '2%'})</label>
+        <label>{t('mapColorPicker.previewLabel')}{mode === 'settlement' ? '5%' : '2%'}</label>
         <div className="preview-box">
           <div 
             className="map-polygon"
@@ -74,7 +73,7 @@ export const MapColorPicker: React.FC<MapColorPickerProps> = ({ color, onChange,
             }}
           />
           <div className="preview-label">
-            Пример отображения границ {mode === 'settlement' ? 'поселения' : 'государства'}
+            {mode === 'settlement' ? t('mapColorPicker.exampleSettlement') : t('mapColorPicker.exampleState')}
           </div>
         </div>
       </div>

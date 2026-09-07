@@ -1,0 +1,501 @@
+{
+    "states-list": {
+        "hero": {
+            "title": "Server States",
+            "subtitle": "Alliances, kingdoms, and republics managed by players"
+        },
+        "controls": {
+            "search": "🔍 Search state...",
+            "create": "+ Create State"
+        },
+        "empty": {
+            "loading": "Loading states...",
+            "notFound": "No states found. Be the first to found a great empire!"
+        },
+        "createModal": {
+            "title": "🏰 Founding a New State",
+            "tooltip": "Founding a state allows uniting settlements, setting taxes, and developing a common economy.",
+            "inputs": {
+                "name": "State Name*",
+                "description": "Description / History of the state...",
+                "flag": "Flag (optional)",
+                "coat": "Coat of Arms (optional)",
+                "color": "Color on Map:",
+                "nationalityMale": "Nationality (Male, e.g., Ukrainian)",
+                "nationalityFemale": "Nationality (Female, e.g., Ukrainian)",
+                "citizenshipName": "Citizenship Name (e.g., Ukrainian)"
+            },
+            "buttons": {
+                "cancel": "Cancel",
+                "creating": "Founding...",
+                "submit": "Found"
+            },
+            "error": "Error creating state"
+        }
+    },
+    "state-detail": {
+        "loading": "Loading state passport...",
+        "notFound": "State not found.",
+        "backList": "← Back to list",
+        "backStates": "← To states list",
+        "archived": "Archived",
+        "idCopied": "ID copied: ",
+        "descMissing": "Description is missing.",
+        "citizenship": "📜 Citizenship:",
+        "president": "👑 President:",
+        "presidentNone": "None",
+        "settlements": "🏛️ Settlements:",
+        "citizens": "👥 Citizens:",
+        "taxes": "⚖️ Taxes:",
+        "powerTitle": "Economic power of the state (affects currency rate)",
+        "power": "⚡ Power:",
+        "treasury": {
+            "title": "🏦 State Treasury",
+            "noAccount": "Not established",
+            "hintRegistered": "Account in the National Bank",
+            "hintUnregistered": "Account registration is required",
+            "btnBank": "National Bank Management"
+        },
+        "dashboard": {
+            "title": "⚙️ State Control Panel (President)",
+            "settlements": {
+                "title": "🏙️ State Settlements",
+                "founded": "Settlements founded: ",
+                "btn": "+ Found a settlement"
+            },
+            "power": {
+                "title": "🚪 Authority",
+                "desc": "You can resign from the presidency at any time.",
+                "btn": "Resign"
+            },
+            "bank": {
+                "title": "🏦 National Bank",
+                "active": "✅ Established (account #{{account}})",
+                "inactive": "⚠️ Not established. Must be created before issuing currency.",
+                "btn": "+ Establish bank",
+                "statusOk": "Bank is active"
+            },
+            "currency": {
+                "title": "💰 National Currency",
+                "noBank": "🔒 Establish the National Bank first",
+                "active": "✅ Issued: {{name}} ({{code}})",
+                "inactive": "⚠️ Not issued. Citizens cannot create companies and accounts without currency!",
+                "btnBank": "Bank first",
+                "btnCurrency": "+ Issue currency",
+                "statusOk": "1 {{code}} = 100 kopecks"
+            },
+            "taxes": {
+                "title": "⚙️ Taxes and Treasury",
+                "p2p": "Player-to-player transfers: ",
+                "p2c": "Commercial transfers: ",
+                "exchange": "Exchange fee: ",
+                "btn": "Change tax"
+            },
+            "roles": {
+                "title": "🎭 Positions",
+                "treasurer": "Treasurer: ",
+                "voivode": "Voivode: ",
+                "unassigned": "Not assigned",
+                "btn": "Manage positions"
+            }
+        },
+        "diplomacyTitle": "🤝 Diplomatic relations",
+        "electionsTitle": "🗳️ State Elections",
+        "settlementsTitle": "🏙️  State Settlements",
+        "allSettlementsBtn": "All settlements →",
+        "settlementsEmpty": {
+            "title": "This state does not have any founded settlements yet",
+            "desc": "Found settlements to attract residents and develop the economy!",
+            "btn": "+ Found a settlement"
+        },
+        "citizensTitle": "👥  State Citizens",
+        "citizensCard": {
+            "me": "(You)",
+            "leader": "👑 President / Leader",
+            "citizen": "👥 Citizen"
+        },
+        "citizensEmpty": {
+            "title": "There are no registered citizens in this state yet",
+            "desc": "Found settlements and invite players to settle!"
+        },
+        "goldReserve": {
+            "title": "📦  Gold Reserve and State Treasury",
+            "btn": "📥 Digitize safe",
+            "count": "Quantity: ",
+            "pcs": " pcs.",
+            "emptyTitle": "Treasury is empty",
+            "emptyDesc": "The state has not yet formed a gold reserve. Items are loaded automatically through the game."
+        },
+        "currenciesTitle": "💰  State Currencies",
+        "allCurrenciesBtn": "All currencies →",
+        "currencyCard": {
+            "rate": "Auto-rate:",
+            "issued": "In circulation:",
+            "power": "Econ. power:",
+            "btn": "Open currency page →"
+        },
+        "currenciesEmpty": {
+            "title": "Own currency has not yet been issued",
+            "desc": "Establish a National Bank and create a national currency for trading!",
+            "btn": "+ Issue currency"
+        },
+        "decreesTitle": "📜 Official Decrees and News",
+        "alerts": {
+            "resignConfirm": "Are you sure you want to resign as president?",
+            "resignError": "Resignation error",
+            "editError": "Error editing state",
+            "archiveConfirm": "Are you sure you want to disband (archive) the state? This operation is irreversible, the treasury will be deleted, but the state's history will be saved.",
+            "archiveError": "Error deleting state",
+            "digitizeSuccess": "Successfully digitized!",
+            "digitizeError": "Error digitizing treasury",
+            "settlementError": "Error founding settlement",
+            "proposeSuccess": "Type successfully proposed and sent for moderation!",
+            "proposeError": "Error proposing type",
+            "currencySameError": "Error: Main and fractional coins cannot be the same item!",
+            "currencyError": "Error issuing currency",
+            "bankSuccess": "National bank successfully established!",
+            "bankError": "Error establishing bank",
+            "taxInvalid": "Enter a valid tax percentage from 0 to 100",
+            "taxSuccess": "Taxes updated successfully",
+            "taxError": "Error changing tax rate",
+            "rolesSuccess": "Positions successfully updated",
+            "rolesError": "Error updating positions"
+        },
+        "modals": {
+            "settlement": {
+                "title": "Founding a settlement",
+                "nameLabel": "Settlement Name",
+                "namePlaceholder": "For example, Capital",
+                "descLabel": "Settlement Description",
+                "descPlaceholder": "Short description",
+                "xLabel": "Center X coordinate",
+                "zLabel": "Center Z coordinate",
+                "statusLabel": "Status",
+                "statusOpts": {
+                    "settlement": "Settlement",
+                    "rural": "Rural settlement"
+                },
+                "subTypeLabel": "Subtype of rural settlement",
+                "subTypePlaceholder": "Choose a subtype...",
+                "proposeBtn": "+ Propose your own",
+                "cancelBtn": "Cancel",
+                "submitBtn": "Found settlement"
+            },
+            "propose": {
+                "title": "Propose a subtype",
+                "desc": "Your option will be sent to the moderator for review.",
+                "nameLabel": "Subtype name",
+                "namePlaceholder": "For example, Village",
+                "cancelBtn": "Cancel",
+                "submitBtn": "Propose"
+            },
+            "currency": {
+                "title": "Issuing national currency",
+                "codeLabel": "Currency code (2-5 letters)",
+                "nameLabel": "Currency name",
+                "namePlaceholder": "Relanthian Ruble",
+                "mainLabel": "Main coin item (1 unit of currency)",
+                "kopeckLabel": "Fractional coin / kopeck item (0.01 unit of currency)",
+                "enchantLabel": "Protection enchantments (applied to both items)",
+                "info": "ℹ️ 1 unit of currency is always equal to 100 kopecks.",
+                "error": "⚠️ Main and fractional coins cannot be the same item!",
+                "cancelBtn": "Cancel",
+                "submitBtn": "Issue currency"
+            },
+            "bank": {
+                "title": "Establishment of the National Bank",
+                "nameLabel": "Bank name",
+                "namePlaceholder": "National Bank of {{name}}",
+                "info": "ℹ️ The national bank will create a treasury account #40817..., which will become the emission center of your currency.",
+                "cancelBtn": "Cancel",
+                "submitBtn": "Establish bank"
+            },
+            "tax": {
+                "title": "Tax rate settings",
+                "p2pLabel": "Player-to-player transfers (%)",
+                "p2cLabel": "Commercial transfers (%)",
+                "exchangeLabel": "Exchange fee (%)",
+                "cancelBtn": "Cancel",
+                "submitBtn": "Save tax"
+            },
+            "roles": {
+                "title": "Appointment of officials",
+                "treasurerLabel": "Treasurer (citizen)",
+                "voivodeLabel": "Voivode (citizen)",
+                "unassign": "-- Remove position --",
+                "cancelBtn": "Cancel",
+                "submitBtn": "Save positions"
+            }
+        }
+    },
+    "territories": {
+        "title": "Territory Management (Claims)",
+        "empty": "You have no registered claims yet.",
+        "deleteBtn": "Delete",
+        "coords": "Coordinates:",
+        "area": "Area:",
+        "blocks": "blocks²",
+        "displayOnMap": "Display on map",
+        "errors": {
+            "delete": "Error deleting claim",
+            "visibility": "Error changing visibility"
+        },
+        "loading": "Loading territories..."
+    },
+    "elections": {
+        "title": "🗳️ Management Elections",
+        "endsAt": "Ends at: ",
+        "noCandidates": "Candidates have not yet been nominated.",
+        "votes": " votes (",
+        "percent": "%)",
+        "voteBtn": "Vote for candidate",
+        "unavailableTitle": "Voting will be available after the registration stage",
+        "unavailableBtn": "Voting is not yet available",
+        "nominateTitle": "⭐ Nominate yourself",
+        "programPlaceholder": "Your candidate program (why people should vote for you)...",
+        "cancelBtn": "Cancel",
+        "submitBtn": "Submit",
+        "loadingBtn": "Submitting...",
+        "statuses": {
+            "nomination": "Candidate registration stage",
+            "voting": "Voting in progress",
+            "completed": "Elections completed"
+        },
+        "errors": {
+            "nominate": "Error nominating. Perhaps you are already nominated.",
+            "vote": "Error voting. Perhaps you have already voted."
+        }
+    },
+    "editSettlement": {
+        "title": "Edit Settlement",
+        "nameLabel": "Settlement Name:",
+        "descLabel": "Description:",
+        "flagLabel": "Flag/Emblem",
+        "colorLabel": "Territory Color on Map:",
+        "xLabel": "Center X coordinate",
+        "zLabel": "Center Z coordinate",
+        "statusLabel": "Status",
+        "statusOpts": {
+            "settlement": "Settlement",
+            "capital": "Capital",
+            "rural": "Rural settlement"
+        },
+        "subTypeLabel": "Subtype of rural settlement",
+        "subTypePlaceholder": "Choose a subtype...",
+        "proposeBtn": "+ Propose",
+        "photosLabel": "Settlement photos (up to 5)",
+        "cancelBtn": "Cancel",
+        "submitBtn": "Save",
+        "loadingBtn": "Saving...",
+        "errors": {
+            "save": "Save error",
+            "proposeSuccess": "Type successfully proposed and sent for moderation!",
+            "proposeError": "Error proposing type"
+        },
+        "proposeModal": {
+            "title": "Propose Subtype",
+            "desc": "Your option will be sent to the moderator for review.",
+            "nameLabel": "Subtype Name",
+            "namePlaceholder": "For example, Village",
+            "cancelBtn": "Cancel",
+            "submitBtn": "Propose"
+        }
+    },
+    "mapColorPicker": {
+        "previewLabel": "Map preview (opacity: ",
+        "exampleSettlement": "Example of settlement borders display",
+        "exampleState": "Example of state borders display"
+    },
+    "settlementCard": {
+        "capital": "Capital",
+        "rural": "Rural set.",
+        "noMayor": "🏛️ No Mayor (Elections)",
+        "noDesc": "Settlement description is not specified yet.",
+        "residents": "👥 {count} res.",
+        "powerTitle": "Economic contribution of the settlement to the state power",
+        "powerValue": "⚡ {count} pts.",
+        "moreBtn": "More info →"
+    },
+    "citizenshipRequests": {
+        "title": "📬 Settlement residence requests",
+        "empty": "No active incoming requests pending review.",
+        "approveBtn": "✔ Approve",
+        "rejectBtn": "✖ Reject",
+        "errors": {
+            "status": "Error changing request status"
+        }
+    },
+    "stateCard": {
+        "noLeader": "No leader (Elections)",
+        "noDesc": "State description is not specified yet...",
+        "settlements": "🏙️ Settlements:",
+        "citizens": "👥 Citizens:",
+        "powerTitle": "Economic power of the state",
+        "powerValue": "⚡ Power:",
+        "moreBtn": "More info",
+        "moreBtnArrow": "→"
+    },
+    "diplomacyBadge": {
+        "ally": "Ally",
+        "war": "War",
+        "neutral": "Neutrality"
+    },
+    "editState": {
+        "title": "Edit State",
+        "nameLabel": "State Name:",
+        "descLabel": "Description:",
+        "flagLabel": "Flag",
+        "emblemLabel": "Emblem (if any)",
+        "colorLabel": "Territory Color on Map:",
+        "cancelBtn": "Cancel",
+        "submitBtn": "Save",
+        "loadingBtn": "Saving...",
+        "errors": {
+            "save": "Save error"
+        }
+    },
+    "streetsManager": {
+        "title": "🛣️ Settlement Streets",
+        "loading": "Loading streets...",
+        "newStreetPlaceholder": "New street name",
+        "createBtn": "Create",
+        "saveBtn": "Save",
+        "cancelBtn": "Cancel",
+        "empty": "No streets in this settlement yet",
+        "confirmDelete": "Are you sure you want to delete this street? All real estate on it may lose its binding!",
+        "errors": {
+            "create": "Error creating street",
+            "update": "Error updating street",
+            "delete": "Error deleting street"
+        }
+    },
+    "settlementsList": {
+        "title": "🏙️ Server Settlements",
+        "subtitle": "Capitals, metropolises and fortresses founded by citizens",
+        "searchPlaceholder": "🔍 Search for a settlement...",
+        "allStates": "All States",
+        "createBtn": "+ Create Settlement",
+        "loading": "Loading settlements...",
+        "empty": "No settlements found. Create the first settlement on the server!",
+        "createModal": {
+            "title": "🏙️ Foundation of a new settlement",
+            "namePlaceholder": "Settlement Name*",
+            "descPlaceholder": "Settlement description / architectural style...",
+            "flagLabel": "Emblem/Flag",
+            "colorLabel": "Color on the map:",
+            "typeLabel": "Settlement type",
+            "types": {
+                "settlement": "Settlement",
+                "rural": "Rural settlement"
+            },
+            "subTypePlaceholder": "Choose a subtype...",
+            "statePlaceholder": "Select state (optional)",
+            "cancelBtn": "Cancel",
+            "submitBtn": "Found",
+            "loadingBtn": "Founding..."
+        },
+        "errors": {
+            "create": "Error creating settlement"
+        }
+    },
+    "nationalBank": {
+        "transfersTax": "Player-to-Player transfers tax (%)",
+        "commercialTax": "Commercial transfers tax (%)",
+        "ipoFee": "IPO Fee ({currency})",
+        "tradingFee": "Trading Fee (%)",
+        "treasuryBalance": "Treasury Balance",
+        "ipoRequestsTitle": "IPO Requests ({count})",
+        "ipoRequestInfo": "Shares: {shares} pcs. | Starting price: {price} | Fee: {fee}",
+        "approveBtn": "Approve",
+        "rejectBtn": "Reject",
+        "accessDenied": "You do not have access to manage the National Bank of this state.",
+        "title": "National Bank",
+        "gatheringData": "Gathering financial data...",
+        "heroTitle": "National Bank of {name}",
+        "heroSubtitle": "State finances control panel",
+        "backToState": "Back to State",
+        "goToTransfers": "Go to transfers section",
+        "notEstablished": "Bank not established",
+        "notEstablishedDesc": "The president must establish a National Bank on the state page.",
+        "accountNotFound": "Account not found",
+        "accountNotFoundDesc": "Treasury account not found. Perhaps the state currency has not been issued yet.",
+        "treasuryAccount": "Treasury Account",
+        "economySettings": "Economy and Tax Settings"
+    },
+    "stateDetailMissed": {
+        "noAccount": "Not established",
+        "defaultBankName": "National Bank of {name}",
+        "copyId": "Copy ID",
+        "editState": "Edit State",
+        "archiveState": "Archive State",
+        "powerUnit": " pts.",
+        "exchangeRateInfo": "1 {code} = {rate} pts."
+    },
+    "settlementDetail": {
+        "loading": "Loading settlement passport...",
+        "notFound": "Settlement not found.",
+        "backToList": "← Back to list",
+        "backToStatesList": "← To settlements list",
+        "capitalBadge": "Capital",
+        "ruralBadge": "Rural set.",
+        "noDesc": "Settlement description is not specified yet.",
+        "mayor": "🏛️ Settlement Mayor:",
+        "vacant": "Vacant (Elections)",
+        "state": "🏰 State:",
+        "independent": "Independent settlement",
+        "population": "👥 Population:",
+        "citizensCount": "{count} cit.",
+        "powerContribution": "⚡ Power contribution:",
+        "powerValue": "+100 pts.",
+        "zeroPower": "0 pts. (no citizens)",
+        "buttons": {
+            "isResident": "🏠 You are a resident of this settlement",
+            "leave": "🚪 Leave settlement",
+            "apply": "Apply for residence / relocation",
+            "applying": "Sending...",
+            "resignMayor": "Resign",
+            "edit": "✏️ Edit settlement",
+            "requests": "📬 Residence requests ({count})",
+            "setCapital": "🏛️ Make Capital",
+            "delete": "🗑️ Delete settlement"
+        },
+        "passport": {
+            "title": "📜 Settlement Passport",
+            "capitalBadge": "⭐ STATE CAPITAL",
+            "active": "● Active settlement",
+            "inactive": "○ Underpopulated",
+            "founded": "Founded:",
+            "unknownDate": "Unknown"
+        },
+        "images": {
+            "title": "🖼️ Settlement Photos",
+            "emptyTitle": "No photos",
+            "emptyDesc": "The mayor has not uploaded photos of this settlement yet"
+        },
+        "elections": {
+            "title": "🗳️ Mayor Elections in settlement"
+        },
+        "citizens": {
+            "title": "👥 Settlement Citizens ({count})",
+            "me": "(You)",
+            "mayorRole": "👑 Settlement Mayor",
+            "citizenRole": "👥 Citizen",
+            "emptyTitle": "There are no officially registered citizens in this settlement yet",
+            "emptyDesc": "Be the first to apply and become a resident!"
+        },
+        "alerts": {
+            "applySuccess": "Your application for residence/relocation has been successfully sent to the mayor!",
+            "applyError": "Failed to send application. Perhaps you already have an active application.",
+            "confirmLeave": "Are you sure you want to leave this settlement?",
+            "leaveSuccess": "You have successfully left the settlement!",
+            "leaveError": "Failed to leave the settlement.",
+            "confirmDelete": "ATTENTION! This action is irreversible. Delete settlement?",
+            "deleteError": "Error deleting settlement",
+            "confirmResign": "Are you sure you want to resign as mayor?",
+            "resignError": "Resignation error",
+            "confirmCapital": "Make this settlement the state capital?",
+            "capitalSuccess": "Settlement successfully designated as capital!",
+            "capitalError": "Failed to designate capital"
+        }
+    }
+}

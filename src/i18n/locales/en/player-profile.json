@@ -1,1 +1,74 @@
-{}
+{
+  "neverPlayed": "Never played",
+  "playerNotFound": "Player not found",
+  "admin": "Administrator",
+  "player": "Player",
+  "banned": "BANNED",
+  "unban": "Unban",
+  "ban": "Ban",
+  "inGame": "In Game",
+  "offline": "Offline",
+  "tabs": {
+    "info": "Info",
+    "achievements": "Achievements",
+    "companies": "Companies",
+    "documents": "Documents"
+  },
+  "info": {
+    "identification": "Identification",
+    "nickname": "Nickname:",
+    "uuid": "UUID:",
+    "registrationDate": "Registration Date:",
+    "lastLogin": "Last Login:",
+    "email": "Email:",
+    "emailConfirmed": "✅ Confirmed",
+    "emailNotConfirmed": "❌ Not Confirmed",
+    "citizenship": "Citizenship",
+    "state": "State:",
+    "settlement": "Settlement:"
+  },
+  "achievements": {
+    "sortRareFirst": "Rare first",
+    "sortCommonFirst": "Common first",
+    "empty": "The player has no achievements yet."
+  },
+  "companies": {
+    "noDescription": "No description",
+    "public": "Public",
+    "private": "Private",
+    "city": "City",
+    "state": "State",
+    "international": "International",
+    "empty": "The player has no companies yet."
+  },
+  "modal": {
+    "banTitle": "Ban player",
+    "banDesc": "You are about to ban this player. Specify the ban reason, it will be visible to the player.",
+    "banReason": "Ban reason",
+    "cancel": "Cancel",
+    "ban": "Ban",
+    "unbanTitle": "Unban player",
+    "unbanDesc": "Are you sure you want to unban this player? They will be able to log in and use all site features again.",
+    "unban": "Unban",
+    "banError": "Error during ban",
+    "unbanError": "Error during unban"
+  },
+  "certificate": {
+    "ministry": "Ministry of Economy",
+    "stateRegistry": "State Registry",
+    "header": "CERTIFICATE",
+    "title": "ABOUT REGISTRATION AS AN ENTREPRENEUR",
+    "confirms": "This certificate confirms that citizen",
+    "uuidLabel": "Identification Number (UUID):",
+    "companiesLabel": "Registered Companies:",
+    "registrationLabel": "Date of Initial Registration:",
+    "registeredStamp": "REGISTERED",
+    "signature": "Registrar's Signature",
+    "issuedTo": "Issued to citizen:",
+    "issuedAt": "Date of issue of the first certificate:",
+    "count": "Number of companies owned:",
+    "rights": "Grants the right to conduct commercial activities, open corporate accounts, and participate in stock markets.",
+    "gov": "GOVERNMENT OF ENDERGARD",
+    "dept": "DEPARTMENT OF COMMERCE AND TAXES"
+  }
+}

@@ -5,6 +5,7 @@ import "./App.css";
 import { RequireAuth } from "./shared/wraps/require-auth.wrap";
 import GuestOnly from "./shared/wraps/guests-only.wrap";
 import { GlobalToastProvider } from "./shared/components/global-toast/GlobalToastProvider";
+import LangChanger from "./shared/ui/lang-changer/lang-changer.component";
 
 const RegistrationPage = React.lazy(() => import("./modules/auth/pages/registration-page/registration.page"));
 const LoginPage = React.lazy(() => import("./modules/auth/pages/login-page/login.page"));
@@ -44,6 +45,7 @@ function App() {
     <BrowserRouter>
       <GlobalToastProvider>
         <Suspense fallback={fallbackLoader}>
+          <LangChanger />
           <Routes>
           <Route path="/" index={true} element={<LandingPage />} />
 

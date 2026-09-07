@@ -1,15 +1,16 @@
 import { AxiosError } from 'axios';
 import { FC, useState } from 'react';
 import useSWR from 'swr';
+import { useTranslation } from "react-i18next";
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import Button from '../../../shared/ui/button/button.component';
 import Input from '../../../shared/ui/input/input.component';
-import { ImageUploader } from '../../../shared/ui/image-uploader/ImageUploader';
 import { achievementsService } from '../../achievements/services/achievements.service';
 import { AchievementRarity } from '../../achievements/types/achievements.types';
 import './achievements-admin.page.scss';
 
 export const AchievementsAdminPage: FC = () => {
+  const { t } = useTranslation("admin");
   const { data: achievements, mutate } = useSWR('achievements', () =>
     achievementsService.getAchievements()
   );
@@ -24,7 +25,7 @@ export const AchievementsAdminPage: FC = () => {
   const sortedAchievements = [...(achievements || [])].sort((a, b) => {
     const wA = rarityWeight[a.rarity || 'common'] || 0;
     const wB = rarityWeight[b.rarity || 'common'] || 0;
-    return wB - wA; // Legendary first
+    return wB - wA;
   });
 
   const [title, setTitle] = useState('');
@@ -39,7 +40,8 @@ export const AchievementsAdminPage: FC = () => {
   
   const [message, setMessage] = useState('');
 
-  const handleSave = async () => {
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       if (editId) {
         await achievementsService.updateAchievement(editId, {
@@ -49,7 +51,7 @@ export const AchievementsAdminPage: FC = () => {
           rarity,
           triggerEvent,
         });
-        setMessage('Ачивка успешно обновлена!');
+        setMessage(t("alerts.updated"));
       } else {
         await achievementsService.createAchievement({
           title,
@@ -58,13 +60,12 @@ export const AchievementsAdminPage: FC = () => {
           rarity,
           triggerEvent,
         });
-        setMessage('Ачивка успешно создана!');
+        setMessage(t("alerts.created"));
       }
       handleCancelEdit();
       mutate();
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setMessage((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка сохранения ачивки');
+      setMessage((err as AxiosError<{message?: string}>).response?.data?.message || t("alerts.errorSave"));
     }
   };
 
@@ -76,7 +77,6 @@ export const AchievementsAdminPage: FC = () => {
     setTriggerEvent('');
   };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEditClick = (a: any) => {
     setEditId(a.id);
     setTitle(a.title);
@@ -89,109 +89,104 @@ export const AchievementsAdminPage: FC = () => {
 
   const handleGrant = async () => {
     try {
-      await achievementsService.grantAchievement({
-        username: grantUsername,
-        achievementId: grantAchievementId,
-      });
-      setMessage('Ачивка успешно выдана!');
+      await achievementsService.grantAchievement({ username: grantUsername, achievementId: grantAchievementId });
+      setMessage(t("alerts.granted"));
       setGrantUsername('');
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setMessage((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка выдачи ачивки');
+      setMessage((err as AxiosError<{message?: string}>).response?.data?.message || t("alerts.errorGrant"));
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Точно удалить эту ачивку?')) return;
+    if (!window.confirm(t("alerts.confirmDelete"))) return;
     try {
       await achievementsService.deleteAchievement(id);
-      setMessage('Удалено');
+      setMessage(t("alerts.deleted"));
       mutate();
- 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err: any) {
-      setMessage('Ошибка удаления');
+      setMessage(t("alerts.errorDelete"));
     }
   };
 
   return (
     <div className="achievements-admin-page">
       <Sidebar />
-      <main className="content">
-        <h1>Управление Ачивками (Админ)</h1>
+      <main className="achievements-admin-main content">
+        <h1>{t("title")}</h1>
         
-        {message && <div style={{ marginBottom: 16, color: '#60a5fa' }}>{message}</div>}
+        {message && <div className="admin-message">{message}</div>}
 
-        <div className="admin-grid">
-          <div className="panel">
-            <h2>{editId ? 'Редактировать Ачивку' : 'Создать Ачивку'}</h2>
-            <div className="form">
-              <Input placeholder="Название" element="input" type="text" value={title} setValue={setTitle} />
-              <Input placeholder="Описание" element="input" type="text" value={description} setValue={setDescription} />
-              <div style={{ marginBottom: '15px' }}>
-                <ImageUploader 
-                  folder="achievements"
-                  label="Иконка (опционально)"
+        <div className="admin-section">
+          <div className="admin-card">
+            <h2>{editId ? t("form.editTitle") : t("form.createTitle")}</h2>
+            <form onSubmit={handleSave} className="admin-form">
+              <Input placeholder={t("form.namePlaceholder")} element="input" type="text" value={title} setValue={setTitle} />
+              <Input placeholder={t("form.descPlaceholder")} element="input" type="text" value={description} setValue={setDescription} />
+              
+              <div className="form-group">
+                <Input
                   value={iconUrl}
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  onChange={(url: any) => setIconUrl(url as string)}
+                  setValue={setIconUrl}
+                  placeholder=""
+                  element="input"
+                  label={t("form.iconLabel")}
                 />
               </div>
               
-              <div className="input-group">
-                <label>Редкость</label>
-                <select value={rarity} onChange={(e) => setRarity(e.target.value as AchievementRarity)}>
-                  <option value="common">Обычная (Common)</option>
-                  <option value="rare">Редкая (Rare)</option>
-                  <option value="epic">Эпическая (Epic)</option>
-                  <option value="legendary">Легендарная (Legendary)</option>
+              <div className="form-group">
+                <label>{t("form.rarityLabel")}</label>
+                <select value={rarity} onChange={(e) => setRarity(e.target.value as AchievementRarity)} className="admin-select">
+                  <option value="common">{t("form.rarityCommon")}</option>
+                  <option value="rare">{t("form.rarityRare")}</option>
+                  <option value="epic">{t("form.rarityEpic")}</option>
+                  <option value="legendary">{t("form.rarityLegendary")}</option>
                 </select>
               </div>
 
-              <Input placeholder="Событие авто-выдачи (state.created)" element="input" type="text" value={triggerEvent} setValue={setTriggerEvent} />
+              <Input placeholder={t("form.triggerPlaceholder")} element="input" type="text" value={triggerEvent} setValue={setTriggerEvent} />
 
-              <div className="buttons-row" style={{ display: 'flex', gap: '8px' }}>
-                <Button callback={handleSave} disabled={!title || !description}>
-                  {editId ? 'Сохранить' : 'Создать'}
+              <div className="form-actions">
+                <Button disabled={!title || !description || !iconUrl}>
+                  {editId ? t("form.saveBtn") : t("form.createBtn")}
                 </Button>
                 {editId && (
-                  <Button callback={handleCancelEdit} secondary={true}>Отмена</Button>
+                  <Button callback={handleCancelEdit} secondary={true}>{t("form.cancelBtn")}</Button>
                 )}
               </div>
-            </div>
+            </form>
           </div>
 
-          <div className="panel">
-            <h2>Выдать Ачивку Игроку</h2>
-            <div className="form">
-              <Input placeholder="Никнейм игрока" element="input" type="text" value={grantUsername} setValue={setGrantUsername} />
-              <div className="input-group">
-                <label>Ачивка</label>
-                <select value={grantAchievementId} onChange={(e) => setGrantAchievementId(e.target.value)}>
-                  <option value="">-- Выберите ачивку --</option>
-                  {sortedAchievements.map((a) => (
+          <div className="admin-card">
+            <h2>{t("grant.title")}</h2>
+            <div className="admin-form">
+              <Input placeholder={t("grant.usernamePlaceholder")} element="input" type="text" value={grantUsername} setValue={setGrantUsername} />
+              <div className="form-group">
+                <label>{t("grant.achievementLabel")}</label>
+                <select value={grantAchievementId} onChange={(e) => setGrantAchievementId(e.target.value)} className="admin-select">
+                  <option value="">{t("grant.selectPlaceholder")}</option>
+                  {(achievements || []).map((a) => (
                     <option key={a.id} value={a.id}>{a.title} ({a.rarity})</option>
                   ))}
                 </select>
               </div>
-              <Button callback={handleGrant} disabled={!grantUsername || !grantAchievementId}>Выдать</Button>
+              <Button callback={handleGrant} disabled={!grantUsername || !grantAchievementId}>{t("grant.grantBtn")}</Button>
             </div>
           </div>
         </div>
 
-        <h2>Список Ачивок</h2>
-        <div className="achievements-list">
+        <h2>{t("list.title")}</h2>
+        <div className="achievements-list-admin">
           {sortedAchievements.map((a) => (
-            <div key={a.id} className={`achievement-card rarity-${a.rarity}`}>
-              {a.iconUrl && <img src={a.iconUrl} alt={a.title} />}
-              <div className="info">
-                <h3>{a.title}</h3>
+            <div key={a.id} className="achievement-admin-item">
+              {a.iconUrl && <img src={a.iconUrl} alt={a.title} className="achievement-icon-admin" />}
+              <div className="achievement-info-admin">
+                <h3>{a.title} <span className={`rarity-badge ${a.rarity}`}>{a.rarity}</span></h3>
                 <p>{a.description}</p>
-                <small>Trigger: {a.triggerEvent || 'Ручная выдача'}</small>
+                <small>{t("list.triggerPrefix")} {a.triggerEvent || t("list.manualTrigger")}</small>
               </div>
-              <div className="actions" style={{ display: 'flex', gap: '8px' }}>
-                <button className="edit-btn" onClick={() => handleEditClick(a)}>Редактировать</button>
-                <button className="delete-btn" onClick={() => handleDelete(a.id)}>Удалить</button>
+              <div className="achievement-actions">
+                <button className="edit-btn" onClick={() => handleEditClick(a)}>{t("list.editBtn")}</button>
+                <button className="delete-btn" onClick={() => handleDelete(a.id)}>{t("list.deleteBtn")}</button>
               </div>
             </div>
           ))}

@@ -12,6 +12,7 @@ import MapIcon from "../../../assets/svg/map.svg?react";
 import ProfileIcon from "../../../assets/svg/profile.svg?react";
 import TechSupportIcon from "../../../assets/svg/contact.svg?react";
 import DocsIcon from "../../../assets/svg/docs.svg?react";
+import CalendarIcon from "../../../assets/svg/calendar.svg?react";
 import { Link } from "react-router";
 
 const Sidebar: FC = () => {
@@ -33,15 +34,15 @@ const Sidebar: FC = () => {
               <NewsIcon />
             </IconComponent>
 
-            <IconComponent path="/states" label="Государства" iconType="fill">
+            <IconComponent path="/states" label={t('buttons.states')} iconType="fill">
               <StateIcon />
             </IconComponent>
 
-            <IconComponent path="/calendar" label="Календарь" iconType="fill">
-              <span style={{ fontSize: '20px' }}>📅</span>
+            <IconComponent path="/calendar" label={t('buttons.calendar')} iconType="stroke">
+              <CalendarIcon />
             </IconComponent>
 
-            <IconComponent path="/economy" label="Экономика" iconType="fill">
+            <IconComponent path="/economy" label={t('buttons.economy')} iconType="fill">
               <CompanyIcon />
             </IconComponent>
 

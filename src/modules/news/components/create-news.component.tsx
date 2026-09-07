@@ -7,6 +7,7 @@ import { newsService } from "../services/news.service";
 import { NewsBlock } from "../types/news-block.type";
 import Button from "../../../shared/ui/button/button.component";
 import { ImageUploader } from "../../../shared/ui/image-uploader/ImageUploader";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   closeModal: () => void;
@@ -14,8 +15,9 @@ type Props = {
 };
 
 const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
+  const { t } = useTranslation("news");
   const [newsTitle, setNewsTitle] = useState("");
-  const [categoryName, setCategoryName] = useState("Загрузка...");
+  const [categoryName, setCategoryName] = useState(t("news.loading"));
   const [blocks, setBlocks] = useState<NewsBlock[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -53,7 +55,7 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
   // customUploadFn is inline
   const handleSubmit = async () => {
     if (!newsTitle.trim() || blocks.length === 0) {
-      alert("Введите заголовок и добавьте хотя бы один блок");
+      alert(t("news.createNews.noContentAlert"));
       return;
     }
 
@@ -72,7 +74,7 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
       setShowSuccess(true);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert("Ошибка при создании новости");
+      alert(t("news.createNews.errorAlert"));
       console.error(err);
     } finally {
       setIsSubmitting(false);
@@ -83,8 +85,8 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
     return (
       <div className="create-news-modal-wrap">
         <div className="create-news-modal">
-          <h2>✅ Новость отправлена на модерацию!</h2>
-          <button onClick={closeModal}>Закрыть</button>
+          <h2>{t("news.createNews.successTitle")}</h2>
+          <button onClick={closeModal}>{t("news.createNews.closeBtn")}</button>
         </div>
       </div>
     );
@@ -97,14 +99,14 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
           ✕
         </button>
 
-        <h1>Новая новость</h1>
-        <p>В категории: {categoryName}</p>
+        <h1>{t("news.createNews.title")}</h1>
+        <p>{t("news.createNews.inCategory", { name: categoryName })}</p>
 
         <Input
           value={newsTitle}
           setValue={setNewsTitle}
           element="input"
-          placeholder="Заголовок новости"
+          placeholder={t("news.createNews.titlePlaceholder")}
         />
 
         <div className="blocks">
@@ -112,7 +114,7 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
             <div className="block" key={block.id}>
               <div className="block-header">
                 <strong>
-                  {block.type === "text" ? "Текстовый блок" : "Изображение"}
+                  {block.type === "text" ? t("news.createNews.textBlock") : t("news.createNews.imageBlock")}
                 </strong>
 
                 <button onClick={() => removeBlock(block.id)}>✕</button>
@@ -120,13 +122,13 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
 
               {block.type === "text" ? (
                 <textarea
-                  placeholder="Введите текст..."
+                  placeholder={t("news.createNews.textPlaceholder")}
                   value={block.content}
                   onChange={(e) => updateBlockContent(block.id, e.target.value)}
                 />
               ) : (
                 <ImageUploader
-                  label={block.content ? "" : "Загрузить изображение"}
+                  label={block.content ? "" : t("news.createNews.imageLabel")}
                   value={block.content}
                   onChange={(url) => updateBlockContent(block.id, url as string)}
                   customUploadFn={async (file) => {
@@ -141,15 +143,15 @@ const CreateNewsModal: FC<Props> = ({ closeModal, categoryId }) => {
 
         <div className="add-buttons">
           <Button callback={() => addBlock("text")} secondary>
-            + Текст
+            {t("news.createNews.addTextBtn")}
           </Button>
           <Button callback={() => addBlock("image")} secondary>
-            🖼 Картинка
+            {t("news.createNews.addImageBtn")}
           </Button>
         </div>
 
         <Button disabled={isSubmitting} callback={handleSubmit}>
-          {isSubmitting ? "Публикуем..." : "Опубликовать"}
+          {isSubmitting ? t("news.createNews.submittingBtn") : t("news.createNews.submitBtn")}
         </Button>
       </div>
     </div>

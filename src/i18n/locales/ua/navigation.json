@@ -1,5 +1,5 @@
 {
-    "heading": "",
+    "heading": "Хроніки Краю 2.0",
     "buttons": {
         "news": "Новини",
         "players-list": "Гравці",
@@ -7,6 +7,9 @@
         "download-page": "Завантажити лаунчер та моди",
         "profile": "Обліковий запис",
         "tech-support": "Технічна підтримка",
-        "regulations": "Статути"
+        "regulations": "Статути",
+        "states": "Держави",
+        "calendar": "Календар",
+        "economy": "Економіка"
     }
 }

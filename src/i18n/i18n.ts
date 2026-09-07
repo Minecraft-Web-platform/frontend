@@ -11,6 +11,13 @@ import enNavigation from './locales/en/navigation.json';
 import enPlayerProfile from './locales/en/player-profile.json';
 import enPlayersList from './locales/en/players-list.json';
 import enTechSupport from './locales/en/tech-support-page.json';
+import enProfile from './locales/en/profile.json';
+import enEconomy from './locales/en/economy.json';
+import enMap from './locales/en/map.json';
+import enStates from './locales/en/states.json';
+import enNews from './locales/en/news.json';
+import enAdmin from './locales/en/admin.json';
+import enPlayers from './locales/en/players.json';
 
 // PL
 import plAuth from './locales/pl/auth.json';
@@ -21,6 +28,16 @@ import plNavigation from './locales/pl/navigation.json';
 import plPlayerProfile from './locales/pl/player-profile.json';
 import plPlayersList from './locales/pl/players-list.json';
 import plTechSupport from './locales/pl/tech-support-page.json';
+// Optional: import plProfile, plEconomy, plMap when they exist, but for now we'll just ignore or let them fallback.
+// The task is ru/en primarily, but we need to supply *something* to the `resources` object for `pl` and `ua` if we add the keys.
+// I'll define empty objects for them or use EN.
+import plProfile from './locales/en/profile.json';
+import plEconomy from './locales/en/economy.json';
+import plMap from './locales/en/map.json';
+import plStates from './locales/en/states.json';
+import plNews from './locales/en/news.json';
+import plAdmin from './locales/en/admin.json';
+import plPlayers from './locales/en/players.json';
 
 // UA
 import uaAuth from './locales/ua/auth.json';
@@ -31,6 +48,13 @@ import uaNavigation from './locales/ua/navigation.json';
 import uaPlayerProfile from './locales/ua/player-profile.json';
 import uaPlayersList from './locales/ua/players-list.json';
 import uaTechSupport from './locales/ua/tech-support-page.json';
+import uaProfile from './locales/en/profile.json';
+import uaEconomy from './locales/en/economy.json';
+import uaMap from './locales/en/map.json';
+import uaStates from './locales/en/states.json';
+import uaNews from './locales/en/news.json';
+import uaAdmin from './locales/en/admin.json';
+import uaPlayers from './locales/en/players.json';
 
 // RU
 import ruAuth from './locales/ru/auth.json';
@@ -41,6 +65,13 @@ import ruNavigation from './locales/ru/navigation.json';
 import ruPlayerProfile from './locales/ru/player-profile.json';
 import ruPlayersList from './locales/ru/players-list.json';
 import ruTechSupport from './locales/ru/tech-support-page.json';
+import ruProfile from './locales/ru/profile.json';
+import ruEconomy from './locales/ru/economy.json';
+import ruMap from './locales/ru/map.json';
+import ruStates from './locales/ru/states.json';
+import ruNews from './locales/ru/news.json';
+import ruAdmin from './locales/ru/admin.json';
+import ruPlayers from './locales/ru/players.json';
 
 export const defaultNS = 'navigation';
 
@@ -53,7 +84,14 @@ export const resources = {
     navigation: enNavigation,
     'player-profile': enPlayerProfile,
     'players-list': enPlayersList,
-    'tech-support-page': enTechSupport
+    'tech-support-page': enTechSupport,
+    profile: enProfile,
+    economy: enEconomy,
+    map: enMap,
+    states: enStates,
+    news: enNews,
+    admin: enAdmin,
+    players: enPlayers
   },
   pl: {
     auth: plAuth,
@@ -63,7 +101,14 @@ export const resources = {
     navigation: plNavigation,
     'player-profile': plPlayerProfile,
     'players-list': plPlayersList,
-    'tech-support-page': plTechSupport
+    'tech-support-page': plTechSupport,
+    profile: plProfile,
+    economy: plEconomy,
+    map: plMap,
+    states: plStates,
+    news: plNews,
+    admin: plAdmin,
+    players: plPlayers
   },
   ua: {
     auth: uaAuth,
@@ -73,7 +118,14 @@ export const resources = {
     navigation: uaNavigation,
     'player-profile': uaPlayerProfile,
     'players-list': uaPlayersList,
-    'tech-support-page': uaTechSupport
+    'tech-support-page': uaTechSupport,
+    profile: uaProfile,
+    economy: uaEconomy,
+    map: uaMap,
+    states: uaStates,
+    news: uaNews,
+    admin: uaAdmin,
+    players: uaPlayers
   },
   ru: {
     auth: ruAuth,
@@ -83,7 +135,14 @@ export const resources = {
     navigation: ruNavigation,
     'player-profile': ruPlayerProfile,
     'players-list': ruPlayersList,
-    'tech-support-page': ruTechSupport
+    'tech-support-page': ruTechSupport,
+    profile: ruProfile,
+    economy: ruEconomy,
+    map: ruMap,
+    states: ruStates,
+    news: ruNews,
+    admin: ruAdmin,
+    players: ruPlayers
   }
 } as const;
 
@@ -94,8 +153,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'ru',
-    fallbackLng: 'en',
+    fallbackLng: 'ru',
     defaultNS,
     ns: Object.keys(resources.en),
     interpolation: {

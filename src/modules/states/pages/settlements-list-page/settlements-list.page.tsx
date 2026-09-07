@@ -1,5 +1,5 @@
-import {  } from 'axios';
 import { FC, useEffect, useState } from 'react';
+import useAuthStore from '../../../../store/auth.store';
 import { useSearchParams } from 'react-router-dom';
 import './settlements-list.page.scss';
 import { ISettlement, IState, ISettlementType } from '../../types/states.types';
@@ -7,8 +7,8 @@ import { statesService } from '../../services/states.service';
 import SettlementCard from '../../components/settlement-card/settlement-card.component';
 import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploader';
 import { MapColorPicker } from '../../components/map-color-picker/MapColorPicker';
-import useAuthStore from '../../../../store/auth.store';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
+import { useTranslation } from 'react-i18next';
 
 const SettlementsListPage: FC = () => {
   const [searchParams] = useSearchParams();
@@ -31,6 +31,7 @@ const SettlementsListPage: FC = () => {
   const [ruralSubTypeId, setRuralSubTypeId] = useState('');
   const [settlementTypes, setSettlementTypes] = useState<ISettlementType[]>([]);
   const [creating, setCreating] = useState(false);
+  const { t } = useTranslation('states');
 
   const { isAdmin } = useAuthStore();
 
@@ -93,7 +94,7 @@ const SettlementsListPage: FC = () => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      alert('Ошибка при создании поселения');
+      alert(t('settlementsList.errors.create'));
     } finally {
       setCreating(false);
     }
@@ -110,9 +111,9 @@ const SettlementsListPage: FC = () => {
         <div className="settlements-list-page">
           <div className="settlements-list-page__hero">
             <div>
-              <h1 className="settlements-list-page__title">🏙️ Поселения сервера</h1>
+              <h1 className="settlements-list-page__title">{t('settlementsList.title')}</h1>
               <p className="settlements-list-page__subtitle">
-                Столицы, мегаполисы и крепости, основанные гражданами
+                {t('settlementsList.subtitle')}
               </p>
             </div>
 
@@ -120,7 +121,7 @@ const SettlementsListPage: FC = () => {
               <input
                 type="text"
                 className="settlements-list-page__search"
-                placeholder="🔍 Поиск поселения..."
+                placeholder={t('settlementsList.searchPlaceholder')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -129,7 +130,7 @@ const SettlementsListPage: FC = () => {
                 value={selectedStateId}
                 onChange={(e) => setSelectedStateId(e.target.value)}
               >
-                <option value="">Все государства</option>
+                <option value="">{t('settlementsList.allStates')}</option>
                 {states.map((st) => (
                   <option key={st.id} value={st.id}>
                     {st.name}
@@ -141,21 +142,21 @@ const SettlementsListPage: FC = () => {
                   className="settlements-list-page__create-btn"
                   onClick={() => setShowCreateModal(true)}
                 >
-                  + Создать поселение
+                  {t('settlementsList.createBtn')}
                 </button>
               )}
             </div>
           </div>
 
           {loading ? (
-            <div className="settlements-list-page__empty">Загрузка поселений...</div>
+            <div className="settlements-list-page__empty">{t('settlementsList.loading')}</div>
           ) : (
             <div className="settlements-list-page__grid">
               {filteredSettlements.length > 0 ? (
                 filteredSettlements.map((settlement) => <SettlementCard key={settlement.id} settlement={settlement} />)
               ) : (
                 <div className="settlements-list-page__empty">
-                  Поселения не найдены. Создайте первый поселение на сервере!
+                  {t('settlementsList.empty')}
                 </div>
               )}
             </div>
@@ -170,31 +171,31 @@ const SettlementsListPage: FC = () => {
                 className="settlements-list-page__modal"
                 onClick={(e) => e.stopPropagation()}
               >
-                <h3>🏙️ Основание нового поселения</h3>
+                <h3>{t('settlementsList.createModal.title')}</h3>
                 <form onSubmit={handleCreateSettlement}>
                   <input
                     type="text"
-                    placeholder="Название поселения*"
+                    placeholder={t('settlementsList.createModal.namePlaceholder')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
                   />
                   <textarea
-                    placeholder="Описание поселения / архитектурный стиль..."
+                    placeholder={t('settlementsList.createModal.descPlaceholder')}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />
                   <div style={{ marginBottom: '15px' }}>
                     <ImageUploader 
                       folder="states/flags"
-                      label="Эмблема/Флаг"
+                      label={t('settlementsList.createModal.flagLabel')}
                       value={flagUrl}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       onChange={(url: any) => setFlagUrl(url as string)}
                     />
                   </div>
                   <div style={{ marginBottom: '15px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px', color: '#ccc' }}>Цвет на карте:</label>
+                    <label style={{ display: 'block', marginBottom: '5px', color: '#ccc' }}>{t('settlementsList.createModal.colorLabel')}</label>
                     <MapColorPicker
                       color={color}
                       onChange={setColor}
@@ -207,8 +208,8 @@ const SettlementsListPage: FC = () => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       onChange={(e) => setStatus(e.target.value as any)}
                     >
-                      <option value="settlement">Поселение</option>
-                      <option value="rural">Сельское поселение</option>
+                      <option value="settlement">{t('settlementsList.createModal.types.settlement')}</option>
+                      <option value="rural">{t('settlementsList.createModal.types.rural')}</option>
                     </select>
                   </div>
                   {status === 'rural' && (
@@ -218,7 +219,7 @@ const SettlementsListPage: FC = () => {
                         onChange={(e) => setRuralSubTypeId(e.target.value)}
                         required={status === 'rural'}
                       >
-                        <option value="">Выберите подвид...</option>
+                        <option value="">{t('settlementsList.createModal.subTypePlaceholder')}</option>
                         {settlementTypes.map((type) => (
                           <option key={type.id} value={type.id}>{type.name}</option>
                         ))}
@@ -229,7 +230,7 @@ const SettlementsListPage: FC = () => {
                     value={stateId}
                     onChange={(e) => setStateId(e.target.value)}
                   >
-                    <option value="">Выбрать государство (опционально)</option>
+                    <option value="">{t('settlementsList.createModal.statePlaceholder')}</option>
                     {states.map((st) => (
                       <option key={st.id} value={st.id}>
                         {st.name}
@@ -247,14 +248,14 @@ const SettlementsListPage: FC = () => {
                       }}
                       onClick={() => setShowCreateModal(false)}
                     >
-                      Отмена
+                      {t('settlementsList.createModal.cancelBtn')}
                     </button>
                     <button
                       type="submit"
                       className="settlements-list-page__create-btn"
                       disabled={creating}
                     >
-                      {creating ? 'Основание...' : 'Основать'}
+                      {creating ? t('settlementsList.createModal.loadingBtn') : t('settlementsList.createModal.submitBtn')}
                     </button>
                   </div>
                 </form>

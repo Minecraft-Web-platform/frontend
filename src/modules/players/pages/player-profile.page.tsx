@@ -13,6 +13,7 @@ import "./player-profile.page.scss";
 import { IUserAchievement } from "../../achievements/types/achievements.types";
 import { ICompany } from "../../economy/types/economy.types";
 import useAuthStore from "../../../store/auth.store";
+import { useTranslation } from "react-i18next";
 
 const generateGradient = (name: string) => {
   let hash = 0;
@@ -44,6 +45,7 @@ const PlayerProfilePage = () => {
   const [banReasonInput, setBanReasonInput] = useState("");
 
   const isAdmin = useAuthStore(state => state.isAdmin);
+  const { t } = useTranslation('player-profile');
 
   // Load player info
   useEffect(() => {
@@ -96,8 +98,8 @@ const PlayerProfilePage = () => {
   };
 
   const getLastLoginText = (dateString?: string) => {
-    if (!dateString) return "Никогда не играл";
-    if (dateString.startsWith("1970") || dateString === "0") return "Никогда не играл";
+    if (!dateString) return t('neverPlayed');
+    if (dateString.startsWith("1970") || dateString === "0") return t('neverPlayed');
     return normalizeDate(dateString);
   };
 
@@ -117,7 +119,7 @@ const PlayerProfilePage = () => {
       <div className="player-profile-page">
         <Sidebar />
         <main className="content">
-          <h1>Игрок не найден</h1>
+          <h1>{t('playerNotFound')}</h1>
         </main>
       </div>
     );
@@ -142,7 +144,7 @@ const PlayerProfilePage = () => {
             <h1>{player.username}</h1>
             <div className="tags">
               <span className={`role-tag ${player.role === "admin" ? "admin" : ""}`}>
-                {player.role === "admin" ? "Администратор" : "Игрок"}
+                {player.role === "admin" ? t('admin') : t('player')}
               </span>
               {player.citizenshipName && (
                 <span className="state-tag">
@@ -153,7 +155,7 @@ const PlayerProfilePage = () => {
               {player.settlementName && <span className="settlement-tag">{player.settlementName}</span>}
               {player.isBanned && (
                 <span className="banned-tag" style={{ backgroundColor: "#ef4444", color: "white", padding: "4px 8px", borderRadius: "4px", fontSize: "12px", marginLeft: "8px" }}>
-                  ЗАБЛОКИРОВАН
+                  {t('banned')}
                 </span>
               )}
             </div>
@@ -168,7 +170,7 @@ const PlayerProfilePage = () => {
                     style={{ backgroundColor: "#10b981", color: "white", border: "none", padding: "8px 16px", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", transition: "0.2s" }}
                     onClick={() => setModalState("unban")}
                   >
-                    Разбанить
+                    {t('unban')}
                   </button>
                 ) : (
                   <button 
@@ -179,14 +181,14 @@ const PlayerProfilePage = () => {
                       setModalState("ban");
                     }}
                   >
-                    Забанить
+                    {t('ban')}
                   </button>
                 )}
               </>
             )}
             <div className="profile-header__status">
               <span className={`status-indicator ${isOnline ? "online" : "offline"}`}></span>
-              <span>{isOnline ? "В игре" : "Не в сети"}</span>
+              <span>{isOnline ? t('inGame') : t('offline')}</span>
             </div>
           </div>
         </div>
@@ -196,25 +198,25 @@ const PlayerProfilePage = () => {
             className={`tab-btn ${activeTab === "info" ? "active" : ""}`}
             onClick={() => setActiveTab("info")}
           >
-            Инфо
+            {t('tabs.info')}
           </button>
           <button
             className={`tab-btn ${activeTab === "achievements" ? "active" : ""}`}
             onClick={() => setActiveTab("achievements")}
           >
-            Достижения
+            {t('tabs.achievements')}
           </button>
           <button
             className={`tab-btn ${activeTab === "companies" ? "active" : ""}`}
             onClick={() => setActiveTab("companies")}
           >
-            Компании
+            {t('tabs.companies')}
           </button>
           <button
             className={`tab-btn ${activeTab === "documents" ? "active" : ""}`}
             onClick={() => setActiveTab("documents")}
           >
-            Документы
+            {t('tabs.documents')}
           </button>
         </div>
 
@@ -223,17 +225,17 @@ const PlayerProfilePage = () => {
             <div className="info-tab">
               <div className="info-grid">
                 <div className="info-card">
-                  <h3>Идентификация</h3>
-                  <p><span className="label">Никнейм:</span> {player.username}</p>
-                  <p><span className="label">UUID:</span> {player.uuid}</p>
-                  <p><span className="label">Дата регистрации:</span> {normalizeDate(player.registrationDate)}</p>
-                  <p><span className="label">Последний раз играл:</span> {getLastLoginText(player.lastLoginDate)}</p>
-                  <p><span className="label">Почта:</span> {player.emailIsConfirmed ? "✅ Подтверждена" : "❌ Не подтверждена"}</p>
+                  <h3>{t('info.identification')}</h3>
+                  <p><span className="label">{t('info.nickname')}</span> {player.username}</p>
+                  <p><span className="label">{t('info.uuid')}</span> {player.uuid}</p>
+                  <p><span className="label">{t('info.registrationDate')}</span> {normalizeDate(player.registrationDate)}</p>
+                  <p><span className="label">{t('info.lastLogin')}</span> {getLastLoginText(player.lastLoginDate)}</p>
+                  <p><span className="label">{t('info.email')}</span> {player.emailIsConfirmed ? t('info.emailConfirmed') : t('info.emailNotConfirmed')}</p>
                 </div>
                 <div className="info-card">
-                  <h3>Гражданство</h3>
-                  <p><span className="label">Государство:</span> {player.stateName ? <Link to={`/states/${player.stateId}`}>{player.stateName}</Link> : "-"}</p>
-                  <p><span className="label">Поселение:</span> {player.settlementName || "-"}</p>
+                  <h3>{t('info.citizenship')}</h3>
+                  <p><span className="label">{t('info.state')}</span> {player.stateName ? <Link to={`/states/${player.stateId}`}>{player.stateName}</Link> : "-"}</p>
+                  <p><span className="label">{t('info.settlement')}</span> {player.settlementName || "-"}</p>
                   {player.stateCoatOfArmsUrl && (
                     <img src={player.stateCoatOfArmsUrl} alt="Coat of arms" className="coat-of-arms" />
                   )}
@@ -262,8 +264,8 @@ const PlayerProfilePage = () => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   onChange={(e) => setSortOrder(e.target.value as any)}
                 >
-                  <option value="rarityDesc">Сначала редкие</option>
-                  <option value="rarityAsc">Сначала частые</option>
+                  <option value="rarityDesc">{t('achievements.sortRareFirst')}</option>
+                  <option value="rarityAsc">{t('achievements.sortCommonFirst')}</option>
                 </select>
               </div>
 
@@ -290,7 +292,7 @@ const PlayerProfilePage = () => {
                 </div>
               ) : (
                 <div className="empty-state">
-                  <p>У игрока пока нет достижений.</p>
+                  <p>{t('achievements.empty')}</p>
                 </div>
               )}
             </div>
@@ -310,17 +312,17 @@ const PlayerProfilePage = () => {
                         </div>
                       )}
                       <h4>{company.name}</h4>
-                      <p>{company.description || "Нет описания"}</p>
+                      <p>{company.description || t('companies.noDescription')}</p>
                       <div className="company-tags">
-                        <span className="tag-type">{company.isPublic ? "Публичная" : "Частная"}</span>
-                        <span className="tag-location">{company.settlementId ? "Городская" : company.stateId ? "Государственная" : "Международная"}</span>
+                        <span className="tag-type">{company.isPublic ? t('companies.public') : t('companies.private')}</span>
+                        <span className="tag-location">{company.settlementId ? t('companies.city') : company.stateId ? t('companies.state') : t('companies.international')}</span>
                       </div>
                     </Link>
                   ))}
                 </div>
               ) : (
                 <div className="empty-state">
-                  <p>У игрока пока нет компаний.</p>
+                  <p>{t('companies.empty')}</p>
                 </div>
               )}
             </div>
@@ -342,17 +344,17 @@ const PlayerProfilePage = () => {
           <div className="admin-modal">
             {modalState === "ban" && (
               <>
-                <h2>Заблокировать игрока {player.username}</h2>
-                <p>Вы собираетесь заблокировать этого игрока. Укажите причину блокировки, она будет видна игроку.</p>
+                <h2>{t('modal.banTitle')} {player.username}</h2>
+                <p>{t('modal.banDesc')}</p>
                 <input 
                   type="text" 
-                  placeholder="Причина блокировки" 
+                  placeholder={t('modal.banReason')}
                   value={banReasonInput}
                   onChange={(e) => setBanReasonInput(e.target.value)}
                   autoFocus
                 />
                 <div className="admin-modal-actions">
-                  <button className="cancel-btn" onClick={() => setModalState("none")}>Отмена</button>
+                  <button className="cancel-btn" onClick={() => setModalState("none")}>{t('modal.cancel')}</button>
                   <button className="confirm-ban-btn" onClick={async () => {
                     if (banReasonInput.trim() === '') {
                       return;
@@ -363,27 +365,27 @@ const PlayerProfilePage = () => {
                       setModalState("none");
                       setBanReasonInput("");
                     } catch (e) {
-                      alert('Ошибка при бане');
+                      alert(t('modal.banError'));
                     }
-                  }}>Заблокировать</button>
+                  }}>{t('modal.ban')}</button>
                 </div>
               </>
             )}
             {modalState === "unban" && (
               <>
-                <h2>Разблокировать игрока {player.username}</h2>
-                <p>Вы уверены, что хотите снять блокировку с этого игрока? Он снова сможет заходить на сайт и пользоваться всеми функциями.</p>
+                <h2>{t('modal.unbanTitle')} {player.username}</h2>
+                <p>{t('modal.unbanDesc')}</p>
                 <div className="admin-modal-actions">
-                  <button className="cancel-btn" onClick={() => setModalState("none")}>Отмена</button>
+                  <button className="cancel-btn" onClick={() => setModalState("none")}>{t('modal.cancel')}</button>
                   <button className="confirm-unban-btn" onClick={async () => {
                     try {
                       const updatedPlayer = await playersService.unbanUser(player.username);
                       setPlayer(updatedPlayer);
                       setModalState("none");
                     } catch (e) {
-                      alert('Ошибка при разбане');
+                      alert(t('modal.unbanError'));
                     }
-                  }}>Разблокировать</button>
+                  }}>{t('modal.unban')}</button>
                 </div>
               </>
             )}

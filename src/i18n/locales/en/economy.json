@@ -1,0 +1,115 @@
+{
+    "hub": {
+        "title": "📈 Server Economy Hub",
+        "subtitle": "A unified platform for managing financial assets, bank accounts, commercial enterprises, national currency, and stock exchange investments.",
+        "cards": {
+            "bank": {
+                "title": "Banks and Accounts",
+                "desc": "Personal accounts, plastic cards, transfers, and treasuries"
+            },
+            "cards": {
+                "title": "Bank Cards",
+                "desc": "Plastic cards, details, blocking, and security"
+            },
+            "companies": {
+                "title": "Companies",
+                "desc": "Company registry, business registration, and dividends"
+            },
+            "orders": {
+                "title": "My Orders",
+                "desc": "Order history for company services and complaints"
+            },
+            "arbitration": {
+                "title": "Arbitration",
+                "desc": "Judicial system for reviewing complaints"
+            },
+            "exchange": {
+                "title": "Stock Exchange",
+                "desc": "Buying and selling shares of public server companies"
+            },
+            "currencies": {
+                "title": "Currency Market",
+                "desc": "National currency exchange rates and emissions"
+            },
+            "properties": {
+                "title": "Real Estate",
+                "desc": "Registry and market for land, buildings, and special objects"
+            }
+        }
+    },
+    "exchange": {
+        "personalAccount": "Personal Account",
+        "treasuryState": "Treasury of {{state}}",
+        "companyAccount": "Account of {{company}}",
+        "buyError": "Error buying shares",
+        "sellError": "Error selling shares",
+        "unit": "units",
+        "portfolioValue": "Portfolio Value",
+        "heroTitle": "📈 Stock Exchange and Investments",
+        "heroSubtitle": "Trading public company shares, quotes, and dividend payments",
+        "tabs": {
+            "market": "Trading Floor (Market)",
+            "portfolio": "My Shareholder Portfolio ({{count}})"
+        },
+        "loadingQuotes": "Loading quotes...",
+        "stockExchangeBadge": "Stock Exchange",
+        "exchangePrefix": "Exchange: {{state}}",
+        "companiesOnExchange": "Companies on Exchange ({{count}})",
+        "enterTerminal": "Enter Trading Terminal",
+        "emptyExchange": "There are currently no company shares trading on any exchange.",
+        "buy": {
+            "title": "Buy Shares",
+            "who": "Buy on behalf of:",
+            "count": "Number of shares (pcs.)",
+            "total": "Transaction amount: {{total}} {{currency}}",
+            "executionAvg": "Avg. execution price: {{price}} {{currency}}",
+            "hint": "When actively buying shares, the company's exchange rate automatically rises.",
+            "cancel": "Cancel",
+            "submit": "Buy"
+        },
+        "sell": {
+            "title": "Sell Shares on Exchange",
+            "who": "Sell on behalf of:",
+            "count": "Number of shares to sell (pcs.)",
+            "available": "Available: {{count}} pcs.",
+            "hint": "Funds will be credited to your personal account in the national currency.",
+            "submit": "Sell"
+        },
+        "portfolio": {
+            "companyPrefix": "Company #",
+            "inPortfolio": "In portfolio:",
+            "pcs": "pcs.",
+            "avgPrice": "Avg. price:",
+            "owner": "Owner:",
+            "sell": "Sell"
+        }
+    },
+    "bankAccounts": {
+        "myAccounts": "My Accounts",
+        "newTransfer": "New Transfer",
+        "openAccount": "+ Open Account",
+        "noAccounts": "You don't have any accounts yet. Click '+ Open Account' to start.",
+        "history": "Transfers & Taxes History",
+        "allAccounts": "All Accounts",
+        "date": "Date",
+        "sender": "Sender",
+        "receiver": "Receiver",
+        "description": "Description",
+        "taxToTreasury": "Tax to Treasury",
+        "amount": "Amount",
+        "noHistory": "Transaction history is empty"
+    },
+    "accountCard": {
+        "personalAccount": "PERSONAL ACCOUNT",
+        "companyAccount": "COMPANY ACCOUNT",
+        "stateTreasury": "STATE TREASURY",
+        "balance": "BALANCE",
+        "linkedCards": "LINKED CARDS",
+        "active": "Active",
+        "validThru": "Valid thru: {{date}} | CVV: ***",
+        "transfer": "Transfer",
+        "issueCard": "Issue Card",
+        "blocked": "Blocked",
+        "noCards": "No linked cards"
+    }
+}

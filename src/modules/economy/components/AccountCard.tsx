@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { IAccount, ICard } from '../types/economy.types';
 import './AccountCard.scss';
@@ -17,6 +18,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
   onTransferClick,
 }) => {
   const [, setSearchParams] = useSearchParams();
+  const { t } = useTranslation('economy');
   const getBadgeClass = (type: string) => {
     switch (type) {
       case 'personal':
@@ -33,11 +35,11 @@ export const AccountCard: React.FC<AccountCardProps> = ({
   const getBadgeLabel = (type: string) => {
     switch (type) {
       case 'personal':
-        return 'Личный счет';
+        return t('accountCard.personalAccount');
       case 'company':
-        return 'Коммерческий счет';
+        return t('accountCard.companyAccount');
       case 'treasury':
-        return 'Казначейский счет';
+        return t('accountCard.stateTreasury');
       default:
         return type;
     }
@@ -66,7 +68,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
         </div>
 
         <div className="account-card__balance-section">
-          <div className="label">Баланс</div>
+          <div className="label">{t('accountCard.balance')}</div>
           <div className="balance">
             <span>{account.balance.toLocaleString('ru-RU')}</span>{' '}
             <span className="currency" style={{ marginLeft: '6px' }}>
@@ -81,7 +83,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
         {cards.length > 0 && (
           <div className="account-card__cards-section">
             <div className="cards-title">
-              Привязанные карты ({cards.length})
+              {t('accountCard.linkedCards')} ({cards.length})
             </div>
             <div className="cards-list">
               {cards.map((card) => (
@@ -99,7 +101,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
                         {formatCardNumber(card.cardNumber)}
                       </div>
                       <div className="card-meta">
-                        Годна до: {card.expiresAt} | CVV: ***
+                        {t('accountCard.validThru', { date: card.expiresAt })}
                       </div>
                     </div>
                   </div>
@@ -110,7 +112,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
                         : 'card-status--active'
                     }`}
                   >
-                    {card.isBlocked ? 'Заблокирована' : 'Активна'}
+                    {card.isBlocked ? t('accountCard.blocked') : t('accountCard.active')}
                   </span>
                 </div>
               ))}
@@ -126,7 +128,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
             className="economy-btn economy-btn--primary"
             style={{ flex: 1 }}
           >
-            Перевести
+            {t('accountCard.transfer')}
           </button>
         )}
         {onIssueCard && (
@@ -135,7 +137,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
             className="economy-btn economy-btn--secondary"
             style={{ flex: 1 }}
           >
-            Выпустить карту
+            {t('accountCard.issueCard')}
           </button>
         )}
       </div>

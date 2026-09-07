@@ -4,6 +4,7 @@ import { httpFactoryService } from '../../../shared/services/http-factory.servic
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import './calendar.page.scss';
 import useAuthStore from '../../../store/auth.store';
+import { useTranslation } from 'react-i18next';
 
 interface IEvent {
   id: string;
@@ -25,16 +26,14 @@ const getFirstDayOfMonth = (year: number, month: number) => {
   return day === 0 ? 6 : day - 1; // Monday = 0
 };
 
-const monthNames = [
-  'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-  'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
-];
-const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-
 export const CalendarPage: FC = () => {
   const { isAuthenticated } = useAuthStore();
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation('profile');
+  
+  const monthNames = t('calendar.months', { returnObjects: true }) as string[];
+  const dayNames = t('calendar.days', { returnObjects: true }) as string[];
 
   // Calendar State
   const today = new Date();
@@ -143,8 +142,8 @@ export const CalendarPage: FC = () => {
         <div className="calendar-page-new">
           <div className="calendar-page-new__header">
             <div>
-              <h1 className="calendar-page-new__title">Календарь событий</h1>
-              <p className="calendar-page-new__subtitle">Следите за политической жизнью и своими уведомлениями</p>
+              <h1 className="calendar-page-new__title">{t('calendar.title')}</h1>
+              <p className="calendar-page-new__subtitle">{t('calendar.subtitle')}</p>
             </div>
           </div>
 
@@ -171,12 +170,12 @@ export const CalendarPage: FC = () => {
             <div className="calendar-sidebar">
               <div className="calendar-sidebar__header">
                 <h3>{selectedDate.getDate()} {monthNames[selectedDate.getMonth()]} {selectedDate.getFullYear()}</h3>
-                <span className="calendar-sidebar__count">Событий: {selectedDayEvents.length}</span>
+                <span className="calendar-sidebar__count">{t('calendar.eventsCount')} {selectedDayEvents.length}</span>
               </div>
               
               <div className="calendar-sidebar__content">
                 {loading ? (
-                  <div className="calendar-sidebar__loading">Загрузка...</div>
+                  <div className="calendar-sidebar__loading">{t('calendar.loading')}</div>
                 ) : selectedDayEvents.length > 0 ? (
                   <div className="event-list">
                     {selectedDayEvents.map(event => (
@@ -186,7 +185,7 @@ export const CalendarPage: FC = () => {
                           <h4 className="event-card__title">{event.title}</h4>
                           <p className="event-card__desc">{event.description}</p>
                           <div className="event-card__time">
-                            {new Date(event.createdAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                            {new Date(event.createdAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
                           </div>
                         </div>
                       </div>
@@ -195,7 +194,7 @@ export const CalendarPage: FC = () => {
                 ) : (
                   <div className="calendar-sidebar__empty">
                     <div className="empty-icon">🍃</div>
-                    <p>В этот день ничего интересного не произошло.</p>
+                    <p>{t('calendar.empty')}</p>
                   </div>
                 )}
               </div>
