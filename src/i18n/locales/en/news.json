@@ -14,7 +14,7 @@
             "successTitle": "✅ News sent for moderation!",
             "closeBtn": "Close",
             "title": "New News",
-            "inCategory": "In category: {name}",
+            "inCategory": "In category: {{name}}",
             "titlePlaceholder": "News Title",
             "textBlock": "Text Block",
             "imageBlock": "Image",

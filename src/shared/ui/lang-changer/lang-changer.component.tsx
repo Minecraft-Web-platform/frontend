@@ -11,13 +11,15 @@ export const LangChanger = () => {
   const [lang, setLang] = useState(i18n.language);
   const [isOpened, setIsOpened] = useState<boolean>(false);
 
+  const activeLang = (lang === 'uk' || lang === 'ua') ? 'ua' : lang;
+
   return (
     <div className="lang-changer">
      {isOpened ? (
       <div className="btns">
         <button
           type="button"
-          className={`btn lang-changer__btn${lang == 'ru' ? ' btn--chosen' : 'ru'}`}
+          className={`btn lang-changer__btn${activeLang === 'ru' ? ' btn--chosen' : ''}`}
           onClick={() => changeLanguage('ru', setLang)}
         >
           RU
@@ -25,7 +27,7 @@ export const LangChanger = () => {
 
         <button
           type="button"
-          className={`btn lang-changer__btn${lang == 'ua' ? ' btn--chosen' : 'ua'}`}
+          className={`btn lang-changer__btn${activeLang === 'ua' ? ' btn--chosen' : ''}`}
           onClick={() => changeLanguage('ua', setLang)}
         >
           UA
@@ -33,7 +35,7 @@ export const LangChanger = () => {
 
         <button
           type="button"
-          className={`btn lang-changer__btn${lang == 'pl' ? ' btn--chosen' : 'pl'}`}
+          className={`btn lang-changer__btn${activeLang === 'pl' ? ' btn--chosen' : ''}`}
           onClick={() => changeLanguage('pl', setLang)}
         >
           PL
@@ -41,7 +43,7 @@ export const LangChanger = () => {
 
         <button
           type="button"
-          className={`btn lang-changer__btn${lang == 'en' ? ' btn--chosen' : 'en'}`}
+          className={`btn lang-changer__btn${activeLang === 'en' ? ' btn--chosen' : ''}`}
           onClick={() => changeLanguage('en', setLang)}
         >
           EN
@@ -49,14 +51,14 @@ export const LangChanger = () => {
 
         <button
           type="button"
-          className={`btn lang-changer__btn${lang == 'kz' ? ' btn--chosen' : 'kz'}`}
+          className={`btn lang-changer__btn${activeLang === 'kz' ? ' btn--chosen' : ''}`}
         >
           KZ
         </button>
 
         <button
           type="button"
-          className={`btn lang-changer__btn${lang == 'uz' ? ' btn--chosen' : 'uz'}`}
+          className={`btn lang-changer__btn${activeLang === 'uz' ? ' btn--chosen' : ''}`}
         >
           UZ
         </button>
@@ -65,13 +67,20 @@ export const LangChanger = () => {
       <button
         type="button"
         className="btn lang-changer__btn btn--chosen"
+        onClick={() => setIsOpened(v => !v)}
       >
-        {lang.toLocaleUpperCase()}
+        {(activeLang || 'ru').toLocaleUpperCase()}
       </button>
       )
     }
       
-      <button type="button" className={`btn lang-changer__btn${lang == 'en' ? ' btn--chosen' : 'en'}`} onClick={() => setIsOpened(v => !v)}>{isOpened ? '-' : '+'}</button>
+      <button
+        type="button"
+        className="btn lang-changer__btn"
+        onClick={() => setIsOpened(v => !v)}
+      >
+        {isOpened ? '-' : '+'}
+      </button>
     </div>
   )
 }

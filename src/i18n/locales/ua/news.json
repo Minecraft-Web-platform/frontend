@@ -1,0 +1,48 @@
+{
+    "news": {
+        "title": "Новини",
+        "createCategoryBtn": "Нова категорія",
+        "cancelCategoryBtn": "Скасувати",
+        "categoryNamePlaceholder": "Назва категорії",
+        "categoryDescPlaceholder": "Опис категорії",
+        "adminOnlyLabel": "Лише для адміністраторів",
+        "createBtn": "Створити",
+        "loading": "Завантаження...",
+        "createNews": {
+            "noContentAlert": "Введіть заголовок та додайте хоча б один блок",
+            "errorAlert": "Помилка при створенні новини",
+            "successTitle": "✅ Новину надіслано на модерацію!",
+            "closeBtn": "Закрити",
+            "title": "Нова новина",
+            "inCategory": "У категорії: {{name}}",
+            "titlePlaceholder": "Заголовок новини",
+            "textBlock": "Текстовий блок",
+            "imageBlock": "Зображення",
+            "textPlaceholder": "Введіть текст...",
+            "imageLabel": "Завантажити зображення",
+            "addTextBtn": "+ Текст",
+            "addImageBtn": "🖼 Картинка",
+            "submitBtn": "Опублікувати",
+            "submittingBtn": "Публікуємо..."
+        },
+        "errors": {
+            "accessDenied": "Доступ заборонено. Ви не адміністратор."
+        },
+        "status": {
+            "pending": "На модерації",
+            "approved": "Схвалено",
+            "notApproved": "Не схвалено"
+        },
+        "addNewsPrompt": "Принести звістку",
+        "details": {
+            "loading": "Завантаження новини...",
+            "notFound": "Новину не знайдено 😢",
+            "category": "Категорія:",
+            "author": "Автор:",
+            "date": "Дата публікації:",
+            "statusLabel": "Статус:",
+            "approveBtn": "Схвалити",
+            "deleteBtn": "Видалити"
+        }
+    }
+}

@@ -48,13 +48,13 @@ import uaNavigation from './locales/ua/navigation.json';
 import uaPlayerProfile from './locales/ua/player-profile.json';
 import uaPlayersList from './locales/ua/players-list.json';
 import uaTechSupport from './locales/ua/tech-support-page.json';
-import uaProfile from './locales/en/profile.json';
-import uaEconomy from './locales/en/economy.json';
-import uaMap from './locales/en/map.json';
-import uaStates from './locales/en/states.json';
-import uaNews from './locales/en/news.json';
-import uaAdmin from './locales/en/admin.json';
-import uaPlayers from './locales/en/players.json';
+import uaProfile from './locales/ua/profile.json';
+import uaEconomy from './locales/ua/economy.json';
+import uaMap from './locales/ua/map.json';
+import uaStates from './locales/ua/states.json';
+import uaNews from './locales/ua/news.json';
+import uaAdmin from './locales/ua/admin.json';
+import uaPlayers from './locales/ua/players.json';
 
 // RU
 import ruAuth from './locales/ru/auth.json';
@@ -74,6 +74,24 @@ import ruAdmin from './locales/ru/admin.json';
 import ruPlayers from './locales/ru/players.json';
 
 export const defaultNS = 'navigation';
+
+const uaResources = {
+  auth: uaAuth,
+  'download-page': uaDownloadPage,
+  errors: uaErrors,
+  'landing-page': uaLandingPage,
+  navigation: uaNavigation,
+  'player-profile': uaPlayerProfile,
+  'players-list': uaPlayersList,
+  'tech-support-page': uaTechSupport,
+  profile: uaProfile,
+  economy: uaEconomy,
+  map: uaMap,
+  states: uaStates,
+  news: uaNews,
+  admin: uaAdmin,
+  players: uaPlayers
+};
 
 export const resources = {
   en: {
@@ -110,23 +128,8 @@ export const resources = {
     admin: plAdmin,
     players: plPlayers
   },
-  ua: {
-    auth: uaAuth,
-    'download-page': uaDownloadPage,
-    errors: uaErrors,
-    'landing-page': uaLandingPage,
-    navigation: uaNavigation,
-    'player-profile': uaPlayerProfile,
-    'players-list': uaPlayersList,
-    'tech-support-page': uaTechSupport,
-    profile: uaProfile,
-    economy: uaEconomy,
-    map: uaMap,
-    states: uaStates,
-    news: uaNews,
-    admin: uaAdmin,
-    players: uaPlayers
-  },
+  ua: uaResources,
+  uk: uaResources,
   ru: {
     auth: ruAuth,
     'download-page': ruDownloadPage,

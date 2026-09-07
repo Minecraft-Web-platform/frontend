@@ -14,7 +14,7 @@
             "successTitle": "✅ Новость отправлена на модерацию!",
             "closeBtn": "Закрыть",
             "title": "Новая новость",
-            "inCategory": "В категории: {name}",
+            "inCategory": "В категории: {{name}}",
             "titlePlaceholder": "Заголовок новости",
             "textBlock": "Текстовый блок",
             "imageBlock": "Изображение",
