@@ -28,16 +28,13 @@ import plNavigation from './locales/pl/navigation.json';
 import plPlayerProfile from './locales/pl/player-profile.json';
 import plPlayersList from './locales/pl/players-list.json';
 import plTechSupport from './locales/pl/tech-support-page.json';
-// Optional: import plProfile, plEconomy, plMap when they exist, but for now we'll just ignore or let them fallback.
-// The task is ru/en primarily, but we need to supply *something* to the `resources` object for `pl` and `ua` if we add the keys.
-// I'll define empty objects for them or use EN.
-import plProfile from './locales/en/profile.json';
-import plEconomy from './locales/en/economy.json';
-import plMap from './locales/en/map.json';
-import plStates from './locales/en/states.json';
-import plNews from './locales/en/news.json';
-import plAdmin from './locales/en/admin.json';
-import plPlayers from './locales/en/players.json';
+import plProfile from './locales/pl/profile.json';
+import plEconomy from './locales/pl/economy.json';
+import plMap from './locales/pl/map.json';
+import plStates from './locales/pl/states.json';
+import plNews from './locales/pl/news.json';
+import plAdmin from './locales/pl/admin.json';
+import plPlayers from './locales/pl/players.json';
 
 // UA
 import uaAuth from './locales/ua/auth.json';

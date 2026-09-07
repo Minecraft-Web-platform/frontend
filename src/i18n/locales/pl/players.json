@@ -1,0 +1,29 @@
+{
+    "players": {
+        "title": "Gracze",
+        "online": "Graczy online: {{online}}/{{total}}",
+        "show": "Pokazuj:",
+        "all": "Wszystkich",
+        "onlyServer": "Tylko na serwerze",
+        "state": "Państwo:",
+        "allStates": "Wszystkie państwa",
+        "noState": "Bez państwa",
+        "statusOnline": "Online",
+        "statusOffline": "Offline",
+        "notFound": "Nie znaleziono graczy z wybranymi filtrami...",
+        "passport": {
+            "defaultState": "Świat Kroniki Kresu",
+            "noPhoto": "Brak zdjęcia",
+            "nickname": "Pseudonim:",
+            "role": "Rola:",
+            "roleAdmin": "Administrator",
+            "rolePlayer": "Gracz",
+            "citizenship": "Obywatelstwo:",
+            "settlement": "Osada:",
+            "street": "Ulica:",
+            "house": "Dom:",
+            "issued": "Wydano:",
+            "validUntil": "Ważny do:"
+        }
+    }
+}

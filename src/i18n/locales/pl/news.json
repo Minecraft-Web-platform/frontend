@@ -1,0 +1,48 @@
+{
+    "news": {
+        "title": "Aktualności",
+        "createCategoryBtn": "Nowa kategoria",
+        "cancelCategoryBtn": "Anuluj",
+        "categoryNamePlaceholder": "Nazwa kategorii",
+        "categoryDescPlaceholder": "Opis kategorii",
+        "adminOnlyLabel": "Tylko dla administratorów",
+        "createBtn": "Utwórz",
+        "loading": "Ładowanie...",
+        "createNews": {
+            "noContentAlert": "Wpisz tytuł i dodaj co najmniej jeden blok",
+            "errorAlert": "Błąd podczas tworzenia wiadomości",
+            "successTitle": "✅ Wiadomość wysłana do moderacji!",
+            "closeBtn": "Zamknij",
+            "title": "Nowa wiadomość",
+            "inCategory": "W kategorii: {{name}}",
+            "titlePlaceholder": "Tytuł wiadomości",
+            "textBlock": "Blok tekstu",
+            "imageBlock": "Obraz",
+            "textPlaceholder": "Wpisz tekst...",
+            "imageLabel": "Prześlij obraz",
+            "addTextBtn": "+ Tekst",
+            "addImageBtn": "🖼 Obraz",
+            "submitBtn": "Opublikuj",
+            "submittingBtn": "Publikowanie..."
+        },
+        "errors": {
+            "accessDenied": "Odmowa dostępu. Nie jesteś administratorem."
+        },
+        "status": {
+            "pending": "Oczekuje na moderację",
+            "approved": "Zatwierdzono",
+            "notApproved": "Odrzucono"
+        },
+        "addNewsPrompt": "Przekaż wieść",
+        "details": {
+            "loading": "Ładowanie wiadomości...",
+            "notFound": "Nie znaleziono wiadomości 😢",
+            "category": "Kategoria:",
+            "author": "Autor:",
+            "date": "Data publikacji:",
+            "statusLabel": "Status:",
+            "approveBtn": "Zatwierdź",
+            "deleteBtn": "Usuń"
+        }
+    }
+}

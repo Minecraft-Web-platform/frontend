@@ -1,0 +1,520 @@
+{
+  "states-list": {
+    "hero": {
+      "title": "Państwa serwera",
+      "subtitle": "Sojusze, królestwa i republiki zarządzane przez graczy"
+    },
+    "controls": {
+      "search": "🔍 Szukaj państwa...",
+      "create": "+ Załóż państwo"
+    },
+    "empty": {
+      "loading": "Wczytywanie państw...",
+      "notFound": "Nie znaleziono żadnych państw. Bądź pierwszym, który założy wielkie imperium!"
+    },
+    "createModal": {
+      "title": "🏰 Zakładanie nowego państwa",
+      "tooltip": "Założenie państwa pozwala łączyć osady, ustalać podatki i rozwijać wspólną gospodarkę.",
+      "inputs": {
+        "name": "Nazwa państwa*",
+        "description": "Opis / historia państwa...",
+        "flag": "Flaga (opcjonalnie)",
+        "coat": "Herb (opcjonalnie)",
+        "color": "Kolor na mapie:",
+        "nationalityMale": "Narodowość (r. męski, np. Polak)",
+        "nationalityFemale": "Narodowość (r. żeński, np. Polka)",
+        "citizenshipName": "Nazwa obywatelstwa (np. polskie)"
+      },
+      "buttons": {
+        "cancel": "Anuluj",
+        "creating": "Zakładanie...",
+        "submit": "Załóż"
+      },
+      "error": "Błąd podczas zakładania państwa"
+    }
+  },
+  "state-detail": {
+    "loading": "Wczytywanie paszportu państwa...",
+    "notFound": "Nie znaleziono państwa.",
+    "backList": "← Wróć do listy",
+    "backStates": "← Do listy państw",
+    "archived": "Zarchiwizowane",
+    "idCopied": "Skopiowano ID: ",
+    "descMissing": "Brak opisu.",
+    "citizenship": "📜 Obywatelstwo:",
+    "president": "👑 Prezydent:",
+    "presidentNone": "Brak",
+    "settlements": "🏛️ Osad:",
+    "citizens": "👥 Obywateli:",
+    "taxes": "⚖️ Podatki:",
+    "powerTitle": "Potęga gospodarcza państwa (wpływa na kurs waluty)",
+    "power": "⚡ Potęga:",
+    "treasury": {
+      "title": "🏦 Skarbiec państwowy",
+      "noAccount": "Nie utworzono",
+      "hintRegistered": "Konto w Banku Narodowym",
+      "hintUnregistered": "Wymagana rejestracja konta",
+      "btnBank": "Zarządzaj Bankiem Narodowym"
+    },
+    "dashboard": {
+      "title": "⚙️ Panel zarządzania państwem (Prezydent)",
+      "settlements": {
+        "title": "🏙️ Osady państwa",
+        "founded": "Założonych osad: ",
+        "btn": "+ Załóż osadę"
+      },
+      "power": {
+        "title": "🚪 Uprawnienia",
+        "desc": "Możesz złożyć rezygnację z urzędu prezydenta w dowolnym momencie.",
+        "btn": "Złóż rezygnację"
+      },
+      "bank": {
+        "title": "🏦 Bank Narodowy",
+        "active": "✅ Utworzony (konto nr {{account}})",
+        "inactive": "⚠️ Nie utworzono. Wymagany przed emisją waluty.",
+        "btn": "+ Utwórz bank",
+        "statusOk": "Bank aktywny"
+      },
+      "currency": {
+        "title": "💰 Waluta narodowa",
+        "noBank": "🔒 Najpierw utwórz Bank Narodowy",
+        "active": "✅ Wyemitowana: {{name}} ({{code}})",
+        "inactive": "⚠️ Nie wyemitowano. Bez waluty obywatele nie mogą tworzyć firm ani kont!",
+        "btnBank": "Najpierw bank",
+        "btnCurrency": "+ Wyemituj walutę",
+        "statusOk": "1 {{code}} = 100 groszy"
+      },
+      "taxes": {
+        "title": "⚙️ Podatki i skarbiec",
+        "p2p": "Przelewy między graczami: ",
+        "p2c": "Przelewy komercyjne: ",
+        "exchange": "Opłata giełdowa: ",
+        "btn": "Zmień podatek"
+      },
+      "roles": {
+        "title": "🎭 Stanowiska",
+        "treasurer": "Skarbnik: ",
+        "voivode": "Wojewoda: ",
+        "unassigned": "Nie wyznaczono",
+        "btn": "Zarządzaj stanowiskami"
+      }
+    },
+    "diplomacyTitle": "🤝 Stosunki dyplomatyczne",
+    "electionsTitle": "🗳️ Wybory w państwie",
+    "settlementsTitle": "🏙️  Osady państwa",
+    "allSettlementsBtn": "Wszystkie osady →",
+    "settlementsEmpty": {
+      "title": "To państwo nie posiada jeszcze żadnych założonych osad",
+      "desc": "Zakładaj osady, aby przyciągać mieszkańców i rozwijać gospodarkę!",
+      "btn": "+ Załóż osadę"
+    },
+    "citizensTitle": "👥  Obywatele państwa",
+    "citizensCard": {
+      "me": "(Ty)",
+      "leader": "👑 Prezydent / Przywódca",
+      "citizen": "👥 Obywatel"
+    },
+    "citizensEmpty": {
+      "title": "To państwo nie ma jeszcze zarejestrowanych obywateli",
+      "desc": "Zakładaj osady i zapraszaj graczy do zamieszkania!"
+    },
+    "goldReserve": {
+      "title": "📦  Rezerwa złota i skarbiec państwa",
+      "btn": "📥 Zdigitalizuj sejf",
+      "count": "Ilość: ",
+      "pcs": " szt.",
+      "emptyTitle": "Skarbiec jest pusty",
+      "emptyDesc": "Państwo nie zgromadziło jeszcze rezerw złota. Wczytywanie przedmiotów następuje automatycznie w grze."
+    },
+    "currenciesTitle": "💰  Waluty państwa",
+    "allCurrenciesBtn": "Wszystkie waluty →",
+    "currencyCard": {
+      "rate": "Autom. kurs:",
+      "issued": "W obiegu:",
+      "power": "Potęga gosp.:",
+      "btn": "Otwórz stronę waluty →"
+    },
+    "currenciesEmpty": {
+      "title": "Własna waluta nie została jeszcze wyemitowana",
+      "desc": "Utwórz Bank Narodowy i stwórz walutę państwową do handlu!",
+      "btn": "+ Wyemituj walutę"
+    },
+    "decreesTitle": "📜 Oficjalne dekrety i wiadomości",
+    "alerts": {
+      "resignConfirm": "Czy na pewno chcesz złożyć rezygnację z funkcji prezydenta?",
+      "resignError": "Błąd podczas składania rezygnacji",
+      "editError": "Błąd podczas edycji państwa",
+      "archiveConfirm": "Czy na pewno chcesz rozwiązać (zarchiwizować) państwo? Ta operacja jest nieodwracalna, skarbiec zostanie usunięty, ale historia państwa zostanie zachowana.",
+      "archiveError": "Błąd podczas usuwania państwa",
+      "digitizeSuccess": "Pomyślnie zdigitalizowano!",
+      "digitizeError": "Błąd podczas digitalizacji skarbca",
+      "settlementError": "Błąd podczas zakładania osady",
+      "proposeSuccess": "Typ został pomyślnie zaproponowany i przesłany do moderacji!",
+      "proposeError": "Błąd podczas proponowania typu",
+      "currencySameError": "Błąd: Moneta główna i zdawkowa nie mogą być tym samym przedmiotem!",
+      "currencyError": "Błąd podczas emisji waluty",
+      "bankSuccess": "Bank Narodowy został pomyślnie utworzony!",
+      "bankError": "Błąd podczas tworzenia banku",
+      "taxInvalid": "Wprowadź prawidłową stawkę podatku od 0 do 100",
+      "taxSuccess": "Podatki zostały pomyślnie zaktualizowane",
+      "taxError": "Błąd podczas zmiany stawki podatku",
+      "rolesSuccess": "Stanowiska zostały pomyślnie zaktualizowane",
+      "rolesError": "Błąd podczas aktualizacji stanowisk"
+    },
+    "modals": {
+      "settlement": {
+        "title": "Zakładanie osady",
+        "nameLabel": "Nazwa osady",
+        "namePlaceholder": "Na przykład, Stolica",
+        "descLabel": "Opis osady",
+        "descPlaceholder": "Krótki opis",
+        "xLabel": "Współrzędna X centrum",
+        "zLabel": "Współrzędna Z centrum",
+        "statusLabel": "Status",
+        "statusOpts": {
+          "settlement": "Osada",
+          "rural": "Osada wiejska"
+        },
+        "subTypeLabel": "Podtyp osady wiejskiej",
+        "subTypePlaceholder": "Wybierz podtyp...",
+        "proposeBtn": "+ Zaproponuj własny",
+        "cancelBtn": "Anuluj",
+        "submitBtn": "Załóż osadę"
+      },
+      "propose": {
+        "title": "Zaproponuj podtyp",
+        "desc": "Twój wariant zostanie przesłany do moderatora do weryfikacji.",
+        "nameLabel": "Nazwa podtypu",
+        "namePlaceholder": "Na przykład, Wieś",
+        "cancelBtn": "Anuluj",
+        "submitBtn": "Zaproponuj"
+      },
+      "currency": {
+        "title": "Emisja waluty narodowej",
+        "codeLabel": "Kod waluty (2-5 liter)",
+        "nameLabel": "Nazwa waluty",
+        "namePlaceholder": "Relantyjski Złoty",
+        "mainLabel": "Przedmiot monety głównej (1 jedn. waluty)",
+        "kopeckLabel": "Przedmiot monety zdawkowej / grosza (0.01 jedn. waluty)",
+        "enchantLabel": "Zaklęcie ochronne (zostanie nałożone na oba przedmioty)",
+        "info": "ℹ️ 1 jednostka waluty jest zawsze równa 100 groszom.",
+        "error": "⚠️ Moneta główna i zdawkowa nie mogą być tym samym przedmiotem!",
+        "cancelBtn": "Anuluj",
+        "submitBtn": "Wyemituj walutę"
+      },
+      "bank": {
+        "title": "Utworzenie Banku Narodowego",
+        "nameLabel": "Nazwa banku",
+        "namePlaceholder": "Bank Narodowy {{name}}",
+        "info": "ℹ️ Bank Narodowy utworzy konto skarbowe nr 40817..., które stanie się centrum emisyjnym Twojej waluty.",
+        "cancelBtn": "Anuluj",
+        "submitBtn": "Utwórz bank"
+      },
+      "tax": {
+        "title": "Ustawienia stawek podatkowych",
+        "p2pLabel": "Przelewy gracz-gracz (%)",
+        "p2cLabel": "Przelewy komercyjne (%)",
+        "exchangeLabel": "Opłata giełdowa od transakcji (%)",
+        "cancelBtn": "Anuluj",
+        "submitBtn": "Zapisz podatek"
+      },
+      "roles": {
+        "title": "Wyznaczenie urzędników państwowych",
+        "treasurerLabel": "Skarbnik (obywatel)",
+        "voivodeLabel": "Wojewoda (obywatel)",
+        "unassign": "-- Odwołaj ze stanowiska --",
+        "cancelBtn": "Anuluj",
+        "submitBtn": "Zapisz stanowiska"
+      }
+    }
+  },
+  "territories": {
+    "title": "Zarządzanie terytoriami (Działki)",
+    "empty": "Nie posiadasz jeszcze zarejestrowanych działek.",
+    "deleteBtn": "Usuń",
+    "coords": "Współrzędne:",
+    "area": "Powierzchnia:",
+    "blocks": "bloków²",
+    "displayOnMap": "Wyświetlaj na mapie",
+    "errors": {
+      "delete": "Błąd podczas usuwania działki",
+      "visibility": "Błąd podczas zmiany widoczności"
+    },
+    "loading": "Wczytywanie terytoriów..."
+  },
+  "elections": {
+    "title": "🗳️ Wybory do organów władzy",
+    "endsAt": "Zakończenie: ",
+    "noCandidates": "Kandydaci nie zostali jeszcze zgłoszeni.",
+    "votes": " głosów (",
+    "percent": "%)",
+    "voteBtn": "Głosuj na kandydata",
+    "unavailableTitle": "Głosowanie będzie dostępne po zakończeniu etapu rejestracji",
+    "unavailableBtn": "Głosowanie jest obecnie niedostępne",
+    "nominateTitle": "⭐ Zgłoś swoją kandydaturę",
+    "programPlaceholder": "Twój program wyborczy (dlaczego warto na Ciebie głosować)...",
+    "cancelBtn": "Anuluj",
+    "submitBtn": "Wyślij",
+    "loadingBtn": "Wysyłanie...",
+    "statuses": {
+      "nomination": "Etap rejestracji kandydatów",
+      "voting": "Trwa głosowanie",
+      "completed": "Wybory zakończone"
+    },
+    "errors": {
+      "nominate": "Błąd podczas zgłaszania kandydatury. Być może Twoja kandydatura została już zgłoszona.",
+      "vote": "Błąd podczas głosowania. Być może oddałeś już swój głos."
+    }
+  },
+  "editSettlement": {
+    "title": "Edycja osady",
+    "nameLabel": "Nazwa osady:",
+    "descLabel": "Opis:",
+    "flagLabel": "Flaga/Godło",
+    "colorLabel": "Kolor terytorium na mapie:",
+    "xLabel": "Współrzędna X centrum",
+    "zLabel": "Współrzędna Z centrum",
+    "statusLabel": "Status",
+    "statusOpts": {
+      "settlement": "Osada",
+      "capital": "Stolica",
+      "rural": "Osada wiejska"
+    },
+    "subTypeLabel": "Podtyp osady wiejskiej",
+    "subTypePlaceholder": "Wybierz podtyp...",
+    "proposeBtn": "+ Zaproponuj",
+    "photosLabel": "Zdjęcia osady (do 5 szt.)",
+    "cancelBtn": "Anuluj",
+    "submitBtn": "Zapisz",
+    "loadingBtn": "Zapisywanie...",
+    "errors": {
+      "save": "Błąd zapisywania",
+      "proposeSuccess": "Typ został pomyślnie zaproponowany i przesłany do moderacji!",
+      "proposeError": "Błąd podczas proponowania typu"
+    },
+    "proposeModal": {
+      "title": "Zaproponuj podtyp",
+      "desc": "Twój wariant zostanie przesłany do moderatora do weryfikacji.",
+      "nameLabel": "Nazwa podtypu",
+      "namePlaceholder": "Na przykład, Wieś",
+      "cancelBtn": "Anuluj",
+      "submitBtn": "Zaproponuj"
+    }
+  },
+  "mapColorPicker": {
+    "previewLabel": "Podgląd na mapie (przezroczystość: ",
+    "exampleSettlement": "Przykład wyświetlania granic osady",
+    "exampleState": "Przykład wyświetlania granic państwa"
+  },
+  "settlementCard": {
+    "capital": "Stolica",
+    "rural": "Osada wiejska",
+    "noMayor": "🏛️ Bez burmistrza (Wybory)",
+    "noDesc": "Opis osady nie został jeszcze podany.",
+    "residents": "👥 {{count}} mieszk.",
+    "powerTitle": "Wkład gospodarczy osady w potęgę państwa",
+    "powerValue": "⚡ {{count}} pkt.",
+    "moreBtn": "Szczegóły →"
+  },
+  "citizenshipRequests": {
+    "title": "📬 Wnioski o zamieszkanie w osadzie",
+    "empty": "Brak aktywnych wniosków oczekujących na rozpatrzenie.",
+    "approveBtn": "✔ Zaakceptuj",
+    "rejectBtn": "✖ Odrzuć",
+    "errors": {
+      "status": "Błąd podczas zmiany statusu wniosku"
+    }
+  },
+  "stateCard": {
+    "noLeader": "Bez przywódcy (Wybory)",
+    "noDesc": "Opis państwa nie został jeszcze podany...",
+    "settlements": "🏙️ Osad:",
+    "citizens": "👥 Obywateli:",
+    "powerTitle": "Potęga gospodarcza państwa",
+    "powerValue": "⚡ Potęga:",
+    "moreBtn": "Szczegóły",
+    "moreBtnArrow": "→"
+  },
+  "diplomacyBadge": {
+    "ally": "Sojusznik",
+    "war": "Wojna",
+    "neutral": "Neutralność"
+  },
+  "editState": {
+    "title": "Edycja państwa",
+    "nameLabel": "Nazwa państwa:",
+    "descLabel": "Opis:",
+    "flagLabel": "Flaga",
+    "emblemLabel": "Herb (jeśli istnieje)",
+    "colorLabel": "Kolor terytorium na mapie:",
+    "cancelBtn": "Anuluj",
+    "submitBtn": "Zapisz",
+    "loadingBtn": "Zapisywanie...",
+    "errors": {
+      "save": "Błąd zapisywania"
+    }
+  },
+  "streetsManager": {
+    "title": "🛣️ Ulice osady",
+    "loading": "Wczytywanie ulic...",
+    "newStreetPlaceholder": "Nazwa nowej ulicy",
+    "createBtn": "Utwórz",
+    "saveBtn": "Zapisz",
+    "cancelBtn": "Anuluj",
+    "empty": "W tej osadzie nie ma jeszcze ulic",
+    "confirmDelete": "Czy na pewno chcesz usunąć tę ulicę? Wszystkie nieruchomości przy niej mogą stracić przypisanie!",
+    "errors": {
+      "create": "Błąd tworzenia ulicy",
+      "update": "Błąd aktualizacji ulicy",
+      "delete": "Błąd usuwania ulicy"
+    }
+  },
+  "settlementsList": {
+    "title": "🏙️ Osady serwera",
+    "subtitle": "Stolice, metropolie i twierdze założone przez graczy",
+    "searchPlaceholder": "🔍 Szukaj osady...",
+    "allStates": "Wszystkie państwa",
+    "createBtn": "+ Załóż osadę",
+    "loading": "Wczytywanie osad...",
+    "empty": "Nie znaleziono osad. Załóż pierwszą osadę na serwerze!",
+    "createModal": {
+      "title": "🏙️ Zakładanie nowej osady",
+      "namePlaceholder": "Nazwa osady*",
+      "descPlaceholder": "Opis osady / styl architektoniczny...",
+      "flagLabel": "Godło/Flaga",
+      "colorLabel": "Kolor na mapie:",
+      "typeLabel": "Typ osady",
+      "types": {
+        "settlement": "Osada",
+        "rural": "Osada wiejska"
+      },
+      "subTypePlaceholder": "Wybierz podtyp...",
+      "statePlaceholder": "Wybierz państwo (opcjonalnie)",
+      "cancelBtn": "Anuluj",
+      "submitBtn": "Załóż",
+      "loadingBtn": "Zakładanie..."
+    },
+    "errors": {
+      "create": "Błąd podczas zakładania osady"
+    }
+  },
+  "nationalBank": {
+    "transfersTax": "Podatek od przelewów Gracz-Gracz (%)",
+    "commercialTax": "Podatek od przelewów komercyjnych (%)",
+    "ipoFee": "Opłata za IPO ({{currency}})",
+    "tradingFee": "Prowizja z transakcji giełdowych (%)",
+    "treasuryBalance": "Saldo skarbca",
+    "ipoRequestsTitle": "Wnioski o IPO ({{count}})",
+    "ipoRequestInfo": "Akcje: {{shares}} szt. | Cena startowa: {{price}} | Opłata: {{fee}}",
+    "approveBtn": "Zaakceptuj",
+    "rejectBtn": "Odrzuć",
+    "accessDenied": "Nie masz uprawnień do zarządzania Bankiem Narodowym tego państwa.",
+    "title": "Bank Narodowy",
+    "gatheringData": "Zbieranie danych finansowych...",
+    "heroTitle": "Bank Narodowy {{name}}",
+    "heroSubtitle": "Panel zarządzania finansami państwa",
+    "backToState": "Powrót do państwa",
+    "goToTransfers": "Przejdź do sekcji przelewów",
+    "notEstablished": "Bank nie został utworzony",
+    "notEstablishedDesc": "Prezydent musi utworzyć Bank Narodowy na stronie państwa.",
+    "accountNotFound": "Konto nie zostało znalezione",
+    "accountNotFoundDesc": "Konto skarbowe nie zostało znalezione. Być może waluta państwa nie została jeszcze wyemitowana.",
+    "treasuryAccount": "Konto skarbowe",
+    "economySettings": "Ustawienia gospodarki i podatków"
+  },
+  "stateDetailMissed": {
+    "noAccount": "Nie utworzono",
+    "defaultBankName": "Bank Narodowy {{name}}",
+    "copyId": "Skopiuj ID",
+    "editState": "Edytuj państwo",
+    "archiveState": "Zarchiwizuj państwo",
+    "powerUnit": " pkt.",
+    "exchangeRateInfo": "1 {{code}} = {{rate}} jedn."
+  },
+  "settlementDetail": {
+    "loading": "Wczytywanie paszportu osady...",
+    "notFound": "Nie znaleziono osady.",
+    "backToList": "← Wróć do listy",
+    "backToStatesList": "← Do listy osad",
+    "capitalBadge": "Stolica",
+    "ruralBadge": "Osada wiejska",
+    "noDesc": "Opis osady nie został jeszcze podany.",
+    "mayor": "🏛️ Burmistrz osady:",
+    "vacant": "Wakat (Wybory)",
+    "state": "🏰 Państwo:",
+    "independent": "Niezależna osada",
+    "population": "👥 Mieszkańcy:",
+    "citizensCount": "{{count}} mieszk.",
+    "powerContribution": "⚡ Wkład w potęgę:",
+    "powerValue": "+100 pkt.",
+    "zeroPower": "0 pkt. (brak mieszkańców)",
+    "buttons": {
+      "isResident": "🏠 Jesteś mieszkańcem tej osady",
+      "leave": "🚪 Wypisz się z osady",
+      "apply": "Złóż wniosek o zamieszkanie / przeprowadzkę",
+      "applying": "Wysyłanie...",
+      "resignMayor": "Zrezygnuj z funkcji",
+      "edit": "✏️ Edytuj osadę",
+      "requests": "📬 Wnioski o zamieszkanie ({{count}})",
+      "setCapital": "🏛️ Ustanów stolicą",
+      "delete": "🗑️ Usuń osadę"
+    },
+    "passport": {
+      "title": "📜 Paszport osady",
+      "capitalBadge": "⭐ STOLICA PAŃSTWA",
+      "active": "● Aktywna osada",
+      "inactive": "○ Słabo zaludniona",
+      "founded": "Założono:",
+      "unknownDate": "Nieznana"
+    },
+    "images": {
+      "title": "🖼️ Zdjęcia osady",
+      "emptyTitle": "Brak zdjęć",
+      "emptyDesc": "Burmistrz nie przesłał jeszcze zdjęć tej osady"
+    },
+    "elections": {
+      "title": "🗳️ Wybory Burmistrza w osadzie"
+    },
+    "citizens": {
+      "title": "👥 Mieszkańcy osady ({{count}})",
+      "me": "(Ty)",
+      "mayorRole": "👑 Burmistrz osady",
+      "citizenRole": "👥 Mieszkaniec",
+      "emptyTitle": "W tej osadzie nie ma jeszcze oficjalnie zarejestrowanych mieszkańców",
+      "emptyDesc": "Złóż wniosek jako pierwszy i zostań mieszkańcem osady!"
+    },
+    "alerts": {
+      "applySuccess": "Twój wniosek o zamieszkanie / przeprowadzkę został pomyślnie wysłany do burmistrza osady!",
+      "applyError": "Nie udało się wysłać wniosku. Być może masz już aktywny wniosek.",
+      "confirmLeave": "Czy na pewno chcesz wypisać się z tej osady?",
+      "leaveSuccess": "Pomyślnie wypisałeś się z osady!",
+      "leaveError": "Nie udało się wypisać z osady.",
+      "confirmDelete": "UWAGA! To działanie jest nieodwracalne. Usunąć osadę?",
+      "deleteError": "Błąd usuwania osady",
+      "confirmResign": "Czy na pewno chcesz złożyć rezygnację z funkcji burmistrza?",
+      "resignError": "Błąd podczas składania rezygnacji",
+      "confirmCapital": "Ustanowić tę osadę stolicą państwa?",
+      "capitalSuccess": "Osada została pomyślnie mianowana stolicą!",
+      "capitalError": "Nie udało się ustanowić stolicy"
+    }
+  },
+  "decrees": {
+    "publishNew": "+ Opublikuj nowy dekret",
+    "publishFirst": "+ Opublikuj pierwszy dekret",
+    "createTitle": "Tworzenie oficjalnego dekretu państwowego",
+    "createSubtitle": "Dekret zostanie opublikowany w kanale państwowym i będzie widoczny dla wszystkich graczy",
+    "titleLabel": "Tytuł dokumentu *",
+    "titlePlaceholder": "Na przykład: Dekret nr 1 «O utworzeniu Banku Państwowego i emisji waluty»",
+    "contentLabel": "Treść oficjalnego dekretu *",
+    "contentPlaceholder": "Przedstaw pełną treść decyzji, prawa, regulaminy lub ogłoszenia dla obywateli...",
+    "cancel": "Anuluj",
+    "publishing": "Publikowanie...",
+    "publishBtn": "📜 Opublikuj dekret",
+    "decreeBadge": "📜 DEKRET #{{number}}",
+    "authorRole": "Prezydent / Autor",
+    "certified": "Oficjalny dokument państwowy • Poświadczony przez Przywódcę",
+    "emptyTitle": "Brak oficjalnych dekretów",
+    "emptySubtitle": "Przywódca państwa nie opublikował jeszcze dokumentów, praw ani dekretów.",
+    "errorPublish": "Błąd podczas publikowania dekretu"
+  }
+}

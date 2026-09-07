@@ -2,14 +2,27 @@
     "heading": "Kroniki Kresu 2.0",
     "buttons": {
         "news": "Aktualności",
-        "players-list": "Gracze",
+        "players-list": "Lista graczy",
         "world-map": "Mapa świata",
-        "download-page": "Pobierz launcher i modpack",
+        "download-page": "Pobierz paczkę i launcher",
         "profile": "Profil",
-        "tech-support": "Wsparcie",
-        "regulations": "Regulamin",
+        "tech-support": "Wsparcie techniczne",
+        "regulations": "Regulaminy",
         "states": "Państwa",
         "calendar": "Kalendarz",
         "economy": "Gospodarka"
+    },
+    "uploader": {
+        "cropTitle": "Kadrowanie obrazu",
+        "cancel": "Anuluj",
+        "save": "Zapisz",
+        "defaultLabel": "Prześlij grafikę",
+        "maxFilesError": "Maksymalna liczba plików: {{max}}",
+        "formatError": "Proszę przesyłać wyłącznie obrazy (JPG, PNG, WEBP)",
+        "uploadError": "Błąd przesyłania",
+        "loading": "Przesyłanie...",
+        "dropText": "Przeciągnij obraz tutaj lub",
+        "clickSelect": "kliknij, aby wybrać",
+        "remove": "Usuń"
     }
 }

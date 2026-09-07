@@ -1,1 +1,27 @@
-{}
+{
+  "intro": {
+    "title": "Kroniki Kresu 2.0",
+    "subtitle": "Zanurz się w świecie przygód",
+    "play": "Graj",
+    "onlineMap": "Mapa online"
+  },
+  "about": {
+    "heading": "Kim jesteśmy?",
+    "building": "Jesteśmy tymi, którzy starają się budować pięknie, praktycznie i z duszą. Dziś tworzymy tak, aby jutro grało się przyjemnie. Wznosząc budowle w jednym stylu, osiągamy harmonijny wygląd.",
+    "farmingTitle": "Skupiamy się również na produkcji i farmach wszelkiego rodzaju, a mianowicie:",
+    "metals": "Metale",
+    "stones": "Kamienie i materiały budowlane",
+    "food": "Jedzenie i inne przydatne rzeczy",
+    "logistics": "Nie zapominamy także o wygodnej logistyce",
+    "frogs": "A najważniejsze — spędzamy miło czas i z wielką czułością traktujemy żaby <3"
+  },
+  "footer": {
+    "discord": "Discord:",
+    "join": "Dołącz",
+    "onlineMap": "Mapa online:",
+    "openMap": "Otwórz mapę",
+    "serverIp": "IP serwera: mc.khroniki-kraya.com",
+    "copy": "Skopiuj",
+    "copied": "IP skopiowane do schowka!"
+  }
+}

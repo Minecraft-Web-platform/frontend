@@ -1,1 +1,121 @@
-{}
+{
+    "title": "Wsparcie techniczne",
+    "subtitle": "Pomoc i rozwiązywanie problemów na serwerze \"Kroniki Kresu 2.0\"",
+    "faqTitle": "Najczęściej zadawane pytania",
+    "faqItems": [
+        {
+            "q": "Jak działa sąd?",
+            "a": "System sądowniczy pozwala kwestionować źle wykonane usługi przez firmy. W przypadku sporu dotyczącego zamówienia możesz złożyć skargę. Prezydent państwa lub Administrator rozpatrzy ją i może zarządzić przymusowy zwrot środków."
+        },
+        {
+            "q": "Zostałem zbanowany, co robić?",
+            "a": "Możesz złożyć apelację do wsparcia technicznego. W temacie wiadomości wpisz «Apelacja», a w treści szczegółowo opisz sytuację. Apelacje są rozpatrywane przez administratora technicznego w trybie priorytetowym."
+        },
+        {
+            "q": "Jak zostać obywatelem?",
+            "a": "Aby uzyskać obywatelstwo, musisz zwrócić się do burmistrza dowolnej osady lub bezpośrednio do prezydenta państwa. Listę państw i ich liderów znajdziesz w zakładce «Państwa» w lewym menu."
+        },
+        {
+            "q": "Jak działa waluta narodowa?",
+            "a": "Waluta narodowa jest emitowana przez Banki Narodowe państw. Każda waluta ma swój fizyczny odpowiednik — monety z moda Create Deco (miedziane, cynkowe, złote). Kurs waluty jest płynny i zależy od realnego pokrycia w surowcach (diamentach, netherycie) w skarbcu państwowym."
+        },
+        {
+            "q": "Jak założyć własną firmę?",
+            "a": "Przejdź do sekcji «Gospodarka», otwórz zakładkę z listą firm i kliknij «Zarejestruj firmę». Wypełnij formularz, podając nazwę, adres prawny (twoje państwo) oraz początkowy budżet."
+        },
+        {
+            "q": "Jak handlować akcjami na giełdzie?",
+            "a": "Każda spółka publiczna emituje akcje. Możesz je kupować w sekcji «Giełda Papierów Wartościowych», śledząc wykresy cenowe. Akcje można odsprzedawać innym graczom lub pobierać z nich dywidendy, jeśli firma zdecyduje się na ich wypłatę."
+        },
+        {
+            "q": "Do czego służą osiągnięcia?",
+            "a": "Osiągnięcia są przyznawane za aktywność na serwerze i w serwisie. Wyświetlają się w twoim publicznym profilu i podnoszą twój prestiż w oczach innych graczy. Niektóre rzadkie osiągnięcia mogą dawać unikalne statusy."
+        },
+        {
+            "q": "Jaka jest funkcjonalność moda Treasury?",
+            "a": "Mod Treasury to nasza autorska modyfikacja służąca głębokiej integracji gospodarki serwera z serwisem internetowym. Dodaje specjalne bloki Skarbca i Bankomatów, za pośrednictwem których gracze mogą bezpiecznie «digitalizować» swoje surowce (diamenty, złoto, netheryt i bite monety), natychmiast zasilając konto bankowe na stronie, a także wypłacać wirtualne środki z powrotem do gry."
+        },
+        {
+            "q": "Jak otworzyć własną firmę?",
+            "a": "Przejdź do zakładki «Gospodarka» -> «Firmy». Rejestracja firmy kosztuje określoną kwotę (opłatę) w walucie wybranej jurysdykcji. Po rejestracji będziesz mógł świadczyć usługi graczom, przyjmować zamówienia, a w przyszłości — wejść na IPO i sprzedawać akcje."
+        },
+        {
+            "q": "Jak kupować akcje firm?",
+            "a": "Przejdź do zakładki «Giełda» (sekcja Gospodarka). Zobaczysz tam listę spółek publicznych po IPO. Możesz kupować i sprzedawać ich akcje za walutę państwową, a także otrzymywać dywidendy z ich zysków."
+        },
+        {
+            "q": "Jak założyć własne państwo?",
+            "a": "Przejdź do zakładki «Państwa» i kliknij przycisk tworzenia. Wypełnij formularz, wymyśl nazwę, wybierz flagę, a twoje państwo zostanie natychmiast utworzone w serwisie!"
+        },
+        {
+            "q": "Co zrobić, jeśli zapomniałem hasła?",
+            "a": "Przejdź na stronę logowania i kliknij «Nie pamiętasz hasła?». Na twój powiązany adres e-mail przyjdzie link do resetowania. Jeśli wcześniej nie powiązałeś e-maila w profilu, odzyskanie dostępu do konta będzie praktycznie niemożliwe."
+        },
+        {
+            "q": "Co jest najważniejsze?",
+            "a": "Cała funkcjonalność w serwisie powstała dla wygody i wspierania odgrywania ról (RolePlay), ale w żadnym wypadku nie zabrania tworzenia własnego RP! Na przykład sprawę sądową o niewykonanie usługi można w pełni odegrać w grze z sędzią i adwokatami, a prezydent potem po prostu technicznie zatwierdzi decyzję na stronie i załączy protokół z posiedzenia. Próbujcie, eksperymentujcie i twórzcie swoją unikalną historię!"
+        },
+        {
+            "q": "Znalazłem błąd lub lukę (duplikację)",
+            "a": "W żadnym wypadku nie wykorzystuj błędów do własnych celów! Prosimy o szczegółowe opisanie luki w formularzu zgłoszenia. Za zgłaszanie krytycznych błędów przewidziane są ekskluzywne nagrody w grze i osiągnięcia."
+        },
+        {
+            "q": "Jaka jest różnica między miastem, stolicą a osadą wiejską?",
+            "a": "Stolica to główna miejscowość państwa, w której znajduje się rezydencja prezydenta (w państwie może być tylko jedna stolica). Miasto to duża samodzielna miejscowość. Osada wiejska to mniejsze osiedle (wieś, przysiółek itp.), dla którego przy zakładaniu można wybrać specjalny podtyp."
+        },
+        {
+            "q": "Jak zmienić status osady na Stolicę?",
+            "a": "Mianować stolicę może tylko lider (prezydent) państwa. W tym celu przejdź na stronę wybranego miasta lub osady wiejskiej w twoim państwie i kliknij przycisk «Uczyń stolicą»."
+        },
+        {
+            "q": "Jak dodać własny podtyp osady wiejskiej?",
+            "a": "Jeśli podczas zakładania osady wiejskiej nie znalazłeś odpowiedniego podtypu na liście (na przykład budujesz «Fort» lub «Osadę»), kliknij przycisk «+ Zaproponuj własny». Wpisz nazwę, a trafi ona do moderacji. Gdy tylko administrator zaakceptuje wniosek, ten podtyp stanie się dostępny dla wszystkich graczy!"
+        }
+    ],
+    "alerts": {
+        "approved": "Podtyp został pomyślnie zatwierdzony!",
+        "rejected": "Podtyp został pomyślnie odrzucony!",
+        "errorModeration": "Błąd moderacji",
+        "fileSizeExceeded": "Niektóre pliki zostały zignorowane, ponieważ przekraczają limit 5 MB."
+    },
+    "serverStatus": {
+        "online": "Status serwera: Online",
+        "offline": "Status serwera: Offline",
+        "loading": "Status serwera: Ładowanie...",
+        "onlineDesc": "Serwer działa stabilnie, możesz dołączyć i grać.",
+        "offlineDesc": "Serwer jest obecnie niedostępny. Mogą trwać prace techniczne.",
+        "loadingDesc": "Sprawdzanie stanu serwera..."
+    },
+    "launcherInfo": {
+        "title": "Problemy z dołączeniem?",
+        "desc": "Upewnij się, że masz zainstalowaną aktualną wersję paczki modów.",
+        "btn": "Pobierz paczkę"
+    },
+    "form": {
+        "title": "Wyślij zgłoszenie",
+        "successTitle": "Zgłoszenie wysłane!",
+        "successDesc": "Otrzymaliśmy twoje zgłoszenie. Odpowiedź zostanie przesłana na powiązany adres e-mail <b>{{email}}</b> w najbliższym czasie.",
+        "writeMoreBtn": "Napisz kolejne",
+        "emailRequiredTitle": "Wymagane powiązanie e-maila",
+        "emailRequiredDesc": "Aby tworzyć zgłoszenia do pomocy technicznej, musisz powiązać i potwierdzić adres e-mail, abyśmy mogli przesłać ci odpowiedź.",
+        "goToProfileBtn": "Przejdź do Profilu",
+        "errorSubmit": "Wystąpił błąd podczas wysyłania. Spróbuj ponownie później.",
+        "nicknameLabel": "Twój pseudonim",
+        "topicPlaceholder": "Na przykład: Problem z płatnością",
+        "topicLabel": "Temat zgłoszenia",
+        "textPlaceholder": "Opisz szczegółowo swój problem...",
+        "textLabel": "Treść zgłoszenia",
+        "attachFilesLabel": "Załącz zrzuty ekranu (maks. 3 pliki, do 5 MB każdy)",
+        "submittingBtn": "Wysyłanie...",
+        "submitBtn": "Wyślij"
+    },
+    "moderation": {
+        "title": "Moderacja typów osad",
+        "desc": "Użytkownicy mogą proponować nowe podtypy osad wiejskich. Tutaj możesz je zatwierdzić lub odrzucić.",
+        "empty": "Brak podtypów oczekujących na moderację.",
+        "proposedBy": "Zaproponował: {{username}}",
+        "unknown": "Nieznany",
+        "approveBtn": "Zatwierdź",
+        "rejectBtn": "Odrzuć"
+    }
+}
