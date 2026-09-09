@@ -41,8 +41,8 @@
       height: 56px;
       border-radius: 16px;
       flex-shrink: 0;
-      object-fit: contain;
-      background-color: #f8fafc;
+      object-fit: cover;
+      background-color: var(--bg-surface);
       border: 1px solid rgba(0, 0, 0, 0.05);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
     }
