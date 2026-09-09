@@ -45,8 +45,6 @@ const PlayerPassportComponent = ({ player }: PlayerPassportProps) => {
             <span className="label">{t("players.passport.role")}</span>{" "}
             {player.role === "admin" ? t("players.passport.roleAdmin") : t("players.passport.rolePlayer")}
           </div>
-          
-          <div className="passport-divider"></div>
 
           <div className="detail-row">
             <span className="label">{t("players.passport.citizenship")}</span>{" "}
