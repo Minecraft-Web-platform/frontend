@@ -242,7 +242,7 @@ const TechSupportPage: FC = () => {
           {isAdmin && (
             <div className="support-faq-card" style={{ marginTop: '20px' }}>
               <h2>{t("moderation.title")}</h2>
-              <p style={{ marginBottom: '15px', color: '#666' }}>
+              <p style={{ marginBottom: '15px', color: 'var(--text-secondary)' }}>
                 {t("moderation.desc")}
               </p>
               {pendingTypes.length === 0 ? (
@@ -250,14 +250,14 @@ const TechSupportPage: FC = () => {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {pendingTypes.map((type) => (
-                    <div key={type.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: '#f9f9f9', borderRadius: '8px', border: '1px solid #ddd' }}>
+                    <div key={type.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: 'var(--bg-surface)', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
                       <div>
-                        <strong>{type.name}</strong>
-                        <div style={{ fontSize: '12px', color: '#666' }}>{t("moderation.proposedBy", { username: type.proposedByUsername || t("moderation.unknown") })}</div>
+                        <strong style={{ color: 'var(--text-headings)' }}>{type.name}</strong>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>{t("moderation.proposedBy", { username: type.proposedByUsername || t("moderation.unknown") })}</div>
                       </div>
                       <div style={{ display: 'flex', gap: '10px' }}>
-                        <Button callback={() => handleModerateType(type.id, true)} style={{ padding: '5px 15px', fontSize: '14px', background: '#22c55e' }}>{t("moderation.approveBtn")}</Button>
-                        <Button callback={() => handleModerateType(type.id, false)} secondary style={{ padding: '5px 15px', fontSize: '14px', color: '#ef4444', borderColor: '#ef4444' }}>{t("moderation.rejectBtn")}</Button>
+                        <Button callback={() => handleModerateType(type.id, true)} style={{ padding: '6px 16px', fontSize: '13px', background: '#10b981' }}>{t("moderation.approveBtn")}</Button>
+                        <Button callback={() => handleModerateType(type.id, false)} secondary style={{ padding: '6px 16px', fontSize: '13px', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.4)' }}>{t("moderation.rejectBtn")}</Button>
                       </div>
                     </div>
                   ))}

@@ -98,8 +98,8 @@ export const CurrenciesPage: React.FC<{ embedded?: boolean }> = ({
 
       <div
         style={{
-          background: '#f6f8fa',
-          border: '1px solid #d2d2d8',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-card)',
           borderRadius: '16px',
           padding: '24px',
           marginBottom: '32px',
@@ -108,6 +108,7 @@ export const CurrenciesPage: React.FC<{ embedded?: boolean }> = ({
           justifyContent: 'space-between',
           flexWrap: 'wrap',
           gap: '16px',
+          boxShadow: 'var(--shadow-card)',
         }}
       >
         <div>
@@ -115,7 +116,7 @@ export const CurrenciesPage: React.FC<{ embedded?: boolean }> = ({
             style={{
               fontSize: '18px',
               fontWeight: 'normal',
-              color: '#000000',
+              color: 'var(--text-headings)',
               margin: '0 0 6px',
               fontFamily: '"Minecraft", sans-serif',
             }}
@@ -125,7 +126,7 @@ export const CurrenciesPage: React.FC<{ embedded?: boolean }> = ({
           <p
             style={{
               fontSize: '14px',
-              color: '#535353',
+              color: 'var(--text-secondary)',
               margin: 0,
               lineHeight: 1.6,
               maxWidth: '700px',
@@ -136,13 +137,13 @@ export const CurrenciesPage: React.FC<{ embedded?: boolean }> = ({
         </div>
         <div
           style={{
-            background: '#ffffff',
-            border: '1px solid #d2d2d8',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-color)',
             borderRadius: '12px',
             padding: '12px 18px',
             fontSize: '14px',
             fontFamily: 'monospace',
-            color: '#10b981',
+            color: 'var(--accent-emerald)',
             fontWeight: 700,
             whiteSpace: 'nowrap',
           }}

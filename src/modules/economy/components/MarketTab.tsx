@@ -48,11 +48,11 @@ export const MarketTab: React.FC<MarketTabProps> = ({
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {selectedCompany ? (
             <>
-            <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #d2d2d8', padding: '24px', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)' }}>
+            <div style={{ background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-card)', padding: '24px', boxShadow: 'var(--shadow-card)' }}>
               <h2 style={{ margin: '0 0 16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '24px', fontWeight: 600 }}>{selectedCompany.name}</span>
+                <span style={{ fontSize: '24px', fontWeight: 600, color: 'var(--text-headings)' }}>{selectedCompany.name}</span>
                 <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '28px', fontWeight: 'bold' }}>{selectedCompany.sharePrice} {getCurrencyCode(selectedCompany)}</span>
+                  <span style={{ fontSize: '28px', fontWeight: 'bold', color: 'var(--text-headings)' }}>{selectedCompany.sharePrice} {getCurrencyCode(selectedCompany)}</span>
                   <div style={{ fontSize: '14px', color: selectedCompany.priceChange24h >= 0 ? '#10b981' : '#ef4444' }}>
                     {selectedCompany.priceChange24h >= 0 ? '+' : ''}{selectedCompany.priceChange24h.toFixed(2)}% {t('exchange.hours24')}
                   </div>
@@ -98,7 +98,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
             </div>
           </>
         ) : (
-          <div className="economy-empty" style={{ background: '#fff', border: '1px solid #d2d2d8', borderRadius: '16px', padding: '40px' }}>
+          <div className="economy-empty" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '16px', padding: '40px', color: 'var(--text-secondary)' }}>
             {companies.filter(c => c.isPublic).length === 0 
               ? t('exchange.noPublicCompanies', 'There are no public companies on this exchange yet.')
               : t('exchange.selectCompanyToView', 'Select a company from the list on the right to view quotes.')}
@@ -107,8 +107,8 @@ export const MarketTab: React.FC<MarketTabProps> = ({
       </div>
 
       {/* Right column: Shares list */}
-      <div style={{ width: '320px', flexShrink: 0, background: '#fff', borderRadius: '16px', border: '1px solid #d2d2d8', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)' }}>
-        <div style={{ padding: '16px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', fontWeight: 600, fontSize: '16px' }}>
+      <div style={{ width: '320px', flexShrink: 0, background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-card)', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: 'var(--shadow-card)' }}>
+        <div style={{ padding: '16px', borderBottom: '1px solid var(--border-color)', background: 'var(--bg-surface)', fontWeight: 600, fontSize: '16px', color: 'var(--text-headings)' }}>
           {t('exchange.sharesOnMarket', 'Shares on the market')}
         </div>
         <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
@@ -118,19 +118,19 @@ export const MarketTab: React.FC<MarketTabProps> = ({
               onClick={() => setSelectedCompanyId(company.id)}
               style={{ 
                 padding: '16px', 
-                borderBottom: '1px solid #f1f5f9', 
+                borderBottom: '1px solid var(--border-subtle)', 
                 cursor: 'pointer',
-                background: selectedCompanyId === company.id ? '#f0f4ff' : 'transparent',
+                background: selectedCompanyId === company.id ? 'var(--bg-hover)' : 'transparent',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 transition: 'background 0.2s',
-                borderLeft: selectedCompanyId === company.id ? '4px solid #3b82f6' : '4px solid transparent'
+                borderLeft: selectedCompanyId === company.id ? '4px solid var(--accent-emerald)' : '4px solid transparent'
               }}
             >
-              <div style={{ fontWeight: 600, fontSize: '15px' }}>{company.name}</div>
+              <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-headings)' }}>{company.name}</div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontWeight: 700 }}>{company.sharePrice}</div>
+                <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{company.sharePrice}</div>
                 <div style={{ fontSize: '12px', color: company.priceChange24h >= 0 ? '#10b981' : '#ef4444' }}>
                   {company.priceChange24h >= 0 ? '+' : ''}{company.priceChange24h.toFixed(2)}%
                 </div>

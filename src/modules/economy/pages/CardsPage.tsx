@@ -314,13 +314,13 @@ export const CardsPage: React.FC = () => {
           </div>
           <div className="stat-pill">
             <span className="label">{t('cards.active')}</span>
-            <span className="value" style={{ color: '#34d399' }}>
+            <span className="value value--active">
               {activeCount}
             </span>
           </div>
           <div className="stat-pill">
             <span className="label">{t('cards.blocked')}</span>
-            <span className="value" style={{ color: '#f87171' }}>
+            <span className="value value--blocked">
               {blockedCount}
             </span>
           </div>

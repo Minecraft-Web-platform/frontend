@@ -57,9 +57,9 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
               type="text"
               value={t('createAccountModal.personalAccount')}
               disabled
-              style={{ opacity: 0.8, cursor: 'not-allowed', backgroundColor: '#f1f5f9', color: '#475569' }}
+              style={{ opacity: 0.8, cursor: 'not-allowed', backgroundColor: 'var(--bg-hover)', color: 'var(--text-muted)' }}
             />
-            <p style={{ fontSize: '13px', color: '#94a3b8', margin: '4px 0' }}>
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '4px 0' }}>
               {t('createAccountModal.commercialHint')}
             </p>
           </label>
@@ -98,8 +98,8 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
                 style={{
                   padding: '14px 16px',
                   borderRadius: '12px',
-                  backgroundColor: isForeignCurrency ? '#eff6ff' : '#f8fafc',
-                  border: isForeignCurrency ? '1px solid #bfdbfe' : '1px solid #e2e8f0',
+                  backgroundColor: isForeignCurrency ? 'rgba(59, 130, 246, 0.12)' : 'var(--bg-surface)',
+                  border: isForeignCurrency ? '1px solid rgba(59, 130, 246, 0.3)' : '1px solid var(--border-color)',
                   marginBottom: '16px',
                   display: 'flex',
                   alignItems: 'center',
@@ -112,7 +112,7 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
                     style={{
                       fontSize: '13px',
                       fontWeight: 600,
-                      color: isForeignCurrency ? '#1e40af' : '#334155',
+                      color: isForeignCurrency ? '#60a5fa' : 'var(--text-headings)',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
@@ -140,7 +140,7 @@ export const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
                   <div
                     style={{
                       fontSize: '12px',
-                      color: isForeignCurrency ? '#3b82f6' : '#64748b',
+                      color: isForeignCurrency ? '#93c5fd' : 'var(--text-secondary)',
                       marginTop: '4px',
                       lineHeight: '1.4',
                     }}

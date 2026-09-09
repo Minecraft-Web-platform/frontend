@@ -1,0 +1,1509 @@
+/* ==========================================================================
+   THEME DESIGN SYSTEM - ХРОНИКИ КРАЯ
+   ========================================================================== */
+
+:root,
+[data-theme="light"] {
+  --bg-page: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-card: #ffffff;
+  --bg-sidebar: #f6f8fa;
+  --bg-hover: #f1f5f9;
+  --bg-muted: #f8fafc;
+  --bg-active: #ffffff;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-headings: #000000;
+  
+  --border-color: #d2d2d8;
+  --border-subtle: #e2e8f0;
+  --border-card: #e2e8f0;
+  --border-focus: #10b981;
+  
+  --input-bg: #f6f8fa;
+  --input-border: #d2d2d8;
+  --input-text: #000000;
+  
+  --modal-bg: #ffffff;
+  --modal-overlay: rgba(0, 0, 0, 0.45);
+  
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-elevated: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.15);
+  
+  --accent-emerald: #10b981;
+  --accent-diamond: #0ea5e9;
+  --accent-gold: #f59e0b;
+  --accent-redstone: #ef4444;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg-page: #0d1117;
+  --bg-surface: #161b22;
+  --bg-card: #171d27;
+  --bg-sidebar: #11141c;
+  --bg-hover: #222938;
+  --bg-muted: #1c2230;
+  --bg-active: #1f2736;
+  
+  --text-primary: #f0f6fc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-headings: #ffffff;
+  
+  --border-color: #2b3446;
+  --border-subtle: rgba(255, 255, 255, 0.09);
+  --border-card: #252e3e;
+  --border-focus: #10b981;
+  
+  --input-bg: #11151e;
+  --input-border: #2d3648;
+  --input-text: #f8fafc;
+  
+  --modal-bg: #161c26;
+  --modal-overlay: rgba(0, 0, 0, 0.75);
+  
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --shadow-elevated: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-modal: 0 24px 60px rgba(0, 0, 0, 0.7);
+  
+  --accent-emerald: #10b981;
+  --accent-diamond: #38bdf8;
+  --accent-gold: #fbbf24;
+  --accent-redstone: #f87171;
+
+  color-scheme: dark;
+}
+
+/* Base Body & Global Elements */
+html, body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom Scrollbar for Dark Theme */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #252e3e;
+  border-radius: 5px;
+  border: 2px solid #0d1117;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #334055;
+}
+
+/* ==========================================================================
+   DARK THEME COMPONENT & MODULE ADAPTATIONS
+   ========================================================================== */
+
+[data-theme="dark"] {
+  /* Action buttons */
+  .action-icon-btn {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+  }
+
+  .action-icon-btn--danger {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.3);
+    background-color: rgba(239, 68, 68, 0.12);
+
+    &:hover {
+      background-color: rgba(239, 68, 68, 0.25);
+      border-color: rgba(248, 113, 113, 0.5);
+      color: #fca5a5;
+    }
+  }
+
+  /* Shared Input styles */
+  .input-field {
+    label {
+      color: var(--text-secondary);
+    }
+  }
+
+  .input {
+    border-color: var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--input-text);
+
+    &:focus {
+      border-color: var(--border-focus);
+      outline: none;
+    }
+  }
+
+  /* Shared Buttons in Dark Mode */
+  .button {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3) !important;
+    border-radius: 8px !important;
+    font-family: "Minecraft", sans-serif !important;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45) !important;
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+  }
+
+  .button--secondary {
+    background: var(--bg-surface) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    box-shadow: none !important;
+
+    &:hover:not(:disabled) {
+      background: var(--bg-hover) !important;
+      border-color: var(--border-card) !important;
+      color: var(--text-primary) !important;
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Economy Module Adaptations */
+  .economy-page {
+    color: var(--text-primary);
+  }
+
+  .economy-hero {
+    background: linear-gradient(135deg, #161b24 0%, #1a2230 100%);
+    border-color: var(--border-card);
+    box-shadow: var(--shadow-card);
+
+    .hero-title {
+      color: var(--text-headings);
+    }
+
+    .hero-subtitle {
+      color: var(--text-secondary);
+    }
+  }
+
+  .section-title,
+  .economy-section-title {
+    color: var(--text-headings);
+  }
+
+  .economy-empty {
+    background: linear-gradient(135deg, #131720 0%, #161c26 100%);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+  }
+
+  .economy-btn--primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3) !important;
+
+    &:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+      border-color: #059669 !important;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4) !important;
+    }
+  }
+
+  .economy-btn--secondary {
+    background-color: #1a212d;
+    color: var(--text-primary);
+    border-color: var(--border-color);
+
+    &:hover {
+      background-color: #242c3b;
+      border-color: #3b465c;
+    }
+  }
+
+  .economy-tabs {
+    border-color: var(--border-color);
+  }
+
+  .economy-tab {
+    color: var(--text-secondary);
+
+    &:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .economy-tab--active {
+    background-color: #10b981;
+    color: #0d1117;
+    border-color: #10b981;
+    font-weight: 700;
+  }
+
+  .economy-table-container {
+    background-color: var(--bg-card);
+    border-color: var(--border-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .economy-table {
+    thead {
+      background-color: #12151d;
+      border-bottom-color: var(--border-card);
+
+      th {
+        color: var(--text-secondary);
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom-color: var(--border-subtle);
+
+        &:hover {
+          background-color: var(--bg-hover);
+        }
+      }
+
+      td {
+        color: var(--text-primary);
+      }
+    }
+  }
+
+  .economy-modal {
+    background-color: var(--modal-bg);
+    border-color: var(--border-card);
+    box-shadow: var(--shadow-modal);
+    color: var(--text-primary);
+
+    .modal-title {
+      color: var(--text-headings);
+    }
+
+    .modal-form {
+      label {
+        color: var(--text-secondary);
+      }
+
+      input, select, textarea {
+        background-color: var(--input-bg);
+        border-color: var(--border-color);
+        color: var(--input-text);
+
+        &:focus {
+          border-color: var(--border-focus);
+          background-color: #161c26;
+        }
+      }
+    }
+  }
+
+  /* Economy Cards: Company, Currency, Account, etc. */
+  .company-card,
+  .currency-card,
+  .account-card,
+  .portfolio-item,
+  .property-card {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-card) !important;
+    color: var(--text-primary) !important;
+
+    h2, h3, h4, .title, .card-title, .name {
+      color: var(--text-headings) !important;
+    }
+
+    .desc, .description, .subtitle, .info-value {
+      color: var(--text-secondary);
+    }
+  }
+
+  .company-card {
+    .company-title,
+    .company-title span {
+      color: var(--text-headings) !important;
+      font-weight: 700 !important;
+    }
+
+    .owner {
+      color: var(--text-secondary) !important;
+      strong {
+        color: var(--text-headings) !important;
+      }
+    }
+
+    .company-card__desc {
+      background: var(--bg-surface) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .company-card__stats,
+    .company-card__shares-bar--unlisted {
+      background: var(--bg-surface) !important;
+      border-color: var(--border-color) !important;
+    }
+
+    .company-card__top-bar .logo-img,
+    .company-card__top-bar .logo-fallback {
+      background-color: var(--bg-surface) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-headings) !important;
+    }
+
+    .stat-box .stat-label {
+      color: var(--text-secondary) !important;
+      font-weight: 600 !important;
+    }
+
+    .stat-box .stat-value,
+    .stat-box .stat-value span {
+      color: var(--text-headings) !important;
+      font-weight: 700 !important;
+    }
+
+    .stat-box .stat-value .change-pill--pos {
+      background: rgba(16, 185, 129, 0.2) !important;
+      color: #34d399 !important;
+    }
+
+    .stat-box .stat-value .change-pill--neg {
+      background: rgba(239, 68, 68, 0.2) !important;
+      color: #f87171 !important;
+    }
+
+    .company-card__shares-bar .label {
+      color: var(--text-secondary) !important;
+    }
+
+    .company-card__shares-bar .value {
+      color: var(--text-headings) !important;
+      font-weight: 700 !important;
+    }
+
+    .company-card__badge--public {
+      background-color: rgba(16, 185, 129, 0.16) !important;
+      color: #34d399 !important;
+      border-color: rgba(16, 185, 129, 0.35) !important;
+    }
+
+    .company-card__badge--private {
+      background-color: var(--bg-surface) !important;
+      color: var(--text-secondary) !important;
+      border-color: var(--border-color) !important;
+    }
+  }
+
+  .currency-card {
+    .currency-card__creative-info,
+    .currency-card__stats .stat-box {
+      background: var(--bg-surface) !important;
+      border-color: var(--border-subtle) !important;
+    }
+
+    .stat-box .stat-value {
+      color: var(--text-primary) !important;
+    }
+
+    .item-row {
+      color: var(--text-secondary) !important;
+      span strong {
+        color: var(--text-primary) !important;
+      }
+    }
+  }
+
+  /* Profile page */
+  .profile-with-data {
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-card);
+    border-radius: 16px;
+
+    h1 {
+      color: var(--text-headings);
+    }
+
+    p {
+      color: var(--text-secondary);
+    }
+  }
+
+  /* News and News Details Pages */
+  .news-page,
+  .news-details-page {
+    background-color: var(--bg-page) !important;
+    color: var(--text-primary) !important;
+
+    .content h1 {
+      color: var(--text-headings) !important;
+    }
+
+    .category__title {
+      color: var(--text-headings) !important;
+    }
+
+    .category__description {
+      color: var(--text-secondary) !important;
+    }
+
+    .news-card {
+      background: var(--bg-card) !important;
+      border: 1px solid var(--border-card) !important;
+      box-shadow: var(--shadow-card) !important;
+      color: var(--text-primary) !important;
+
+      &::before {
+        display: none !important;
+      }
+
+      &:hover {
+        background: var(--bg-surface) !important;
+        border-color: var(--accent-emerald) !important;
+        box-shadow: var(--shadow-elevated), 0 0 20px rgba(16, 185, 129, 0.15) !important;
+      }
+
+      h3, .news-card__title {
+        color: var(--text-headings) !important;
+      }
+
+      .news-card__author {
+        color: var(--text-secondary) !important;
+      }
+    }
+
+    .news-card--create-btn {
+      background: var(--bg-surface) !important;
+      border: 2px dashed var(--border-color) !important;
+      box-shadow: none !important;
+
+      &:hover {
+        background: var(--bg-hover) !important;
+        border-color: var(--accent-emerald) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+
+        .news-card__create-icon {
+          background: var(--accent-emerald) !important;
+          color: #ffffff !important;
+          box-shadow: 0 0 16px rgba(16, 185, 129, 0.4) !important;
+        }
+
+        .news-card__create-content p {
+          color: var(--text-primary) !important;
+        }
+      }
+
+      .news-card__create-content p {
+        color: var(--text-secondary) !important;
+      }
+
+      .news-card__create-icon {
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-color) !important;
+        color: var(--accent-emerald) !important;
+      }
+    }
+
+    .create-category-container {
+      background: var(--bg-card) !important;
+      border: 1px solid var(--border-card) !important;
+      box-shadow: var(--shadow-card) !important;
+      color: var(--text-primary) !important;
+
+      label {
+        color: var(--text-secondary) !important;
+      }
+    }
+
+    .news-details {
+      background: var(--bg-card) !important;
+      border: 1px solid var(--border-card) !important;
+      box-shadow: var(--shadow-elevated) !important;
+
+      .news-details__title {
+        color: var(--text-headings) !important;
+      }
+
+      .news-block {
+        color: var(--text-primary) !important;
+      }
+
+      .news-block--image {
+        border-color: var(--border-card) !important;
+        box-shadow: var(--shadow-card) !important;
+      }
+    }
+
+    .news-meta {
+      background: var(--bg-card) !important;
+      border: 1px solid var(--border-card) !important;
+      box-shadow: var(--shadow-card) !important;
+
+      p {
+        color: var(--text-primary) !important;
+
+        b {
+          color: var(--text-secondary) !important;
+        }
+      }
+
+      .news-meta__author-link {
+        color: var(--accent-emerald) !important;
+
+        &:hover {
+          color: #34d399 !important;
+        }
+      }
+    }
+  }
+
+  /* States list page */
+  .states-list-page {
+    color: var(--text-primary);
+  }
+
+  .states-list-page__hero {
+    background: linear-gradient(135deg, #171d27 0%, #1a2230 100%) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .states-list-page__title {
+    color: var(--text-headings) !important;
+  }
+
+  .states-list-page__subtitle {
+    color: var(--text-secondary) !important;
+  }
+
+  .states-list-page__search {
+    background-color: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .states-list-page__search::placeholder {
+    color: var(--text-muted) !important;
+  }
+
+  .states-list-page__search:focus {
+    border-color: var(--accent-emerald) !important;
+    background-color: var(--bg-card) !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+  }
+
+  .states-list-page__create-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3) !important;
+  }
+
+  .states-list-page__create-btn:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4) !important;
+  }
+
+  .states-list-page__modal {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-primary) !important;
+
+    h3 {
+      color: var(--text-headings) !important;
+    }
+
+    input, textarea, select {
+      background-color: var(--bg-surface) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-primary) !important;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent-emerald) !important;
+      background-color: var(--bg-card) !important;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+    }
+  }
+
+  .states-list-page {
+
+    .state-card, .settlement-card {
+      background-color: var(--bg-card) !important;
+      border-color: var(--border-card) !important;
+      box-shadow: var(--shadow-card) !important;
+      color: var(--text-primary) !important;
+
+      h2, h3, h4, .title {
+        color: var(--text-headings) !important;
+      }
+
+      p, .description, span {
+        color: var(--text-secondary);
+      }
+    }
+  }
+
+  /* Players list page */
+  .players-page,
+  .player-profile-page {
+    color: var(--text-primary);
+
+    .player-card,
+    .passport-container,
+    .business-certificate {
+      background-color: var(--bg-card) !important;
+      border-color: var(--border-card) !important;
+      box-shadow: var(--shadow-card) !important;
+      color: var(--text-primary) !important;
+    }
+  }
+
+  /* Global Modals overlay */
+  .economy-modal-overlay,
+  .modal-overlay,
+  .cropper-modal-overlay,
+  .modal-backdrop,
+  .create-news-modal-wrap,
+  .edit-state-modal-overlay,
+  .edit-settlement-modal-overlay,
+  .citizenship-modal,
+  .states-list-page__modal-backdrop,
+  .settlements-list-page__modal-backdrop {
+    background-color: var(--modal-overlay) !important;
+  }
+
+  /* All App Modals in Dark Mode */
+  .economy-modal,
+  .create-service-modal,
+  .order-service-modal,
+  .edit-company-modal,
+  .cropper-modal-content,
+  .create-news-modal,
+  .create-category-container,
+  .states-list-page__modal,
+  .settlements-list-page__modal,
+  .edit-state-modal,
+  .edit-settlement-modal,
+  .citizenship-modal__content {
+    background-color: var(--modal-bg) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-modal) !important;
+    color: var(--text-primary) !important;
+
+    h1, h2, h3, h4, .modal-title {
+      color: var(--text-headings) !important;
+    }
+
+    label {
+      color: var(--text-secondary);
+    }
+
+    input, textarea, select {
+      background-color: var(--bg-surface) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-primary) !important;
+
+      &::placeholder {
+        color: var(--text-muted) !important;
+      }
+
+      &:focus {
+        border-color: var(--accent-emerald) !important;
+        background-color: var(--bg-card) !important;
+      }
+    }
+  }
+
+  /* Image Uploader in Dark Theme */
+  .image-uploader {
+    .uploader-label {
+      color: var(--text-headings) !important;
+    }
+
+    .drop-zone {
+      background: var(--bg-surface) !important;
+      border-color: var(--border-color) !important;
+
+      &:hover, &.dragging {
+        background: var(--bg-hover) !important;
+        border-color: var(--accent-emerald) !important;
+      }
+
+      .idle-state {
+        color: var(--text-secondary) !important;
+        .text strong {
+          color: var(--accent-emerald) !important;
+        }
+      }
+    }
+
+    .preview-item {
+      background: var(--bg-card) !important;
+      border-color: var(--border-color) !important;
+    }
+  }
+
+  /* Card Details & Info Cards */
+  .info-card {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .info-card__title {
+    color: var(--text-headings) !important;
+  }
+
+  .info-card .info-row {
+    border-bottom-color: var(--border-subtle) !important;
+  }
+
+  .info-card .row-label {
+    color: var(--text-secondary) !important;
+  }
+
+  .info-card .row-value {
+    color: var(--text-primary) !important;
+  }
+
+  /* Receipt Modal */
+  .receipt-modal-content {
+    background-color: var(--modal-bg) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-modal) !important;
+  }
+
+  .receipt-wrapper {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .receipt-wrapper::before,
+  .receipt-wrapper::after {
+    background-color: var(--modal-bg) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .receipt-wrapper .receipt-header h2,
+  .receipt-wrapper .receipt-user-name {
+    color: var(--text-headings) !important;
+  }
+
+  .receipt-wrapper .receipt-label,
+  .receipt-wrapper .receipt-date {
+    color: var(--text-secondary) !important;
+  }
+
+  .receipt-wrapper .receipt-value {
+    color: var(--text-primary) !important;
+  }
+
+  /* Orders tabs empty states & cards */
+  .empty-state,
+  .client-orders-list .empty-state,
+  .company-orders-tab .empty-state,
+  .disputed-orders-tab .empty-orders-message {
+    background: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .empty-state h3,
+  .client-orders-list .empty-state h3,
+  .company-orders-tab .empty-state h3,
+  .disputed-orders-tab .empty-orders-message h3 {
+    color: var(--text-headings) !important;
+  }
+
+  .client-orders-list .order-card,
+  .company-orders-tab .order-card,
+  .disputed-orders-tab .order-card {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .client-orders-list .order-card .company-name,
+  .company-orders-tab .order-card .order-id,
+  .disputed-orders-tab .order-card .order-id {
+    color: var(--text-headings) !important;
+  }
+
+  /* Real estate properties dark theme overrides */
+  .properties-page__header,
+  .properties-page__card {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .properties-page__header .header-info h2,
+  .properties-page__card .card-header .title h3 {
+    color: var(--text-headings) !important;
+  }
+
+  .properties-page__tabs {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .properties-page__tabs .tab-btn.active {
+    background: var(--bg-card) !important;
+    color: var(--text-headings) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .properties-page__card .card-body .details {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-subtle) !important;
+  }
+
+  .properties-page__card .card-body .details .detail-item span:first-child {
+    color: var(--text-secondary) !important;
+  }
+
+  .properties-page__card .card-body .details .detail-item span:last-child {
+    color: var(--text-headings) !important;
+  }
+
+  .properties-page__card .card-actions .button {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-headings) !important;
+    border: 1px solid var(--border-color) !important;
+  }
+
+  .properties-page__card .card-actions .button--secondary {
+    background-color: transparent !important;
+    color: var(--text-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .property-detail-page .info-section .actions .price-tag {
+    color: var(--accent-emerald) !important;
+  }
+
+  .property-detail-page .gallery-section,
+  .property-detail-page .info-section {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .property-detail-page .info-section .title-group h1,
+  .property-detail-page .info-section .detail-row .value {
+    color: var(--text-headings) !important;
+  }
+
+  /* State Detail Page Dark Overrides */
+  .state-detail-page {
+    color: var(--text-primary);
+  }
+
+  .state-detail-page__hero {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .state-detail-page__info h1 {
+    color: var(--text-headings) !important;
+  }
+
+  .state-detail-page__description {
+    color: var(--text-secondary) !important;
+  }
+
+  .state-detail-page__section-title {
+    color: var(--text-headings) !important;
+  }
+
+  .state-detail-page__stat-box {
+    background-color: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .state-detail-page__stat-box .stat-val {
+    color: var(--text-headings) !important;
+  }
+
+  .state-detail-page__stat-box .stat-label {
+    color: var(--text-secondary) !important;
+  }
+
+  .state-detail-page__stat-pill {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .state-detail-page__stat-pill strong {
+    color: var(--text-headings) !important;
+  }
+
+  .state-detail-page__stat-pill.state-detail-page__stat-pill--power {
+    background: rgba(245, 158, 11, 0.12) !important;
+    border-color: rgba(245, 158, 11, 0.3) !important;
+    color: #f59e0b !important;
+  }
+
+  .state-detail-page__stat-pill.state-detail-page__stat-pill--power strong {
+    color: #fbbf24 !important;
+  }
+
+  .state-detail-page__treasury-card {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .state-detail-page__treasury-card .treasury-acc {
+    color: var(--text-headings) !important;
+  }
+
+  .state-detail-page__treasury-item {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .state-detail-page__treasury-item .treasury-name {
+    color: var(--text-headings) !important;
+  }
+
+  .state-detail-page__treasury-item .treasury-count strong {
+    color: var(--text-headings) !important;
+  }
+
+  .state-card,
+  .settlement-card,
+  .state-citizen-card,
+  .state-currency-card {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .settlement-card__title,
+  .state-card__title,
+  .state-currency-card__header .name,
+  .state-citizen-card__name {
+    color: var(--text-headings) !important;
+  }
+
+  .settlement-card__description,
+  .state-card__description,
+  .state-currency-card__meta,
+  .state-citizen-card__role {
+    color: var(--text-secondary) !important;
+  }
+
+  .settlement-card__stat-pill {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .settlement-card__stat-pill.settlement-card__stat-pill--power {
+    background: rgba(245, 158, 11, 0.12) !important;
+    border-color: rgba(245, 158, 11, 0.3) !important;
+    color: #f59e0b !important;
+  }
+
+  .state-currency-card__meta {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .state-currency-card__meta div strong {
+    color: var(--text-headings) !important;
+  }
+
+  .state-currency-card__link-btn {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .state-citizen-card__avatar {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  /* National bank stats overrides */
+  .national-bank-container .stat-card {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .national-bank-container .stat-card .stat-value {
+    color: var(--text-headings) !important;
+  }
+
+  .national-bank-container .stat-card label,
+  .national-bank-container .stat-card .stat-label {
+    color: var(--text-secondary) !important;
+  }
+
+  /* Calendar page dark theme */
+  .calendar-page-new {
+    color: var(--text-primary);
+  }
+
+  .calendar-container,
+  .calendar-sidebar {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .calendar-controls__btn,
+  .calendar-grid__cell {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .calendar-grid__cell--today {
+    border-color: var(--accent-emerald) !important;
+    background: rgba(16, 185, 129, 0.1) !important;
+  }
+
+  .calendar-grid__cell--selected {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-color: #10b981 !important;
+  }
+
+  .calendar-sidebar__header {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .event-card {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .event-card__icon {
+    background: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .event-card__title {
+    color: var(--text-headings) !important;
+  }
+
+  /* Players list & filter */
+  .player {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .player__name-wrapper,
+  .player__name-wrapper h2 {
+    color: var(--text-headings) !important;
+  }
+
+  .filter-buttons {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .filter-buttons__button:not(.filter-buttons__button--active) {
+    background-color: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .filter-buttons__button:not(.filter-buttons__button--active):hover {
+    background-color: var(--bg-hover) !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-headings) !important;
+  }
+
+  .filter-buttons__button--active,
+  .filter-buttons__button.filter-buttons__button--active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-color: #10b981 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35) !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+  }
+
+  .filter-buttons__button--active:hover,
+  .filter-buttons__button.filter-buttons__button--active:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    color: #ffffff !important;
+  }
+
+  .filter-buttons__select {
+    background-color: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* Player profile page */
+  .player-profile-page {
+    background-color: transparent !important;
+  }
+
+  .player-profile-page .profile-header,
+  .player-profile-page .profile-content {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .player-profile-page .profile-header__info h1 {
+    color: var(--text-headings) !important;
+  }
+
+  .player-profile-page .profile-tabs .tab-btn {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .player-profile-page .profile-tabs .tab-btn.active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-color: #10b981 !important;
+    color: #ffffff !important;
+  }
+
+  .player-profile-page .profile-content .info-grid .info-card {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .player-profile-page .profile-content .info-grid .info-card h3 {
+    color: var(--text-headings) !important;
+  }
+
+  .player-profile-page .profile-content .info-grid .info-card p {
+    color: var(--text-primary) !important;
+    border-bottom-color: var(--border-color) !important;
+  }
+
+  .player-profile-page .profile-content .info-grid .info-card p .label {
+    color: var(--text-secondary) !important;
+  }
+
+  /* Business certificate dark styling */
+  .business-certificate {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .business-certificate .certificate-header {
+    border-bottom-color: var(--border-color) !important;
+  }
+
+  .business-certificate .certificate-header .header-text h3,
+  .business-certificate .certificate-body h2 {
+    color: var(--text-headings) !important;
+  }
+
+  .business-certificate .certificate-header .header-text p,
+  .business-certificate .certificate-body .subtitle,
+  .business-certificate .certificate-body .info-row .label {
+    color: var(--text-secondary) !important;
+  }
+
+  .business-certificate .certificate-body .info-row .value {
+    color: var(--text-primary) !important;
+    border-bottom-color: var(--border-color) !important;
+  }
+
+  .business-certificate .certificate-body .info-row .value.highlighted {
+    color: #60a5fa !important;
+  }
+
+  .business-certificate .certificate-body .seal-area .signature .line {
+    border-bottom-color: var(--border-color) !important;
+  }
+
+  /* Decrees feed & Territories list empty state overrides */
+  .decrees-feed__empty-card {
+    background: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .decrees-feed__empty-card .empty-text strong {
+    color: var(--text-headings) !important;
+  }
+
+  .decrees-feed__empty-card .empty-text span {
+    color: var(--text-secondary) !important;
+  }
+
+  .territories-list-container .no-territories {
+    background: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .state-detail-page__section-title,
+  .territories-list-container .territories-title {
+    color: var(--text-headings) !important;
+  }
+
+  /* Passport dark mode overrides */
+  .passport {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .passport .passport__header {
+    color: var(--text-headings) !important;
+  }
+
+  .passport .passport__photo {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .passport .passport__info .label {
+    color: var(--text-secondary) !important;
+  }
+
+  .passport .passport__info .detail-row {
+    color: var(--text-primary) !important;
+  }
+
+  /* Profile page & Achievements dark theme overrides */
+  .profile-with-data {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .profile-with-data h1 {
+    color: var(--text-headings) !important;
+  }
+
+  .profile-with-data p {
+    color: var(--text-secondary) !important;
+  }
+
+  .achievements-block .achievements-header h2 {
+    color: var(--text-headings) !important;
+  }
+
+  .achievements-block .achievement-item {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .achievements-block .achievement-item:hover {
+    background: var(--bg-hover) !important;
+    border-color: var(--accent-emerald) !important;
+  }
+
+  .achievements-block .achievement-item .icon {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .achievements-block .achievement-item .info h4 {
+    color: var(--text-headings) !important;
+  }
+
+  .achievements-block .achievement-item .info p {
+    color: var(--text-secondary) !important;
+  }
+
+  .achievements-block .achievement-item .info .date {
+    color: var(--text-muted) !important;
+  }
+
+  .achievements-block .achievements-header .view-toggle button {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .achievements-block .achievements-header .view-toggle button.active {
+    background: var(--accent-emerald) !important;
+    border-color: var(--accent-emerald) !important;
+    color: #ffffff !important;
+  }
+
+  /* Tech Support dark theme overrides */
+  .tech-support-header h1 {
+    color: var(--text-headings) !important;
+    -webkit-text-fill-color: var(--text-headings) !important;
+  }
+
+  .tech-support-header p {
+    color: var(--text-secondary) !important;
+  }
+
+  .tech-support-banner {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .tech-support-banner .banner-icon {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .tech-support-banner .banner-content h3 {
+    color: var(--text-headings) !important;
+  }
+
+  .tech-support-banner .banner-content p {
+    color: var(--text-secondary) !important;
+  }
+
+  .support-form-card,
+  .support-faq-card {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .support-form-card h2,
+  .support-faq-card h2 {
+    color: var(--text-headings) !important;
+    border-bottom-color: var(--border-color) !important;
+  }
+
+  .support-form-card .form-group label,
+  .support-form-card .file-upload-label {
+    color: var(--text-secondary) !important;
+  }
+
+  .support-form-card .form-group textarea,
+  .support-form-card .form-group input {
+    background: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--input-text) !important;
+  }
+
+  .support-faq-card .faq-item {
+    border-color: var(--border-card) !important;
+    background: var(--bg-surface) !important;
+  }
+
+  .support-faq-card .faq-question {
+    background: var(--bg-surface) !important;
+    color: var(--text-headings) !important;
+  }
+
+  .support-faq-card .faq-question:hover {
+    background: var(--bg-hover) !important;
+  }
+
+  .support-faq-card .faq-answer {
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border-top-color: var(--border-color) !important;
+  }
+
+  /* Agreement / Privacy Policy dark theme overrides */
+  .agreement-block {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--shadow-modal) !important;
+  }
+
+  .agreement-header h1 {
+    color: var(--text-headings) !important;
+  }
+
+  .agreement-header .agreement-badge {
+    background-color: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .agreement-header .agreement-subtitle {
+    color: var(--text-secondary) !important;
+  }
+
+  .agreement-section-card {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .agreement-section-card .section-header {
+    border-bottom-color: var(--border-color) !important;
+  }
+
+  .agreement-section-card .section-header h2 {
+    color: var(--text-headings) !important;
+  }
+
+  .agreement-item {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .agreement-item:hover {
+    background: var(--bg-hover) !important;
+    border-color: var(--accent-emerald) !important;
+  }
+
+  .agreement-item .item-tag {
+    color: var(--text-headings) !important;
+  }
+
+  .agreement-item p {
+    color: var(--text-secondary) !important;
+  }
+
+  .agreement-item p strong {
+    color: var(--text-headings) !important;
+  }
+
+  .agreement-contact-box {
+    background: linear-gradient(135deg, #11151e 0%, #171d27 100%) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .agreement-footer {
+    border-top-color: var(--border-color) !important;
+  }
+
+  .agreement-footer .agreement-date {
+    color: var(--text-muted) !important;
+  }
+
+  .agreement-footer .agreement-date strong {
+    color: var(--text-secondary) !important;
+  }
+}
+
+
+

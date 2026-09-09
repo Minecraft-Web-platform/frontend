@@ -167,8 +167,8 @@ const NationalBankPage: FC = () => {
                 <div className="economy-card">
                   <h3 className="economy-section-title" style={{ marginTop: 0 }}>{t('nationalBank.economySettings')}</h3>
                   <div className="stats-grid" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px' }}>
-                      <label style={{ display: 'block', fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>{t('nationalBank.transfersTax')}</label>
+                    <div className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px' }}>
+                      <label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{t('nationalBank.transfersTax')}</label>
                       <input
                         type="number"
                         className="economy-input"
@@ -180,8 +180,8 @@ const NationalBankPage: FC = () => {
                         }}
                      />
                   </div>
-                  <div className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px' }}>
-                     <label style={{ display: 'block', fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>{t('nationalBank.commercialTax')}</label>
+                  <div className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px' }}>
+                     <label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{t('nationalBank.commercialTax')}</label>
                      <input
                         type="number"
                         className="economy-input"
@@ -193,8 +193,8 @@ const NationalBankPage: FC = () => {
                         }}
                      />
                   </div>
-                  <div className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px' }}>
-                     <label style={{ display: 'block', fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>{t('nationalBank.ipoFee', { currency: treasuryAccount.currencyCode })}</label>
+                  <div className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px' }}>
+                     <label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{t('nationalBank.ipoFee', { currency: treasuryAccount.currencyCode })}</label>
                      <input
                         type="number"
                         className="economy-input"
@@ -206,8 +206,8 @@ const NationalBankPage: FC = () => {
                         }}
                      />
                   </div>
-                  <div className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px' }}>
-                     <label style={{ display: 'block', fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>{t('nationalBank.tradingFee')}</label>
+                  <div className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px' }}>
+                     <label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{t('nationalBank.tradingFee')}</label>
                      <input
                         type="number"
                         className="economy-input"
@@ -219,9 +219,9 @@ const NationalBankPage: FC = () => {
                         }}
                      />
                   </div>
-                  <div className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px' }}>
-                    <div className="stat-label" style={{ color: '#64748b', fontSize: '14px', marginBottom: '4px' }}>{t('nationalBank.treasuryBalance')}</div>
-                    <div className="stat-value" style={{ color: '#0f172a', fontSize: '24px', fontWeight: 'bold' }}>
+                  <div className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px' }}>
+                    <div className="stat-label" style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '4px' }}>{t('nationalBank.treasuryBalance')}</div>
+                    <div className="stat-value" style={{ color: 'var(--text-headings)', fontSize: '24px', fontWeight: 'bold' }}>
                       {treasuryAccount.balance.toLocaleString()} {treasuryAccount.currencyCode}
                     </div>
                   </div>
@@ -235,10 +235,10 @@ const NationalBankPage: FC = () => {
               <h3 className="economy-section-title">{t('nationalBank.ipoRequestsTitle', { count: ipoRequests.length })}</h3>
               <div className="requests-grid" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {ipoRequests.map((req) => (
-                  <div key={req.id} className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div key={req.id} className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                      <h4 style={{ margin: '0 0 8px 0' }}>{req.companyName}</h4>
-                      <div style={{ color: '#64748b', fontSize: '14px' }}>
+                      <h4 style={{ margin: '0 0 8px 0', color: 'var(--text-headings)' }}>{req.companyName}</h4>
+                      <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
                         {t('nationalBank.ipoRequestInfo', { shares: req.totalShares, price: req.initialPrice.toFixed(2), fee: req.feeAmount.toFixed(2) })}
                       </div>
                     </div>

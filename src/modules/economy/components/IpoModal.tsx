@@ -49,7 +49,7 @@ export const IpoModal: React.FC<IpoModalProps> = ({
       <div className="economy-modal">
         <h3 className="modal-title">{t('exchangeModals.ipo.title')}</h3>
         <form onSubmit={handleIpoSubmit} className="modal-form">
-          <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '16px' }}>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
             {t('exchangeModals.ipo.hint1')}{' '}
             {t('exchangeModals.ipo.hint2')}
           </p>

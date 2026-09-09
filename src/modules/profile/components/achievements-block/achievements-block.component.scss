@@ -5,7 +5,7 @@
 
   &.empty {
     text-align: center;
-    color: #666;
+    color: var(--text-muted);
     font-family: sans-serif;
   }
 
@@ -18,7 +18,7 @@
     h2 {
       margin: 0;
       font-size: 1.5rem;
-      color: #000;
+      color: var(--text-headings);
       font-family: "Minecraft";
       text-align: left;
     }
@@ -28,23 +28,25 @@
       gap: 8px;
 
       button {
-        background: #fff;
-        border: 1px solid #000;
-        color: #000;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
         padding: 8px 16px;
         border-radius: 8px;
         cursor: pointer;
-        transition: 0.2s linear background-color;
+        transition: 0.2s ease all;
         font-family: "Minecraft";
         font-size: 0.9rem;
 
         &:hover {
-          background: #f0f0f0;
+          background: var(--bg-hover);
+          color: var(--text-headings);
         }
 
         &.active {
-          background: #000;
-          color: #fff;
+          background: var(--accent-emerald);
+          border-color: var(--accent-emerald);
+          color: #ffffff;
         }
       }
     }
@@ -60,35 +62,38 @@
       align-items: center;
       gap: 16px;
       padding: 16px;
-      background: #fff;
-      border: 1px solid #000;
-      border-radius: 8px;
-      transition: background 0.2s ease, transform 0.2s ease;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
       text-align: left;
 
       &:hover {
-        background: #fdfdfd;
+        background: var(--bg-hover);
         transform: translateY(-2px);
-        box-shadow: 0 4px 0 #000;
+        box-shadow: var(--shadow-elevated);
+        border-color: var(--accent-emerald);
       }
 
       .icon {
         width: 64px;
         height: 64px;
-        border-radius: 8px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 28px;
         flex-shrink: 0;
-        background: #fff;
-        border: 1px solid #000;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-card);
         
         img {
           width: 100%;
           height: 100%;
           object-fit: contain;
-          border-radius: 6px;
+          border-radius: 8px;
           padding: 4px;
         }
       }
@@ -102,14 +107,14 @@
         h4 {
           margin: 0 0 4px 0;
           font-size: 1.1rem;
-          color: #000;
+          color: var(--text-headings);
           font-family: "Minecraft";
           text-align: left;
         }
         
         p {
           margin: 0 0 6px 0 !important;
-          color: #333 !important;
+          color: var(--text-secondary) !important;
           font-size: 0.95rem !important;
           line-height: 1.4;
           font-family: sans-serif;
@@ -119,7 +124,7 @@
         
         .date {
           font-size: 0.85rem;
-          color: #666;
+          color: var(--text-muted);
           font-family: sans-serif;
           text-align: left;
         }
@@ -127,9 +132,9 @@
     }
 
     // Rarity styles overriding the default border color
-    .rarity-common .icon { border: 2px solid #666; }
-    .rarity-rare .icon { border: 2px solid #0070dd; }
-    .rarity-epic .icon { border: 2px solid #a335ee; }
-    .rarity-legendary .icon { border: 2px solid #ff8000; }
+    .rarity-common .icon { border: 2px solid #64748b; }
+    .rarity-rare .icon { border: 2px solid #3b82f6; }
+    .rarity-epic .icon { border: 2px solid #a855f7; }
+    .rarity-legendary .icon { border: 2px solid #f59e0b; }
   }
 }

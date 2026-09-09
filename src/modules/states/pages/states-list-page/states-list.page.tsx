@@ -199,7 +199,7 @@ const StatesListPage: FC = () => {
                       </div>
                       
                       <div style={{ marginBottom: '15px' }}>
-                        <label style={{ display: 'block', marginBottom: '5px', color: '#64748b', fontWeight: 'bold' }}>{t('states-list.createModal.inputs.color')}</label>
+                        <label style={{ display: 'block', marginBottom: '5px', color: 'var(--text-secondary)', fontWeight: 'bold' }}>{t('states-list.createModal.inputs.color')}</label>
                         <MapColorPicker
                           color={color}
                           onChange={setColor}
@@ -231,11 +231,7 @@ const StatesListPage: FC = () => {
                   <div className="states-list-page__modal-actions">
                     <button
                       type="button"
-                      className="states-list-page__create-btn"
-                      style={{
-                        background: '#e2e8f0',
-                        color: '#0f172a',
-                      }}
+                      className="states-list-page__cancel-btn"
                       onClick={() => setShowCreateModal(false)}
                     >
                       {t('states-list.createModal.buttons.cancel')}

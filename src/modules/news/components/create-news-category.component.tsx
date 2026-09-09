@@ -45,6 +45,7 @@ const CreateNewsCategoryComponent: FC<Props> = ({ setCategories }) => {
             ? () => setCategoryIsCreating(false)
             : () => setCategoryIsCreating(true)
         }
+        secondary={categoryIsCreating}
       >
         {!categoryIsCreating ? t("news.createCategoryBtn") : t("news.cancelCategoryBtn")}
       </Button>

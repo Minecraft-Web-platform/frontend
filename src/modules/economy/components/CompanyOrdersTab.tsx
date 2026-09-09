@@ -61,9 +61,9 @@ export const CompanyOrdersTab: React.FC<CompanyOrdersTabProps> = ({ company }) =
     }
   };
 
-  if (loading) return <div className="loading">{t('companies.ordersTab.loading')}</div>;
-  if (error) return <div className="error">{error}</div>;
-  if (orders.length === 0) return <div className="empty-state">{t('companies.ordersTab.empty')}</div>;
+  if (loading) return <div className="company-orders-tab"><div className="loading">{t('companies.ordersTab.loading')}</div></div>;
+  if (error) return <div className="company-orders-tab"><div className="error">{error}</div></div>;
+  if (orders.length === 0) return <div className="company-orders-tab"><div className="empty-state">{t('companies.ordersTab.empty')}</div></div>;
 
   return (
     <div className="company-orders-tab">

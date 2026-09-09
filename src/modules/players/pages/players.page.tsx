@@ -9,6 +9,7 @@ import { GetOnlinePlayersResponse } from "../types/get-online-players.response";
 import { statesService } from "../../states/services/states.service";
 import { IState } from "../../states/types/states.types";
 import { useTranslation } from "react-i18next";
+import CustomSelect from "../../../shared/ui/custom-select/CustomSelect";
 
 const PlayersPage: FC = () => {
   const [users, setUsers] = useState<GetAllUsersResponse>([]);
@@ -92,19 +93,15 @@ const PlayersPage: FC = () => {
 
           <div className="filter-buttons__state-filter">
             <p>{t("players.state")}</p>
-            <select
+            <CustomSelect
               value={filterState}
-              onChange={(e) => setFilterState(e.target.value)}
-              className="filter-buttons__select"
-            >
-              <option value="all">{t("players.allStates")}</option>
-              <option value="none">{t("players.noState")}</option>
-              {states.map((st) => (
-                <option key={st.id} value={st.id}>
-                  {st.name}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setFilterState(val)}
+              options={[
+                { value: "all", label: t("players.allStates") },
+                { value: "none", label: t("players.noState") },
+                ...states.map((st) => ({ value: st.id, label: st.name })),
+              ]}
+            />
           </div>
         </div>
 

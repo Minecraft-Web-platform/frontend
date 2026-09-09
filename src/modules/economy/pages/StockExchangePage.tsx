@@ -163,20 +163,20 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
         >
           <div
             style={{
-              background: '#ffffff',
-              border: '1px solid #d2d2d8',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-card)',
               borderRadius: '16px',
               padding: '12px 18px',
               textAlign: 'right',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+              boxShadow: 'var(--shadow-card)',
             }}
           >
-            <div className="value-label">{t('exchange.portfolioValue')}</div>
+            <div className="value-label" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500, marginBottom: '4px' }}>{t('exchange.portfolioValue')}</div>
             <div
               style={{
                 fontSize: '20px',
                 fontWeight: 800,
-                color: '#000000',
+                color: 'var(--text-headings)',
                 fontFamily: 'monospace',
               }}
             >
@@ -204,20 +204,20 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
           </div>
           <div
             style={{
-              background: '#ffffff',
-              border: '1px solid #d2d2d8',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-card)',
               borderRadius: '16px',
               padding: '12px 18px',
               textAlign: 'right',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+              boxShadow: 'var(--shadow-card)',
             }}
           >
-            <div className="value-label">{t('exchange.portfolioValue')}</div>
+            <div className="value-label" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500, marginBottom: '4px' }}>{t('exchange.portfolioValue')}</div>
             <div
               style={{
                 fontSize: '20px',
                 fontWeight: 800,
-                color: '#000000',
+                color: 'var(--text-headings)',
                 fontFamily: 'monospace',
               }}
             >
@@ -320,7 +320,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                       </div>
                     </div>
                     <div style={{ marginTop: '16px' }}>
-                      <div className="stat-label" style={{ marginBottom: '8px', fontSize: '12px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      <div className="stat-label" style={{ marginBottom: '8px', fontSize: '12px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                         {t('exchange.companiesOnExchange', { count: stateCompanies.length })}
                       </div>
                       <div className="marquee-container" style={{ paddingBottom: '8px' }}>
@@ -339,18 +339,18 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                                     height: '36px',
                                     flexShrink: 0,
                                     borderRadius: '8px',
-                                    background: '#f1f5f9',
+                                    background: 'var(--bg-surface)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     overflow: 'hidden',
-                                    border: '1px solid #e2e8f0'
+                                    border: '1px solid var(--border-color)'
                                   }}
                                 >
                                   {c.logoUrl ? (
                                     <img src={c.logoUrl} alt={c.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                   ) : (
-                                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#64748b' }}>
+                                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-muted)' }}>
                                       {c.name.slice(0, 2).toUpperCase()}
                                     </span>
                                   )}

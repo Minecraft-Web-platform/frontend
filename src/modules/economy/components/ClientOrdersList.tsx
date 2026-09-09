@@ -53,9 +53,9 @@ export const ClientOrdersList: React.FC = () => {
     }
   };
 
-  if (loading) return <div className="loading">{t('companies.clientOrders.loading')}</div>;
-  if (error) return <div className="error">{error}</div>;
-  if (orders.length === 0) return <div className="empty-state">{t('companies.clientOrders.empty')}</div>;
+  if (loading) return <div className="client-orders-list"><div className="loading">{t('companies.clientOrders.loading')}</div></div>;
+  if (error) return <div className="client-orders-list"><div className="error">{error}</div></div>;
+  if (orders.length === 0) return <div className="client-orders-list"><div className="empty-state">{t('companies.clientOrders.empty')}</div></div>;
 
   return (
     <div className="client-orders-list">

@@ -33,24 +33,23 @@ export const ChangePriceModal: React.FC<ChangePriceModalProps> = ({ company, onC
   };
 
   return (
-    <div className="economy-modal">
-      <div className="economy-modal__content">
-        <h3 style={{ marginBottom: '16px', fontSize: '20px' }}>
+    <div className="economy-modal-overlay">
+      <div className="economy-modal">
+        <h3 className="modal-title">
           {t('exchangeModals.changePrice.title', { company: company.name })}
         </h3>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <form onSubmit={handleSubmit} className="modal-form">
+          <label>
             <span>{t('exchangeModals.changePrice.newPrice')}</span>
             <input
               type="number"
               step="0.01"
               value={newPrice}
               onChange={(e) => setNewPrice(e.target.value)}
-              className="economy-input"
               required
             />
           </label>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '8px' }}>
+          <div className="modal-actions">
             <button type="button" onClick={onClose} className="economy-btn economy-btn--secondary">
               {t('exchangeModals.changePrice.cancel')}
             </button>

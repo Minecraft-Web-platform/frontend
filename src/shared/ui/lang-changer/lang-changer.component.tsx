@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import i18n from "../../../i18n/i18n";
 import './lang-changer.component.scss';
+import ThemeToggle from "../theme-toggle/ThemeToggle";
 
 function changeLanguage(language: string, setter: Dispatch<SetStateAction<string>>) {
   i18n.changeLanguage(language);
@@ -15,7 +16,8 @@ export const LangChanger = () => {
 
   return (
     <div className="lang-changer">
-     {isOpened ? (
+      <ThemeToggle variant="compact" />
+      {isOpened ? (
       <div className="btns">
         <button
           type="button"

@@ -5,8 +5,8 @@
 
   /* Главный баннер / Шапка */
   &__hero {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: #ffffff;
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
     border-radius: 20px;
     padding: 28px 32px;
     margin-bottom: 32px;
@@ -15,15 +15,16 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 20px;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-card);
+    transition: background-color 0.25s ease, border-color 0.25s ease;
 
     .hero-text {
       h2 {
         font-family: "Minecraft", sans-serif;
         font-size: 24px;
         font-weight: normal;
-        color: #ffffff;
+        color: var(--text-headings);
         margin: 0 0 8px 0;
         display: flex;
         align-items: center;
@@ -31,7 +32,7 @@
       }
 
       p {
-        color: #94a3b8;
+        color: var(--text-secondary);
         font-size: 14px;
         margin: 0;
         max-width: 600px;
@@ -45,27 +46,38 @@
       align-items: center;
 
       .stat-pill {
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: var(--bg-muted);
+        border: 1px solid var(--border-color);
         border-radius: 12px;
         padding: 10px 16px;
         display: flex;
         flex-direction: column;
         align-items: center;
         min-width: 90px;
+        transition: background-color 0.25s ease, border-color 0.25s ease;
 
         .label {
           font-size: 11px;
-          color: #94a3b8;
+          color: var(--text-secondary);
           text-transform: uppercase;
           margin-bottom: 2px;
+          font-weight: 600;
+          letter-spacing: 0.5px;
         }
 
         .value {
           font-family: "Minecraft", monospace;
           font-size: 18px;
           font-weight: 700;
-          color: #ffffff;
+          color: var(--text-headings);
+
+          &--active {
+            color: var(--accent-emerald);
+          }
+
+          &--blocked {
+            color: var(--accent-redstone);
+          }
         }
       }
     }
@@ -73,6 +85,20 @@
     .hero-actions {
       display: flex;
       gap: 12px;
+
+      .economy-btn--primary {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff;
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+        font-weight: 600;
+
+        &:hover {
+          background: linear-gradient(135deg, #059669 0%, #047857 100%);
+          box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+          transform: translateY(-2px);
+        }
+      }
     }
   }
 
@@ -90,12 +116,12 @@
 
   /* Пустое состояние */
   &__empty {
-    background: #ffffff;
-    border: 2px dashed #d1d5db;
+    background: var(--bg-card);
+    border: 2px dashed var(--border-color);
     border-radius: 20px;
     padding: 60px 24px;
     text-align: center;
-    color: #64748b;
+    color: var(--text-secondary);
 
     .icon {
       font-size: 48px;
@@ -104,7 +130,7 @@
 
     h3 {
       font-size: 20px;
-      color: #0f172a;
+      color: var(--text-headings);
       margin: 0 0 8px 0;
     }
 
@@ -112,7 +138,7 @@
       max-width: 440px;
       margin: 0 auto 24px auto;
       font-size: 14px;
-      color: #64748b;
+      color: var(--text-secondary);
       line-height: 1.5;
     }
   }
@@ -301,13 +327,13 @@
       gap: 12px;
 
       button {
-        background: #ffffff;
-        border: 1px solid #d1d5db;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
         border-radius: 10px;
         padding: 8px 16px;
         font-size: 13px;
         font-weight: 600;
-        color: #0f172a;
+        color: var(--text-primary);
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -315,8 +341,9 @@
         transition: all 0.2s ease;
 
         &:hover {
-          background: #f8fafc;
-          border-color: #0f172a;
+          background: var(--bg-hover);
+          border-color: var(--accent-emerald);
+          color: var(--accent-emerald);
         }
       }
     }
@@ -352,8 +379,6 @@
           margin: 18px 0 20px 0;
         }
       }
-
-      }
     }
 
     .detail-info-column {
@@ -364,17 +389,18 @@
 
     /* Секция привязанного счета и реквизитов */
     .info-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
       border-radius: 20px;
       padding: 24px 28px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      box-shadow: var(--shadow-card);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
 
       &__title {
         font-family: "Minecraft", sans-serif;
         font-size: 18px;
         font-weight: normal;
-        color: #0f172a;
+        color: var(--text-headings);
         margin: 0 0 20px 0;
         display: flex;
         align-items: center;
@@ -386,7 +412,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 12px 0;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--border-subtle);
 
         &:last-child {
           border-bottom: none;
@@ -394,13 +420,13 @@
 
         .row-label {
           font-size: 13px;
-          color: #64748b;
+          color: var(--text-secondary);
         }
 
         .row-value {
           font-size: 14px;
           font-weight: 700;
-          color: #0f172a;
+          color: var(--text-primary);
           display: flex;
           align-items: center;
           gap: 10px;
@@ -408,13 +434,13 @@
           &--balance {
             font-family: "Minecraft", monospace;
             font-size: 20px;
-            color: #059669;
+            color: var(--accent-emerald);
           }
 
           .copy-btn {
             background: transparent;
             border: none;
-            color: #64748b;
+            color: var(--text-secondary);
             cursor: pointer;
             padding: 2px 6px;
             border-radius: 6px;
@@ -422,8 +448,8 @@
             transition: all 0.2s ease;
 
             &:hover {
-              background: #f1f5f9;
-              color: #0f172a;
+              background: var(--bg-hover);
+              color: var(--text-primary);
             }
           }
         }
@@ -454,38 +480,41 @@
         border: 1px solid transparent;
 
         &--block {
-          background: rgba(239, 68, 68, 0.1);
-          color: #dc2626;
+          background: rgba(239, 68, 68, 0.12);
+          color: #ef4444;
           border-color: rgba(239, 68, 68, 0.3);
 
           &:hover {
-            background: rgba(239, 68, 68, 0.18);
+            background: rgba(239, 68, 68, 0.22);
           }
         }
 
         &--unblock {
-          background: rgba(16, 185, 129, 0.1);
-          color: #059669;
+          background: rgba(16, 185, 129, 0.12);
+          color: #10b981;
           border-color: rgba(16, 185, 129, 0.3);
 
           &:hover {
-            background: rgba(16, 185, 129, 0.18);
+            background: rgba(16, 185, 129, 0.22);
           }
         }
 
         &--transfer {
-          background: #0f172a;
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
           color: #ffffff;
+          border-color: #10b981;
+          box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
 
           &:hover {
-            background: #1e293b;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
           }
         }
 
         &--delete {
-          background: #ffffff;
-          color: #64748b;
-          border-color: #cbd5e1;
+          background: var(--bg-surface);
+          color: var(--text-secondary);
+          border-color: var(--border-color);
           grid-column: span 2;
 
           @media (max-width: 600px) {
@@ -493,11 +522,12 @@
           }
 
           &:hover {
-            background: #fef2f2;
-            color: #dc2626;
-            border-color: #fca5a5;
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
           }
         }
       }
     }
   }
+}

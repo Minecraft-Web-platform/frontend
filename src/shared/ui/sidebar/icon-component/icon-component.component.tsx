@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { FC, ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./icon-component.component.scss";
 
 type Props = {
@@ -11,6 +11,7 @@ type Props = {
 };
 
 const IconComponent: FC<Props> = ({ path, label, children, iconType }) => {
+  const location = useLocation();
   const currentPath = "/" + location.pathname.split("/")[1];
 
   return (

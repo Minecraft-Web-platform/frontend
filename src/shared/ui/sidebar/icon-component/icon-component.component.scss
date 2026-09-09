@@ -15,42 +15,113 @@
     padding: 16px 8px;
 
     text-decoration: none;
-    color: #000;
+    color: var(--text-primary);
 
-    transition: background-color 0.3s ease-in, color 0.3s ease-in,
-      border-color 0.3s ease-in, box-shadow 0.3s ease-in;
+    transition: background-color 0.25s ease, color 0.25s ease,
+      border-color 0.25s ease, box-shadow 0.25s ease;
 
-    svg > path {
-      transition: fill 0.3s ease-in, stroke 0.3s ease-in;
+    svg path,
+    svg rect,
+    svg line,
+    svg circle {
+      transition: fill 0.25s ease, stroke 0.25s ease;
     }
 
-    &--change-fill svg > path {
-      fill: #686970;
+    &--change-fill {
+      svg path,
+      svg rect,
+      svg circle {
+        fill: var(--text-muted);
+      }
     }
 
-    &--change-stroke svg > path {
-      stroke: #686970;
+    &--change-stroke {
+      svg path,
+      svg rect,
+      svg line,
+      svg circle {
+        stroke: var(--text-muted);
+      }
     }
 
+    /* Hover на неактивных ссылках */
+    &:hover:not(.navigation__link--active) {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+      border-color: var(--border-color);
+
+      &.navigation__link--change-fill {
+        svg path,
+        svg rect,
+        svg circle {
+          fill: var(--text-primary);
+        }
+      }
+
+      &.navigation__link--change-stroke {
+        svg path,
+        svg rect,
+        svg line,
+        svg circle {
+          stroke: var(--text-primary);
+        }
+      }
+
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Момент физического нажатия (click) */
+    &:active {
+      transform: scale(0.98);
+    }
+
+    /* Активная страница (всегда остается зеленой, в том числе при наведении курсора) */
     &--active {
-      background-color: #fff;
-      border-color: #d2d2d8;
-    }
+      background-color: var(--bg-active);
+      border-color: var(--border-color);
+      box-shadow: var(--shadow-card);
+      color: var(--accent-emerald);
 
-    &:hover {
-      background-color: #000;
-      color: #fff;
-      border-color: #000;
-
-      &.navigation__link--change-fill svg > path {
-        fill: #fff;
+      &.navigation__link--change-fill {
+        svg path,
+        svg rect,
+        svg circle {
+          fill: var(--accent-emerald) !important;
+        }
       }
 
-      &.navigation__link--change-stroke svg > path {
-        stroke: #fff;
+      &.navigation__link--change-stroke {
+        svg path,
+        svg rect,
+        svg line,
+        svg circle {
+          stroke: var(--accent-emerald) !important;
+        }
       }
 
-      box-shadow: 1px 6px 17px 0 rgba(20, 20, 20, 0.5);
+      &:hover {
+        background-color: var(--bg-active);
+        border-color: rgba(16, 185, 129, 0.4);
+        box-shadow: var(--shadow-card);
+        color: var(--accent-emerald);
+
+        &.navigation__link--change-fill {
+          svg path,
+          svg rect,
+          svg circle {
+            fill: var(--accent-emerald) !important;
+          }
+        }
+
+        &.navigation__link--change-stroke {
+          svg path,
+          svg rect,
+          svg line,
+          svg circle {
+            stroke: var(--accent-emerald) !important;
+          }
+        }
+      }
     }
   }
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createChart, ColorType, IChartApi, ISeriesApi, AreaSeries } from 'lightweight-charts';
+import useThemeStore from '../../../store/theme.store';
 
 interface TradingChartProps {
   fetchHistory: () => Promise<{ createdAt: string | Date; price?: number; rate?: number }[]>;
@@ -18,6 +19,7 @@ export const TradingChart: React.FC<TradingChartProps> = ({
   bottomColor = 'rgba(41, 98, 255, 0.28)'
 }) => {
   const { t } = useTranslation('economy');
+  const resolvedTheme = useThemeStore(state => state.resolvedTheme);
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
@@ -55,16 +57,17 @@ export const TradingChart: React.FC<TradingChartProps> = ({
         }
 
         if (chartContainerRef.current) {
+          const isDark = resolvedTheme === 'dark';
           if (!chartRef.current) {
             const chart = createChart(chartContainerRef.current, {
               layout: {
                 background: { type: ColorType.Solid, color: 'transparent' },
-                textColor: '#333',
+                textColor: isDark ? '#94a3b8' : '#333',
                 attributionLogo: false,
               },
               grid: {
-                vertLines: { color: '#f0f3fa' },
-                horzLines: { color: '#f0f3fa' },
+                vertLines: { color: isDark ? 'rgba(255, 255, 255, 0.06)' : '#f0f3fa' },
+                horzLines: { color: isDark ? 'rgba(255, 255, 255, 0.06)' : '#f0f3fa' },
               },
               width: chartContainerRef.current.clientWidth,
               height: 400,
@@ -107,7 +110,23 @@ export const TradingChart: React.FC<TradingChartProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [fetchHistory, triggerRefetch, lineColor, topColor, bottomColor, t]);
+  }, [fetchHistory, triggerRefetch, lineColor, topColor, bottomColor, resolvedTheme, t]);
+
+  // Update chart layout on theme change
+  useEffect(() => {
+    if (chartRef.current) {
+      const isDark = resolvedTheme === 'dark';
+      chartRef.current.applyOptions({
+        layout: {
+          textColor: isDark ? '#94a3b8' : '#333',
+        },
+        grid: {
+          vertLines: { color: isDark ? 'rgba(255, 255, 255, 0.06)' : '#f0f3fa' },
+          horzLines: { color: isDark ? 'rgba(255, 255, 255, 0.06)' : '#f0f3fa' },
+        },
+      });
+    }
+  }, [resolvedTheme]);
 
   // Handle window resize
   useEffect(() => {
@@ -124,7 +143,7 @@ export const TradingChart: React.FC<TradingChartProps> = ({
   return (
     <div style={{ position: 'relative', width: '100%', height: '400px' }}>
       {loading && (
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.7)', zIndex: 10 }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--modal-overlay, rgba(0,0,0,0.5))', color: 'var(--text-primary)', zIndex: 10 }}>
           {t('exchange.chartLoading')}
         </div>
       )}

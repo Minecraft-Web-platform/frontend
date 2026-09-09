@@ -80,7 +80,7 @@ const NewsDetailsPage: FC = () => {
             <p>
               <b>{t("news.details.author")}</b>{" "}
               <Link
-                style={{ textDecoration: "none", color: "black" }}
+                className="news-meta__author-link"
                 to={`/players/${news.author}`}
               >
                 {news.author}
