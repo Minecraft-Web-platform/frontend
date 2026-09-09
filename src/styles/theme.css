@@ -424,6 +424,10 @@ html, body {
       border-color: var(--border-subtle) !important;
     }
 
+    .currency-card__footer {
+      border-color: var(--border-subtle) !important;
+    }
+
     .stat-box .stat-value {
       color: var(--text-primary) !important;
     }
