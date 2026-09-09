@@ -71,8 +71,8 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
               const mainInfo = getMinecraftItemInfo(currency.minecraftItemId);
               return (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                  <span style={{ color: '#64748b', fontSize: '13px' }}>{t('currencies.baseItem')}</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#0f172a' }}>
+                  <span className="item-label" style={{ fontSize: '13px' }}>{t('currencies.baseItem')}</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--text-primary)' }}>
                     {mainInfo ? mainInfo.icon : null}
                     <span>{mainInfo ? t(`minecraftItems.${mainInfo.id}`, mainInfo.name) : currency.minecraftItemId}</span>
                   </span>
@@ -85,8 +85,8 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
                 const kopInfo = getMinecraftItemInfo(currency.kopeckItemId);
                 return (
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                    <span style={{ color: '#64748b', fontSize: '13px' }}>{t('currencies.changeItem')}</span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#0f172a' }}>
+                    <span className="item-label" style={{ fontSize: '13px' }}>{t('currencies.changeItem')}</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--text-primary)' }}>
                       {kopInfo ? kopInfo.icon : null}
                       <span>{kopInfo ? t(`minecraftItems.${kopInfo.id}`, kopInfo.name) : currency.kopeckItemId}</span>
                     </span>
@@ -98,8 +98,8 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
               (() => {
                 const enchInfo = getMinecraftEnchantInfo(currency.minecraftEnchantment);
                 return (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', paddingTop: '4px', borderTop: '1px dashed #e2e8f0' }}>
-                    <span style={{ color: '#64748b', fontSize: '13px' }}>{t('currencies.protectionCharm')}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', paddingTop: '4px', borderTop: '1px dashed var(--border-color, #e2e8f0)' }}>
+                    <span className="item-label" style={{ fontSize: '13px' }}>{t('currencies.protectionCharm')}</span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#7c3aed' }}>
                       <span>{enchInfo ? enchInfo.icon : '✨'}</span>
                       <span>{enchInfo ? t(`minecraftEnchants.${enchInfo.id}`, enchInfo.name) : currency.minecraftEnchantment}</span>
