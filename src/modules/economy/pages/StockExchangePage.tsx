@@ -11,6 +11,8 @@ import '../economy-shared.scss';
 import { useTranslation } from 'react-i18next';
 
 import { usePublicCompanies, useMyPortfolio, useStates, useMyCompanies, useCurrencies } from '../hooks/useEconomyData';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
   embedded = false,
@@ -27,7 +29,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
   const [changePriceCompanyId, setChangePriceCompanyId] = useState<string | null>(null);
   const [selectedExchangeId, setSelectedExchangeId] = useState<string | null>(null);
 
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
   const { t } = useTranslation('economy');
 
   let currentUsername = '';

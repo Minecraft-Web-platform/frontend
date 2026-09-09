@@ -1,8 +1,6 @@
 import {  } from 'axios';
 import { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 import './transaction-receipt.modal.scss';
 
 import { ITransfer, ICurrency } from '../../types/economy.types';
@@ -34,6 +32,10 @@ export const TransactionReceiptModal: FC<Props> = ({ transaction, currencies, on
     if (!receiptRef.current) return;
     setIsGenerating(true);
     try {
+      const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf')
+      ]);
       const canvas = await html2canvas(receiptRef.current, { scale: 4, useCORS: true, allowTaint: true });
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({

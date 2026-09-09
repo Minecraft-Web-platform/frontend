@@ -119,6 +119,16 @@ export const MiniHistoryChart: React.FC<MiniHistoryChartProps> = ({
     };
   }, [fetchHistory, triggerRefetch, color]);
 
+  // Cleanup chart instance on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.remove();
+        chartRef.current = null;
+      }
+    };
+  }, []);
+
   return (
     <div style={{ width: '100%', height: '60px', marginTop: '12px', position: 'relative' }}>
       {!hasData && (

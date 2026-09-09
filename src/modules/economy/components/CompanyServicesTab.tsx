@@ -6,6 +6,8 @@ import { CreateServiceModal } from './CreateServiceModal';
 import { OrderServiceModal } from './OrderServiceModal';
 import './CompanyServicesTab.scss';
 import useAuthStore from '../../../store/auth.store';
+import { useShallow } from 'zustand/react/shallow';
+
 
 interface CompanyServicesTabProps {
   company: ICompany;
@@ -15,7 +17,7 @@ interface CompanyServicesTabProps {
 
 export const CompanyServicesTab: React.FC<CompanyServicesTabProps> = ({ company, services, onRefresh }) => {
   const { t } = useTranslation('economy');
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<ICompanyService | null>(null);
   const [serviceToEdit, setServiceToEdit] = useState<ICompanyService | null>(null);
@@ -27,7 +29,7 @@ export const CompanyServicesTab: React.FC<CompanyServicesTabProps> = ({ company,
       username = payload.username || payload.username_lower || '';
  
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e: any) {
+    } catch {
       // ignore
     }
   }

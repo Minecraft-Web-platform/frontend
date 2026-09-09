@@ -75,7 +75,7 @@ export const PropertiesPage: React.FC = () => {
   const [sellType, setSellType] = useState<'market' | 'direct'>('market');
   const [eligibleBuyers, setEligibleBuyers] = useState<{uuid: string, username: string}[]>([]);
   const [forSaleToId, setForSaleToId] = useState<string>('');
-  const [allCurrencies, setAllCurrencies] = useState<any[]>([]);
+  const [allCurrencies, setAllCurrencies] = useState<ICurrency[]>([]);
 
   const availableTerritories = React.useMemo(() => {
     const expectedTerritoryType = createForm.ownerType === 'personal' ? 'player' : (createForm.ownerType === 'company' ? 'company' : undefined);
@@ -206,7 +206,7 @@ export const PropertiesPage: React.FC = () => {
     }
   };
 
-  const handleEditClick = (p: any) => {
+  const handleEditClick = (p: import("../types/economy.types").IProperty) => {
     setEditPropertyId(p.id);
     setEditOwnerType(p.ownerType);
     setEditOwnerId(p.ownerId);

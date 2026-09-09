@@ -13,9 +13,11 @@ import { useNavigate } from "react-router";
 import AchievementsBlock from "../components/achievements-block/achievements-block.component";
 import { achievementsService } from "../../achievements/services/achievements.service";
 import { useTranslation } from "react-i18next";
+import { useShallow } from 'zustand/react/shallow';
+
 
 const Profile: FC = () => {
-  const { accessToken, logout, setRoleInfo, setBanInfo } = useAuthStore();
+  const { accessToken, logout, setRoleInfo, setBanInfo } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken, logout: state.logout, setRoleInfo: state.setRoleInfo, setBanInfo: state.setBanInfo })));
   const navigate = useNavigate();
   const { t } = useTranslation('profile');
 
@@ -153,7 +155,7 @@ const Profile: FC = () => {
                 <div className="avatar">
                   {info?.isBanned ? (
                     <img 
-                      src={info?.avatar_img ? `${info.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"} 
+                      src={info?.avatar_img ? info.avatar_img : "/png/steve-head.webp"} 
                       alt={t("profile-page.avatar")}
                       style={{ width: "280px", height: "280px", borderRadius: "8px", objectFit: "cover" }}
                     />
@@ -162,7 +164,7 @@ const Profile: FC = () => {
                       label={t("profile-page.avatar")}
                       enableCrop
                       aspect={1}
-                      value={info?.avatar_img ? `${info.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"}
+                      value={info?.avatar_img ? info.avatar_img : "/png/steve-head.webp"}
                       onChange={(url) => mutate({ ...info!, avatar_img: url as string }, false)}
                       customUploadFn={async (file) => {
                         const { avatarUrl } = await profileService.uploadAvatar(file, accessToken as string);

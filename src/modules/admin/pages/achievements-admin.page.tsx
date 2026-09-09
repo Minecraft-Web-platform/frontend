@@ -64,7 +64,7 @@ export const AchievementsAdminPage: FC = () => {
       }
       handleCancelEdit();
       mutate();
-    } catch (err: any) {
+    } catch (err: unknown) {
       setMessage((err as AxiosError<{message?: string}>).response?.data?.message || t("alerts.errorSave"));
     }
   };
@@ -77,7 +77,7 @@ export const AchievementsAdminPage: FC = () => {
     setTriggerEvent('');
   };
 
-  const handleEditClick = (a: any) => {
+  const handleEditClick = (a: { id: string, title: string, description: string, iconUrl?: string, rarity: import("../../achievements/types/achievements.types").AchievementRarity, triggerEvent?: string }) => {
     setEditId(a.id);
     setTitle(a.title);
     setDescription(a.description);
@@ -92,7 +92,7 @@ export const AchievementsAdminPage: FC = () => {
       await achievementsService.grantAchievement({ username: grantUsername, achievementId: grantAchievementId });
       setMessage(t("alerts.granted"));
       setGrantUsername('');
-    } catch (err: any) {
+    } catch (err: unknown) {
       setMessage((err as AxiosError<{message?: string}>).response?.data?.message || t("alerts.errorGrant"));
     }
   };
@@ -103,7 +103,7 @@ export const AchievementsAdminPage: FC = () => {
       await achievementsService.deleteAchievement(id);
       setMessage(t("alerts.deleted"));
       mutate();
-    } catch (err: any) {
+    } catch {
       setMessage(t("alerts.errorDelete"));
     }
   };

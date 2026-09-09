@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import useSWR from "swr";
 import { profileService } from "../../modules/profile/services/profile.service";
 import { PropagateLoader } from "react-spinners";
+import { useShallow } from 'zustand/react/shallow';
+
 export function RequireAuth({
   children,
   allowBanned = false,
@@ -11,7 +13,7 @@ export function RequireAuth({
   children: React.ReactNode;
   allowBanned?: boolean;
 }) {
-  const { accessToken, isAuthenticated, logout, isBanned, setBanInfo } = useAuthStore();
+  const { accessToken, isAuthenticated, logout, isBanned, setBanInfo } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken, isAuthenticated: state.isAuthenticated, logout: state.logout, isBanned: state.isBanned, setBanInfo: state.setBanInfo })));
   const location = useLocation();
 
   const { data: info, isLoading } = useSWR(

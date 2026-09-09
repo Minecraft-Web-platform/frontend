@@ -10,6 +10,8 @@ import { useNavigate } from "react-router";
 import CreateNewsModal from "../components/create-news.component";
 
 import { useTranslation } from "react-i18next";
+import { useShallow } from 'zustand/react/shallow';
+
 
 const NewsPage: FC = () => {
   const [categories, setCategories] = useState<NewsCategory[]>([]);
@@ -17,7 +19,7 @@ const NewsPage: FC = () => {
     null
   );
   const navigate = useNavigate();
-  const { isAdmin } = useAuthStore();
+  const { isAdmin } = useAuthStore(useShallow(state => ({ isAdmin: state.isAdmin })));
   const { t } = useTranslation("news");
 
   useEffect(() => {

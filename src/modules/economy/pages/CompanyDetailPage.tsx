@@ -14,6 +14,8 @@ import { profileService } from '../../profile/services/profile.service';
 import { EditCompanyModal } from '../components/edit-company-modal/EditCompanyModal';
 import { TerritoriesList } from '../../states/components/territories-list/TerritoriesList';
 import './CompanyDetailPage.scss';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const CompanyDetailPage: React.FC = () => {
   const { t } = useTranslation('economy');
@@ -24,7 +26,7 @@ export const CompanyDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'orders' | 'territories'>('overview');
   const [showEditCompanyModal, setShowEditCompanyModal] = useState(false);
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated })));
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
   const { data: currenciesList = [] } = useCurrencies();
 

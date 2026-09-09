@@ -364,7 +364,7 @@ const PlayerProfilePage = () => {
                       setPlayer(updatedPlayer);
                       setModalState("none");
                       setBanReasonInput("");
-                    } catch (e) {
+                    } catch {
                       alert(t('modal.banError'));
                     }
                   }}>{t('modal.ban')}</button>
@@ -382,7 +382,7 @@ const PlayerProfilePage = () => {
                       const updatedPlayer = await playersService.unbanUser(player.username);
                       setPlayer(updatedPlayer);
                       setModalState("none");
-                    } catch (e) {
+                    } catch {
                       alert(t('modal.unbanError'));
                     }
                   }}>{t('modal.unban')}</button>

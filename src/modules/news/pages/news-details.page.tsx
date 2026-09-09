@@ -7,12 +7,14 @@ import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import useAuthStore from "../../../store/auth.store";
 import Button from "../../../shared/ui/button/button.component";
 import { useTranslation } from "react-i18next";
+import { useShallow } from 'zustand/react/shallow';
+
 
 const NewsDetailsPage: FC = () => {
   const { id } = useParams<{ id: string }>();
   const [news, setNews] = useState<News | null>(null);
   const [loading, setLoading] = useState(true);
-  const { isAdmin } = useAuthStore();
+  const { isAdmin } = useAuthStore(useShallow(state => ({ isAdmin: state.isAdmin })));
   const navigate = useNavigate();
   const { t } = useTranslation("news");
 

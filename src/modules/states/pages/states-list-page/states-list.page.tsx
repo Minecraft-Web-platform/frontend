@@ -9,6 +9,8 @@ import { MapColorPicker } from '../../components/map-color-picker/MapColorPicker
 import useAuthStore from '../../../../store/auth.store';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
+
 
 const StatesListPage: FC = () => {
   const [states, setStates] = useState<IState[]>([]);
@@ -27,7 +29,7 @@ const StatesListPage: FC = () => {
   const [color, setColor] = useState('');
   const [creating, setCreating] = useState(false);
 
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated })));
   const { t } = useTranslation('states');
 
   const loadStates = async () => {

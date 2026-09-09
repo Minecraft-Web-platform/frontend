@@ -9,6 +9,8 @@ import { authService } from "../../services/auth.service";
 import useAuthStore from "../../../../store/auth.store";
 
 import { useTranslation } from "react-i18next";
+import { useShallow } from 'zustand/react/shallow';
+
 
 const EmailConfirmationPage: FC = () => {
   const [step, setStep] = useState<
@@ -18,7 +20,7 @@ const EmailConfirmationPage: FC = () => {
   const [code, setCode] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
   const navigate = useNavigate();
   const { t } = useTranslation('auth');
 

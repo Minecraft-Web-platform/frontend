@@ -35,14 +35,14 @@ const LandingPage: FC = () => {
         <h1>{t("about.heading")}</h1>
 
         <section className="main__section">
-          <img src="/png/creeper.png" className="img-small-left" alt="" />
+          <img src="/png/creeper.webp" className="img-small-left" alt="" />
 
           <p className="left">
             {t("about.building")}
           </p>
 
           <img
-            src="/png/settlement.png"
+            src="/png/city.webp"
             alt="Merida settlement"
             className="img-large-right"
           />
@@ -50,7 +50,7 @@ const LandingPage: FC = () => {
 
         <section className="main__section">
           <img
-            src="/png/factory.png"
+            src="/png/factory.webp"
             alt="factory SteelFactories"
             className="img-large-left"
           />
@@ -65,34 +65,34 @@ const LandingPage: FC = () => {
             <br />- {t("about.food")}
           </p>
 
-          <img src="/png/island_1.png" className="img-small-right" alt="" />
+          <img src="/png/island_1.webp" className="img-small-right" alt="" />
         </section>
 
         <section className="main__section">
-          <img src="/png/island_2.png" className="img-small-left" alt="" />
+          <img src="/png/island_2.webp" className="img-small-left" alt="" />
 
           <p className="left">{t("about.logistics")}</p>
 
           <img
-            src="/png/train.png"
+            src="/png/train.webp"
             alt="train station"
             className="img-large-right"
           />
         </section>
 
         <section className="main__section">
-          <img src="/png/party.png" alt="party" className="img-large-left" />
+          <img src="/png/party.webp" alt="party" className="img-large-left" />
 
           <p className="right">
             {t("about.frogs")}
           </p>
 
-          <img src="/png/island_3.png" className="img-small-right" alt="" />
+          <img src="/png/island_3.webp" className="img-small-right" alt="" />
         </section>
       </main>
 
       <footer className="footer">
-        <img src="/png/skeleton.png" alt="Skeleton" height={64} />
+        <img src="/png/skeleton.webp" alt="Skeleton" height={64} />
 
         <div className="footer__links">
           <span>
@@ -115,7 +115,7 @@ const LandingPage: FC = () => {
           </span>
         </div>
 
-        <img src="/png/steve.png" alt="Steve" height={64} />
+        <img src="/png/steve.webp" alt="Steve" height={64} />
       </footer>
     </>
   );

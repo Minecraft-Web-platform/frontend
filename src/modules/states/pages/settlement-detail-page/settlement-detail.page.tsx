@@ -18,6 +18,8 @@ import useAuthStore from '../../../../store/auth.store';
 import { profileService } from '../../../profile/services/profile.service';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
+
 
 const SettlementDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,7 +34,7 @@ const SettlementDetailPage: FC = () => {
   const [applying, setApplying] = useState(false);
   const { t } = useTranslation('states');
 
-  const { isAuthenticated, isAdmin } = useAuthStore();
+  const { isAuthenticated, isAdmin } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated, isAdmin: state.isAdmin })));
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
 
   useEffect(() => {

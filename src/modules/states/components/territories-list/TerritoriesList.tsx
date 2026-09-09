@@ -10,7 +10,7 @@ interface TerritoriesListProps {
 }
 
 export const TerritoriesList: React.FC<TerritoriesListProps> = ({ ownerType, ownerId }) => {
-  const [territories, setTerritories] = useState<any[]>([]);
+  const [territories, setTerritories] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation('states');
 

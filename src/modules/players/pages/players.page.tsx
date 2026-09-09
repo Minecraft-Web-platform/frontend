@@ -118,8 +118,8 @@ const PlayersPage: FC = () => {
                     className="player__profile-picture"
                     src={
                       user?.avatar_img
-                        ? `${user.avatar_img}?t=${Date.now()}`
-                        : "/png/steve-head.png"
+                        ? user.avatar_img
+                        : "/png/steve-head.webp"
                     }
                     alt={user.username}
                   />

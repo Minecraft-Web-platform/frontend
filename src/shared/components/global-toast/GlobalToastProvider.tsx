@@ -4,6 +4,8 @@ import useAuthStore from '../../../store/auth.store';
 import { IAchievement } from '../../../modules/achievements/types/achievements.types';
 import { playAchievementSound } from '../../utils/audio.utils';
 import './global-toast.scss';
+import { useShallow } from 'zustand/react/shallow';
+
 
 const SERVER_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -14,7 +16,7 @@ interface ToastItem {
 
 export const GlobalToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { t } = useTranslation('profile');
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   useEffect(() => {

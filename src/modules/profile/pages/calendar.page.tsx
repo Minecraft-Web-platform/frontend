@@ -5,6 +5,8 @@ import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import './calendar.page.scss';
 import useAuthStore from '../../../store/auth.store';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
+
 
 interface IEvent {
   id: string;
@@ -27,7 +29,7 @@ const getFirstDayOfMonth = (year: number, month: number) => {
 };
 
 export const CalendarPage: FC = () => {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated })));
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation('profile');

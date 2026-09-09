@@ -16,7 +16,7 @@ export const MapPage: React.FC = () => {
       try {
         const res = await serverService.getPing();
         setIsOnline(res.running);
-      } catch (e) {
+      } catch {
         setIsOnline(false);
       }
     };

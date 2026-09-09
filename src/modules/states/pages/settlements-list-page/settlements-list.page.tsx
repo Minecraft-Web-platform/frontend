@@ -9,6 +9,8 @@ import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploade
 import { MapColorPicker } from '../../components/map-color-picker/MapColorPicker';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
+
 
 const SettlementsListPage: FC = () => {
   const [searchParams] = useSearchParams();
@@ -33,7 +35,7 @@ const SettlementsListPage: FC = () => {
   const [creating, setCreating] = useState(false);
   const { t } = useTranslation('states');
 
-  const { isAdmin } = useAuthStore();
+  const { isAdmin } = useAuthStore(useShallow(state => ({ isAdmin: state.isAdmin })));
 
   const loadData = async () => {
     setLoading(true);

@@ -113,25 +113,25 @@ export const MINECRAFT_CURRENCY_ITEMS: IMinecraftItemOption[] = [
     id: 'minecraft:diamond',
     name: 'Diamond',
     type: 'ingot',
-    icon: <img src="/png/diamond.png" alt="Diamond" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+    icon: <img src="/png/diamond.webp" alt="Diamond" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
   },
   {
     id: 'minecraft:gold_ingot',
     name: 'Gold Ingot',
     type: 'ingot',
-    icon: <img src="/png/gold_ingot.png" alt="Gold Ingot" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+    icon: <img src="/png/gold_ingot.webp" alt="Gold Ingot" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
   },
   {
     id: 'minecraft:netherite_ingot',
     name: 'Netherite Ingot',
     type: 'ingot',
-    icon: <img src="/png/netherite_ingot.png" alt="Netherite Ingot" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+    icon: <img src="/png/netherite_ingot.webp" alt="Netherite Ingot" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
   },
   {
     id: 'minecraft:netherite_block',
     name: 'Netherite Block',
     type: 'ingot',
-    icon: <img src="/png/netherite_block.png" alt="Netherite Block" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+    icon: <img src="/png/netherite_block.webp" alt="Netherite Block" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
   },
 ];
 

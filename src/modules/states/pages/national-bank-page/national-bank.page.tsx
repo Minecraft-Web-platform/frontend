@@ -14,6 +14,8 @@ import './national-bank.page.scss';
 import { useTranslation } from 'react-i18next';
 import { PropagateLoader } from 'react-spinners';
 import Button from '../../../../shared/ui/button/button.component';
+import { useShallow } from 'zustand/react/shallow';
+
 
 const NationalBankPage: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,7 +26,7 @@ const NationalBankPage: FC = () => {
   const [ipoRequests, setIpoRequests] = useState<IIpoRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { isAuthenticated, isAdmin } = useAuthStore();
+  const { isAuthenticated, isAdmin } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated, isAdmin: state.isAdmin })));
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
   const { t } = useTranslation('states');
 

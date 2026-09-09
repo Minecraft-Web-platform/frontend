@@ -28,8 +28,10 @@ import '../../../economy/economy-shared.scss';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 import { EditStateModal } from '../../components/edit-state-modal/EditStateModal';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 
-const formatAccountNumber = (treasuryAccount: any, t?: any) => {
+
+const formatAccountNumber = (treasuryAccount: { id: string, balance: number, currencyCode: string } | string | null | undefined, t?: (key: string) => string) => {
   if (!treasuryAccount) return t('stateDetailMissed.noAccount');
   if (typeof treasuryAccount === 'string') {
     return `#${treasuryAccount}`;
@@ -86,7 +88,7 @@ const StateDetailPage: FC = () => {
 
   const [showEditStateModal, setShowEditStateModal] = useState(false);
 
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated })));
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
 
   useEffect(() => {

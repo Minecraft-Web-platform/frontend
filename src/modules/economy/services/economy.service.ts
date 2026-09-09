@@ -280,7 +280,7 @@ export class EconomyService {
   }
 
   // --- Banks ---
-  public async createBank(data: any): Promise<any> {
+  public async createBank(data: unknown): Promise<unknown> {
     return this.httpService.post(`economy/banks`, data);
   }
 }

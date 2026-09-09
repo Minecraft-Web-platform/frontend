@@ -10,6 +10,8 @@ import useAuthStore from '../../../store/auth.store';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import { AxiosError } from 'axios';
 import './PropertyDetailPage.scss';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const PropertyDetailPage: React.FC = () => {
   const { t } = useTranslation('economy');
@@ -18,7 +20,7 @@ export const PropertyDetailPage: React.FC = () => {
   const { data: property, isLoading, mutate } = useProperty(id);
   const { data: allCurrencies = [] } = useCurrencies();
   
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
   let myUuid = '';
   if (accessToken) {
     try {

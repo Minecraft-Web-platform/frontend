@@ -97,7 +97,7 @@ export const TradingChart: React.FC<TradingChartProps> = ({
         setLoading(false);
  
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (err: any) {
+      } catch {
         if (isMounted) {
           setError(t('exchange.chartError'));
           setLoading(false);
@@ -138,6 +138,16 @@ export const TradingChart: React.FC<TradingChartProps> = ({
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Cleanup chart instance on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.remove();
+        chartRef.current = null;
+      }
+    };
   }, []);
 
   return (

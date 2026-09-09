@@ -13,13 +13,15 @@ import { IpoModal } from '../components/IpoModal';
 import { DividendModal } from '../components/DividendModal';
 import '../economy-shared.scss';
 import { useNavigate } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
   embedded = false,
 }) => {
   const { t } = useTranslation('economy');
   const navigate = useNavigate();
-  const { isAuthenticated, accessToken } = useAuthStore();
+  const { isAuthenticated, accessToken } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated, accessToken: state.accessToken })));
   
   const { data: companies = [], isLoading: loadingCompanies, mutate: mutateCompanies } = useAllCompanies();
   const { data: statesList = [] } = useStates();

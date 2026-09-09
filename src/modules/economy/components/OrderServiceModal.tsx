@@ -105,7 +105,7 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
             <div className="sub-items-selection">
               <h3>{t('companies.services.orderModal.subItemsTitle', { price: service.price })}</h3>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              {service.subItems.map((item: any) => (
+              {service.subItems.map((item: { name: string; price: number }) => (
                 <label key={item.id} className="sub-item-checkbox">
                   <input 
                     type="checkbox" 

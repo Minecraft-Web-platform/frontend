@@ -6,6 +6,7 @@ import { RequireAuth } from "./shared/wraps/require-auth.wrap";
 import GuestOnly from "./shared/wraps/guests-only.wrap";
 import { GlobalToastProvider } from "./shared/components/global-toast/GlobalToastProvider";
 import LangChanger from "./shared/ui/lang-changer/lang-changer.component";
+import ErrorBoundary from "./shared/components/error-boundary/ErrorBoundary";
 
 const RegistrationPage = React.lazy(() => import("./modules/auth/pages/registration-page/registration.page"));
 const LoginPage = React.lazy(() => import("./modules/auth/pages/login-page/login.page"));
@@ -23,15 +24,15 @@ const TechSupportPage = React.lazy(() => import("./modules/tech-support/pages/te
 const EmailConfirmationPage = React.lazy(() => import("./modules/auth/pages/email-confirmation/email-confirmation.page"));
 const NewsDetailsPage = React.lazy(() => import("./modules/news/pages/news-details.page"));
 const NotFoundPage = React.lazy(() => import("./modules/not-found/pages/not-found.page"));
-const StatesListPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.StatesListPage })));
-const StateDetailPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.StateDetailPage })));
-const NationalBankPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.NationalBankPage })));
-const SettlementsListPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.SettlementsListPage })));
-const SettlementDetailPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.SettlementDetailPage })));
-const EconomyHubPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.EconomyHubPage })));
-const CompanyDetailPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.CompanyDetailPage })));
-const CurrencyDetailPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.CurrencyDetailPage })));
-const PropertyDetailPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.PropertyDetailPage })));
+const StatesListPage = React.lazy(() => import("./modules/states/pages/states-list-page/states-list.page"));
+const StateDetailPage = React.lazy(() => import("./modules/states/pages/state-detail-page/state-detail.page"));
+const NationalBankPage = React.lazy(() => import("./modules/states/pages/national-bank-page/national-bank.page"));
+const SettlementsListPage = React.lazy(() => import("./modules/states/pages/settlements-list-page/settlements-list.page"));
+const SettlementDetailPage = React.lazy(() => import("./modules/states/pages/settlement-detail-page/settlement-detail.page"));
+const EconomyHubPage = React.lazy(() => import("./modules/economy/pages/EconomyHubPage").then(module => ({ default: module.EconomyHubPage })));
+const CompanyDetailPage = React.lazy(() => import("./modules/economy/pages/CompanyDetailPage").then(module => ({ default: module.CompanyDetailPage })));
+const CurrencyDetailPage = React.lazy(() => import("./modules/economy/pages/CurrencyDetailPage").then(module => ({ default: module.CurrencyDetailPage })));
+const PropertyDetailPage = React.lazy(() => import("./modules/economy/pages/PropertyDetailPage").then(module => ({ default: module.PropertyDetailPage })));
 const MapPage = React.lazy(() => import("./modules/map/pages/MapPage").then(module => ({ default: module.MapPage })));
 
 function App() {
@@ -46,228 +47,230 @@ function App() {
       <GlobalToastProvider>
         <Suspense fallback={fallbackLoader}>
           <LangChanger />
-          <Routes>
-          <Route path="/" index={true} element={<LandingPage />} />
+          <ErrorBoundary>
+            <Routes>
+            <Route path="/" index={true} element={<LandingPage />} />
 
-          <Route
-            path="/download"
-            element={
-              <RequireAuth>
-                <DownloadPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/registration"
-            element={
-              <GuestOnly redirectTo="/profile">
-                <RegistrationPage />
-              </GuestOnly>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <GuestOnly redirectTo="/profile">
-                <LoginPage />
-              </GuestOnly>
-            }
-          />
-          <Route
-            path="/reset-password"
-            element={
-              <GuestOnly redirectTo="/profile">
-                <ResetPasswordPage />
-              </GuestOnly>
-            }
-          />
+            <Route
+              path="/download"
+              element={
+                <RequireAuth>
+                  <DownloadPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/registration"
+              element={
+                <GuestOnly redirectTo="/profile">
+                  <RegistrationPage />
+                </GuestOnly>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <GuestOnly redirectTo="/profile">
+                  <LoginPage />
+                </GuestOnly>
+              }
+            />
+            <Route
+              path="/reset-password"
+              element={
+                <GuestOnly redirectTo="/profile">
+                  <ResetPasswordPage />
+                </GuestOnly>
+              }
+            />
 
-          <Route
-            path="/news"
-            element={
-              <RequireAuth>
-                <NewsPage />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/news"
+              element={
+                <RequireAuth>
+                  <NewsPage />
+                </RequireAuth>
+              }
+            />
 
-          <Route
-            path="/news/:id"
-            element={
-              <RequireAuth>
-                <NewsDetailsPage />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/news/:id"
+              element={
+                <RequireAuth>
+                  <NewsDetailsPage />
+                </RequireAuth>
+              }
+            />
 
-          <Route
-            path="/map"
-            element={
-              <RequireAuth>
-                <MapPage />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/map"
+              element={
+                <RequireAuth>
+                  <MapPage />
+                </RequireAuth>
+              }
+            />
 
-          <Route path="/agreement" element={<AgreementPage />} />
+            <Route path="/agreement" element={<AgreementPage />} />
 
-          <Route
-            path="/profile"
-            element={
-              <RequireAuth allowBanned={true}>
-                <Profile></Profile>
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/profile"
+              element={
+                <RequireAuth allowBanned={true}>
+                  <Profile></Profile>
+                </RequireAuth>
+              }
+            />
 
-          <Route
-            path="/calendar"
-            element={
-              <RequireAuth>
-                <CalendarPage />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/calendar"
+              element={
+                <RequireAuth>
+                  <CalendarPage />
+                </RequireAuth>
+              }
+            />
 
-          <Route
-            path="/email-confirmation"
-            element={
-              <RequireAuth allowBanned={true}>
-                <EmailConfirmationPage />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/email-confirmation"
+              element={
+                <RequireAuth allowBanned={true}>
+                  <EmailConfirmationPage />
+                </RequireAuth>
+              }
+            />
 
-          <Route
-            path="/players"
-            element={
-              <RequireAuth>
-                <PlayersPage />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/players"
+              element={
+                <RequireAuth>
+                  <PlayersPage />
+                </RequireAuth>
+              }
+            />
 
-          <Route
-            path="/players/:username"
-            element={
-              <RequireAuth>
-                <PlayerProfile />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/players/:username"
+              element={
+                <RequireAuth>
+                  <PlayerProfile />
+                </RequireAuth>
+              }
+            />
 
-          <Route
-            path="/states"
-            element={
-              <RequireAuth>
-                <StatesListPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/states/:id"
-            element={
-              <RequireAuth>
-                <StateDetailPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/states/:id/national-bank"
-            element={
-              <RequireAuth>
-                <NationalBankPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/settlements"
-            element={
-              <RequireAuth>
-                <SettlementsListPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/settlements/:id"
-            element={
-              <RequireAuth>
-                <SettlementDetailPage />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/states"
+              element={
+                <RequireAuth>
+                  <StatesListPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/states/:id"
+              element={
+                <RequireAuth>
+                  <StateDetailPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/states/:id/national-bank"
+              element={
+                <RequireAuth>
+                  <NationalBankPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/settlements"
+              element={
+                <RequireAuth>
+                  <SettlementsListPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/settlements/:id"
+              element={
+                <RequireAuth>
+                  <SettlementDetailPage />
+                </RequireAuth>
+              }
+            />
 
-          <Route
-            path="/tech-support"
-            element={
-              <RequireAuth allowBanned={true}>
-                <TechSupportPage />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/tech-support"
+              element={
+                <RequireAuth allowBanned={true}>
+                  <TechSupportPage />
+                </RequireAuth>
+              }
+            />
 
-          <Route
-            path="/economy"
-            element={
-              <RequireAuth>
-                <EconomyHubPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/bank"
-            element={<Navigate to="/economy?tab=bank" replace />}
-          />
-          <Route
-            path="/currencies"
-            element={<Navigate to="/economy?tab=currencies" replace />}
-          />
-          <Route
-            path="/companies"
-            element={<Navigate to="/economy?tab=companies" replace />}
-          />
-          <Route
-            path="/economy/currency/:id"
-            element={
-              <RequireAuth>
-                <CurrencyDetailPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/economy/property/:id"
-            element={
-              <RequireAuth>
-                <PropertyDetailPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/companies/:id"
-            element={
-              <RequireAuth>
-                <CompanyDetailPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/exchange"
-            element={<Navigate to="/economy?tab=exchange" replace />}
-          />
-          <Route
-            path="/properties"
-            element={<Navigate to="/economy?tab=properties" replace />}
-          />
-          <Route
-            path="/admin/achievements"
-            element={
-              <RequireAuth>
-                <AchievementsAdminPage />
-              </RequireAuth>
-            }
-          />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+            <Route
+              path="/economy"
+              element={
+                <RequireAuth>
+                  <EconomyHubPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/bank"
+              element={<Navigate to="/economy?tab=bank" replace />}
+            />
+            <Route
+              path="/currencies"
+              element={<Navigate to="/economy?tab=currencies" replace />}
+            />
+            <Route
+              path="/companies"
+              element={<Navigate to="/economy?tab=companies" replace />}
+            />
+            <Route
+              path="/economy/currency/:id"
+              element={
+                <RequireAuth>
+                  <CurrencyDetailPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/economy/property/:id"
+              element={
+                <RequireAuth>
+                  <PropertyDetailPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/companies/:id"
+              element={
+                <RequireAuth>
+                  <CompanyDetailPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/exchange"
+              element={<Navigate to="/economy?tab=exchange" replace />}
+            />
+            <Route
+              path="/properties"
+              element={<Navigate to="/economy?tab=properties" replace />}
+            />
+            <Route
+              path="/admin/achievements"
+              element={
+                <RequireAuth>
+                  <AchievementsAdminPage />
+                </RequireAuth>
+              }
+            />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </ErrorBoundary>
         </Suspense>
       </GlobalToastProvider>
     </BrowserRouter>
