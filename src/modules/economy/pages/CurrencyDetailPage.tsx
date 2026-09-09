@@ -68,19 +68,27 @@ export const CurrencyDetailPage: React.FC = () => {
           <button 
             className="back-btn" 
             onClick={() => navigate(-1)}
-            style={{ marginBottom: '24px', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', color: '#475569', fontWeight: 600, fontSize: '14px', transition: 'all 0.2s' }}
+            style={{ marginBottom: '24px', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'var(--bg-surface)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '14px', transition: 'all 0.2s' }}
           >
             &larr; {t('currencies.detail.backToList')}
           </button>
           
           <div className="cdp-header-card" style={{ marginBottom: '24px' }}>
             <div className="cdp-header-card__main">
-              <div className="cdp-logo" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 'bold', color: '#0f172a', background: '#f8fafc' }}>
-                {currency.code}
+              <div className="cdp-logo" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 'bold', color: 'var(--text-primary)', background: 'var(--bg-surface)', overflow: 'hidden', borderRadius: '16px', width: '80px', height: '80px' }}>
+                {currency.stateFlagUrl ? (
+                  <img 
+                    src={currency.stateFlagUrl} 
+                    alt={currency.code}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  currency.code
+                )}
               </div>
               <div className="cdp-title-info">
                 <h1 style={{ margin: 0 }}>{currency.name}</h1>
-                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', color: '#64748b' }}>
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', color: 'var(--text-secondary)' }}>
                   <span>{t('currencies.detail.ticker', { code: currency.code })}</span>
                   <span>{t('currencies.detail.inCirculation', { count: currency.totalIssued.toLocaleString() })}</span>
                   <span>{t('currencies.detail.goldReserve', { reserves: currency.reserves.toLocaleString() })}</span>
@@ -117,7 +125,7 @@ export const CurrencyDetailPage: React.FC = () => {
                       const mainInfo = getMinecraftItemInfo(currency.minecraftItemId);
                       return (
                         <div>
-                          <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '4px' }}>{t('currencies.detail.base')}</div>
+                          <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>{t('currencies.detail.base')}</div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}>
                             {mainInfo?.icon} {mainInfo ? t(`minecraftItems.${mainInfo.id}`, mainInfo.name) : currency.minecraftItemId}
                           </div>
@@ -129,7 +137,7 @@ export const CurrencyDetailPage: React.FC = () => {
                       const kopInfo = getMinecraftItemInfo(currency.kopeckItemId);
                       return (
                         <div>
-                          <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '4px' }}>{t('currencies.detail.change')}</div>
+                          <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>{t('currencies.detail.change')}</div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}>
                             {kopInfo?.icon} {kopInfo ? t(`minecraftItems.${kopInfo.id}`, kopInfo.name) : currency.kopeckItemId}
                           </div>
@@ -141,7 +149,7 @@ export const CurrencyDetailPage: React.FC = () => {
                       const enchInfo = getMinecraftEnchantInfo(currency.minecraftEnchantment);
                       return (
                         <div>
-                          <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '4px' }}>{t('currencies.detail.charm')}</div>
+                          <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>{t('currencies.detail.charm')}</div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500, color: '#7c3aed' }}>
                             {enchInfo?.icon || '✨'} {enchInfo ? t(`minecraftEnchants.${enchInfo.id}`, enchInfo.name) : currency.minecraftEnchantment}
                           </div>
