@@ -28,7 +28,13 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.18;
+    opacity: 0.8;
+    -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20' fill='none' stroke='black' stroke-width='0.5'><path d='M0 10 Q10 0, 20 10 T40 10'/></svg>");
+    -webkit-mask-repeat: repeat;
+    -webkit-mask-size: 10px;
+    mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20' fill='none' stroke='black' stroke-width='0.5'><path d='M0 10 Q10 0, 20 10 T40 10'/></svg>");
+    mask-repeat: repeat;
+    mask-size: 10px;
     pointer-events: none;
     z-index: 0;
   }
@@ -148,10 +154,7 @@
     background-color: #ffffff;
     color: #0f172a;
 
-    &__bg-flag {
-      opacity: 0.18;
-      mix-blend-mode: multiply;
-    }
+
 
     &__header {
       color: #0f172a;
