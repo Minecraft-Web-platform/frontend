@@ -1,5 +1,6 @@
 import {  } from 'axios';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CompanyCard } from '../components/CompanyCard';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import useAuthStore from '../../../store/auth.store';
@@ -12,12 +13,15 @@ import { IpoModal } from '../components/IpoModal';
 import { DividendModal } from '../components/DividendModal';
 import '../economy-shared.scss';
 import { useNavigate } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
   embedded = false,
 }) => {
+  const { t } = useTranslation('economy');
   const navigate = useNavigate();
-  const { isAuthenticated, accessToken } = useAuthStore();
+  const { isAuthenticated, accessToken } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated, accessToken: state.accessToken })));
   
   const { data: companies = [], isLoading: loadingCompanies, mutate: mutateCompanies } = useAllCompanies();
   const { data: statesList = [] } = useStates();
@@ -31,20 +35,20 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
     } catch { /* empty */ }
   }
 
-  // Модальное окно создания компании
+  // Create company modal
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [settlementsList, setSettlementsList] = useState<ISettlement[]>([]);
   const [myStateId, setMyStateId] = useState<string | null>(null);
 
-  // Модальное окно IPO
+  // IPO modal
   const [ipoCompanyId, setIpoCompanyId] = useState<string | null>(null);
 
-  // Модальное окно дивидендов
+  // Dividend modal
   const [divCompanyId, setDivCompanyId] = useState<string | null>(null);
 
   const handleOpenCreateModal = async () => {
     if (!isAuthenticated) {
-      alert('Для регистрации фирмы необходимо авторизоваться');
+      alert(t('companies.authRequired'));
       return;
     }
     try {
@@ -53,11 +57,11 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
         statesService.getSettlements().catch(() => [] as ISettlement[]),
       ]);
       if (!me.emailIsConfirmed) {
-        alert('Регистрировать фирму может только игрок с подтвержденной почтой');
+        alert(t('companies.emailRequired'));
         return;
       }
       if (!me.settlementId && !me.stateId) {
-        alert('Регистрировать фирму могут только граждане какого-либо государства или поселения');
+        alert(t('companies.citizenshipRequired'));
         return;
       }
       let userStateId = me.stateId || '';
@@ -74,7 +78,7 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
       setShowCreateModal(true);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert('Не удалось проверить статус аккаунта: ' + (err?.message || 'Ошибка загрузки профиля'));
+      alert(t('companies.statusCheckError', { error: err?.message || '' }));
     }
   };
 
@@ -96,18 +100,17 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
             onClick={handleOpenCreateModal}
             className="economy-btn economy-btn--primary"
           >
-            + Зарегистрировать фирму
+            {t('companies.register')}
           </button>
         </div>
       ) : (
         <div className="economy-hero">
           <div>
             <h1 className="hero-title">
-              <span>🏢</span> Реестр Коммерческих Фирм
+              {t('companies.heroTitle')}
             </h1>
             <p className="hero-subtitle">
-              Регистрация бизнеса с привязкой к юрисдикции поселений/государств
-              и коммерческим счетам
+              {t('companies.heroSubtitle')}
             </p>
           </div>
           <div>
@@ -115,7 +118,7 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
               onClick={handleOpenCreateModal}
               className="economy-btn economy-btn--primary"
             >
-              + Зарегистрировать фирму
+              {t('companies.register')}
             </button>
           </div>
         </div>
@@ -123,16 +126,16 @@ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
 
       {loadingCompanies ? (
         <div className="economy-empty">
-          Загрузка каталога компаний...
+          {t('companies.loading')}
         </div>
       ) : companies.length === 0 ? (
         <div className="economy-empty">
-          В реестре пока нет зарегистрированных фирм. Создайте первую!
+          {t('companies.empty')}
         </div>
       ) : (
         <div className="economy-grid">
           {companies.map((company) => {
-            let currencyCode = 'ед.';
+            let currencyCode = t('companies.unit');
             if (company.isPublic && company.exchangeStateId) {
               const currency = currenciesList.find(c => c.stateId === company.exchangeStateId);
               if (currency) currencyCode = currency.code;

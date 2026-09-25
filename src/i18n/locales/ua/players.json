@@ -1,0 +1,29 @@
+{
+    "players": {
+        "title": "Гравці",
+        "online": "Гравців онлайн: {{online}}/{{total}}",
+        "show": "Показувати:",
+        "all": "Всіх",
+        "onlyServer": "Лише на сервері",
+        "state": "Держава:",
+        "allStates": "Усі держави",
+        "noState": "Без держави",
+        "statusOnline": "Онлайн",
+        "statusOffline": "Офлайн",
+        "notFound": "Гравців з обраними фільтрами не знайдено...",
+        "passport": {
+            "defaultState": "Світ Хроніки Краю",
+            "noPhoto": "Немає фото",
+            "nickname": "Нікнейм:",
+            "role": "Роль:",
+            "roleAdmin": "Адміністратор",
+            "rolePlayer": "Гравець",
+            "citizenship": "Громадянство:",
+            "settlement": "Поселення:",
+            "street": "Вулиця:",
+            "house": "Будинок:",
+            "issued": "Видано:",
+            "validUntil": "Дійсний до:"
+        }
+    }
+}

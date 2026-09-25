@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ICard, IAccount } from '../../types/economy.types';
 import { getMinecraftItemInfo } from '../../constants/minecraft-items';
 import './BankCard3D.scss';
@@ -10,6 +11,7 @@ interface BankCard3DProps {
 }
 
 export const BankCard3D: React.FC<BankCard3DProps> = ({ card, account, disableRotation = false }) => {
+  const { t } = useTranslation('economy');
   const cardRef = useRef<HTMLDivElement>(null);
   
   const [rotX, setRotX] = useState(0);
@@ -65,8 +67,8 @@ export const BankCard3D: React.FC<BankCard3DProps> = ({ card, account, disableRo
   const currencyInfo = getMinecraftItemInfo(card.currencyItemId || '');
   const currencyIcon = currencyInfo ? currencyInfo.icon : null;
   const currencyCode = account ? account.currencyCode : '';
-  const bankName = card.bankName || 'НАЦИОНАЛЬНЫЙ БАНК';
-  const holderName = account ? account.ownerUsername : 'СЕРВЕРНЫЙ ГРАЖДАНИН';
+  const bankName = card.bankName || t('bankCard3d.nationalBank');
+  const holderName = account ? account.ownerUsername : t('bankCard3d.citizen');
   
   const companyName = card.companyName || '';
   
@@ -74,7 +76,7 @@ export const BankCard3D: React.FC<BankCard3DProps> = ({ card, account, disableRo
     <div 
       className={`bank-card-3d-wrapper ${disableRotation ? 'no-rotate' : ''}`}
     >
-      {!disableRotation && <div className="drag-hint">Потяните, чтобы вращать</div>}
+      {!disableRotation && <div className="drag-hint">{t('bankCard3d.dragHint')}</div>}
       <div 
         ref={cardRef}
         className={`bank-card-3d ${isDragging ? 'dragging' : ''} ${card.isBlocked ? 'blocked' : ''}`}
@@ -92,7 +94,7 @@ export const BankCard3D: React.FC<BankCard3DProps> = ({ card, account, disableRo
           {card.backgroundImageUrl && (
             <div className="card-bg-image" style={{ backgroundImage: `url(${card.backgroundImageUrl})` }} />
           )}
-          {card.isBlocked && <div className="blocked-overlay">ЗАБЛОКИРОВАНА</div>}
+          {card.isBlocked && <div className="blocked-overlay">{t('bankCard3d.blocked')}</div>}
           
           <div className="card-front-top">
             <div className="bank-name">{bankName.toUpperCase()}</div>
@@ -118,7 +120,7 @@ export const BankCard3D: React.FC<BankCard3DProps> = ({ card, account, disableRo
             </div>
             
             <div className="expiry-section">
-              <div className="label">ГОДЕН ДО</div>
+              <div className="label">{t('bankCard3d.validThru')}</div>
               <div className="val">{card.expiresAt}</div>
             </div>
           </div>
@@ -131,7 +133,7 @@ export const BankCard3D: React.FC<BankCard3DProps> = ({ card, account, disableRo
         
         {/* BACK */}
         <div className="card-face card-back" style={{ transform: `translateZ(-8px) rotateY(180deg)` }}>
-          {card.isBlocked && <div className="blocked-overlay">ЗАБЛОКИРОВАНА</div>}
+          {card.isBlocked && <div className="blocked-overlay">{t('bankCard3d.blocked')}</div>}
           <div className="mag-stripe"></div>
           
           <div className="back-middle">
@@ -141,12 +143,11 @@ export const BankCard3D: React.FC<BankCard3DProps> = ({ card, account, disableRo
               </div>
               <div className="cvv-box">{card.cvv}</div>
             </div>
-            <div className="auth-text">Подпись владельца</div>
+            <div className="auth-text">{t('bankCard3d.cardholderSignature')}</div>
           </div>
           
           <div className="fine-print">
-            Эта карта является собственностью {bankName}. При нахождении просьба вернуть в ближайшее отделение.
-            Использование этой карты регулируется условиями договора с держателем карты.
+            {t('bankCard3d.finePrint', { bankName })}
           </div>
         </div>
       </div>

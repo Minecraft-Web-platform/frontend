@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { economyService } from '../services/economy.service';
 import Button from '../../../shared/ui/button/button.component';
 import { ImageUploader } from '../../../shared/ui/image-uploader/ImageUploader';
@@ -15,6 +16,7 @@ interface CreateServiceModalProps {
 }
 
 export const CreateServiceModal: React.FC<CreateServiceModalProps> = ({ companyId, editService, onClose, onSuccess }) => {
+  const { t } = useTranslation('economy');
   const [name, setName] = useState(editService?.name || '');
   const [description, setDescription] = useState(editService?.description || '');
   const [isComposite, setIsComposite] = useState(editService?.isComposite || false);
@@ -79,7 +81,7 @@ export const CreateServiceModal: React.FC<CreateServiceModalProps> = ({ companyI
       onSuccess();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || `Ошибка при ${editService ? 'редактировании' : 'создании'} услуги`);
+      setError((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || t('companies.services.modal.error'));
     } finally {
       setLoading(false);
     }
@@ -88,17 +90,17 @@ export const CreateServiceModal: React.FC<CreateServiceModalProps> = ({ companyI
   return (
     <div className="modal-backdrop">
       <div className="create-service-modal">
-        <h2>{editService ? 'Редактировать услугу' : 'Создать новую услугу'}</h2>
+        <h2>{editService ? t('companies.services.modal.editTitle') : t('companies.services.modal.createTitle')}</h2>
         {error && <div className="error-message">{error}</div>}
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Название услуги</label>
+            <label>{t('companies.services.modal.name')}</label>
             <input type="text" value={name} onChange={e => setName(e.target.value)} required />
           </div>
 
           <div className="form-group">
-            <label>Описание</label>
+            <label>{t('companies.services.modal.desc')}</label>
             <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} />
           </div>
 
@@ -109,19 +111,19 @@ export const CreateServiceModal: React.FC<CreateServiceModalProps> = ({ companyI
               maxFiles={5}
               value={photoUrls}
               onChange={(urls) => setPhotoUrls(urls as string[])}
-              label="Фотографии услуги (до 5 шт)"
+              label={t('companies.services.modal.photos')}
             />
           </div>
           
           <div className="form-group row">
             <label>
               <input type="checkbox" checked={isComposite} onChange={e => setIsComposite(e.target.checked)} />
-              Многосоставная услуга (позволяет клиенту выбирать подуслуги)
+              {t('companies.services.modal.compositeCheckbox')}
             </label>
           </div>
 
           <div className="form-group">
-            <label>{isComposite ? 'Базовая стоимость' : 'Стоимость услуги'}</label>
+            <label>{isComposite ? t('companies.services.modal.basePrice') : t('companies.services.modal.servicePrice')}</label>
             <input 
               type="number" 
               min="0" 
@@ -134,16 +136,16 @@ export const CreateServiceModal: React.FC<CreateServiceModalProps> = ({ companyI
 
           {isComposite && (
             <div className="sub-items-section">
-              <h3>Подуслуги</h3>
+              <h3>{t('companies.services.modal.subItems')}</h3>
               {subItems.map((item, idx) => (
                 <div key={idx} className="sub-item-box">
                   <div className="form-group">
-                    <label>Название подуслуги</label>
+                    <label>{t('companies.services.modal.subItemName')}</label>
                     <input type="text" value={item.name} onChange={e => handleSubItemChange(idx, 'name', e.target.value)} required />
                   </div>
                   <div className="form-group row-group">
                     <div className="flex-1">
-                      <label>Стоимость</label>
+                      <label>{t('companies.services.modal.subItemPrice')}</label>
                       <input 
                         type="number" 
                         min="0" 
@@ -160,26 +162,26 @@ export const CreateServiceModal: React.FC<CreateServiceModalProps> = ({ companyI
                         maxFiles={5}
                         value={item.photoUrls}
                         onChange={(urls) => handleSubItemChange(idx, 'photoUrls', urls as string[])}
-                        label="Фото подуслуги (до 5 шт)"
+                        label={t('companies.services.modal.subItemPhotos')}
                       />
                     </div>
                   </div>
                   <div className="form-group">
-                    <label>Описание подуслуги</label>
+                    <label>{t('companies.services.modal.subItemDesc')}</label>
                     <input type="text" value={item.description} onChange={e => handleSubItemChange(idx, 'description', e.target.value)} />
                   </div>
                   {subItems.length > 1 && (
-                    <button type="button" className="remove-btn" onClick={() => handleRemoveSubItem(idx)}>Удалить подуслугу</button>
+                    <button type="button" className="remove-btn" onClick={() => handleRemoveSubItem(idx)}>{t('companies.services.modal.removeSubItem')}</button>
                   )}
                 </div>
               ))}
-              <Button type="button" callback={handleAddSubItem} secondary={true} style={{ marginTop: '12px' }}>Добавить подуслугу</Button>
+              <Button type="button" callback={handleAddSubItem} secondary={true} style={{ marginTop: '12px' }}>{t('companies.services.modal.addSubItem')}</Button>
             </div>
           )}
 
           <div className="modal-actions">
-            <Button type="button" callback={onClose} secondary={true}>Отмена</Button>
-            <Button type="submit" disabled={loading}>{loading ? 'Сохранение...' : (editService ? 'Сохранить изменения' : 'Создать услугу')}</Button>
+            <Button type="button" callback={onClose} secondary={true}>{t('companies.services.modal.cancel')}</Button>
+            <Button type="submit" disabled={loading}>{loading ? t('companies.services.modal.saving') : (editService ? t('companies.services.modal.saveChanges') : t('companies.services.modal.createService'))}</Button>
           </div>
         </form>
       </div>

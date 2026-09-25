@@ -1,12 +1,28 @@
 {
-    "heading": "",
+    "heading": "Хроніки Краю 2.0",
     "buttons": {
         "news": "Новини",
-        "players-list": "Гравці",
+        "players-list": "Список гравців",
         "world-map": "Мапа світу",
-        "download-page": "Завантажити лаунчер та моди",
-        "profile": "Обліковий запис",
-        "tech-support": "Технічна підтримка",
-        "regulations": "Статути"
+        "download-page": "Завантажити збірку та лаунчер",
+        "profile": "Профіль",
+        "tech-support": "Техпідтримка",
+        "regulations": "Регламенти",
+        "states": "Держави",
+        "calendar": "Календар",
+        "economy": "Економіка"
+    },
+    "uploader": {
+        "cropTitle": "Кадрування зображення",
+        "cancel": "Скасувати",
+        "save": "Зберегти",
+        "defaultLabel": "Завантажити картинку",
+        "maxFilesError": "Максимальна кількість файлів: {{max}}",
+        "formatError": "Будь ласка, завантажуйте лише зображення (JPG, PNG, WEBP)",
+        "uploadError": "Помилка завантаження",
+        "loading": "Завантаження...",
+        "dropText": "Перетягніть картинку сюди або",
+        "clickSelect": "натисніть для вибору",
+        "remove": "Видалити"
     }
 }

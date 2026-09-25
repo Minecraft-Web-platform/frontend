@@ -10,9 +10,7 @@ import { AxiosError } from "axios";
 
 import { useTranslation } from "react-i18next";
 
-const errorCodes: { [key: number]: string } = {
-  401: "Никнейм либо пароль неверны. Попробуй еще раз :)",
-};
+// errorCodes logic will be handled inside the component to use translation.
 
 const LoginPage: FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -42,9 +40,9 @@ const LoginPage: FC = () => {
     } catch (e: any) {
       if (e instanceof AxiosError) {
         const code = e.status || (e as AxiosError<{message?: string}>).response?.status;
-        setErrorMessage(code && errorCodes[code] ? errorCodes[code] : "Не удалось войти. Проверьте данные.");
+        setErrorMessage(code === 401 ? t("login-page.errors.wrong-credentials") : t("login-page.errors.failed-to-login"));
       } else {
-        setErrorMessage("Произошла неизвестная ошибка.");
+        setErrorMessage(t("login-page.errors.unknown"));
       }
     }
 
@@ -86,7 +84,7 @@ const LoginPage: FC = () => {
         </div>
 
         <Link to="/reset-password" style={{ display: "block", marginTop: "16px", textAlign: "center" }}>
-          Забыли пароль?
+          {t("login-page.html-elements.forgot-password")}
         </Link>
       </form>
     </main>

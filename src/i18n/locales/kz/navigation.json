@@ -1,0 +1,28 @@
+{
+  "heading": "Шет Жылнамалары 2.0",
+  "buttons": {
+    "news": "Жаңалықтар",
+    "players-list": "Ойыншылар тізімі",
+    "world-map": "Әлем картасы",
+    "download-page": "Жинақ пен лаунчерді жүктеу",
+    "profile": "Профиль",
+    "tech-support": "Техникалық қолдау",
+    "regulations": "Ережелер",
+    "states": "Мемлекеттер",
+    "calendar": "Күнтізбе",
+    "economy": "Экономика"
+  },
+  "uploader": {
+    "cropTitle": "Суретті қию",
+    "cancel": "Бас тарту",
+    "save": "Сақтау",
+    "defaultLabel": "Суретті жүктеу",
+    "maxFilesError": "Файлдардың ең көп саны: {{max}}",
+    "formatError": "Тек суреттерді жүктеңіз (JPG, PNG, WEBP)",
+    "uploadError": "Жүктеу қатесі",
+    "loading": "Жүктелуде...",
+    "dropText": "Суретті осында сүйреңіз немесе",
+    "clickSelect": "таңдау үшін басыңыз",
+    "remove": "Жою"
+  }
+}

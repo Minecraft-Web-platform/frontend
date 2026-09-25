@@ -1,41 +1,49 @@
 .lang-changer {
   position: fixed;
   display: flex;
-  gap: 16px;
+  align-items: center;
+  gap: 10px;
   top: 24px;
   right: 24px;
-  padding: 16px;
-  background-color: #f5f8fa;
+  padding: 8px 12px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
   height: fit-content;
-  border-radius: 8px;
-  box-shadow: 0 0 4px #000;
+  border-radius: 10px;
+  box-shadow: var(--shadow-elevated);
+  z-index: 9999;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 
   .btns {
     display: flex;
-    gap: 8px;
+    gap: 6px;
   }
 
   .btn {
-    padding: 4px 16px;
+    padding: 5px 12px;
     background-color: transparent;
-    border: 1px solid black;
-    border-radius: 4px;
-    transition: background-color 0.3s linear;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
     cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
 
     &:hover {
-      background-color: #e5e5e5;
+      background-color: var(--bg-hover);
+      border-color: var(--accent-emerald);
     }
 
     &--chosen {
-      background-color: #000;
-      color: #fff;
-      transition:
-        background-color 1s linear,
-        color 0.5s linear;
+      background-color: var(--accent-emerald);
+      color: #0d1117;
+      border-color: var(--accent-emerald);
+      font-weight: 700;
 
       &:hover {
-        background-color: #000;
+        background-color: #059669;
+        border-color: #059669;
       }
     }
   }

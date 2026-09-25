@@ -7,6 +7,7 @@ import { MapColorPicker } from '../map-color-picker/MapColorPicker';
 import { useEffect } from 'react';
 import { statesService } from '../../services/states.service';
 import { ISettlementType } from '../../types/states.types';
+import { useTranslation } from 'react-i18next';
 
 interface EditSettlementModalProps {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,6 +33,7 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation('states');
 
   useEffect(() => {
     statesService.getSettlementTypes().then(setSettlementTypes).catch(console.error);
@@ -52,7 +54,7 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
       onClose();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Ошибка сохранения');
+      setError(err?.response?.data?.message || t('editSettlement.errors.save'));
     } finally {
       setLoading(false);
     }
@@ -63,23 +65,23 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
     if (!newTypeName.trim()) return;
     try {
       await statesService.proposeSettlementType(newTypeName);
-      alert('Тип успешно предложен и отправлен на модерацию!');
+      alert(t('editSettlement.errors.proposeSuccess'));
       setShowProposeTypeModal(false);
       setNewTypeName('');
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.response?.data?.message || err?.message || 'Ошибка при предложении типа');
+      alert(err?.response?.data?.message || err?.message || t('editSettlement.errors.proposeError'));
     }
   };
 
   return (
     <div className="edit-settlement-modal-overlay">
       <div className="edit-settlement-modal">
-        <h2>Редактирование поселения</h2>
+        <h2>{t('editSettlement.title')}</h2>
         {error && <div className="edit-settlement-modal__error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="edit-settlement-modal__field">
-            <label>Название поселения:</label>
+            <label>{t('editSettlement.nameLabel')}</label>
             <input
               type="text"
               value={name}
@@ -88,7 +90,7 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
             />
           </div>
           <div className="edit-settlement-modal__field">
-            <label>Описание:</label>
+            <label>{t('editSettlement.descLabel')}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -98,14 +100,14 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
           <div className="edit-settlement-modal__field">
             <ImageUploader 
               folder="states/flags"
-              label="Флаг/Эмблема"
+              label={t('editSettlement.flagLabel')}
               value={flagUrl}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onChange={(url: any) => setFlagUrl(url as string)}
             />
           </div>
           <div className="edit-settlement-modal__field">
-            <label>Цвет территории на карте:</label>
+            <label>{t('editSettlement.colorLabel')}</label>
             <MapColorPicker
               color={color}
               onChange={setColor}
@@ -115,7 +117,7 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
 
           <div style={{ display: 'flex', gap: '10px' }} className="edit-settlement-modal__field">
             <label style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <span>Координата X центра</span>
+              <span>{t('editSettlement.xLabel')}</span>
               <input
                 type="number"
                 value={centerX}
@@ -124,7 +126,7 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
               />
             </label>
             <label style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <span>Координата Z центра</span>
+              <span>{t('editSettlement.zLabel')}</span>
               <input
                 type="number"
                 value={centerZ}
@@ -135,29 +137,29 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
           </div>
 
           <div className="edit-settlement-modal__field">
-            <label>Статус</label>
+            <label>{t('editSettlement.statusLabel')}</label>
             <select
               value={status}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onChange={(e) => setStatus(e.target.value as any)}
               required
             >
-              <option value="settlement">Поселение</option>
-              <option value="capital">Столица</option>
-              <option value="rural">Сельское поселение</option>
+              <option value="settlement">{t('editSettlement.statusOpts.settlement')}</option>
+              <option value="capital">{t('editSettlement.statusOpts.capital')}</option>
+              <option value="rural">{t('editSettlement.statusOpts.rural')}</option>
             </select>
           </div>
 
           {status === 'rural' && (
             <div className="edit-settlement-modal__field">
-              <label>Подвид сельского поселения</label>
+              <label>{t('editSettlement.subTypeLabel')}</label>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <select
                   value={ruralSubTypeId}
                   onChange={(e) => setRuralSubTypeId(e.target.value)}
                   style={{ flex: 1 }}
                 >
-                  <option value="">Выберите подвид...</option>
+                  <option value="">{t('editSettlement.subTypePlaceholder')}</option>
                   {settlementTypes.map((type) => (
                     <option key={type.id} value={type.id}>{type.name}</option>
                   ))}
@@ -167,7 +169,7 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
                   onClick={() => setShowProposeTypeModal(true)}
                   style={{ padding: '0 10px', whiteSpace: 'nowrap' }}
                 >
-                  + Предложить
+                  {t('editSettlement.proposeBtn')}
                 </button>
               </div>
             </div>
@@ -176,7 +178,7 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
           <div className="edit-settlement-modal__field">
             <ImageUploader 
               folder="states/settlements"
-              label="Фотографии поселения (до 5 шт.)"
+              label={t('editSettlement.photosLabel')}
               multiple={true}
               maxFiles={5}
               value={images}
@@ -186,10 +188,10 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
           </div>
           <div className="edit-settlement-modal__actions">
             <button type="button" className="btn-cancel" onClick={onClose} disabled={loading}>
-              Отмена
+              {t('editSettlement.cancelBtn')}
             </button>
             <button type="submit" className="btn-save" disabled={loading}>
-              {loading ? 'Сохранение...' : 'Сохранить'}
+              {loading ? t('editSettlement.loadingBtn') : t('editSettlement.submitBtn')}
             </button>
           </div>
         </form>
@@ -198,18 +200,18 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
       {showProposeTypeModal && (
         <div className="edit-settlement-modal-overlay" style={{ zIndex: 1100 }}>
           <div className="edit-settlement-modal" style={{ maxWidth: '400px' }}>
-            <h3 style={{ marginTop: 0 }}>Предложить подвид</h3>
+            <h3 style={{ marginTop: 0 }}>{t('editSettlement.proposeModal.title')}</h3>
             <p style={{ marginBottom: '15px', fontSize: '14px', color: '#666' }}>
-              Ваш вариант будет отправлен модератору на проверку.
+              {t('editSettlement.proposeModal.desc')}
             </p>
             <form onSubmit={handleProposeType}>
               <div className="edit-settlement-modal__field">
-                <label>Название подвида</label>
+                <label>{t('editSettlement.proposeModal.nameLabel')}</label>
                 <input
                   type="text"
                   value={newTypeName}
                   onChange={(e) => setNewTypeName(e.target.value)}
-                  placeholder="Например, Деревня"
+                  placeholder={t('editSettlement.proposeModal.namePlaceholder')}
                   required
                   minLength={3}
                 />
@@ -220,10 +222,10 @@ export const EditSettlementModal: React.FC<EditSettlementModalProps> = ({ settle
                   className="btn-cancel"
                   onClick={() => setShowProposeTypeModal(false)}
                 >
-                  Отмена
+                  {t('editSettlement.proposeModal.cancelBtn')}
                 </button>
                 <button type="submit" className="btn-save">
-                  Предложить
+                  {t('editSettlement.proposeModal.submitBtn')}
                 </button>
               </div>
             </form>

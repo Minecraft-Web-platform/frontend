@@ -1,5 +1,6 @@
 import {  } from 'axios';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import { economyService } from '../services/economy.service';
 import { profileService } from '../../profile/services/profile.service';
@@ -14,6 +15,7 @@ import '../economy-shared.scss';
 export const BankPage: React.FC<{ embedded?: boolean }> = ({
   embedded = false,
 }) => {
+  const { t } = useTranslation('economy');
   const { data: accountsData, isLoading: loadingAccounts, mutate: mutateAccounts } = useMyAccounts();
   const { data: transfers = [], isLoading: loadingTransfers, mutate: mutateTransfers } = useMyTransfers();
   const { data: currencies = [], isLoading: loadingCurrencies } = useCurrencies();
@@ -55,7 +57,7 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
       mutateAccounts();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.message || 'Ошибка выпуска карты');
+      alert(err?.message || t('bankPage.issueCardError'));
     }
   };
 
@@ -75,11 +77,10 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
         <div className="economy-hero">
           <div>
             <h1 className="hero-title">
-              <span>🏦</span> Национальная Банковская Система
+              {t('bankPage.heroTitle')}
             </h1>
             <p className="hero-subtitle">
-              Управление счетами, пластиковыми картами и международными
-              переводами с учетом налоговых юрисдикций
+              {t('bankPage.heroSubtitle')}
             </p>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
@@ -87,20 +88,20 @@ export const BankPage: React.FC<{ embedded?: boolean }> = ({
               onClick={() => handleTransferClick('')}
               className="economy-btn economy-btn--primary"
             >
-              Новый перевод
+              {t('bankPage.newTransfer')}
             </button>
             <button
               onClick={() => setShowCreateAccount(true)}
               className="economy-btn economy-btn--secondary"
             >
-              + Открыть счет
+              {t('bankPage.openAccount')}
             </button>
           </div>
         </div>
       )}
 
       {loading ? (
-        <div className="economy-empty">Загрузка банковских данных...</div>
+        <div className="economy-empty">{t('bankPage.loading')}</div>
       ) : (
         <BankAccountsList 
           accounts={accountsData?.accounts || []}

@@ -1,0 +1,48 @@
+{
+  "news": {
+    "title": "Жаңалықтар",
+    "createCategoryBtn": "Жаңа санат",
+    "cancelCategoryBtn": "Бас тарту",
+    "categoryNamePlaceholder": "Санат атауы",
+    "categoryDescPlaceholder": "Санат сипаттамасы",
+    "adminOnlyLabel": "Тек әкімшілер үшін",
+    "createBtn": "Жасау",
+    "loading": "Жүктелуде...",
+    "createNews": {
+      "noContentAlert": "Тақырыпты енгізіп, кем дегенде бір блок қосыңыз",
+      "errorAlert": "Жаңалық жасау кезіндегі қате",
+      "successTitle": "✅ Жаңалық модерацияға жіберілді!",
+      "closeBtn": "Жабу",
+      "title": "Жаңа жаңалық",
+      "inCategory": "Санатта: {{name}}",
+      "titlePlaceholder": "Жаңалық тақырыбы",
+      "textBlock": "Мәтіндік блок",
+      "imageBlock": "Сурет",
+      "textPlaceholder": "Мәтінді енгізіңіз...",
+      "imageLabel": "Сурет жүктеу",
+      "addTextBtn": "+ Мәтін",
+      "addImageBtn": "🖼 Сурет",
+      "submitBtn": "Жариялау",
+      "submittingBtn": "Жариялануда..."
+    },
+    "errors": {
+      "accessDenied": "Кіруге рұқсат берілмеді. Сіз әкімші емессіз."
+    },
+    "status": {
+      "pending": "Модерацияда",
+      "approved": "Мақұлданған",
+      "notApproved": "Мақұлданбаған"
+    },
+    "addNewsPrompt": "Жаңалық әкелу",
+    "details": {
+      "loading": "Жаңалық жүктелуде...",
+      "notFound": "Жаңалық табылмады 😢",
+      "category": "Санаты:",
+      "author": "Авторы:",
+      "date": "Жарияланған күні:",
+      "statusLabel": "Күйі:",
+      "approveBtn": "Мақұлдау",
+      "deleteBtn": "Жою"
+    }
+  }
+}

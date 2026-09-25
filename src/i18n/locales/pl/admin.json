@@ -1,0 +1,43 @@
+{
+    "title": "Zarządzanie Osiągnięciami (Admin)",
+    "alerts": {
+        "updated": "Osiągnięcie zaktualizowane pomyślnie!",
+        "created": "Osiągnięcie utworzone pomyślnie!",
+        "errorSave": "Błąd zapisu osiągnięcia",
+        "granted": "Osiągnięcie przyznane pomyślnie!",
+        "errorGrant": "Błąd przyznawania osiągnięcia",
+        "confirmDelete": "Na pewno usunąć to osiągnięcie?",
+        "deleted": "Usunięto",
+        "errorDelete": "Błąd usuwania"
+    },
+    "form": {
+        "editTitle": "Edytuj Osiągnięcie",
+        "createTitle": "Utwórz Osiągnięcie",
+        "namePlaceholder": "Nazwa",
+        "descPlaceholder": "Opis",
+        "iconLabel": "Ikona (opcjonalnie)",
+        "rarityLabel": "Rzadkość",
+        "rarityCommon": "Zwykłe (Common)",
+        "rarityRare": "Rzadkie (Rare)",
+        "rarityEpic": "Epickie (Epic)",
+        "rarityLegendary": "Legendarne (Legendary)",
+        "triggerPlaceholder": "Zdarzenie auto-przyznania (state.created)",
+        "saveBtn": "Zapisz",
+        "createBtn": "Utwórz",
+        "cancelBtn": "Anuluj"
+    },
+    "grant": {
+        "title": "Przyznaj Osiągnięcie Graczowi",
+        "usernamePlaceholder": "Pseudonim gracza",
+        "achievementLabel": "Osiągnięcie",
+        "selectPlaceholder": "-- Wybierz osiągnięcie --",
+        "grantBtn": "Przyznaj"
+    },
+    "list": {
+        "title": "Lista Osiągnięć",
+        "triggerPrefix": "Trigger:",
+        "manualTrigger": "Ręczne przyznanie",
+        "editBtn": "Edytuj",
+        "deleteBtn": "Usuń"
+    }
+}

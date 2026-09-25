@@ -11,6 +11,11 @@ import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
 import { AccountCard } from '../../../economy/components/AccountCard';
 import '../../../economy/economy-shared.scss';
 import './national-bank.page.scss';
+import { useTranslation } from 'react-i18next';
+import { PropagateLoader } from 'react-spinners';
+import Button from '../../../../shared/ui/button/button.component';
+import { useShallow } from 'zustand/react/shallow';
+
 
 const NationalBankPage: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,8 +26,9 @@ const NationalBankPage: FC = () => {
   const [ipoRequests, setIpoRequests] = useState<IIpoRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, isAdmin } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated, isAdmin: state.isAdmin })));
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
+  const { t } = useTranslation('states');
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -43,8 +49,8 @@ const NationalBankPage: FC = () => {
       const isPresident = stateData.leaderUsername?.toLowerCase() === currentUsername.toLowerCase();
       const isTreasurer = stateData.treasurerUsername?.toLowerCase() === currentUsername.toLowerCase();
 
-      if (!isPresident && !isTreasurer) {
-        alert('У вас нет доступа к управлению Национальным Банком этого государства.');
+      if (!isPresident && !isTreasurer && !isAdmin) {
+        alert(t('nationalBank.accessDenied'));
         navigate(`/states/${id}`);
         return;
       }
@@ -105,15 +111,13 @@ const NationalBankPage: FC = () => {
 
   if (loading) {
     return (
-      <div className="page">
+      <div className="page economy-page">
         <Sidebar />
         <main className="content">
-          <div className="economy-header">
-            <h2>Национальный Банк</h2>
-          </div>
-          <div className="economy-container" style={{ textAlign: 'center', padding: '40px' }}>
-            <div className="spinner"></div>
-            <p style={{ marginTop: '16px', color: '#64748b' }}>Сбор финансовых данных...</p>
+          <div className="economy-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: '60vh' }}>
+            <PropagateLoader color="#eab308" />
+            <h2>{t('nationalBank.title')}</h2>
+            <p style={{ marginTop: '16px', color: '#64748b' }}>{t('nationalBank.gatheringData')}</p>
           </div>
         </main>
       </div>
@@ -125,48 +129,49 @@ const NationalBankPage: FC = () => {
       <Sidebar />
       <main className="content">
         <div className="economy-page">
-          <div className="economy-hero">
-            <div>
-              <h2 className="hero-title">Национальный Банк {state?.name}</h2>
-              <p className="hero-subtitle">Панель управления государственными финансами</p>
+          <div className="economy-container">
+            <div className="economy-hero" style={{ background: 'linear-gradient(135deg, #eab308 0%, #ca8a04 100%)' }}>
+              <div className="hero-icon">🏦</div>
+              <h2 className="hero-title">{t('nationalBank.heroTitle', { name: state?.name })}</h2>
+              <p className="hero-subtitle">{t('nationalBank.heroSubtitle')}</p>
             </div>
           </div>
 
           <div className="economy-container national-bank-container">
-          <div className="bank-actions" style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
-            <button className="economy-btn economy-btn--secondary" onClick={() => navigate(`/states/${id}`)}>
-              Назад к государству
-            </button>
-            <button className="economy-btn economy-btn--primary" onClick={() => navigate('/economy')}>
-              Перейти в раздел переводов
-            </button>
-          </div>
+            <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
+              <Button callback={() => navigate(`/states/${id}`)} secondary={true}>
+                {t('nationalBank.backToState')}
+              </Button>
+              <Button callback={() => navigate('/economy?tab=transfers')}>
+                {t('nationalBank.goToTransfers')}
+              </Button>
+            </div>
 
-          {!state?.treasuryAccountNumber ? (
-            <div className="empty-state">
-              <div className="empty-state__icon">🏛️</div>
-              <h3>Банк не учрежден</h3>
-              <p>Президент должен учредить Национальный банк на странице государства.</p>
-            </div>
-          ) : !treasuryAccount ? (
-            <div className="empty-state">
-              <div className="empty-state__icon">💳</div>
-              <h3>Счет не найден</h3>
-              <p>Казначейский счет не найден. Возможно, валюта государства еще не выпущена.</p>
-            </div>
-          ) : (
-            <div className="treasury-dashboard" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-              <div className="treasury-card-section">
-                <h3 className="economy-section-title" style={{ marginTop: 0 }}>Казначейский счет</h3>
-                <AccountCard account={treasuryAccount} cards={[]} onTransferClick={() => navigate('/economy')} onIssueCard={() => navigate('/economy/cards')} />
+            {!state?.treasuryAccountNumber ? (
+              <div className="economy-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+                <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏛️</div>
+                <h3>{t('nationalBank.notEstablished')}</h3>
+                <p>{t('nationalBank.notEstablishedDesc')}</p>
               </div>
+            ) : !treasuryAccount ? (
+              <div className="economy-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+                <div style={{ fontSize: '48px', marginBottom: '16px' }}>💳</div>
+                <h3>{t('nationalBank.accountNotFound')}</h3>
+                <p>{t('nationalBank.accountNotFoundDesc')}</p>
+              </div>
+            ) : (
+              <div className="treasury-dashboard" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div className="economy-card">
+                  <h3 className="economy-section-title" style={{ marginTop: 0 }}>{t('nationalBank.treasuryAccount')}</h3>
+                  <AccountCard account={treasuryAccount} cards={[]} onTransferClick={() => navigate('/economy')} onIssueCard={() => navigate('/economy/cards')} />
+                </div>
 
-              <div className="treasury-stats-section">
-                <h3 className="economy-section-title" style={{ marginTop: 0 }}>Настройки экономики и налогов</h3>
-                <div className="stats-grid" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px' }}>
-                     <label style={{ display: 'block', fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>Налог на переводы Игрок-Игрок (%)</label>
-                     <input
+                <div className="economy-card">
+                  <h3 className="economy-section-title" style={{ marginTop: 0 }}>{t('nationalBank.economySettings')}</h3>
+                  <div className="stats-grid" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px' }}>
+                      <label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{t('nationalBank.transfersTax')}</label>
+                      <input
                         type="number"
                         className="economy-input"
                         value={state.playerToPlayerTransferFee || 0}
@@ -177,8 +182,8 @@ const NationalBankPage: FC = () => {
                         }}
                      />
                   </div>
-                  <div className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px' }}>
-                     <label style={{ display: 'block', fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>Налог на коммерческие переводы (%)</label>
+                  <div className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px' }}>
+                     <label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{t('nationalBank.commercialTax')}</label>
                      <input
                         type="number"
                         className="economy-input"
@@ -190,8 +195,8 @@ const NationalBankPage: FC = () => {
                         }}
                      />
                   </div>
-                  <div className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px' }}>
-                     <label style={{ display: 'block', fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>Пошлина за IPO ({treasuryAccount.currencyCode})</label>
+                  <div className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px' }}>
+                     <label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{t('nationalBank.ipoFee', { currency: treasuryAccount.currencyCode })}</label>
                      <input
                         type="number"
                         className="economy-input"
@@ -203,8 +208,8 @@ const NationalBankPage: FC = () => {
                         }}
                      />
                   </div>
-                  <div className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px' }}>
-                     <label style={{ display: 'block', fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>Комиссия с торгов (%)</label>
+                  <div className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px' }}>
+                     <label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{t('nationalBank.tradingFee')}</label>
                      <input
                         type="number"
                         className="economy-input"
@@ -216,9 +221,9 @@ const NationalBankPage: FC = () => {
                         }}
                      />
                   </div>
-                  <div className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px' }}>
-                    <div className="stat-label" style={{ color: '#64748b', fontSize: '14px', marginBottom: '4px' }}>Баланс казны</div>
-                    <div className="stat-value" style={{ color: '#0f172a', fontSize: '24px', fontWeight: 'bold' }}>
+                  <div className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px' }}>
+                    <div className="stat-label" style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '4px' }}>{t('nationalBank.treasuryBalance')}</div>
+                    <div className="stat-value" style={{ color: 'var(--text-headings)', fontSize: '24px', fontWeight: 'bold' }}>
                       {treasuryAccount.balance.toLocaleString()} {treasuryAccount.currencyCode}
                     </div>
                   </div>
@@ -229,19 +234,19 @@ const NationalBankPage: FC = () => {
 
           {ipoRequests.length > 0 && (
             <div className="ipo-requests-section" style={{ marginTop: '32px' }}>
-              <h3 className="economy-section-title">Заявки на IPO ({ipoRequests.length})</h3>
+              <h3 className="economy-section-title">{t('nationalBank.ipoRequestsTitle', { count: ipoRequests.length })}</h3>
               <div className="requests-grid" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {ipoRequests.map((req) => (
-                  <div key={req.id} className="stat-card" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '16px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div key={req.id} className="stat-card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                      <h4 style={{ margin: '0 0 8px 0' }}>{req.companyName}</h4>
-                      <div style={{ color: '#64748b', fontSize: '14px' }}>
-                        Акции: {req.totalShares} шт. | Стартовая цена: {req.initialPrice.toFixed(2)} | Пошлина: {req.feeAmount.toFixed(2)}
+                      <h4 style={{ margin: '0 0 8px 0', color: 'var(--text-headings)' }}>{req.companyName}</h4>
+                      <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                        {t('nationalBank.ipoRequestInfo', { shares: req.totalShares, price: req.initialPrice.toFixed(2), fee: req.feeAmount.toFixed(2) })}
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      <button className="economy-btn economy-btn--primary" onClick={() => handleApproveIpo(req.id)}>Одобрить</button>
-                      <button className="economy-btn economy-btn--secondary" style={{ color: '#ef4444', borderColor: '#ef4444' }} onClick={() => handleRejectIpo(req.id)}>Отклонить</button>
+                      <button className="economy-btn economy-btn--primary" onClick={() => handleApproveIpo(req.id)}>{t('nationalBank.approveBtn')}</button>
+                      <button className="economy-btn economy-btn--secondary" style={{ color: '#ef4444', borderColor: '#ef4444' }} onClick={() => handleRejectIpo(req.id)}>{t('nationalBank.rejectBtn')}</button>
                     </div>
                   </div>
                 ))}

@@ -1,5 +1,5 @@
 {
-    "heading": "",
+    "heading": "End Chronicles 2.0",
     "buttons": {
         "news": "News",
         "players-list": "Players",
@@ -7,6 +7,22 @@
         "download-page": "Download launcher & modpack",
         "profile": "Profile",
         "tech-support": "Support",
-        "regulations": "Rules"
+        "regulations": "Rules",
+        "states": "States",
+        "calendar": "Calendar",
+        "economy": "Economy"
+    },
+    "uploader": {
+        "cropTitle": "Crop Image",
+        "cancel": "Cancel",
+        "save": "Save",
+        "defaultLabel": "Upload image",
+        "maxFilesError": "Maximum number of files: {{max}}",
+        "formatError": "Please upload images only (JPG, PNG, WEBP)",
+        "uploadError": "Upload error",
+        "loading": "Loading...",
+        "dropText": "Drag and drop an image here or",
+        "clickSelect": "click to browse",
+        "remove": "Delete"
     }
 }

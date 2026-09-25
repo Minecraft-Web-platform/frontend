@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import Button from '../button/button.component';
@@ -38,6 +39,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
   onCropSave,
   onClose,
 }) => {
+  const { t } = useTranslation('navigation');
   const [imgSrc, setImgSrc] = useState('');
   const imgRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>();
@@ -97,7 +99,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
   return createPortal(
     <div className="cropper-modal-overlay">
       <div className="cropper-modal-content">
-        <h2>Кадрирование изображения</h2>
+        <h2>{t('uploader.cropTitle')}</h2>
         <div className="cropper-body">
           {!!imgSrc && (
             <ReactCrop
@@ -120,10 +122,10 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
         
         <div className="cropper-actions">
           <Button secondary type="button" callback={onClose}>
-            Отмена
+            {t('uploader.cancel')}
           </Button>
           <Button type="button" callback={handleSave} disabled={!completedCrop?.width || !completedCrop?.height}>
-            Сохранить
+            {t('uploader.save')}
           </Button>
         </div>
       </div>

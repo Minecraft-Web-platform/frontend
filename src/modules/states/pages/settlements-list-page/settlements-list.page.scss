@@ -2,7 +2,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 48px 32px;
-  color: #000000;
+  color: var(--text-primary);
   font-family: sans-serif;
 
   &__hero {
@@ -12,23 +12,23 @@
     margin-bottom: 36px;
     flex-wrap: wrap;
     gap: 24px;
-    background-color: #f6f8fa;
-    border: 1px solid #d2d2d8;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 16px;
     padding: 32px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-card);
   }
 
   &__title {
     font-family: "Minecraft", sans-serif;
     font-size: 32px;
     font-weight: normal;
-    color: #000000;
+    color: var(--text-headings);
     margin: 0 0 10px 0;
   }
 
   &__subtitle {
-    color: #535353;
+    color: var(--text-secondary);
     font-size: 16px;
     margin: 0;
   }
@@ -41,48 +41,55 @@
   }
 
   &__search {
-    background-color: #ffffff;
-    border: 1px solid #d2d2d8;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 12px 18px;
-    color: #000000;
+    color: var(--text-primary);
     font-size: 15px;
     width: 280px;
 
+    &::placeholder {
+      color: var(--text-muted);
+    }
+
     &:focus {
       outline: none;
-      border-color: #10b981;
+      border-color: var(--accent-emerald);
+      background-color: var(--bg-card);
     }
   }
 
   &__select {
-    background-color: #ffffff;
-    border: 1px solid #d2d2d8;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 12px 16px;
-    color: #000000;
+    color: var(--text-primary);
     font-size: 15px;
 
     &:focus {
       outline: none;
-      border-color: #10b981;
+      border-color: var(--accent-emerald);
     }
   }
 
   &__create-btn {
-    background-color: #000000;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: #ffffff;
     font-family: sans-serif;
     font-size: 14px;
     font-weight: 600;
-    border: 1px solid #000000;
+    border: none;
     padding: 12px 24px;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
 
     &:hover {
-      background-color: #222222;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
     }
   }
 
@@ -96,10 +103,10 @@
     grid-column: 1 / -1;
     text-align: center;
     padding: 48px 24px;
-    background-color: #f6f8fa;
-    border: 1px dashed #d2d2d8;
+    background-color: var(--bg-surface);
+    border: 1px dashed var(--border-color);
     border-radius: 16px;
-    color: #535353;
+    color: var(--text-muted);
     font-size: 16px;
   }
 
@@ -109,8 +116,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(6px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -119,21 +126,21 @@
   }
 
   &__modal {
-    background-color: #ffffff;
-    border: 1px solid #d2d2d8;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 16px;
     width: 100%;
     max-width: 480px;
     padding: 32px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-    color: #000000;
+    box-shadow: var(--shadow-elevated);
+    color: var(--text-primary);
 
     h3 {
       font-family: "Minecraft", sans-serif;
       margin: 0 0 20px 0;
       font-size: 24px;
       font-weight: normal;
-      color: #000000;
+      color: var(--text-headings);
     }
 
     form {
@@ -143,17 +150,17 @@
     }
 
     input, textarea, select {
-      background-color: #f6f8fa;
-      border: 1px solid #d2d2d8;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 12px 14px;
-      color: #000000;
+      color: var(--text-primary);
       font-size: 14px;
 
       &:focus {
         outline: none;
-        border-color: #10b981;
-        background-color: #ffffff;
+        border-color: var(--accent-emerald);
+        background-color: var(--bg-card);
       }
     }
 

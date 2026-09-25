@@ -1,22 +1,16 @@
+
 import "./player-passport.component.scss";
 import { PlayerType } from "../types/player.type";
+import { useTranslation } from "react-i18next";
 
 interface PlayerPassportProps {
   player: PlayerType;
 }
 
-const normalizeDate = (dateToNormalize: string): string => {
-  const date = new Date(dateToNormalize);
 
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const year = date.getUTCFullYear();
-  const formatted = `${day}.${month}.${year}`;
-
-  return formatted;
-};
 
 const PlayerPassportComponent = ({ player }: PlayerPassportProps) => {
+  const { t } = useTranslation("players");
   return (
     <div
       className={`passport ${
@@ -31,53 +25,48 @@ const PlayerPassportComponent = ({ player }: PlayerPassportProps) => {
           }}
         />
       )}
-      <h2 className="passport__header">
-        {player.stateName || "Мир Хроники Края"}
-      </h2>
-
+      <div className="passport__header">
+        {player.stateName || t("players.passport.defaultState")}
+      </div>
       <div className="passport__content">
         <div className="passport__photo">
           {player.avatar_img ? (
             <img src={player.avatar_img} alt={player.username} />
           ) : (
-            <span>Нет фото</span>
+            <span>{t("players.passport.noPhoto")}</span>
           )}
         </div>
 
         <div className="passport__info">
-          <p>
-            <span className="label">Никнейм:</span> {player.username}
-          </p>
+          <div className="detail-row">
+            <span className="label">{t("players.passport.nickname")}</span> {player.username}
+          </div>
+          <div className="detail-row">
+            <span className="label">{t("players.passport.role")}</span>{" "}
+            {player.role === "admin" ? t("players.passport.roleAdmin") : t("players.passport.rolePlayer")}
+          </div>
 
-          <p>
-            <span className="label">Роль:</span>{" "}
-            {player.role === "admin" ? "Администратор" : "Игрок"}
-          </p>
-
-          <p>
-            <span className="label">UUID:</span> {player.uuid}
-          </p>
-          <p>
-            <span className="label">Гражданство:</span>{" "}
-            {player.citizenshipName || player.stateName || "-"}
-          </p>
-          <p>
-            <span className="label">Поселение:</span>{" "}
+          <div className="detail-row">
+            <span className="label">{t("players.passport.citizenship")}</span>{" "}
+            {player.stateName || "-"}
+          </div>
+          <div className="detail-row">
+            <span className="label">{t("players.passport.settlement")}</span>{" "}
             {player.settlementName || "-"}
-          </p>
-          <p>
-            <span className="label">Улица:</span> -
-          </p>
-          <p>
-            <span className="label">Дом:</span> -
-          </p>
-          <p>
-            <span className="label">Выдано:</span>{" "}
-            {normalizeDate(player.registrationDate)}
-          </p>
-          <p>
-            <span className="label">Действителен до:</span> 01.10.2028
-          </p>
+          </div>
+          <div className="detail-row">
+            <span className="label">{t("players.passport.street")}</span> -
+          </div>
+          <div className="detail-row">
+            <span className="label">{t("players.passport.house")}</span> -
+          </div>
+          <div className="detail-row" style={{ marginTop: "10px" }}>
+            <span className="label">{t("players.passport.issued")}</span>{" "}
+            {new Date().toLocaleDateString('ru-RU')}
+          </div>
+          <div className="detail-row">
+            <span className="label">{t("players.passport.validUntil")}</span> 01.10.2028
+          </div>
         </div>
       </div>
 

@@ -1,6 +1,8 @@
 .profile-page {
   display: flex;
   min-height: 100vh;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
 
   main {
     flex-grow: 1;
@@ -14,21 +16,27 @@
 
 .profile-with-data {
   margin: auto;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
   padding: 40px 64px;
   min-width: 800px;
-
-  background-color: #f6f8fa;
+  max-width: 1000px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 20px;
   font-family: sans-serif;
+  color: var(--text-primary);
 
   h1 {
     font-family: "Minecraft";
     text-align: center;
     margin-bottom: 16px;
+    color: var(--text-headings);
   }
 
   p {
-    color: rgb(77, 77, 77);
+    color: var(--text-secondary);
     max-width: 450px;
     font-size: 20px;
     text-align: center;
@@ -49,7 +57,7 @@
         .previews .preview-item {
           width: 280px;
           height: 280px;
-          border-radius: 8px;
+          border-radius: 12px;
 
           .remove-btn {
             top: 8px;
@@ -77,14 +85,14 @@
 
   .ban-banner {
     position: relative;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.08));
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: 14px;
     padding: 24px;
     margin: 32px auto;
     max-width: 600px;
     text-align: center;
-    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.1);
+    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.15);
     backdrop-filter: blur(10px);
     animation: pulseGlow 3s infinite alternate;
 
@@ -106,14 +114,14 @@
     }
 
     p {
-      color: #374151;
+      color: var(--text-secondary);
       font-size: 16px;
       max-width: 100%;
       margin: 8px 0;
       line-height: 1.5;
 
       strong {
-        color: #b91c1c;
+        color: #f87171;
       }
     }
   }
@@ -131,4 +139,16 @@
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
+}
+
+@media (max-width: 900px) {
+  .profile-with-data {
+    min-width: unset;
+    padding: 32px 24px;
+
+    .profile-content {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  }
 }

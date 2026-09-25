@@ -1,3 +1,5 @@
+import i18n from '../../i18n/i18n';
+
 export class UploadService {
   constructor() { }
 
@@ -22,7 +24,7 @@ export class UploadService {
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
-      throw new Error(err.message || 'Ошибка при загрузке картинки');
+      throw new Error(err.message || i18n.t('navigation:uploader.uploadError'));
     }
 
     const data = await response.json();

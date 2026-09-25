@@ -1,21 +1,24 @@
 import { FC } from "react";
 import "./landing.page.scss";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 
 const LandingPage: FC = () => {
+  const { t } = useTranslation("landing-page");
+
   const copyIP = () => {
     navigator.clipboard.writeText("mc.khroniki-kraya.com");
-    alert("IP скопирован в буфер обмена!");
+    alert(t("footer.copied"));
   };
 
   return (
     <>
       <header className="header">
-        <h1>Хроники края 2.0</h1>
-        <p>Погрузись в мир приключений</p>
+        <h1>{t("intro.title")}</h1>
+        <p>{t("intro.subtitle")}</p>
 
         <Link className="header__link-to-auth" to="/registration">
-          Играть
+          {t("intro.play")}
         </Link>
 
         <a
@@ -24,24 +27,22 @@ const LandingPage: FC = () => {
           target="_blank"
           rel="noreferrer"
         >
-          Онлайн-карта
+          {t("intro.onlineMap")}
         </a>
       </header>
 
       <main className="main">
-        <h1>Что мы за парни такие?</h1>
+        <h1>{t("about.heading")}</h1>
 
         <section className="main__section">
-          <img src="/png/creeper.png" className="img-small-left" />
+          <img src="/png/creeper.webp" className="img-small-left" alt="" />
 
           <p className="left">
-            Мы те самые, которые стараются строить красиво, практично и с
-            историей. Сегодня делаем так, чтобы было приятно играть завтра.
-            Возведя строения в одном стиле, мы добиваемся гармонирующего вида.
+            {t("about.building")}
           </p>
 
           <img
-            src="/png/settlement.png"
+            src="/png/city.webp"
             alt="Merida settlement"
             className="img-large-right"
           />
@@ -49,73 +50,72 @@ const LandingPage: FC = () => {
 
         <section className="main__section">
           <img
-            src="/png/factory.png"
+            src="/png/factory.webp"
             alt="factory SteelFactories"
             className="img-large-left"
           />
 
           <p className="right">
-            Фокусируемся также на производстве и фермах всех видов, а именно:
+            {t("about.farmingTitle")}
             <br />
-            <br />- Металлы
+            <br />- {t("about.metals")}
             <br />
-            <br />- Камни и строительны вещи
+            <br />- {t("about.stones")}
             <br />
-            <br />- Еда и другие полезности
+            <br />- {t("about.food")}
           </p>
 
-          <img src="/png/island_1.png" className="img-small-right" />
+          <img src="/png/island_1.webp" className="img-small-right" alt="" />
         </section>
 
         <section className="main__section">
-          <img src="/png/island_2.png" className="img-small-left" />
+          <img src="/png/island_2.webp" className="img-small-left" alt="" />
 
-          <p className="left">Также не забываем о удобной логистике</p>
+          <p className="left">{t("about.logistics")}</p>
 
           <img
-            src="/png/train.png"
+            src="/png/train.webp"
             alt="train station"
             className="img-large-right"
           />
         </section>
 
         <section className="main__section">
-          <img src="/png/party.png" alt="party" className="img-large-left" />
+          <img src="/png/party.webp" alt="party" className="img-large-left" />
 
           <p className="right">
-            А самое главное, что мы проводим приятное время и очень трепетно
-            относимся к жабам &lt;3
+            {t("about.frogs")}
           </p>
 
-          <img src="/png/island_3.png" className="img-small-right" />
+          <img src="/png/island_3.webp" className="img-small-right" alt="" />
         </section>
       </main>
 
       <footer className="footer">
-        <img src="/png/skeleton.png" alt="Skeleton" height={64} />
+        <img src="/png/skeleton.webp" alt="Skeleton" height={64} />
 
         <div className="footer__links">
           <span>
-            Discord:
+            {t("footer.discord")}
             <a href="https://discord.gg/4FZzbqXvZf" target="_blank" rel="noreferrer">
-              Присоединиться
+              {t("footer.join")}
             </a>
           </span>
 
           <span>
-            Онлайн карта:
+            {t("footer.onlineMap")}
             <a href="http://5.83.140.252:25900/#world:1949:85:1568:0:-0.8:1.07:0:0:free" target="_blank" rel="noreferrer">
-              Открыть карту
+              {t("footer.openMap")}
             </a>
           </span>
 
           <span>
-            IP сервера: mc.khroniki-kraya.com
-            <button className="copy-btn" onClick={copyIP}>Скопировать</button>
+            {t("footer.serverIp")}
+            <button className="copy-btn" onClick={copyIP}>{t("footer.copy")}</button>
           </span>
         </div>
 
-        <img src="/png/steve.png" alt="Steve" height={64} />
+        <img src="/png/steve.webp" alt="Steve" height={64} />
       </footer>
     </>
   );

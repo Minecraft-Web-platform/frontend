@@ -6,17 +6,17 @@
     font-family: "Minecraft", sans-serif;
     font-size: 24px;
     margin-bottom: 20px;
-    color: #1a1a1a;
+    color: var(--text-headings);
   }
 
   .no-territories {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 16px;
     font-style: italic;
-    background: #fff;
+    background: var(--bg-card);
     padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
     text-align: center;
   }
 
@@ -27,41 +27,42 @@
   }
 
   .territory-card {
-    background: #fff;
-    border: 1px solid #eaeaea;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 12px;
     padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+      box-shadow: var(--shadow-elevated);
+      border-color: var(--accent-emerald);
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 1px solid var(--border-color);
       padding-bottom: 12px;
 
       .card-id {
         font-family: monospace;
         font-size: 14px;
-        color: #888;
-        background: #f5f5f5;
+        color: var(--text-muted);
+        background: var(--bg-surface);
         padding: 4px 8px;
         border-radius: 4px;
       }
 
       .btn-delete {
-        background: #fff0f0;
-        color: #ff4d4f;
-        border: 1px solid #ffccc7;
+        background: rgba(239, 68, 68, 0.12);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.25);
         padding: 6px 12px;
         border-radius: 6px;
         font-size: 14px;
@@ -70,9 +71,9 @@
         transition: all 0.2s;
 
         &:hover {
-          background: #ff4d4f;
+          background: #ef4444;
           color: #fff;
-          border-color: #ff4d4f;
+          border-color: #ef4444;
         }
       }
     }
@@ -81,10 +82,10 @@
       p {
         margin: 4px 0;
         font-size: 15px;
-        color: #333;
+        color: var(--text-secondary);
 
         strong {
-          color: #1a1a1a;
+          color: var(--text-headings);
         }
       }
     }
@@ -100,17 +101,17 @@
         cursor: pointer;
         user-select: none;
         font-size: 15px;
-        color: #555;
+        color: var(--text-secondary);
 
         input[type="checkbox"] {
           width: 18px;
           height: 18px;
           cursor: pointer;
-          accent-color: #000;
+          accent-color: var(--accent-emerald);
         }
 
         &:hover {
-          color: #1a1a1a;
+          color: var(--text-headings);
         }
       }
     }

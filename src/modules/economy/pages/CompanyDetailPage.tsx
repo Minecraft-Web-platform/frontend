@@ -1,6 +1,7 @@
 import {  } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { ICompany, ICompanyService } from '../types/economy.types';
 import { economyService } from '../services/economy.service';
 import Button from '../../../shared/ui/button/button.component';
@@ -13,8 +14,11 @@ import { profileService } from '../../profile/services/profile.service';
 import { EditCompanyModal } from '../components/edit-company-modal/EditCompanyModal';
 import { TerritoriesList } from '../../states/components/territories-list/TerritoriesList';
 import './CompanyDetailPage.scss';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const CompanyDetailPage: React.FC = () => {
+  const { t } = useTranslation('economy');
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [company, setCompany] = useState<ICompany | null>(null);
@@ -22,11 +26,11 @@ export const CompanyDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'orders' | 'territories'>('overview');
   const [showEditCompanyModal, setShowEditCompanyModal] = useState(false);
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated })));
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
   const { data: currenciesList = [] } = useCurrencies();
 
-  let currencyCode = 'ед.';
+  let currencyCode = t('companies.unit');
   if (company?.isPublic && company.exchangeStateId) {
     const currency = currenciesList.find(c => c.stateId === company.exchangeStateId);
     if (currency) currencyCode = currency.code;
@@ -65,19 +69,19 @@ export const CompanyDetailPage: React.FC = () => {
       fetchCompanyAndServices();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Ошибка при редактировании компании');
+      alert(err?.response?.data?.message || t('companies.detail.editError'));
     }
   };
 
   const handleArchiveCompany = async () => {
     if (!id) return;
-    if (!window.confirm('Вы уверены, что хотите закрыть (архивировать) компанию? Эта операция безвозвратна, счет будет удален.')) return;
+    if (!window.confirm(t('companies.detail.archiveConfirm'))) return;
     try {
       await economyService.archiveCompany(id);
       navigate('/economy/companies');
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Ошибка при закрытии компании');
+      alert(err?.response?.data?.message || t('companies.detail.archiveError'));
     }
   };
 
@@ -93,7 +97,7 @@ export const CompanyDetailPage: React.FC = () => {
         <Sidebar />
         <main className="content">
           <div className="company-detail-page">
-            <div className="loading">Загрузка данных о компании...</div>
+            <div className="loading">{t('companies.detail.loading')}</div>
           </div>
         </main>
       </div>
@@ -107,8 +111,8 @@ export const CompanyDetailPage: React.FC = () => {
         <main className="content">
           <div className="company-detail-page">
             <div className="not-found">
-              <h2>Компания не найдена</h2>
-              <Button callback={() => navigate(-1)}>Вернуться назад</Button>
+              <h2>{t('companies.detail.notFound')}</h2>
+              <Button callback={() => navigate(-1)}>{t('companies.detail.back')}</Button>
             </div>
           </div>
         </main>
@@ -124,11 +128,11 @@ export const CompanyDetailPage: React.FC = () => {
           
           <div className="cdp-header-card">
             <div className="cdp-header-card__top">
-              <Button callback={() => navigate(-1)} secondary>← Назад</Button>
+              <Button callback={() => navigate(-1)} secondary>{t('companies.detail.backBtn')}</Button>
             </div>
             <div className="cdp-header-card__main">
               {company.logoUrl ? (
-                <img src={company.logoUrl} alt="Логотип" className="cdp-logo" />
+                <img src={company.logoUrl} alt={company.name} className="cdp-logo" />
               ) : (
                 <div className="cdp-logo-placeholder">
                   {company.name.slice(0, 2).toUpperCase()}
@@ -138,20 +142,20 @@ export const CompanyDetailPage: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '8px' }}>
                   <h1 style={{ margin: 0, padding: 0 }}>{company.name}</h1>
                   {company.isArchived && (
-                    <span className="cdp-badge" style={{ background: '#dc3545', color: '#fff' }}>Закрыта (Архив)</span>
+                    <span className="cdp-badge" style={{ background: '#dc3545', color: '#fff' }}>{t('companies.detail.archivedBadge')}</span>
                   )}
                   <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
                     {company.ownerUsername.toLowerCase() === currentUsername?.toLowerCase() && !company.isArchived && (
                       <>
                         <button 
-                          title="Редактировать компанию" 
+                          title={t('companies.detail.edit')} 
                           onClick={() => setShowEditCompanyModal(true)}
                           className="action-icon-btn"
                         >
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                         </button>
                         <button 
-                          title="Закрыть компанию" 
+                          title={t('companies.detail.archive')} 
                           onClick={handleArchiveCompany}
                           className="action-icon-btn action-icon-btn--danger"
                         >
@@ -162,7 +166,7 @@ export const CompanyDetailPage: React.FC = () => {
                   </div>
                 </div>
                 <span className={`cdp-badge ${company.isPublic ? 'public' : 'private'}`}>
-                  {company.isPublic ? 'Торгуется на бирже' : 'Частная компания'}
+                  {company.isPublic ? t('companies.card.publicBadge') : t('companies.card.privateBadge')}
                 </span>
               </div>
             </div>
@@ -173,25 +177,25 @@ export const CompanyDetailPage: React.FC = () => {
               className={`cdp-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
               onClick={() => setActiveTab('overview')}
             >
-              Обзор и Информация
+              {t('companies.detail.tabs.overview')}
             </button>
             <button 
               className={`cdp-tab-btn ${activeTab === 'services' ? 'active' : ''}`}
               onClick={() => setActiveTab('services')}
             >
-              Услуги фирмы
+              {t('companies.detail.tabs.services')}
             </button>
             <button 
               className={`cdp-tab-btn ${activeTab === 'orders' ? 'active' : ''}`}
               onClick={() => setActiveTab('orders')}
             >
-              Заказы
+              {t('companies.detail.tabs.orders')}
             </button>
             <button 
               className={`cdp-tab-btn ${activeTab === 'territories' ? 'active' : ''}`}
               onClick={() => setActiveTab('territories')}
             >
-              Территории
+              {t('companies.detail.tabs.territories')}
             </button>
           </div>
 
@@ -199,34 +203,34 @@ export const CompanyDetailPage: React.FC = () => {
             {activeTab === 'overview' && (
               <div className="cdp-overview">
                 <div className="cdp-info-card">
-                  <h3>О компании</h3>
-                  <p>{company.description || 'Владелец пока не добавил описание для своей компании.'}</p>
+                  <h3>{t('companies.detail.about')}</h3>
+                  <p>{company.description || t('companies.detail.noDescription')}</p>
                 </div>
                 
                 <div className="cdp-stats-grid">
                   <div className="cdp-stat">
-                    <span className="label">Владелец</span>
+                    <span className="label">{t('companies.detail.owner')}</span>
                     <span className="value">{company.ownerUsername}</span>
                   </div>
                   <div className="cdp-stat">
-                    <span className="label">Статус IPO</span>
-                    <span className="value">{company.isPublic ? 'Проведено' : 'Не публичная'}</span>
+                    <span className="label">{t('companies.detail.ipoStatus')}</span>
+                    <span className="value">{company.isPublic ? t('companies.detail.ipoCompleted') : t('companies.detail.ipoPrivate')}</span>
                   </div>
                   {company.isPublic && (
                     <>
                       <div className="cdp-stat">
-                        <span className="label">Цена акции</span>
+                        <span className="label">{t('companies.detail.sharePrice')}</span>
                         <span className="value">{company.sharePrice.toFixed(2)} {currencyCode}</span>
                       </div>
                       <div className="cdp-stat">
-                        <span className="label">Капитализация</span>
+                        <span className="label">{t('companies.detail.marketCap')}</span>
                         <span className="value">
                           {(company.sharePrice * company.totalShares).toLocaleString('ru-RU')} {currencyCode}
                         </span>
                       </div>
                       <div className="cdp-stat">
-                        <span className="label">Выпущено акций</span>
-                        <span className="value">{company.totalShares} шт.</span>
+                        <span className="label">{t('companies.detail.issuedShares')}</span>
+                        <span className="value">{company.totalShares} {t('companies.detail.pcs')}</span>
                       </div>
                     </>
                   )}

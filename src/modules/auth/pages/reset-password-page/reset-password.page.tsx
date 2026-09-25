@@ -7,6 +7,7 @@ import { MoonLoader } from "react-spinners";
 import { AxiosError } from "axios";
 
 import "./reset-password.page.scss";
+import { useTranslation } from "react-i18next";
 
 type StepsOfResetting = "username-form" | "code-form" | "success";
 
@@ -19,6 +20,7 @@ const ResetPasswordPage: FC = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  const { t } = useTranslation('auth');
 
   const submitUsernameFormHandler = async (
     event: FormEvent<HTMLFormElement>
@@ -37,14 +39,14 @@ const ResetPasswordPage: FC = () => {
       if (e instanceof AxiosError) {
         const status = (e as AxiosError<{message?: string}>).response?.status;
         if (status === 404) {
-          setErrorMsg("Пользователь с таким никнеймом не найден");
+          setErrorMsg(t("reset-password-page.errors.notFound"));
         } else if (status === 403) {
-          setErrorMsg("Сначала необходимо подтвердить почту аккаунта");
+          setErrorMsg(t("reset-password-page.errors.emailNotConfirmed"));
         } else {
-          setErrorMsg("Ошибка при отправке кода. Попробуйте позже");
+          setErrorMsg(t("reset-password-page.errors.failedToSend"));
         }
       } else {
-        setErrorMsg("Произошла неизвестная ошибка");
+        setErrorMsg(t("reset-password-page.errors.unknown"));
       }
     } finally {
       setLoading(false);
@@ -73,12 +75,12 @@ const ResetPasswordPage: FC = () => {
         if (status === 400 && typeof msg === "string") {
           setErrorMsg(msg);
         } else if (status === 404) {
-          setErrorMsg("Пользователь не найден");
+          setErrorMsg(t("reset-password-page.errors.notFound"));
         } else {
-          setErrorMsg("Неверный код или некорректный пароль (мин. 8 символов)");
+          setErrorMsg(t("reset-password-page.errors.invalidCode"));
         }
       } else {
-        setErrorMsg("Произошла неизвестная ошибка");
+        setErrorMsg(t("reset-password-page.errors.unknown"));
       }
     } finally {
       setLoading(false);
@@ -92,17 +94,16 @@ const ResetPasswordPage: FC = () => {
           className="reset-password-form"
           onSubmit={(e) => submitUsernameFormHandler(e)}
         >
-          <h1>Сброс пароля</h1>
+          <h1>{t("reset-password-page.usernameForm.title")}</h1>
           <p>
-            Введи свой никнейм на сервере. Код подтверждения для сброса пароля
-            будет отправлен на почту, привязанную к аккаунту.
+            {t("reset-password-page.usernameForm.description")}
           </p>
 
           <Input
             value={username}
             setValue={setUsername}
-            label="Никнейм"
-            placeholder="Steve"
+            label={t("reset-password-page.usernameForm.usernameLabel")}
+            placeholder={t("reset-password-page.usernameForm.usernamePlaceholder")}
             element="input"
           />
 
@@ -115,7 +116,7 @@ const ResetPasswordPage: FC = () => {
               {loading ? (
                 <MoonLoader size={20} color="#fff" />
               ) : (
-                "Получить код"
+                t("reset-password-page.usernameForm.getCode")
               )}
             </Button>
             <Button
@@ -123,7 +124,7 @@ const ResetPasswordPage: FC = () => {
               secondary={true}
               type="button"
             >
-              Вспомнил пароль? :D
+              {t("reset-password-page.usernameForm.remembered")}
             </Button>
           </div>
         </form>
@@ -134,25 +135,24 @@ const ResetPasswordPage: FC = () => {
           className="reset-password-form"
           onSubmit={(e) => submitCodeFormHandler(e)}
         >
-          <h1>Сброс пароля</h1>
+          <h1>{t("reset-password-page.codeForm.title")}</h1>
           <p>
-            Код был выслан на почту аккаунта пользователя <b>{username}</b>.
-            Введи полученный шестизначный код и новый пароль.
+            {t("reset-password-page.codeForm.description", { username })}
           </p>
 
           <Input
             value={confirmCode}
             setValue={setConfirmCode}
-            label="Код подтверждения"
-            placeholder="xxxxxx"
+            label={t("reset-password-page.codeForm.codeLabel")}
+            placeholder={t("reset-password-page.codeForm.codePlaceholder")}
             element="input"
           />
 
           <Input
             value={newPassword}
             setValue={setNewPassword}
-            label="Новый пароль"
-            placeholder="Минимум 8 символов"
+            label={t("reset-password-page.codeForm.passwordLabel")}
+            placeholder={t("reset-password-page.codeForm.passwordPlaceholder")}
             type="password"
             element="input"
           />
@@ -166,7 +166,7 @@ const ResetPasswordPage: FC = () => {
               {loading ? (
                 <MoonLoader size={20} color="#fff" />
               ) : (
-                "Сменить пароль"
+                t("reset-password-page.codeForm.submit")
               )}
             </Button>
             <Button
@@ -174,7 +174,7 @@ const ResetPasswordPage: FC = () => {
               secondary={true}
               type="button"
             >
-              Вспомнил пароль? :D
+              {t("reset-password-page.usernameForm.remembered")}
             </Button>
           </div>
         </form>
@@ -182,15 +182,14 @@ const ResetPasswordPage: FC = () => {
 
       {step === "success" && (
         <div className="reset-password-form">
-          <h1>Пароль изменен!</h1>
+          <h1>{t("reset-password-page.success.title")}</h1>
           <p>
-            Твой пароль был успешно обновлен. Теперь ты можешь войти в свой
-            аккаунт, используя новый пароль.
+            {t("reset-password-page.success.description")}
           </p>
 
           <div className="buttons">
             <Button callback={() => navigate("/login")} type="button">
-              Войти в аккаунт
+              {t("reset-password-page.success.login")}
             </Button>
           </div>
         </div>

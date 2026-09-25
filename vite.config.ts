@@ -5,6 +5,25 @@ import svgr from "vite-plugin-svgr";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), svgr()],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler'
+      }
+    }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router', 'react-router-dom'],
+          'vendor-charts': ['lightweight-charts'],
+          'vendor-ui': ['lucide-react', 'react-spinners', 'classnames'],
+          'vendor-state': ['zustand', 'swr', 'axios'],
+        }
+      }
+    }
+  },
   server: {
     proxy: {
       '^/bluemap/.*/live/markers\\.json': {

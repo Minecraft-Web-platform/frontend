@@ -50,7 +50,7 @@ const ModBuilder: FC = () => {
       URL.revokeObjectURL(url);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      console.error("Ошибка при скачивании модпака:", err);
+      console.error("Error downloading modpack:", err);
       alert(t('errors.http.internal-error'));
     } finally {
       setLoadingModPack(false);
@@ -62,7 +62,7 @@ const ModBuilder: FC = () => {
       <h1 className="">{t('html-elements.mods-heading')}</h1>
 
       {loading ? (
-        <p>Загружаем список опциональных модов...</p>
+        <p>{t('html-elements.loading-mods')}</p>
       ) : (
         <p>
           {t('html-elements.under-mods-heading-description')}

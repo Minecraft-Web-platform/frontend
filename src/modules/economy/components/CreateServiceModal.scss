@@ -1,7 +1,8 @@
 .modal-backdrop {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--modal-overlay, rgba(0, 0, 0, 0.7));
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,21 +11,21 @@
 }
 
 .create-service-modal {
-  background: #ffffff;
+  background: var(--modal-bg, #ffffff);
   border-radius: 20px;
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
   padding: 32px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-modal, 0 20px 60px rgba(0, 0, 0, 0.15));
+  border: 1px solid var(--border-card, rgba(0, 0, 0, 0.05));
 
   h2 {
     margin-top: 0;
     margin-bottom: 24px;
     font-size: 24px;
-    color: #0f172a;
+    color: var(--text-headings, #0f172a);
     font-weight: 700;
   }
 
@@ -36,7 +37,7 @@
       margin-bottom: 8px;
       font-size: 14px;
       font-weight: 500;
-      color: #475569;
+      color: var(--text-secondary, #475569);
     }
 
     input[type="text"],
@@ -44,19 +45,19 @@
     input[type="url"],
     textarea {
       width: 100%;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
+      background: var(--bg-surface, #f8fafc);
+      border: 1px solid var(--border-color, #e2e8f0);
       border-radius: 12px;
       padding: 12px 16px;
-      color: #0f172a;
+      color: var(--text-primary, #0f172a);
       font-family: inherit;
       transition: all 0.2s ease;
 
       &:focus {
         outline: none;
-        border-color: #3b82f6;
-        background: #ffffff;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        border-color: var(--accent-emerald, #10b981);
+        background: var(--bg-card, #ffffff);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
       }
     }
 
@@ -70,6 +71,7 @@
         gap: 8px;
         margin: 0;
         cursor: pointer;
+        color: var(--text-primary);
       }
 
       input[type="checkbox"] {
@@ -91,19 +93,19 @@
   .sub-items-section {
     margin-top: 24px;
     padding-top: 24px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border-color, #e2e8f0);
 
     h3 {
       font-size: 16px;
       margin-top: 0;
       margin-bottom: 16px;
-      color: #1e293b;
+      color: var(--text-headings, #1e293b);
       font-weight: 600;
     }
 
     .sub-item-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
+      background: var(--bg-surface, #f8fafc);
+      border: 1px solid var(--border-color, #e2e8f0);
       padding: 20px;
       border-radius: 12px;
       margin-bottom: 16px;
@@ -130,7 +132,7 @@
     gap: 12px;
     margin-top: 32px;
     padding-top: 24px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border-color, #e2e8f0);
   }
 
   .error-message {

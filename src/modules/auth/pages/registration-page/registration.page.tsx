@@ -11,10 +11,9 @@ import { AxiosError } from "axios";
 import { authService } from "../../services/auth.service";
 import { validator } from "../../../../shared/utils/validator.util";
 
-const errorCodes: { [key: number]: string } = {
-  409: "Этот никнейм уже занят. Придумай себе другой.",
-  400: "Пароли не одинаковые. Проверь еще раз.",
-};
+import { useTranslation } from "react-i18next";
+
+// errorCodes logic handled in component
 
 const RegistrationPage: FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -27,6 +26,7 @@ const RegistrationPage: FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  const { t } = useTranslation('auth');
 
   const buttonIsActive =
     username.length > 2 && password.length > 7 && isAcceptedAgreement;
@@ -69,10 +69,16 @@ const RegistrationPage: FC = () => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((e: any) => {
         if (e instanceof AxiosError) {
-          const code = e.status || e.response?.status;
-          setErrorMessage(code && errorCodes[code] ? errorCodes[code] : "Не удалось зарегистрироваться. Попробуйте еще раз.");
+          const code = e.status || (e as AxiosError<{message?: string}>).response?.status;
+          if (code === 409) {
+            setErrorMessage(t("registration-page.errors.http.username-taken"));
+          } else if (code === 400) {
+            setErrorMessage(t("registration-page.errors.http.passwords-mismatch"));
+          } else {
+            setErrorMessage(t("registration-page.errors.http.failed-to-register"));
+          }
         } else {
-          setErrorMessage("Произошла неизвестная ошибка.");
+          setErrorMessage(t("registration-page.errors.http.unknown"));
         }
       })
       .finally(() => setIsLoading(false));
@@ -82,30 +88,22 @@ const RegistrationPage: FC = () => {
     <main className="registration-page">
       {accountIsCreated ? (
         <div className="created">
-          <h2>Регистрация удалась!</h2>
+          <h2>{t("registration-page.success.title")}</h2>
 
-          <p>
-            Твой аккаунт был создан и я сам в шоке, что ничего не отвалилось :)
-          </p>
+          <p>{t("registration-page.success.p1")}</p>
 
-          <p>
-            Сейчас, дружочек, ты должен залогиниться, чтобы войти в аккаунт и
-            делать грязь с сайта
-          </p>
+          <p>{t("registration-page.success.p2")}</p>
           <br />
-          <p>
-            P.S. Можешь уже заходить на майнкрафт сервер и играть, впиши тот же
-            никнейм что и тут
-          </p>
+          <p>{t("registration-page.success.p3")}</p>
 
-          <Button callback={() => navigate("/login")}>Залогиниться</Button>
+          <Button callback={() => navigate("/login")}>{t("registration-page.success.login-btn")}</Button>
         </div>
       ) : (
         <form
           className="registration-form"
           onSubmit={e => e.preventDefault()}
         >
-          <h1>Регистрация</h1>
+          <h1>{t("registration-page.html-elements.sign-up-heading")}</h1>
 
           {errorMessage && <div className="auth-error-message" style={{ color: '#dc2626', marginBottom: '16px', textAlign: 'center', fontWeight: 'bold', whiteSpace: 'pre-line' }}>{errorMessage}</div>}
 
@@ -113,7 +111,7 @@ const RegistrationPage: FC = () => {
             value={username}
             setValue={setUsername}
             placeholder=""
-            label="Никнейм"
+            label={t("registration-page.html-elements.username-input-label")}
             element="input"
           />
 
@@ -122,7 +120,7 @@ const RegistrationPage: FC = () => {
             setValue={setPassword}
             placeholder=""
             type="password"
-            label="Пароль"
+            label={t("registration-page.html-elements.password-input-label")}
             element="input"
           />
 
@@ -131,7 +129,7 @@ const RegistrationPage: FC = () => {
             setValue={setRepeatPassword}
             placeholder=""
             type="password"
-            label="Ещё раз пароль"
+            label={t("registration-page.html-elements.repeat-password-input-label")}
             element="input"
           />
 
@@ -142,8 +140,8 @@ const RegistrationPage: FC = () => {
             />
 
             <span>
-              Принимаю{" "}
-              <Link to="/agreement">условия обработки Моих данных</Link>
+              {t("registration-page.html-elements.acceptation-reguls-label")}{" "}
+              <Link to="/agreement">{t("registration-page.html-elements.agreement-link")}</Link>
             </span>
           </div>
 
@@ -152,12 +150,12 @@ const RegistrationPage: FC = () => {
               {isLoading ? (
                 <MoonLoader size={20} color="#fff" />
               ) : (
-                "Зарегистрироваться"
+                t("registration-page.html-elements.sign-up-button")
               )}
             </Button>
 
             <Button callback={() => navigate("/login")} secondary={true}>
-              Уже есть аккаунт?
+              {t("registration-page.html-elements.login-redirect-button")}
             </Button>
           </div>
         </form>

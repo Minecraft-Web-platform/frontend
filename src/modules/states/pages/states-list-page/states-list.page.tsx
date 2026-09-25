@@ -8,6 +8,9 @@ import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploade
 import { MapColorPicker } from '../../components/map-color-picker/MapColorPicker';
 import useAuthStore from '../../../../store/auth.store';
 import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
+import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
+
 
 const StatesListPage: FC = () => {
   const [states, setStates] = useState<IState[]>([]);
@@ -26,7 +29,8 @@ const StatesListPage: FC = () => {
   const [color, setColor] = useState('');
   const [creating, setCreating] = useState(false);
 
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated })));
+  const { t } = useTranslation('states');
 
   const loadStates = async () => {
     setLoading(true);
@@ -74,7 +78,7 @@ const StatesListPage: FC = () => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      alert('Ошибка при создании государства');
+      alert(t('states-list.createModal.error'));
     } finally {
       setCreating(false);
     }
@@ -93,10 +97,10 @@ const StatesListPage: FC = () => {
             <div className="states-list-page__hero-content">
               <div className="states-list-page__title-wrapper">
                 <span className="states-list-page__title-icon">🏰</span>
-                <h1 className="states-list-page__title">Государства сервера</h1>
+                <h1 className="states-list-page__title">{t('states-list.hero.title')}</h1>
               </div>
               <p className="states-list-page__subtitle">
-                Альянсы, королевства и республики, управляемые игроками
+                {t('states-list.hero.subtitle')}
               </p>
             </div>
 
@@ -104,7 +108,7 @@ const StatesListPage: FC = () => {
               <input
                 type="text"
                 className="states-list-page__search"
-                placeholder="🔍 Поиск государства..."
+                placeholder={t('states-list.controls.search')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -113,14 +117,14 @@ const StatesListPage: FC = () => {
                   className="states-list-page__create-btn"
                   onClick={() => setShowCreateModal(true)}
                 >
-                  + Создать государство
+                  {t('states-list.controls.create')}
                 </button>
               )}
             </div>
           </div>
 
           {loading ? (
-            <div className="states-list-page__empty">Загрузка государств...</div>
+            <div className="states-list-page__empty">{t('states-list.empty.loading')}</div>
           ) : (
             <div className="states-list-page__grid">
               {filteredStates.length > 0 ? (
@@ -129,7 +133,7 @@ const StatesListPage: FC = () => {
                 ))
               ) : (
                 <div className="states-list-page__empty">
-                  Государства не найдены. Будьте первым, кто оснует великую империю!
+                  {t('states-list.empty.notFound')}
                 </div>
               )}
             </div>
@@ -145,12 +149,11 @@ const StatesListPage: FC = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="states-list-page__modal-header">
-                  <h3>🏰 Основание нового государства</h3>
+                  <h3>{t('states-list.createModal.title')}</h3>
                   <div className="states-list-page__tooltip-wrapper">
                     <span className="states-list-page__tooltip-icon">?</span>
                     <div className="states-list-page__tooltip-content">
-                      Основание государства позволяет объединять поселения, 
-                      устанавливать налоги и развивать общую экономику.
+                      {t('states-list.createModal.tooltip')}
                     </div>
                   </div>
                 </div>
@@ -161,13 +164,13 @@ const StatesListPage: FC = () => {
                     <div className="states-list-page__modal-col">
                       <input
                         type="text"
-                        placeholder="Название государства*"
+                        placeholder={t('states-list.createModal.inputs.name')}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
                       />
                       <textarea
-                        placeholder="Описание / история государства..."
+                        placeholder={t('states-list.createModal.inputs.description')}
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         style={{ flex: 1, minHeight: '200px' }}
@@ -180,7 +183,7 @@ const StatesListPage: FC = () => {
                         <div style={{ flex: 1 }}>
                           <ImageUploader 
                             folder="states/flags"
-                            label="Флаг (опционально)"
+                            label={t('states-list.createModal.inputs.flag')}
                             value={flagUrl}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             onChange={(url: any) => setFlagUrl(url as string)}
@@ -189,7 +192,7 @@ const StatesListPage: FC = () => {
                         <div style={{ flex: 1 }}>
                           <ImageUploader 
                             folder="states/coats"
-                            label="Герб (опционально)"
+                            label={t('states-list.createModal.inputs.coat')}
                             value={coatOfArmsUrl}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             onChange={(url: any) => setCoatOfArmsUrl(url as string)}
@@ -198,7 +201,7 @@ const StatesListPage: FC = () => {
                       </div>
                       
                       <div style={{ marginBottom: '15px' }}>
-                        <label style={{ display: 'block', marginBottom: '5px', color: '#64748b', fontWeight: 'bold' }}>Цвет на карте:</label>
+                        <label style={{ display: 'block', marginBottom: '5px', color: 'var(--text-secondary)', fontWeight: 'bold' }}>{t('states-list.createModal.inputs.color')}</label>
                         <MapColorPicker
                           color={color}
                           onChange={setColor}
@@ -208,19 +211,19 @@ const StatesListPage: FC = () => {
                       
                       <input
                         type="text"
-                        placeholder="Национальность (муж. род, напр. украинец)"
+                        placeholder={t('states-list.createModal.inputs.nationalityMale')}
                         value={nationalityMale}
                         onChange={(e) => setNationalityMale(e.target.value)}
                       />
                       <input
                         type="text"
-                        placeholder="Национальность (жен. род, напр. украинка)"
+                        placeholder={t('states-list.createModal.inputs.nationalityFemale')}
                         value={nationalityFemale}
                         onChange={(e) => setNationalityFemale(e.target.value)}
                       />
                       <input
                         type="text"
-                        placeholder="Название гражданства (напр. украинское)"
+                        placeholder={t('states-list.createModal.inputs.citizenshipName')}
                         value={citizenshipName}
                         onChange={(e) => setCitizenshipName(e.target.value)}
                       />
@@ -230,21 +233,17 @@ const StatesListPage: FC = () => {
                   <div className="states-list-page__modal-actions">
                     <button
                       type="button"
-                      className="states-list-page__create-btn"
-                      style={{
-                        background: '#e2e8f0',
-                        color: '#0f172a',
-                      }}
+                      className="states-list-page__cancel-btn"
                       onClick={() => setShowCreateModal(false)}
                     >
-                      Отмена
+                      {t('states-list.createModal.buttons.cancel')}
                     </button>
                     <button
                       type="submit"
                       className="states-list-page__create-btn"
                       disabled={creating}
                     >
-                      {creating ? 'Основание...' : 'Основать'}
+                      {creating ? t('states-list.createModal.buttons.creating') : t('states-list.createModal.buttons.submit')}
                     </button>
                   </div>
                 </form>

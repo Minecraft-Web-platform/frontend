@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './streets-manager.component.scss';
 import { IStreet } from '../../types/states.types';
 import { statesService } from '../../services/states.service';
+import { useTranslation } from 'react-i18next';
 
 interface StreetsManagerProps {
   settlementId: string;
@@ -15,6 +16,7 @@ const StreetsManager: React.FC<StreetsManagerProps> = ({ settlementId, isMayorOr
   const [newStreetName, setNewStreetName] = useState('');
   const [editingStreetId, setEditingStreetId] = useState<string | null>(null);
   const [editStreetName, setEditStreetName] = useState('');
+  const { t } = useTranslation('states');
 
   const loadStreets = async () => {
     try {
@@ -45,7 +47,7 @@ const StreetsManager: React.FC<StreetsManagerProps> = ({ settlementId, isMayorOr
       loadStreets();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || 'Ошибка создания улицы');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || t('streetsManager.errors.create'));
     }
   };
 
@@ -58,38 +60,38 @@ const StreetsManager: React.FC<StreetsManagerProps> = ({ settlementId, isMayorOr
       loadStreets();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || 'Ошибка обновления улицы');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || t('streetsManager.errors.update'));
     }
   };
 
   const handleDelete = async (streetId: string) => {
-    if (!window.confirm('Вы уверены, что хотите удалить эту улицу? Вся недвижимость на ней может потерять привязку!')) return;
+    if (!window.confirm(t('streetsManager.confirmDelete'))) return;
     try {
       await statesService.deleteStreet(settlementId, streetId);
       loadStreets();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || 'Ошибка удаления улицы');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || t('streetsManager.errors.delete'));
     }
   };
 
-  if (loading) return <div className="streets-manager">Загрузка улиц...</div>;
+  if (loading) return <div className="streets-manager">{t('streetsManager.loading')}</div>;
 
   return (
     <div className="streets-manager">
-      <h2 className="streets-manager__title">🛣️ Улицы поселения ({streets.length})</h2>
+      <h2 className="streets-manager__title">{t('streetsManager.title')} ({streets.length})</h2>
       
       {isMayorOrAdmin && (
         <form className="streets-manager__create-form" onSubmit={handleCreate}>
           <input
             type="text"
-            placeholder="Название новой улицы"
+            placeholder={t('streetsManager.newStreetPlaceholder')}
             value={newStreetName}
             onChange={(e) => setNewStreetName(e.target.value)}
             className="states-input"
             disabled={!isMayorOrAdmin}
           />
-          <button type="submit" className="states-btn states-btn--primary">Создать</button>
+          <button type="submit" className="states-btn states-btn--primary">{t('streetsManager.createBtn')}</button>
         </form>
       )}
 
@@ -106,8 +108,8 @@ const StreetsManager: React.FC<StreetsManagerProps> = ({ settlementId, isMayorOr
                     className="states-input"
                     autoFocus
                   />
-                  <button className="states-btn states-btn--primary" onClick={() => handleUpdate(street.id)}>Сохранить</button>
-                  <button className="states-btn states-btn--secondary" onClick={() => setEditingStreetId(null)}>Отмена</button>
+                  <button className="states-btn states-btn--primary" onClick={() => handleUpdate(street.id)}>{t('streetsManager.saveBtn')}</button>
+                  <button className="states-btn states-btn--secondary" onClick={() => setEditingStreetId(null)}>{t('streetsManager.cancelBtn')}</button>
                 </div>
               ) : (
                 <>
@@ -137,7 +139,7 @@ const StreetsManager: React.FC<StreetsManagerProps> = ({ settlementId, isMayorOr
           ))}
         </div>
       ) : (
-        <div className="streets-manager__empty">В этом поселении пока нет улиц</div>
+        <div className="streets-manager__empty">{t('streetsManager.empty')}</div>
       )}
     </div>
   );

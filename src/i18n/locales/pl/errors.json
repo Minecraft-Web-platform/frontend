@@ -1,1 +1,10 @@
-{}
+{
+  "notFound": {
+    "title": "404",
+    "description": "Ups... Zabłądziłeś gdzieś... Nie martw się, zostaniesz przekierowany do swojego profilu za {{seconds}} {{unit}} :)",
+    "cantWait": "Nie mogę czekać!",
+    "seconds_one": "sekundę",
+    "seconds_few": "sekundy",
+    "seconds_many": "sekund"
+  }
+}

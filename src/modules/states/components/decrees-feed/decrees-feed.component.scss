@@ -37,10 +37,10 @@
 
   // --- Form Card ---
   &__form-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 20px;
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-elevated);
     overflow: hidden;
     position: relative;
     animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -57,8 +57,8 @@
 
     .form-card__header {
       padding: 24px 28px 20px;
-      border-bottom: 1px solid #f1f5f9;
-      background: #fdfbf7;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-surface);
 
       .form-card__title-wrap {
         display: flex;
@@ -73,13 +73,13 @@
         .title {
           font-size: 18px;
           font-weight: 800;
-          color: #0f172a;
+          color: var(--text-headings);
           margin-bottom: 4px;
         }
 
         .subtitle {
           font-size: 13px;
-          color: #64748b;
+          color: var(--text-secondary);
         }
       }
     }
@@ -98,29 +98,29 @@
         label {
           font-size: 13px;
           font-weight: 700;
-          color: #334155;
+          color: var(--text-secondary);
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
 
         input,
         textarea {
-          background: #f8fafc;
-          border: 1px solid #cbd5e1;
+          background: var(--bg-surface);
+          border: 1px solid var(--border-color);
           border-radius: 12px;
           padding: 14px 16px;
-          color: #0f172a;
+          color: var(--text-primary);
           font-size: 15px;
           font-family: inherit;
           transition: all 0.2s ease;
 
           &::placeholder {
-            color: #94a3b8;
+            color: var(--text-muted);
           }
 
           &:focus {
             outline: none;
-            background: #ffffff;
+            background: var(--bg-card);
             border-color: #f59e0b;
             box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
           }
@@ -136,8 +136,8 @@
 
     .form-card__footer {
       padding: 16px 28px;
-      background: #f8fafc;
-      border-top: 1px solid #f1f5f9;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
       display: flex;
       justify-content: flex-end;
       align-items: center;
@@ -149,14 +149,14 @@
         font-size: 14px;
         font-weight: 600;
         cursor: pointer;
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        color: #475569;
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        color: var(--text-secondary);
         transition: all 0.2s ease;
 
         &:hover {
-          background: #f1f5f9;
-          color: #0f172a;
+          background: var(--bg-hover);
+          color: var(--text-headings);
         }
       }
 
@@ -194,18 +194,18 @@
   }
 
   .decree-document {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-card);
     overflow: hidden;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-      border-color: #cbd5e1;
+      box-shadow: var(--shadow-elevated);
+      border-color: var(--accent-emerald);
     }
 
     &__top-bar {
@@ -219,8 +219,8 @@
       justify-content: space-between;
       align-items: flex-start;
       gap: 20px;
-      border-bottom: 1px solid #f1f5f9;
-      background: #fdfbf7;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-surface);
       flex-wrap: wrap;
 
       .decree-document__title-area {
@@ -232,21 +232,21 @@
 
         .decree-badge {
           align-self: flex-start;
-          background: #fef3c7;
-          color: #d97706;
+          background: rgba(245, 158, 11, 0.12);
+          color: #f59e0b;
           font-size: 11px;
           font-weight: 800;
           letter-spacing: 0.8px;
           padding: 4px 10px;
           border-radius: 6px;
-          border: 1px solid #fde68a;
+          border: 1px solid rgba(245, 158, 11, 0.3);
           text-transform: uppercase;
         }
 
         .decree-title {
           font-size: 20px;
           font-weight: 800;
-          color: #0f172a;
+          color: var(--text-headings);
           margin: 0;
           line-height: 1.35;
         }
@@ -257,17 +257,17 @@
         align-items: center;
         gap: 12px;
         padding: 8px 14px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
         border-radius: 12px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        box-shadow: var(--shadow-card);
 
         .author-avatar {
           width: 32px;
           height: 32px;
           border-radius: 6px;
           image-rendering: pixelated;
-          background: #e2e8f0;
+          background: var(--bg-surface);
         }
 
         .author-info {
@@ -277,7 +277,7 @@
           .author-role {
             font-size: 10px;
             font-weight: 700;
-            color: #d97706;
+            color: #f59e0b;
             text-transform: uppercase;
             letter-spacing: 0.5px;
           }
@@ -285,7 +285,7 @@
           .author-name {
             font-size: 14px;
             font-weight: 800;
-            color: #0f172a;
+            color: var(--text-headings);
           }
         }
       }
@@ -293,12 +293,12 @@
 
     &__body {
       padding: 24px 28px;
-      background: #ffffff;
+      background: var(--bg-card);
 
       .decree-content {
         font-size: 15px;
         line-height: 1.75;
-        color: #334155;
+        color: var(--text-primary);
         white-space: pre-wrap;
         word-break: break-word;
         padding-left: 18px;
@@ -308,8 +308,8 @@
 
     &__footer {
       padding: 14px 28px;
-      background: #f8fafc;
-      border-top: 1px solid #f1f5f9;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -322,21 +322,21 @@
         gap: 8px;
         font-size: 12px;
         font-weight: 600;
-        color: #64748b;
+        color: var(--text-secondary);
       }
 
       .date {
         font-size: 12px;
         font-weight: 600;
-        color: #94a3b8;
+        color: var(--text-muted);
       }
     }
   }
 
   // --- Empty State Card ---
   &__empty-card {
-    background: #ffffff;
-    border: 1px dashed #cbd5e1;
+    background: var(--bg-card);
+    border: 1px dashed var(--border-color);
     border-radius: 20px;
     padding: 40px 24px;
     text-align: center;
@@ -358,12 +358,12 @@
       strong {
         font-size: 16px;
         font-weight: 700;
-        color: #1e293b;
+        color: var(--text-headings);
       }
 
       span {
         font-size: 14px;
-        color: #64748b;
+        color: var(--text-secondary);
         max-width: 420px;
       }
     }

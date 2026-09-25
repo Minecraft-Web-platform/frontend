@@ -1,0 +1,43 @@
+{
+  "title": "Yutuqlarni boshqarish (Admin)",
+  "alerts": {
+    "updated": "Yutuq muvaffaqiyatli yangilandi!",
+    "created": "Yutuq muvaffaqiyatli yaratildi!",
+    "errorSave": "Yutuqni saqlashda xatolik",
+    "granted": "Yutuq o'yinchiga muvaffaqiyatli berildi!",
+    "errorGrant": "Yutuqni berishda xatolik",
+    "confirmDelete": "Haqiqatan ham bu yutuqni o'chirib tashlamoqchimisiz?",
+    "deleted": "O'chirildi",
+    "errorDelete": "O'chirishda xatolik"
+  },
+  "form": {
+    "editTitle": "Yutuqni tahrirlash",
+    "createTitle": "Yangi yutuq yaratish",
+    "namePlaceholder": "Nomi",
+    "descPlaceholder": "Tavsifi",
+    "iconLabel": "Belgi (ixtiyoriy)",
+    "rarityLabel": "Noyobligi",
+    "rarityCommon": "Oddiy (Common)",
+    "rarityRare": "Noyob (Rare)",
+    "rarityEpic": "Epik (Epic)",
+    "rarityLegendary": "Afsonaviy (Legendary)",
+    "triggerPlaceholder": "Avtomatik berish hodisasi (state.created)",
+    "saveBtn": "Saqlash",
+    "createBtn": "Yaratish",
+    "cancelBtn": "Bekor qilish"
+  },
+  "grant": {
+    "title": "O'yinchiga yutuq berish",
+    "usernamePlaceholder": "O'yinchi taxallusi",
+    "achievementLabel": "Yutuq",
+    "selectPlaceholder": "-- Yutuqni tanlang --",
+    "grantBtn": "Berish"
+  },
+  "list": {
+    "title": "Yutuqlar ro'yxati",
+    "triggerPrefix": "Trigger:",
+    "manualTrigger": "Qo'lda berish",
+    "editBtn": "Tahrirlash",
+    "deleteBtn": "O'chirish"
+  }
+}

@@ -1,0 +1,29 @@
+{
+    "players": {
+        "title": "Players",
+        "online": "Players online: {{online}}/{{total}}",
+        "show": "Show:",
+        "all": "All",
+        "onlyServer": "Only on server",
+        "state": "State:",
+        "allStates": "All states",
+        "noState": "No state",
+        "statusOnline": "Online",
+        "statusOffline": "Offline",
+        "notFound": "No players found with the selected filters...",
+        "passport": {
+            "defaultState": "Edge Chronicles World",
+            "noPhoto": "No photo",
+            "nickname": "Nickname:",
+            "role": "Role:",
+            "roleAdmin": "Administrator",
+            "rolePlayer": "Player",
+            "citizenship": "Citizenship:",
+            "settlement": "Settlement:",
+            "street": "Street:",
+            "house": "House:",
+            "issued": "Issued:",
+            "validUntil": "Valid until:"
+        }
+    }
+}

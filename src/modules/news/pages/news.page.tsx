@@ -8,7 +8,10 @@ import { NewsCategory } from "../types/news-category.type";
 import { newsCategoryService } from "../services/news-category.service";
 import { useNavigate } from "react-router";
 import CreateNewsModal from "../components/create-news.component";
-import LangChanger from "../../../shared/ui/lang-changer/lang-changer.component";
+
+import { useTranslation } from "react-i18next";
+import { useShallow } from 'zustand/react/shallow';
+
 
 const NewsPage: FC = () => {
   const [categories, setCategories] = useState<NewsCategory[]>([]);
@@ -16,7 +19,8 @@ const NewsPage: FC = () => {
     null
   );
   const navigate = useNavigate();
-  const { isAdmin } = useAuthStore();
+  const { isAdmin } = useAuthStore(useShallow(state => ({ isAdmin: state.isAdmin })));
+  const { t } = useTranslation("news");
 
   useEffect(() => {
     newsCategoryService.getAll().then((res) => setCategories(res));
@@ -27,7 +31,7 @@ const NewsPage: FC = () => {
     publish_permission: "all" | "admins"
   ) => {
     if (!isAdmin && publish_permission === "admins") {
-      alert("Отказано в доступе. Вы не администратор.");
+      alert(t("news.errors.accessDenied"));
 
       return;
     }
@@ -41,7 +45,7 @@ const NewsPage: FC = () => {
       <Sidebar />
 
       <main className="content">
-        <h1>Новости</h1>
+        <h1>{t("news.title")}</h1>
 
         {isAdmin && (
           <CreateNewsCategoryComponent setCategories={setCategories} />
@@ -69,7 +73,7 @@ const NewsPage: FC = () => {
                               <span className="news-card__icon">✍️</span> {news.author}
                             </span>
                             {!news.isApproved && isAdmin && (
-                              <span className="news-card__status badge-pending">На модерации</span>
+                              <span className="news-card__status badge-pending">{t("news.status.pending")}</span>
                             )}
                           </div>
                         </div>
@@ -86,7 +90,7 @@ const NewsPage: FC = () => {
                 >
                   <div className="news-card__create-content">
                     <span className="news-card__create-icon">+</span>
-                    <p>Принести весточку</p>
+                    <p>{t("news.addNewsPrompt")}</p>
                   </div>
                 </article>
               </div>
@@ -101,8 +105,6 @@ const NewsPage: FC = () => {
           categoryId={selectedCategoryId}
         />
       )}
-
-      <LangChanger />
     </div>
   );
 };

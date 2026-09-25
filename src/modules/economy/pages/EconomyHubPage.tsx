@@ -10,12 +10,14 @@ import { CardsPage } from './CardsPage';
 import { PropertiesPage } from './PropertiesPage';
 import { DisputedOrdersTab } from '../components/DisputedOrdersTab';
 import './EconomyHubPage.scss';
+import { useTranslation } from 'react-i18next';
 
 export type EconomyTabId = 'bank' | 'cards' | 'companies' | 'exchange' | 'currencies' | 'properties' | 'orders' | 'arbitration';
 
 export const EconomyHubPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = (searchParams.get('tab') as EconomyTabId) || 'bank';
+  const { t } = useTranslation('economy');
 
   const handleSelectTab = (tab: EconomyTabId) => {
     setSearchParams({ tab });
@@ -28,11 +30,10 @@ export const EconomyHubPage: React.FC = () => {
         <div className="economy-hub">
           <div className="economy-hub__hero">
             <h1 className="economy-hub__title">
-              <span>📈</span> Экономический Центр Сервера
+              {t('hub.title')}
             </h1>
             <p className="economy-hub__subtitle">
-              Единая платформа управления финансовыми активами, банковскими счетами, 
-              коммерческими предприятиями, национальной валютой и инвестициями на бирже.
+              {t('hub.subtitle')}
             </p>
 
             <div className="economy-hub__cards">
@@ -44,9 +45,9 @@ export const EconomyHubPage: React.FC = () => {
               >
                 <div className="card-icon">🏦</div>
                 <div className="card-info">
-                  <div className="card-title">Банки и Счета</div>
+                  <div className="card-title">{t('hub.cards.bank.title')}</div>
                   <div className="card-desc">
-                    Личные счета, пластиковые карты, переводы и казначейства
+                    {t('hub.cards.bank.desc')}
                   </div>
                 </div>
               </div>
@@ -59,9 +60,9 @@ export const EconomyHubPage: React.FC = () => {
               >
                 <div className="card-icon">💳</div>
                 <div className="card-info">
-                  <div className="card-title">Банковские Карты</div>
+                  <div className="card-title">{t('hub.cards.cards.title')}</div>
                   <div className="card-desc">
-                    Пластиковые карты, реквизиты, блокировка и безопасность
+                    {t('hub.cards.cards.desc')}
                   </div>
                 </div>
               </div>
@@ -74,9 +75,9 @@ export const EconomyHubPage: React.FC = () => {
               >
                 <div className="card-icon">🏢</div>
                 <div className="card-info">
-                  <div className="card-title">Компании</div>
+                  <div className="card-title">{t('hub.cards.companies.title')}</div>
                   <div className="card-desc">
-                    Реестр фирм, регистрация бизнеса и дивиденды
+                    {t('hub.cards.companies.desc')}
                   </div>
                 </div>
               </div>
@@ -89,9 +90,9 @@ export const EconomyHubPage: React.FC = () => {
               >
                 <div className="card-icon">🛍️</div>
                 <div className="card-info">
-                  <div className="card-title">Мои Заказы</div>
+                  <div className="card-title">{t('hub.cards.orders.title')}</div>
                   <div className="card-desc">
-                    История заказов услуг у компаний и жалобы
+                    {t('hub.cards.orders.desc')}
                   </div>
                 </div>
               </div>
@@ -104,9 +105,9 @@ export const EconomyHubPage: React.FC = () => {
               >
                 <div className="card-icon">⚖️</div>
                 <div className="card-info">
-                  <div className="card-title">Арбитраж</div>
+                  <div className="card-title">{t('hub.cards.arbitration.title')}</div>
                   <div className="card-desc">
-                    Судебная система для рассмотрения жалоб
+                    {t('hub.cards.arbitration.desc')}
                   </div>
                 </div>
               </div>
@@ -119,9 +120,9 @@ export const EconomyHubPage: React.FC = () => {
               >
                 <div className="card-icon">📈</div>
                 <div className="card-info">
-                  <div className="card-title">Фондовая Биржа</div>
+                  <div className="card-title">{t('hub.cards.exchange.title')}</div>
                   <div className="card-desc">
-                    Покупка и продажа акций публичных компаний сервера
+                    {t('hub.cards.exchange.desc')}
                   </div>
                 </div>
               </div>
@@ -134,9 +135,9 @@ export const EconomyHubPage: React.FC = () => {
               >
                 <div className="card-icon">💰</div>
                 <div className="card-info">
-                  <div className="card-title">Валютный Рынок</div>
+                  <div className="card-title">{t('hub.cards.currencies.title')}</div>
                   <div className="card-desc">
-                    Курсы национальных валют государств и эмиссия
+                    {t('hub.cards.currencies.desc')}
                   </div>
                 </div>
               </div>
@@ -149,9 +150,9 @@ export const EconomyHubPage: React.FC = () => {
               >
                 <div className="card-icon">🏠</div>
                 <div className="card-info">
-                  <div className="card-title">Недвижимость</div>
+                  <div className="card-title">{t('hub.cards.properties.title')}</div>
                   <div className="card-desc">
-                    Реестр и рынок земли, строений и спецобъектов
+                    {t('hub.cards.properties.desc')}
                   </div>
                 </div>
               </div>

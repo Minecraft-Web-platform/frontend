@@ -1,0 +1,50 @@
+{
+  "profile-page": {
+    "title": "Profil",
+    "description": "Twój osobisty kącik. Z czasem pojawi się tu więcej danych, a na razie tryb ascety — podziwiamy to, co jest.",
+    "bannedTitle": "Twoje konto zostało zablokowane!",
+    "banReason": "Powód:",
+    "banReasonNotSpecified": "Nie określono",
+    "banDescription": "Twój dostęp do funkcji serwisu został ograniczony.",
+    "nickname": "Pseudonim",
+    "emailPlaceholder": "powiaz-email@poczta.com",
+    "email": "E-mail",
+    "emailConfirmed": "Potwierdzony",
+    "emailNotConfirmed": "Niepotwierdzony",
+    "roleAdmin": "Administrator",
+    "roleEconomist": "Ekonomista",
+    "rolePlayer": "Gracz",
+    "role": "Rola w projekcie",
+    "none": "Brak",
+    "citizenship": "Obywatelstwo",
+    "settlement": "Osada",
+    "neverPlayed": "Nigdy nie grał(a)",
+    "lastIp": "Ostatni adres IP",
+    "uuid": "UUID (gracza)",
+    "copied": "Skopiowano!",
+    "avatar": "Awatar profilu",
+    "bindEmail": "Powiąż e-mail",
+    "logout": "Wyloguj się"
+  },
+  "calendar": {
+    "title": "Kalendarz wydarzeń",
+    "subtitle": "Śledź życie polityczne i swoje powiadomienia",
+    "eventsCount": "Wydarzeń:",
+    "loading": "Ładowanie...",
+    "empty": "W tym dniu nie wydarzyło się nic ciekawego.",
+    "months": ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"],
+    "days": ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"]
+  },
+  "achievements": {
+    "empty": "Nie masz jeszcze żadnych osiągnięć.",
+    "title": "Osiągnięcia",
+    "earned": "Zdobyto:",
+    "unlocked": "OSIĄGNIĘCIE ODBLOKOWANE",
+    "rarities": {
+      "common": "ZWYKŁE OSIĄGNIĘCIE",
+      "rare": "RZADKIE OSIĄGNIĘCIE",
+      "epic": "EPICKIE OSIĄGNIĘCIE",
+      "legendary": "LEGENDARNE OSIĄGNIĘCIE"
+    }
+  }
+}

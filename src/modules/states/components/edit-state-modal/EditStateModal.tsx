@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './EditStateModal.scss';
 import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploader';
 import { MapColorPicker } from '../map-color-picker/MapColorPicker';
+import { useTranslation } from 'react-i18next';
 
 interface EditStateModalProps {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,6 +20,7 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
   const [color, setColor] = useState<string>(state.color || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation('states');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +31,7 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
       onClose();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Ошибка сохранения');
+      setError(err?.response?.data?.message || t('editState.errors.save'));
     } finally {
       setLoading(false);
     }
@@ -38,11 +40,11 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
   return (
     <div className="edit-state-modal-overlay">
       <div className="edit-state-modal">
-        <h2>Редактирование государства</h2>
+        <h2>{t('editState.title')}</h2>
         {error && <div className="edit-state-modal__error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="edit-state-modal__field">
-            <label>Название государства:</label>
+            <label>{t('editState.nameLabel')}</label>
             <input
               type="text"
               value={name}
@@ -51,7 +53,7 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
             />
           </div>
           <div className="edit-state-modal__field">
-            <label>Описание:</label>
+            <label>{t('editState.descLabel')}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -61,7 +63,7 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
           <div className="edit-state-modal__field">
             <ImageUploader 
               folder="states/flags"
-              label="Флаг"
+              label={t('editState.flagLabel')}
               value={flagUrl}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onChange={(url: any) => setFlagUrl(url as string)}
@@ -70,14 +72,14 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
           <div className="edit-state-modal__field">
             <ImageUploader 
               folder="states/flags"
-              label="Герб (если есть)"
+              label={t('editState.emblemLabel')}
               value={coatOfArmsUrl}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onChange={(url: any) => setCoatOfArmsUrl(url as string)}
             />
           </div>
           <div className="edit-state-modal__field">
-            <label>Цвет территории на карте:</label>
+            <label>{t('editState.colorLabel')}</label>
             <MapColorPicker
               color={color}
               onChange={setColor}
@@ -86,10 +88,10 @@ export const EditStateModal: React.FC<EditStateModalProps> = ({ state, onClose, 
           </div>
           <div className="edit-state-modal__actions">
             <button type="button" className="btn-cancel" onClick={onClose} disabled={loading}>
-              Отмена
+              {t('editState.cancelBtn')}
             </button>
             <button type="submit" className="btn-save" disabled={loading}>
-              {loading ? 'Сохранение...' : 'Сохранить'}
+              {loading ? t('editState.loadingBtn') : t('editState.submitBtn')}
             </button>
           </div>
         </form>

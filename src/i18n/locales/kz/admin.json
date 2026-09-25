@@ -1,0 +1,43 @@
+{
+  "title": "Жетістіктерді басқару (Әкімші)",
+  "alerts": {
+    "updated": "Жетістік сәтті жаңартылды!",
+    "created": "Жетістік сәтті жасалды!",
+    "errorSave": "Жетістікті сақтау қатесі",
+    "granted": "Жетістік ойыншыға сәтті берілді!",
+    "errorGrant": "Жетістікті беру қатесі",
+    "confirmDelete": "Точно удалить эту ачивку?",
+    "deleted": "Жойылды",
+    "errorDelete": "Жою қатесі"
+  },
+  "form": {
+    "editTitle": "Жетістікті өңдеу",
+    "createTitle": "Жетістік жасау",
+    "namePlaceholder": "Атауы",
+    "descPlaceholder": "Сипаттамасы",
+    "iconLabel": "Таңбаша (қосымша)",
+    "rarityLabel": "Сиректігі",
+    "rarityCommon": "Қарапайым (Common)",
+    "rarityRare": "Сирек (Rare)",
+    "rarityEpic": "Эпикалық (Epic)",
+    "rarityLegendary": "Аңызға айналған (Legendary)",
+    "triggerPlaceholder": "Автоматты түрде беру оқиғасы (state.created)",
+    "saveBtn": "Сақтау",
+    "createBtn": "Жасау",
+    "cancelBtn": "Бас тарту"
+  },
+  "grant": {
+    "title": "Ойыншыға жетістік беру",
+    "usernamePlaceholder": "Ойыншының лақап аты",
+    "achievementLabel": "Жетістік",
+    "selectPlaceholder": "-- Жетістікті таңдаңыз --",
+    "grantBtn": "Беру"
+  },
+  "list": {
+    "title": "Жетістіктер тізімі",
+    "triggerPrefix": "Trigger:",
+    "manualTrigger": "Қолмен беру",
+    "editBtn": "Өңдеу",
+    "deleteBtn": "Жою"
+  }
+}

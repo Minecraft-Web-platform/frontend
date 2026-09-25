@@ -12,10 +12,14 @@ import { ImageUploader } from "../../../shared/ui/image-uploader/ImageUploader";
 import { useNavigate } from "react-router";
 import AchievementsBlock from "../components/achievements-block/achievements-block.component";
 import { achievementsService } from "../../achievements/services/achievements.service";
+import { useTranslation } from "react-i18next";
+import { useShallow } from 'zustand/react/shallow';
+
 
 const Profile: FC = () => {
-  const { accessToken, logout, setRoleInfo, setBanInfo } = useAuthStore();
+  const { accessToken, logout, setRoleInfo, setBanInfo } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken, logout: state.logout, setRoleInfo: state.setRoleInfo, setBanInfo: state.setBanInfo })));
   const navigate = useNavigate();
+  const { t } = useTranslation('profile');
 
   const { data: info, isLoading: loading, mutate } = useSWR(
     "profile/me",
@@ -52,16 +56,15 @@ const Profile: FC = () => {
       ) : (
         <main className="profile content">
           <div className="profile-with-data">
-            <h1>Профиль</h1>
+            <h1>{t("profile-page.title")}</h1>
             <p>
-              Твой личный уголок. Со временем появится больше данных здесь, а
-              пока что режим аскета - любуемся, чем можно.
+              {t("profile-page.description")}
             </p>
             {info?.isBanned && (
               <div className="ban-banner">
-                <h2>Ваш аккаунт заблокирован!</h2>
-                <p>Причина: <strong>{info?.banReason || "Не указана"}</strong></p>
-                <p>Ваш доступ к функциям сайта ограничен.</p>
+                <h2>{t("profile-page.bannedTitle")}</h2>
+                <p>{t("profile-page.banReason")} <strong>{info?.banReason || t("profile-page.banReasonNotSpecified")}</strong></p>
+                <p>{t("profile-page.banDescription")}</p>
               </div>
             )}
 
@@ -70,16 +73,15 @@ const Profile: FC = () => {
                 <Input
                   value={info?.username || ""}
                   placeholder=""
-                  label="Никнейм"
+                  label={t("profile-page.nickname")}
                   element="input"
                   disabled
                 />
 
                 <Input
-                  value={info?.email || "привяжи-почту@почта.ком"}
+                  value={info?.email || t("profile-page.emailPlaceholder")}
                   placeholder=""
-                  label={`Почта | ${info?.emailIsConfirmed ? "Подтверждена" : "Не подтверждена"
-                    }`}
+                  label={`${t("profile-page.email")} | ${info?.emailIsConfirmed ? t("profile-page.emailConfirmed") : t("profile-page.emailNotConfirmed")}`}
                   element="input"
                   disabled
                 />
@@ -87,13 +89,13 @@ const Profile: FC = () => {
                 <Input
                   value={
                     info?.role === "admin"
-                      ? "Администратор"
+                      ? t("profile-page.roleAdmin")
                       : info?.role === "economist"
-                        ? "Экономист"
-                        : "Игрок"
+                        ? t("profile-page.roleEconomist")
+                        : t("profile-page.rolePlayer")
                   }
                   placeholder=""
-                  label="Роль на проекте"
+                  label={t("profile-page.role")}
                   element="input"
                   disabled
                 />
@@ -101,17 +103,17 @@ const Profile: FC = () => {
                 {!info?.isBanned && (
                   <>
                     <Input
-                      value={info?.citizenshipName || info?.stateName || "Нет"}
+                      value={info?.citizenshipName || info?.stateName || t("profile-page.none")}
                       placeholder=""
-                      label="Гражданство"
+                      label={t("profile-page.citizenship")}
                       element="input"
                       disabled
                     />
 
                     <Input
-                      value={info?.settlementName || "Нет"}
+                      value={info?.settlementName || t("profile-page.none")}
                       placeholder=""
-                      label="Поселение"
+                      label={t("profile-page.settlement")}
                       element="input"
                       disabled
                     />
@@ -119,9 +121,9 @@ const Profile: FC = () => {
                 )}
 
                 <Input
-                  value={info?.lastIp || "Никогда не играл(а)"}
+                  value={info?.lastIp || t("profile-page.neverPlayed")}
                   placeholder=""
-                  label="Последний айпи"
+                  label={t("profile-page.lastIp")}
                   element="input"
                   disabled
                 />
@@ -131,7 +133,7 @@ const Profile: FC = () => {
                     <Input
                       value={info?.uuid?.toUpperCase() || ""}
                       placeholder=""
-                      label="UUID (игрока)"
+                      label={t("profile-page.uuid")}
                       element="input"
                       disabled
                     />
@@ -139,7 +141,7 @@ const Profile: FC = () => {
                   <Button
                     callback={() => {
                       navigator.clipboard.writeText(info?.uuid || "");
-                      alert("Скопировано!");
+                      alert(t("profile-page.copied"));
                     }}
                     style={{ width: "48px", height: "48px", minWidth: "48px" }}
                   >
@@ -153,16 +155,16 @@ const Profile: FC = () => {
                 <div className="avatar">
                   {info?.isBanned ? (
                     <img 
-                      src={info?.avatar_img ? `${info.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"} 
-                      alt="Аватар профиля"
+                      src={info?.avatar_img ? info.avatar_img : "/png/steve-head.webp"} 
+                      alt={t("profile-page.avatar")}
                       style={{ width: "280px", height: "280px", borderRadius: "8px", objectFit: "cover" }}
                     />
                   ) : (
                     <ImageUploader
-                      label="Аватар профиля"
+                      label={t("profile-page.avatar")}
                       enableCrop
                       aspect={1}
-                      value={info?.avatar_img ? `${info.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"}
+                      value={info?.avatar_img ? info.avatar_img : "/png/steve-head.webp"}
                       onChange={(url) => mutate({ ...info!, avatar_img: url as string }, false)}
                       customUploadFn={async (file) => {
                         const { avatarUrl } = await profileService.uploadAvatar(file, accessToken as string);
@@ -187,12 +189,12 @@ const Profile: FC = () => {
             <div className="buttons">
               {!info?.emailIsConfirmed && (
                 <Button callback={() => navigate("/email-confirmation")}>
-                  Привязать почту
+                  {t("profile-page.bindEmail")}
                 </Button>
               )}
 
               <Button callback={() => logout()} secondary>
-                Выйти из аккаунта
+                {t("profile-page.logout")}
               </Button>
             </div>
           </div>

@@ -1,1 +1,74 @@
-{}
+{
+  "neverPlayed": "Nigdy nie grał",
+  "playerNotFound": "Gracz nie został znaleziony",
+  "admin": "Administrator",
+  "player": "Gracz",
+  "banned": "ZABLOKOWANY",
+  "unban": "Odblokuj",
+  "ban": "Zablokuj",
+  "inGame": "W grze",
+  "offline": "Offline",
+  "tabs": {
+    "info": "Informacje",
+    "achievements": "Osiągnięcia",
+    "companies": "Firmy",
+    "documents": "Dokumenty"
+  },
+  "info": {
+    "identification": "Identyfikacja",
+    "nickname": "Pseudonim:",
+    "uuid": "UUID:",
+    "registrationDate": "Data rejestracji:",
+    "lastLogin": "Ostatnio w grze:",
+    "email": "E-mail:",
+    "emailConfirmed": "✅ Potwierdzony",
+    "emailNotConfirmed": "❌ Niepotwierdzony",
+    "citizenship": "Obywatelstwo",
+    "state": "Państwo:",
+    "settlement": "Osada:"
+  },
+  "achievements": {
+    "sortRareFirst": "Najpierw rzadkie",
+    "sortCommonFirst": "Najpierw częste",
+    "empty": "Ten gracz nie ma jeszcze osiągnięć."
+  },
+  "companies": {
+    "noDescription": "Brak opisu",
+    "public": "Publiczna",
+    "private": "Prywatna",
+    "city": "Miejska",
+    "state": "Państwowa",
+    "international": "Międzynarodowa",
+    "empty": "Ten gracz nie ma jeszcze firm."
+  },
+  "modal": {
+    "banTitle": "Zablokuj gracza",
+    "banDesc": "Zamierzasz zablokować tego gracza. Podaj powód blokady, będzie on widoczny dla gracza.",
+    "banReason": "Powód blokady",
+    "cancel": "Anuluj",
+    "ban": "Zablokuj",
+    "unbanTitle": "Odblokuj gracza",
+    "unbanDesc": "Czy na pewno chcesz zdjąć blokadę z tego gracza? Ponownie uzyska dostęp do serwisu i wszystkich funkcji.",
+    "unban": "Odblokuj",
+    "banError": "Błąd podczas blokowania",
+    "unbanError": "Błąd podczas odblokowywania"
+  },
+  "certificate": {
+    "ministry": "Ministerstwo Gospodarki",
+    "stateRegistry": "Rejestr Państwowy",
+    "header": "ŚWIADECTWO",
+    "title": "O REJESTRACJI DZIAŁALNOŚCI GOSPODARCZEJ",
+    "confirms": "Niniejsze świadectwo potwierdza, że obywatel",
+    "uuidLabel": "Numer identyfikacyjny (UUID):",
+    "companiesLabel": "Zarejestrowanych firm:",
+    "registrationLabel": "Data pierwszej rejestracji:",
+    "registeredStamp": "ZAREJESTROWANO",
+    "signature": "Podpis rejestratora",
+    "issuedTo": "Wydano obywatelowi:",
+    "issuedAt": "Data wydania pierwszego świadectwa:",
+    "count": "Liczba firm we władaniu:",
+    "rights": "Uprawnia do prowadzenia działalności komercyjnej, otwierania rachunków firmowych i uczestnictwa w rynkach giełdowych.",
+    "gov": "RZĄD ENDERGARDU",
+    "dept": "DEPARTAMENT HANDLU I PODATKÓW"
+  }
+}

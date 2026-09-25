@@ -4,7 +4,7 @@
   width: 100%;
   height: 100vh;
   overflow-y: auto;
-  background-color: #72a1d8;
+  background-color: var(--bg-page);
   background-position: center;
   background-size: cover;
   background-attachment: fixed;
@@ -12,23 +12,22 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  position: relative;
 }
 
 .agreement-block {
   display: block;
   border-radius: 28px;
   padding: 48px 56px;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--bg-card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow:
-    0 25px 60px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-modal);
   max-width: 920px;
   width: 100%;
   font-family: sans-serif;
-  color: #1f2937;
+  color: var(--text-primary);
   line-height: 1.6;
 
   @media (max-width: 768px) {
@@ -43,13 +42,13 @@
   .agreement-badge {
     display: inline-block;
     padding: 6px 16px;
-    background-color: rgba(0, 0, 0, 0.06);
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
     border-radius: 999px;
     font-family: "Minecraft", monospace;
     font-size: 12px;
     letter-spacing: 1px;
-    color: #4b5563;
+    color: var(--text-secondary);
     margin-bottom: 16px;
   }
 
@@ -57,7 +56,7 @@
     font-family: "Minecraft", sans-serif;
     font-size: 34px;
     font-weight: 500;
-    color: #111827;
+    color: var(--text-headings);
     margin: 0 0 14px;
     line-height: 1.25;
 
@@ -68,7 +67,7 @@
 
   .agreement-subtitle {
     font-size: 15px;
-    color: #4b5563;
+    color: var(--text-secondary);
     max-width: 580px;
     margin: 0 auto;
     line-height: 1.5;
@@ -82,11 +81,11 @@
 }
 
 .agreement-section-card {
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
   border-radius: 20px;
   padding: 32px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-card);
 
   @media (max-width: 640px) {
     padding: 20px;
@@ -97,7 +96,7 @@
     align-items: center;
     gap: 14px;
     margin-bottom: 24px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 16px;
 
     .section-num {
@@ -106,7 +105,7 @@
       justify-content: center;
       width: 36px;
       height: 36px;
-      background: #111827;
+      background: var(--accent-emerald);
       color: #fff;
       border-radius: 10px;
       font-family: "Minecraft", sans-serif;
@@ -117,7 +116,7 @@
     h2 {
       font-family: "Minecraft", sans-serif;
       font-size: 20px;
-      color: #111827;
+      color: var(--text-headings);
       margin: 0;
 
       @media (max-width: 640px) {
@@ -134,8 +133,8 @@
 }
 
 .agreement-item {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.07);
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
   border-radius: 16px;
   padding: 20px;
   transition: all 0.25s ease;
@@ -145,16 +144,16 @@
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.07);
-    border-color: rgba(0, 0, 0, 0.15);
-    background: #ffffff;
+    box-shadow: var(--shadow-elevated);
+    border-color: var(--accent-emerald);
+    background: var(--bg-hover);
   }
 
   .item-tag {
     display: inline-block;
     font-family: "Minecraft", sans-serif;
     font-size: 13px;
-    color: #1f2937;
+    color: var(--text-headings);
     letter-spacing: 0.5px;
     font-weight: 500;
   }
@@ -162,18 +161,19 @@
   p {
     font-size: 14px;
     line-height: 1.6;
-    color: #4b5563;
+    color: var(--text-secondary);
     margin: 0;
 
     strong {
-      color: #111827;
+      color: var(--text-headings);
     }
   }
 }
 
 .agreement-contact-box {
   margin-top: 24px;
-  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+  background: linear-gradient(135deg, #11151e 0%, #171d27 100%);
+  border: 1px solid var(--border-card);
   color: #ffffff;
   border-radius: 16px;
   padding: 24px 28px;
@@ -182,7 +182,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 20px;
-  box-shadow: 0 10px 25px rgba(17, 24, 39, 0.25);
+  box-shadow: var(--shadow-elevated);
 
   .contact-info {
     max-width: 460px;
@@ -206,10 +206,10 @@
     display: inline-flex;
     align-items: center;
     padding: 12px 20px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
     border-radius: 10px;
-    color: #ffffff;
+    color: #10b981;
     font-family: "Minecraft", sans-serif;
     font-size: 13px;
     text-decoration: none;
@@ -218,10 +218,10 @@
     word-break: break-all;
 
     &:hover {
-      background: #ffffff;
-      color: #111827;
+      background: #10b981;
+      color: #ffffff;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
   }
 }
@@ -229,16 +229,16 @@
 .agreement-footer {
   margin-top: 40px;
   padding-top: 28px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid var(--border-color);
   text-align: center;
 
   .agreement-date {
     font-size: 13px;
-    color: #6b7280;
+    color: var(--text-muted);
     margin: 0;
 
     strong {
-      color: #374151;
+      color: var(--text-secondary);
     }
   }
 

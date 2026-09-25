@@ -8,17 +8,17 @@ import { CreateCategoryDto } from "../types/create-category.dto";
 export class NewsCategoryService {
   constructor(private readonly httpService: EnhancedWithAuthHttpService) {}
 
-  /** Получить все категории */
+  /** Get all categories */
   public async getAll(): Promise<NewsCategory[]> {
     return this.httpService.get("categories");
   }
 
-  /** Получить категорию по ID */
+  /** Get category by ID */
   public async getOne(id: string): Promise<NewsCategory> {
     return this.httpService.get(`categories/${id}`);
   }
 
-  /** Создать категорию (только админ) */
+  /** Create category (admin only) */
   public async create(dto: CreateCategoryDto): Promise<NewsCategory> {
     return this.httpService.post<NewsCategory, CreateCategoryDto>(
       "categories",
@@ -26,7 +26,7 @@ export class NewsCategoryService {
     );
   }
 
-  /** Обновить категорию (только админ) */
+  /** Update category (admin only) */
   public async update(
     id: string,
     dto: UpdateCategoryDto
@@ -37,7 +37,7 @@ export class NewsCategoryService {
     );
   }
 
-  /** Удалить категорию (только админ) */
+  /** Delete category (admin only) */
   public async remove(id: string): Promise<void> {
     return this.httpService.delete<void>(`categories/${id}`);
   }

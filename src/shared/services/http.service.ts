@@ -59,20 +59,20 @@ export class HttpService {
     };
 
     if (responseType === "blob") {
-      // Blob-ответ
+      // Blob response
       const blob = await this.fetchingService.post<Blob, TD>(
         this.getFullApiUrl(url),
         data,
         {
           ...config,
           headers,
-          responseType: "blob", // axios поймёт, что нужно вернуть Blob
+          responseType: "blob", // axios understands to return Blob
         }
       );
-      return blob as unknown as T; // безопасно, если T = Blob
+      return blob as unknown as T; // safe if T = Blob
     }
 
-    // JSON-ответ
+    // JSON response
     const result = await this.fetchingService.post<IResponse<T>, TD>(
       this.getFullApiUrl(url),
       data,

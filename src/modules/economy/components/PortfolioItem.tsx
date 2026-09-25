@@ -1,6 +1,7 @@
 import React from 'react';
 import { ICompany, ICompanyShare } from '../types/economy.types';
 import './PortfolioItem.scss';
+import { useTranslation } from 'react-i18next';
 
 interface PortfolioItemProps {
   share: ICompanyShare;
@@ -24,6 +25,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({
   const pnlPercent =
     investedValue > 0 ? (pnl / investedValue) * 100 : 0;
   const isPositive = pnl >= 0;
+  const { t } = useTranslation('economy');
 
   return (
     <div className="portfolio-item">
@@ -33,15 +35,15 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({
         </div>
         <div>
           <div className="portfolio-name">
-            {company?.name || `Компания #${share.companyId.slice(0, 8)}`}
+            {company?.name || `${t('portfolio.companyPrefix')}${share.companyId.slice(0, 8)}`}
           </div>
           <div className="portfolio-meta">
-            В портфеле: <span>{share.sharesCount} шт.</span> | Ср. цена:{' '}
-            <span>{share.boughtAtPrice.toFixed(2)} {currencyCode || 'ед.'}</span>
+            {t('portfolio.inPortfolio')} <span>{share.sharesCount} {t('portfolio.pcs')}</span> | {t('portfolio.avgPrice')}{' '}
+            <span>{share.boughtAtPrice.toFixed(2)} {currencyCode || t('exchange.unit')}</span>
           </div>
           {ownerLabel && (
             <div className="portfolio-meta" style={{ marginTop: '4px', color: '#8b5cf6' }}>
-              Владелец: <span>{ownerLabel}</span>
+              {t('portfolio.owner')} <span>{ownerLabel}</span>
             </div>
           )}
         </div>
@@ -50,7 +52,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({
       <div className="portfolio-item__right">
         <div className="portfolio-pnl">
           <div className="current-val">
-            {currentValue.toLocaleString('ru-RU')} {currencyCode || 'ед.'}
+            {currentValue.toLocaleString('ru-RU')} {currencyCode || t('exchange.unit')}
           </div>
           <div
             className={`pnl-text ${
@@ -58,7 +60,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({
             }`}
           >
             {isPositive ? '+' : ''}
-            {pnl.toFixed(2)} {currencyCode || 'ед.'} ({isPositive ? '+' : ''}
+            {pnl.toFixed(2)} {currencyCode || t('exchange.unit')} ({isPositive ? '+' : ''}
             {pnlPercent.toFixed(1)}%)
           </div>
         </div>
@@ -69,11 +71,10 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({
             className="economy-btn economy-btn--secondary"
             style={{ padding: '8px 14px', fontSize: '12px' }}
           >
-            Продать
+            {t('portfolio.sell')}
           </button>
         )}
       </div>
     </div>
   );
 };
-

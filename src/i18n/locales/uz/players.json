@@ -1,0 +1,29 @@
+{
+  "players": {
+    "title": "O'yinchilar",
+    "online": "Onlayn o'yinchilar: {{online}}/{{total}}",
+    "show": "Ko'rsatish:",
+    "all": "Barchasi",
+    "onlyServer": "Faqat serverdagilar",
+    "state": "Davlat:",
+    "allStates": "Barcha davlatlar",
+    "noState": "Davlatisiz",
+    "statusOnline": "Onlayn",
+    "statusOffline": "Oflayn",
+    "notFound": "Tanlangan filtrlar bo'yicha o'yinchilar topilmadi...",
+    "passport": {
+      "defaultState": "Chekka Yilnomalari Dunyosi",
+      "noPhoto": "Rasm yo'q",
+      "nickname": "Taxallus (Nikneym):",
+      "role": "Roli:",
+      "roleAdmin": "Administrator",
+      "rolePlayer": "O'yinchi",
+      "citizenship": "Fuqaroligi:",
+      "settlement": "Aholi punkti:",
+      "street": "Ko'chasi:",
+      "house": "Uyi:",
+      "issued": "Berilgan sana:",
+      "validUntil": "Amal qilish muddati:"
+    }
+  }
+}

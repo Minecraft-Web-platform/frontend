@@ -1,1 +1,10 @@
-{}
+{
+  "notFound": {
+    "title": "404",
+    "description": "Oops... Looks like you wandered off into the unknown... Don't worry, you will be redirected to your profile in {{seconds}} {{unit}} :)",
+    "cantWait": "Can't wait!",
+    "seconds_one": "second",
+    "seconds_few": "seconds",
+    "seconds_many": "seconds"
+  }
+}

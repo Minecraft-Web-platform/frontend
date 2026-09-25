@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { useNavigate } from 'react-router';
 import './state-card.component.scss';
 import { IState } from '../../types/states.types';
+import { useTranslation } from 'react-i18next';
 
 interface StateCardProps {
   state: IState;
@@ -9,6 +10,7 @@ interface StateCardProps {
 
 const StateCard: FC<StateCardProps> = ({ state }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation('states');
 
   const settlementsCount = state.settlements?.length || 0;
   const citizensCount = state.citizens?.length || 0;
@@ -63,7 +65,7 @@ const StateCard: FC<StateCardProps> = ({ state }) => {
           <h3 className="state-card__title">{state.name}</h3>
           <div className="state-card__leader">
             <span className="leader-badge">
-              👑 {state.leaderUsername || 'Без лидера (Выборы)'}
+              👑 {state.leaderUsername || t('stateCard.noLeader')}
             </span>
           </div>
         </div>
@@ -74,7 +76,7 @@ const StateCard: FC<StateCardProps> = ({ state }) => {
           <p className="state-card__description">{state.description}</p>
         ) : (
           <p className="state-card__description state-card__description--empty">
-            Описание государства пока не указано...
+            {t('stateCard.noDesc')}
           </p>
         )}
       </div>
@@ -82,20 +84,20 @@ const StateCard: FC<StateCardProps> = ({ state }) => {
       <div className="state-card__footer">
         <div className="state-card__stats">
           <span className="state-card__stat">
-            🏙️ Поселений: <strong>{settlementsCount}</strong>
+            {t('stateCard.settlements')} <strong>{settlementsCount}</strong>
           </span>
           <span className="state-card__stat">
-            👥 Граждан: <strong>{citizensCount}</strong>
+            {t('stateCard.citizens')} <strong>{citizensCount}</strong>
           </span>
           <span
             className="state-card__stat state-card__stat--power"
-            title="Экономическая мощь государства"
+            title={t('stateCard.powerTitle')}
           >
-            ⚡ Мощь: <strong>{power}</strong>
+            {t('stateCard.powerValue')} <strong>{power}</strong>
           </span>
         </div>
         <span className="state-card__more">
-          Подробнее <span className="arrow">→</span>
+          {t('stateCard.moreBtn')} <span className="arrow">{t('stateCard.moreBtnArrow')}</span>
         </span>
       </div>
     </div>

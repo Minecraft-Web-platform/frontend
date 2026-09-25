@@ -8,25 +8,30 @@ import { MarketTab } from '../components/MarketTab';
 import { PortfolioTab } from '../components/PortfolioTab';
 import Button from '../../../shared/ui/button/button.component';
 import '../economy-shared.scss';
+import { useTranslation } from 'react-i18next';
 
 import { usePublicCompanies, useMyPortfolio, useStates, useMyCompanies, useCurrencies } from '../hooks/useEconomyData';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
   embedded = false,
 }) => {
   const [activeTab, setActiveTab] = useState<'market' | 'portfolio'>('market');
 
-  // Модальные окна покупки/продажи
+  // Buy/sell modals
   const [buyCompanyId, setBuyCompanyId] = useState<string | null>(null);
   const [sellCompanyId, setSellCompanyId] = useState<string | null>(null);
   const [sharesCount, setSharesCount] = useState('10');
 
-  // Новые состояния для торгового терминала
+  // Terminal states
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
   const [changePriceCompanyId, setChangePriceCompanyId] = useState<string | null>(null);
   const [selectedExchangeId, setSelectedExchangeId] = useState<string | null>(null);
 
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
+  const { t } = useTranslation('economy');
+
   let currentUsername = '';
   if (accessToken) {
     try {
@@ -52,7 +57,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     mutatePortfolio();
   };
 
-  // Автовыбор первой компании
+  // Auto-select first company
   useEffect(() => {
     if (companies.length > 0 && !selectedCompanyId && selectedExchangeId) {
       const publicCompanies = companies.filter(c => c.isPublic && c.exchangeStateId === selectedExchangeId);
@@ -63,20 +68,20 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
   }, [companies, selectedCompanyId, selectedExchangeId]);
 
   const buyerProfiles = [
-    { type: 'player', id: currentUsername, label: 'Личный счет' }
+    { type: 'player', id: currentUsername, label: t('exchange.personalAccount') }
   ];
 
   statesList.forEach(st => {
     const isTreasurer = st.treasurerUsername?.toLowerCase() === currentUsername?.toLowerCase();
     const isLeader = st.leaderUsername?.toLowerCase() === currentUsername?.toLowerCase();
     if (isTreasurer || isLeader) {
-      buyerProfiles.push({ type: 'state', id: st.id, label: `Казна государства ${st.name}` });
+      buyerProfiles.push({ type: 'state', id: st.id, label: t('exchange.treasuryState', { state: st.name }) });
     }
   });
 
   myCompanies.forEach(comp => {
     if (comp.ownerUsername?.toLowerCase() === currentUsername?.toLowerCase()) {
-      buyerProfiles.push({ type: 'company', id: comp.id, label: `Счет компании ${comp.name}` });
+      buyerProfiles.push({ type: 'company', id: comp.id, label: t('exchange.companyAccount', { company: comp.name }) });
     }
   });
 
@@ -104,7 +109,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     } catch (err: any) {
  
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      alert((err as any).response?.data?.message || (err as any).message || 'Ошибка покупки акций');
+      alert((err as any).response?.data?.message || (err as any).message || t('exchange.buyError'));
     }
   };
 
@@ -129,16 +134,16 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
     } catch (err: any) {
  
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      alert((err as any).response?.data?.message || (err as any).message || 'Ошибка продажи акций');
+      alert((err as any).response?.data?.message || (err as any).message || t('exchange.sellError'));
     }
   };
 
   const getCurrencyCode = (company?: { exchangeStateId?: string | null }) => {
-    if (!company?.exchangeStateId) return 'ед.';
-    return currencies.find(curr => curr.stateId === company.exchangeStateId)?.code || 'ед.';
+    if (!company?.exchangeStateId) return t('exchange.unit');
+    return currencies.find(curr => curr.stateId === company.exchangeStateId)?.code || t('exchange.unit');
   };
 
-  // Расчет стоимости портфеля по валютам
+  // Portfolio calculation by currencies
   const portfolioValuesByCurrency = portfolio.reduce((acc, item) => {
     const comp = companies.find((c) => c.id === item.companyId);
     const price = comp?.sharePrice || item.boughtAtPrice;
@@ -149,7 +154,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
 
   const content = (
     <div className={embedded ? "economy-page economy-page--embedded" : "economy-page"}>
-      {/* Заголовок или компактная плашка */}
+      {/* Header or compact plate */}
       {embedded ? (
         <div
           style={{
@@ -160,20 +165,20 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
         >
           <div
             style={{
-              background: '#ffffff',
-              border: '1px solid #d2d2d8',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-card)',
               borderRadius: '16px',
               padding: '12px 18px',
               textAlign: 'right',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+              boxShadow: 'var(--shadow-card)',
             }}
           >
-            <div className="value-label">Стоимость портфеля</div>
+            <div className="value-label" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500, marginBottom: '4px' }}>{t('exchange.portfolioValue')}</div>
             <div
               style={{
                 fontSize: '20px',
                 fontWeight: 800,
-                color: '#000000',
+                color: 'var(--text-headings)',
                 fontFamily: 'monospace',
               }}
             >
@@ -184,7 +189,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                   </div>
                 ))
               ) : (
-                <div>0 ед.</div>
+                <div>0 {t('exchange.unit')}</div>
               )}
             </div>
           </div>
@@ -193,29 +198,28 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
         <div className="economy-hero">
           <div>
             <h1 className="hero-title">
-              <span>📈</span> Фондовая Биржа и Инвестиции
+              {t('exchange.heroTitle')}
             </h1>
             <p className="hero-subtitle">
-              Торговля акциями публичных компаний, котировки и выплата
-              дивидендов
+              {t('exchange.heroSubtitle')}
             </p>
           </div>
           <div
             style={{
-              background: '#ffffff',
-              border: '1px solid #d2d2d8',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-card)',
               borderRadius: '16px',
               padding: '12px 18px',
               textAlign: 'right',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+              boxShadow: 'var(--shadow-card)',
             }}
           >
-            <div className="value-label">Стоимость портфеля</div>
+            <div className="value-label" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500, marginBottom: '4px' }}>{t('exchange.portfolioValue')}</div>
             <div
               style={{
                 fontSize: '20px',
                 fontWeight: 800,
-                color: '#000000',
+                color: 'var(--text-headings)',
                 fontFamily: 'monospace',
               }}
             >
@@ -226,7 +230,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                   </div>
                 ))
               ) : (
-                <div>0 ед.</div>
+                <div>0 {t('exchange.unit')}</div>
               )}
             </div>
           </div>
@@ -249,7 +253,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
         </div>
       )}
 
-      {/* Вкладки */}
+      {/* Tabs */}
       <div className="economy-tabs">
         <button
           onClick={() => setActiveTab('market')}
@@ -257,7 +261,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
             activeTab === 'market' ? 'economy-tab--active' : ''
           }`}
         >
-          Торговый зал (Рынок)
+          {t('exchange.tabs.market')}
         </button>
         <button
           onClick={() => setActiveTab('portfolio')}
@@ -265,12 +269,12 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
             activeTab === 'portfolio' ? 'economy-tab--active' : ''
           }`}
         >
-          Мой портфель акционера ({portfolio.length})
+          {t('exchange.tabs.portfolio', { count: portfolio.length })}
         </button>
       </div>
 
       {loading ? (
-        <div className="economy-empty">Загрузка котировок...</div>
+        <div className="economy-empty">{t('exchange.loadingQuotes')}</div>
       ) : activeTab === 'market' ? (
         selectedExchangeId ? (
           <MarketTab 
@@ -310,16 +314,16 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                           <div className="logo-fallback">{state.name.slice(0, 2).toUpperCase()}</div>
                         )}
                         <span className="company-card__badge company-card__badge--public">
-                          Фондовая Биржа
+                          {t('exchange.stockExchangeBadge')}
                         </span>
                       </div>
                       <div className="company-card__title-box">
-                        <h3 className="company-title">Биржа: {state.name}</h3>
+                        <h3 className="company-title">{t('exchange.exchangePrefix', { state: state.name })}</h3>
                       </div>
                     </div>
                     <div style={{ marginTop: '16px' }}>
-                      <div className="stat-label" style={{ marginBottom: '8px', fontSize: '12px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                        Компании на бирже ({stateCompanies.length})
+                      <div className="stat-label" style={{ marginBottom: '8px', fontSize: '12px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        {t('exchange.companiesOnExchange', { count: stateCompanies.length })}
                       </div>
                       <div className="marquee-container" style={{ paddingBottom: '8px' }}>
                         {(() => {
@@ -337,18 +341,18 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                                     height: '36px',
                                     flexShrink: 0,
                                     borderRadius: '8px',
-                                    background: '#f1f5f9',
+                                    background: 'var(--bg-surface)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     overflow: 'hidden',
-                                    border: '1px solid #e2e8f0'
+                                    border: '1px solid var(--border-color)'
                                   }}
                                 >
                                   {c.logoUrl ? (
                                     <img src={c.logoUrl} alt={c.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                   ) : (
-                                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#64748b' }}>
+                                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-muted)' }}>
                                       {c.name.slice(0, 2).toUpperCase()}
                                     </span>
                                   )}
@@ -362,7 +366,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                   </div>
                   <div className="company-card__actions">
                     <Button type="button" callback={() => setSelectedExchangeId(state.id)}>
-                      Войти в торговый терминал
+                      {t('exchange.enterTerminal')}
                     </Button>
                   </div>
                 </div>
@@ -370,7 +374,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
             })}
             {statesList.filter(s => companies.some(c => c.isPublic && c.exchangeStateId === s.id)).length === 0 && (
               <div className="economy-empty" style={{ gridColumn: '1 / -1' }}>
-                В данный момент ни на одной бирже не торгуются акции компаний.
+                {t('exchange.emptyExchange')}
               </div>
             )}
           </div>
@@ -385,14 +389,14 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
         />
       )}
 
-      {/* Модальное окно покупки акций */}
+      {/* Buy shares modal */}
       {buyCompanyId && (
         <div className="economy-modal-overlay">
           <div className="economy-modal">
-            <h3 className="modal-title">Покупка акций</h3>
+            <h3 className="modal-title">{t('exchange.buy.title')}</h3>
             <form onSubmit={handleBuySubmit} className="modal-form">
               <label>
-                <span>От чьего лица купить:</span>
+                <span>{t('exchange.buy.who')}</span>
                 <select
                   value={selectedBuyerProfile}
                   onChange={(e) => setSelectedBuyerProfile(e.target.value)}
@@ -405,7 +409,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                 </select>
               </label>
               <label>
-                <span>Количество акций (шт.)</span>
+                <span>{t('exchange.buy.count')}</span>
                 <input
                   type="number"
                   step="1"
@@ -428,9 +432,9 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                 const companyCurrency = getCurrencyCode(company);
                 return (
                   <div style={{ marginTop: '12px', fontSize: '14px', fontWeight: 'bold' }}>
-                    Сумма сделки: {total.toLocaleString('ru-RU', { maximumFractionDigits: 2 })} {companyCurrency}
+                    {t('exchange.buy.total', { total: total.toLocaleString('ru-RU', { maximumFractionDigits: 2 }), currency: companyCurrency })}
                     <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: 'normal' }}>
-                      Ср. цена исполнения: {executionPrice.toFixed(2)} {companyCurrency}
+                      {t('exchange.buy.executionAvg', { price: executionPrice.toFixed(2), currency: companyCurrency })}
                     </div>
                   </div>
                 );
@@ -443,8 +447,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                   margin: '12px 0 0',
                 }}
               >
-                При активной скупке акций курс компании на бирже автоматически
-                растет.
+                {t('exchange.buy.hint')}
               </p>
 
               <div className="modal-actions">
@@ -453,10 +456,10 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                   callback={() => setBuyCompanyId(null)}
                   secondary={true}
                 >
-                  Отмена
+                  {t('exchange.buy.cancel')}
                 </Button>
                 <Button type="submit">
-                  Купить
+                  {t('exchange.buy.submit')}
                 </Button>
               </div>
             </form>
@@ -464,14 +467,14 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
         </div>
       )}
 
-      {/* Модальное окно продажи акций */}
+      {/* Sell shares modal */}
       {sellCompanyId && (
         <div className="economy-modal-overlay">
           <div className="economy-modal">
-            <h3 className="modal-title">Продажа акций с биржи</h3>
+            <h3 className="modal-title">{t('exchange.sell.title')}</h3>
             <form onSubmit={handleSellSubmit} className="modal-form">
               <label>
-                <span>От чьего лица продать:</span>
+                <span>{t('exchange.sell.who')}</span>
                 <select
                   value={selectedSellerProfile}
                   onChange={(e) => setSelectedSellerProfile(e.target.value)}
@@ -484,7 +487,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                 </select>
               </label>
               <label>
-                <span>Количество акций для продажи (шт.)</span>
+                <span>{t('exchange.sell.count')}</span>
                 {(() => {
                   const sep = selectedSellerProfile.indexOf(':');
                   const type = selectedSellerProfile.slice(0, sep);
@@ -493,7 +496,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                   const max = sh?.sharesCount || 0;
                   return (
                     <div style={{ fontSize: '12px', color: '#10b981', marginBottom: '4px' }}>
-                      В наличии: {max} шт.
+                      {t('exchange.sell.available', { count: max })}
                     </div>
                   );
                 })()}
@@ -519,9 +522,9 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                 const companyCurrency = getCurrencyCode(company);
                 return (
                   <div style={{ marginTop: '12px', fontSize: '14px', fontWeight: 'bold' }}>
-                    Сумма сделки: {total.toLocaleString('ru-RU', { maximumFractionDigits: 2 })} {companyCurrency}
+                    {t('exchange.buy.total', { total: total.toLocaleString('ru-RU', { maximumFractionDigits: 2 }), currency: companyCurrency })}
                     <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: 'normal' }}>
-                      Ср. цена исполнения: {executionPrice.toFixed(2)} {companyCurrency}
+                      {t('exchange.buy.executionAvg', { price: executionPrice.toFixed(2), currency: companyCurrency })}
                     </div>
                   </div>
                 );
@@ -534,7 +537,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                   margin: '12px 0 0',
                 }}
               >
-                Средства будут зачислены на ваш личный счет в национальной валюте.
+                {t('exchange.sell.hint')}
               </p>
 
               <div className="modal-actions">
@@ -543,10 +546,10 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
                   callback={() => setSellCompanyId(null)}
                   secondary={true}
                 >
-                  Отмена
+                  {t('exchange.buy.cancel')}
                 </Button>
                 <Button type="submit" secondary={true}>
-                  Продать
+                  {t('exchange.sell.submit')}
                 </Button>
               </div>
             </form>

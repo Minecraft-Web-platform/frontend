@@ -1,5 +1,5 @@
-import {  } from 'axios';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { economyService } from '../services/economy.service';
 
 interface DividendModalProps {
@@ -13,6 +13,7 @@ export const DividendModal: React.FC<DividendModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const { t } = useTranslation('economy');
   const [divAmount, setDivAmount] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -24,11 +25,14 @@ export const DividendModal: React.FC<DividendModalProps> = ({
       const res = await economyService.payDividends(companyId, {
         totalAmount: parseFloat(divAmount),
       });
-      alert(`Дивиденды в размере ${res.distributed} ед. успешно распределены между ${res.shareholdersCount} акционерами!`);
+      alert(t('exchangeModals.dividends.success', {
+        amount: res.distributed,
+        count: res.shareholdersCount,
+      }));
       onSuccess();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert(err?.message || 'Ошибка выплаты дивидендов');
+      alert(err?.message || t('exchangeModals.dividends.error'));
     } finally {
       setLoading(false);
     }
@@ -37,10 +41,10 @@ export const DividendModal: React.FC<DividendModalProps> = ({
   return (
     <div className="economy-modal-overlay">
       <div className="economy-modal">
-        <h3 className="modal-title">Выплата дивидендов акционерам</h3>
+        <h3 className="modal-title">{t('exchangeModals.dividends.title')}</h3>
         <form onSubmit={handleDividendsSubmit} className="modal-form">
           <label>
-            <span>Общая сумма для распределения (в нац. валюте)</span>
+            <span>{t('exchangeModals.dividends.amount')}</span>
             <input
               type="number"
               step="1"
@@ -59,7 +63,7 @@ export const DividendModal: React.FC<DividendModalProps> = ({
               margin: '4px 0 0',
             }}
           >
-            Сумма будет списана со счета компании и разделена между всеми инвесторами пропорционально их доле акций.
+            {t('exchangeModals.dividends.hint')}
           </p>
 
           <div className="modal-actions">
@@ -69,14 +73,14 @@ export const DividendModal: React.FC<DividendModalProps> = ({
               className="economy-btn economy-btn--secondary"
               disabled={loading}
             >
-              Отмена
+              {t('exchangeModals.dividends.cancel')}
             </button>
             <button
               type="submit"
               className="economy-btn economy-btn--success"
               disabled={loading}
             >
-              {loading ? 'Обработка...' : 'Выплатить дивиденды'}
+              {loading ? t('exchangeModals.dividends.processing') : t('exchangeModals.dividends.submit')}
             </button>
           </div>
         </form>

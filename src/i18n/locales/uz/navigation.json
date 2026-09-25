@@ -1,0 +1,28 @@
+{
+  "heading": "Chekka Yilnomalari 2.0",
+  "buttons": {
+    "news": "Yangiliklar",
+    "players-list": "O'yinchilar ro'yxati",
+    "world-map": "Dunyo xaritasi",
+    "download-page": "Modpaket va launcherni yuklab olish",
+    "profile": "Profil",
+    "tech-support": "Texnik yordam",
+    "regulations": "Qoidalar",
+    "states": "Davlatlar",
+    "calendar": "Taqvim",
+    "economy": "Iqtisodiyot"
+  },
+  "uploader": {
+    "cropTitle": "Rasmni qirqish",
+    "cancel": "Bekor qilish",
+    "save": "Saqlash",
+    "defaultLabel": "Rasm yuklash",
+    "maxFilesError": "Fayllarning maksimal soni: {{max}}",
+    "formatError": "Faqat rasmlarni yuklang (JPG, PNG, WEBP)",
+    "uploadError": "Yuklashda xatolik",
+    "loading": "Yuklanmoqda...",
+    "dropText": "Rasmni bu yerga torting yoki",
+    "clickSelect": "tanlash uchun bosing",
+    "remove": "O'chirish"
+  }
+}

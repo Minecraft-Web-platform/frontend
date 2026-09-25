@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { ICurrency } from '../types/economy.types';
 import {
   getMinecraftItemInfo,
@@ -20,6 +21,7 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
   isRuler,
   onIssueClick,
 }) => {
+  const { t } = useTranslation('economy');
   const navigate = useNavigate();
   const isPositive = currency.rateChange24h >= 0;
 
@@ -42,7 +44,7 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
             <div className="title-box">
               <h3>{currency.name}</h3>
               <div className="ticker">
-                Тикер: <strong>{currency.code}</strong>
+                {t('currencies.ticker', { code: currency.code })}
               </div>
             </div>
           </div>
@@ -54,24 +56,25 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
                 : 'change-badge--negative'
             }`}
           >
-            {isPositive ? '+' : ''}
-            {currency.rateChange24h.toFixed(2)}% (24ч)
+            {t('currencies.rateChange24h', {
+              change: `${isPositive ? '+' : ''}${currency.rateChange24h.toFixed(2)}`
+            })}
           </div>
         </div>
 
         <div className="currency-card__creative-info">
           <div className="label">
-            Материальный носитель (1 ед. = 100 коп.)
+            {t('currencies.backingTitle')}
           </div>
           <div className="item-row" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {(() => {
               const mainInfo = getMinecraftItemInfo(currency.minecraftItemId);
               return (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                  <span style={{ color: '#64748b', fontSize: '13px' }}>Основная:</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#0f172a' }}>
+                  <span className="item-label" style={{ fontSize: '13px' }}>{t('currencies.baseItem')}</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--text-primary)' }}>
                     {mainInfo ? mainInfo.icon : null}
-                    <span>{mainInfo ? mainInfo.name : currency.minecraftItemId}</span>
+                    <span>{mainInfo ? t(`minecraftItems.${mainInfo.id}`, mainInfo.name) : currency.minecraftItemId}</span>
                   </span>
                 </div>
               );
@@ -82,10 +85,10 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
                 const kopInfo = getMinecraftItemInfo(currency.kopeckItemId);
                 return (
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                    <span style={{ color: '#64748b', fontSize: '13px' }}>Разменная:</span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#0f172a' }}>
+                    <span className="item-label" style={{ fontSize: '13px' }}>{t('currencies.changeItem')}</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--text-primary)' }}>
                       {kopInfo ? kopInfo.icon : null}
-                      <span>{kopInfo ? kopInfo.name : currency.kopeckItemId}</span>
+                      <span>{kopInfo ? t(`minecraftItems.${kopInfo.id}`, kopInfo.name) : currency.kopeckItemId}</span>
                     </span>
                   </div>
                 );
@@ -95,11 +98,11 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
               (() => {
                 const enchInfo = getMinecraftEnchantInfo(currency.minecraftEnchantment);
                 return (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', paddingTop: '4px', borderTop: '1px dashed #e2e8f0' }}>
-                    <span style={{ color: '#64748b', fontSize: '13px' }}>Чары защиты:</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', paddingTop: '4px', borderTop: '1px dashed var(--border-color, #e2e8f0)' }}>
+                    <span className="item-label" style={{ fontSize: '13px' }}>{t('currencies.protectionCharm')}</span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#7c3aed' }}>
                       <span>{enchInfo ? enchInfo.icon : '✨'}</span>
-                      <span>{enchInfo ? enchInfo.name : currency.minecraftEnchantment}</span>
+                      <span>{enchInfo ? t(`minecraftEnchants.${enchInfo.id}`, enchInfo.name) : currency.minecraftEnchantment}</span>
                     </span>
                   </div>
                 );
@@ -109,29 +112,29 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
 
         <div className="currency-card__stats">
           <div className="stat-box">
-            <div className="stat-label">В обращении (Эмиссия)</div>
+            <div className="stat-label">{t('currencies.inCirculation')}</div>
             <div className="stat-value">
-              {currency.totalIssued.toLocaleString('ru-RU')}
+              {currency.totalIssued.toLocaleString()}
             </div>
           </div>
 
           <div className="stat-box">
-            <div className="stat-label">Золотой резерв</div>
+            <div className="stat-label">{t('currencies.goldReserve')}</div>
             <div className="stat-value stat-value--gold">
-              {currency.reserves.toLocaleString('ru-RU')}
+              {currency.reserves.toLocaleString()}
             </div>
           </div>
         </div>
 
         <div className="currency-card__rate-box">
           <div>
-            <div className="rate-label">Автоматический курс</div>
+            <div className="rate-label">{t('currencies.autoRate')}</div>
             <div className="rate-val">
-              1 {currency.code} = {currency.exchangeRate.toFixed(4)} ед. эталона
+              {t('currencies.rateFormula', { code: currency.code, rate: currency.exchangeRate.toFixed(4) })}
             </div>
           </div>
           <div className="rate-hint">
-            Формула: (Резерв + Мощь) / Эмиссия
+            {t('currencies.formulaHint')}
           </div>
         </div>
         <MiniHistoryChart 
@@ -145,7 +148,7 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
             className="economy-btn economy-btn--outline"
             style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
           >
-            История валюты
+            {t('currencies.historyBtn')}
           </button>
         </div>
       </div>
@@ -157,7 +160,7 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
             className="economy-btn economy-btn--primary"
             style={{ width: '100%' }}
           >
-            Эмитировать валюту
+            {t('currencies.emitBtn')}
           </button>
         </div>
       )}

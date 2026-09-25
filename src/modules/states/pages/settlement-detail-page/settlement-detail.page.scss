@@ -2,7 +2,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 32px;
-  color: #0f172a;
+  color: var(--text-primary);
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -14,29 +14,30 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: #475569;
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 600;
     margin-bottom: 24px;
     cursor: pointer;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     padding: 8px 16px;
     border-radius: 12px;
     font-size: 14px;
     transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    box-shadow: var(--shadow-card);
 
     &:hover {
-      color: #0f172a;
-      border-color: #cbd5e1;
+      color: var(--text-headings);
+      border-color: var(--border-color);
       transform: translateX(-3px);
+      background: var(--bg-hover);
     }
   }
 
   &__hero {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border: 1px solid #e2e8f0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 20px;
     padding: 28px 32px;
     margin-bottom: 36px;
@@ -45,7 +46,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 24px;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+    box-shadow: var(--shadow-card);
 
     @media (max-width: 900px) {
       flex-direction: column;
@@ -85,23 +86,24 @@
     height: 96px;
     border-radius: 16px;
     object-fit: contain;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
     padding: 4px;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    box-shadow: var(--shadow-card);
   }
 
   &__flag-placeholder {
     width: 96px;
     height: 96px;
     border-radius: 16px;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 42px;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    color: var(--accent-emerald);
+    box-shadow: var(--shadow-card);
   }
 
   &__info {
@@ -112,13 +114,13 @@
     font-family: "Minecraft", sans-serif;
     font-size: 32px;
     font-weight: normal;
-    color: #0f172a;
+    color: var(--text-headings);
     margin: 0 0 6px 0;
     letter-spacing: 0.5px;
   }
 
   &__desc {
-    color: #64748b;
+    color: var(--text-secondary);
     font-size: 15px;
     line-height: 1.6;
     margin: 0;
@@ -135,44 +137,44 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
     padding: 7px 14px;
     border-radius: 20px;
     font-size: 13px;
-    color: #475569;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-card);
     transition: all 0.2s ease;
 
     strong {
-      color: #0f172a;
+      color: var(--text-headings);
       font-weight: 600;
     }
 
     &--state {
       cursor: pointer;
-      background: #f0fdf4;
-      border-color: #bbf7d0;
-      color: #166534;
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.25);
+      color: #10b981;
 
       strong {
-        color: #15803d;
+        color: #34d399;
       }
 
       &:hover {
-        background: #dcfce7;
+        background: rgba(16, 185, 129, 0.2);
         transform: translateY(-1px);
         box-shadow: 0 3px 6px rgba(16, 185, 129, 0.12);
       }
     }
 
     &--power {
-      background: #fffbeb;
-      border-color: #fde68a;
-      color: #92400e;
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #f59e0b;
 
       strong {
-        color: #b45309;
+        color: #fbbf24;
       }
     }
   }
@@ -216,54 +218,54 @@
     }
 
     &--secondary {
-      background: #ffffff;
-      border-color: #cbd5e1;
-      color: #334155;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      background: var(--bg-surface);
+      border-color: var(--border-color);
+      color: var(--text-headings);
+      box-shadow: var(--shadow-card);
 
       &:hover:not(:disabled) {
-        border-color: #94a3b8;
-        background: #f8fafc;
+        border-color: var(--border-card);
+        background: var(--bg-hover);
         transform: translateY(-1px);
       }
     }
 
     &--resident {
-      background: #dcfce7;
-      border-color: #86efac;
-      color: #166534;
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #10b981;
       cursor: default;
     }
 
     &--danger {
-      background: #fef2f2;
-      border-color: #fca5a5;
-      color: #dc2626;
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #f87171;
 
       &:hover:not(:disabled) {
-        background: #fee2e2;
-        border-color: #f87171;
-        color: #b91c1c;
+        background: #ef4444;
+        border-color: #ef4444;
+        color: #ffffff;
       }
     }
   }
 
   &__passport-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 18px 22px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    box-shadow: var(--shadow-card);
     min-width: 240px;
 
     .passport-label {
       font-size: 14px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #64748b;
+      color: var(--text-secondary);
       margin-bottom: 15px;
       font-weight: 700;
       text-align: center;
@@ -299,20 +301,20 @@
         border-radius: 16px;
 
         &--active {
-          background: #dcfce7;
-          color: #166534;
+          background: rgba(16, 185, 129, 0.15);
+          color: #10b981;
         }
 
         &--inactive {
-          background: #f1f5f9;
-          color: #64748b;
+          background: var(--bg-card);
+          color: var(--text-muted);
         }
       }
     }
 
     .passport-date {
       font-size: 13px;
-      color: #64748b;
+      color: var(--text-muted);
       font-weight: 500;
       margin-top: 2px;
     }
@@ -324,7 +326,7 @@
     &-title {
       font-size: 20px;
       font-weight: 700;
-      color: #0f172a;
+      color: var(--text-headings);
       margin: 0 0 16px 0;
       display: flex;
       align-items: center;
@@ -354,7 +356,8 @@
       border-radius: 12px;
       overflow: hidden;
       aspect-ratio: 16/9;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-card);
 
       img {
         width: 100%;
@@ -410,25 +413,25 @@
   }
 
   &__citizen-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 16px;
     padding: 14px 16px;
     display: flex;
     align-items: center;
     gap: 14px;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+    box-shadow: var(--shadow-card);
 
     &:hover {
       transform: translateY(-3px);
-      border-color: #10b981;
-      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.08);
+      border-color: var(--accent-emerald);
+      box-shadow: var(--shadow-elevated);
     }
 
     &--me {
-      border: 2px solid #10b981;
-      background: #f0fdf4;
+      border: 2px solid var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.08);
     }
 
     &-avatar {
@@ -436,10 +439,10 @@
       height: 46px;
       border-radius: 12px;
       image-rendering: pixelated;
-      background: #f8fafc;
-      border: 1px solid #cbd5e1;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
       flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
     &-info {
@@ -452,7 +455,7 @@
     &-name {
       font-weight: 700;
       font-size: 15px;
-      color: #0f172a;
+      color: var(--text-headings);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -462,7 +465,7 @@
 
       .citizen-tag-me {
         font-size: 12px;
-        color: #10b981;
+        color: var(--accent-emerald);
         font-weight: 600;
       }
     }
@@ -470,7 +473,7 @@
     &-role {
       font-size: 12px;
       font-weight: 600;
-      color: #64748b;
+      color: var(--text-secondary);
 
       &--mayor {
         color: #d97706;
@@ -480,8 +483,8 @@
 
   &__empty-card {
     grid-column: 1 / -1;
-    background: #f8fafc;
-    border: 2px dashed #cbd5e1;
+    background: var(--bg-surface);
+    border: 2px dashed var(--border-color);
     border-radius: 16px;
     padding: 36px;
     text-align: center;
@@ -489,7 +492,7 @@
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    color: #64748b;
+    color: var(--text-secondary);
 
     .empty-icon {
       font-size: 36px;
@@ -501,13 +504,13 @@
       gap: 4px;
 
       strong {
-        color: #334155;
+        color: var(--text-headings);
         font-size: 16px;
       }
 
       span {
         font-size: 14px;
-        color: #94a3b8;
+        color: var(--text-muted);
       }
     }
   }

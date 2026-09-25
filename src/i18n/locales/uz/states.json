@@ -1,0 +1,520 @@
+{
+  "states-list": {
+    "hero": {
+      "title": "Server davlatlari",
+      "subtitle": "O'yinchilar tomonidan boshqariladigan ittifoqlar, qirolliklar va respublikalar"
+    },
+    "controls": {
+      "search": "🔍 Davlatni qidirish...",
+      "create": "+ Davlat yaratish"
+    },
+    "empty": {
+      "loading": "Davlatlar yuklanmoqda...",
+      "notFound": "Davlatlar topilmadi. Buyuk imperiyaga asos solgan birinchi o'yinchi bo'ling!"
+    },
+    "createModal": {
+      "title": "🏰 Yangi davlatga asos solish",
+      "tooltip": "Davlatga asos solish aholi punktlarini birlashtirish, soliqlar belgilash va umumiy iqtisodiyotni rivojlantirish imkonini beradi.",
+      "inputs": {
+        "name": "Davlat nomi*",
+        "description": "Davlat tavsifi / tarixi...",
+        "flag": "Bayroq (ixtiyoriy)",
+        "coat": "Gerb (ixtiyoriy)",
+        "color": "Xaritadagi rangi:",
+        "nationalityMale": "Millati (erkak, masalan: o'zbek)",
+        "nationalityFemale": "Millati (ayol, masalan: o'zbek)",
+        "citizenshipName": "Fuqarolik nomi (masalan: o'zbekistonlik)"
+      },
+      "buttons": {
+        "cancel": "Bekor qilish",
+        "creating": "Yaratilmoqda...",
+        "submit": "Yaratish"
+      },
+      "error": "Davlat yaratishda xatolik"
+    }
+  },
+  "state-detail": {
+    "loading": "Davlat pasporti yuklanmoqda...",
+    "notFound": "Davlat topilmadi.",
+    "backList": "← Ro'yxatga qaytish",
+    "backStates": "← Davlatlar ro'yxatiga",
+    "archived": "Arxivlangan",
+    "idCopied": "ID nusxalandi: ",
+    "descMissing": "Tavsif mavjud emas.",
+    "citizenship": "📜 Fuqarolik:",
+    "president": "👑 Prezident:",
+    "presidentNone": "Yo'q",
+    "settlements": "🏛️ Aholi punktlari soni:",
+    "citizens": "👥 Fuqarolar soni:",
+    "taxes": "⚖️ Soliqlar:",
+    "powerTitle": "Davlatning iqtisodiy qudrati (valyuta kursiga ta'sir qiladi)",
+    "power": "⚡ Qudrat:",
+    "treasury": {
+      "title": "🏦 Davlat g'aznasi",
+      "noAccount": "Yaratilmagan",
+      "hintRegistered": "Milliy Bankdagi hisob",
+      "hintUnregistered": "Hisobni ro'yxatdan o'tkazish talab qilinadi",
+      "btnBank": "Milliy Bankni boshqarish"
+    },
+    "dashboard": {
+      "title": "⚙️ Davlatni boshqarish paneli (Prezident)",
+      "settlements": {
+        "title": "🏙️ Davlat aholi punktlari",
+        "founded": "Tashkil etilgan aholi punktlari: ",
+        "btn": "+ Aholi punkti yaratish"
+      },
+      "power": {
+        "title": "🚪 Vakolatlar",
+        "desc": "Siz istalgan vaqtda prezidentlik vakolatlaringizni topshirishingiz mumkin.",
+        "btn": "Vakolatlarni topshirish"
+      },
+      "bank": {
+        "title": "🏦 Milliy bank",
+        "active": "✅ Yaratilgan (hisob №{{account}})",
+        "inactive": "⚠️ Yaratilmagan. Valyuta chiqarishdan oldin yaratish talab qilinadi.",
+        "btn": "+ Bank yaratish",
+        "statusOk": "Bank faol"
+      },
+      "currency": {
+        "title": "💰 Milliy valyuta",
+        "noBank": "🔒 Avval Milliy Bankni yarating",
+        "active": "✅ Chiqarilgan: {{name}} ({{code}})",
+        "inactive": "⚠️ Chiqarilmagan. Valyutasiz fuqarolar firmalar va hisoblar ocha olmaydi!",
+        "btnBank": "Avval bank",
+        "btnCurrency": "+ Valyuta chiqarish",
+        "statusOk": "1 {{code}} = 100 tiyin"
+      },
+      "taxes": {
+        "title": "⚙️ Soliqlar va g'azna",
+        "p2p": "O'yinchilar o'rtasidagi o'tkazmalar: ",
+        "p2c": "Tijorat o'tkazmalari: ",
+        "exchange": "Birja yig'imi: ",
+        "btn": "Soliqni o'zgartirish"
+      },
+      "roles": {
+        "title": "🎭 Mansablar",
+        "treasurer": "G'aznachi: ",
+        "voivode": "Sipohsalar: ",
+        "unassigned": "Tayinlanmagan",
+        "btn": "Mansablarni boshqarish"
+      }
+    },
+    "diplomacyTitle": "🤝 Diplomatik munosabatlar",
+    "electionsTitle": "🗳️ Davlatdagi saylovlar",
+    "settlementsTitle": "🏙️  Davlat aholi punktlari",
+    "allSettlementsBtn": "Barcha aholi punktlari →",
+    "settlementsEmpty": {
+      "title": "Ushbu davlatda hali tashkil etilgan aholi punktlari yo'q",
+      "desc": "Aholini jalb qilish va iqtisodiyotni rivojlantirish uchun aholi punktlariga asos soling!",
+      "btn": "+ Aholi punkti yaratish"
+    },
+    "citizensTitle": "👥  Davlat fuqarolari",
+    "citizensCard": {
+      "me": "(Siz)",
+      "leader": "👑 Prezident / Yetakchi",
+      "citizen": "👥 Fuqaro"
+    },
+    "citizensEmpty": {
+      "title": "Bu davlatda hozircha ro'yxatdan o'tgan fuqarolar yo'q",
+      "desc": "Aholi punktlarini tashkil qiling va o'yinchilarni yashashga taklif eting!"
+    },
+    "goldReserve": {
+      "title": "📦  Davlatning oltin zaxirasi va g'aznasi",
+      "btn": "📥 Seyfni raqamlashtirish",
+      "count": "Soni: ",
+      "pcs": " dona",
+      "emptyTitle": "G'azna bo'sh",
+      "emptyDesc": "Davlat hali oltin zaxirasini shakllantirmagan. Buyumlarni yuklash o'yin orqali avtomatik amalga oshiriladi."
+    },
+    "currenciesTitle": "💰  Davlat valyutalari",
+    "allCurrenciesBtn": "Barcha valyutalar →",
+    "currencyCard": {
+      "rate": "Avto kurs:",
+      "issued": "Muomalada:",
+      "power": "Iqtisodiy qudrat:",
+      "btn": "Valyuta sahifasini ochish →"
+    },
+    "currenciesEmpty": {
+      "title": "Xususiy valyuta hali chiqarilmagan",
+      "desc": "Milliy bankni tashkil eting va savdo-sotiq uchun milliy valyuta yarating!",
+      "btn": "+ Valyuta chiqarish"
+    },
+    "decreesTitle": "📜 Rasmiy farmonlar va yangiliklar",
+    "alerts": {
+      "resignConfirm": "Prezidentlik vakolatlaringizni topshirmoqchimisiz?",
+      "resignError": "Vakolatlarni topshirishda xatolik",
+      "editError": "Davlatni tahrirlashda xatolik",
+      "archiveConfirm": "Davlatni tugatishga (arxivlashga) ishonchingiz komilmi? Bu amal qaytarib bo'lmaydi, g'azna o'chiriladi, ammo davlat tarixi saqlanadi.",
+      "archiveError": "Davlatni o'chirishda xatolik",
+      "digitizeSuccess": "Muvaffaqiyatli raqamlashtirildi!",
+      "digitizeError": "G'aznani raqamlashtirishda xatolik",
+      "settlementError": "Aholi punkti yaratishda xatolik",
+      "proposeSuccess": "Tur muvaffaqiyatli taklif qilindi va moderatsiyaga yuborildi!",
+      "proposeError": "Turni taklif qilishda xatolik",
+      "currencySameError": "Xatolik: Asosiy va mayda tanga bir xil buyum bo'lishi mumkin emas!",
+      "currencyError": "Valyuta chiqarishda xatolik",
+      "bankSuccess": "Milliy bank muvaffaqiyatli tashkil etildi!",
+      "bankError": "Bank tashkil etishda xatolik",
+      "taxInvalid": "0 dan 100 gacha to'g'ri soliq foizini kiriting",
+      "taxSuccess": "Soliqlar muvaffaqiyatli yangilandi",
+      "taxError": "Soliq stavkasini o'zgartirishda xatolik",
+      "rolesSuccess": "Rollar muvaffaqiyatli yangilandi",
+      "rolesError": "Rollarni yangilashda xatolik"
+    },
+    "modals": {
+      "settlement": {
+        "title": "Aholi punkti yaratish",
+        "nameLabel": "Aholi punkti nomi",
+        "namePlaceholder": "Masalan: Poytaxt",
+        "descLabel": "Aholi punkti tavsifi",
+        "descPlaceholder": "Qisqacha tavsif",
+        "xLabel": "Markazning X koordinatasi",
+        "zLabel": "Markazning Z koordinatasi",
+        "statusLabel": "Maqomi",
+        "statusOpts": {
+          "settlement": "Aholi punkti",
+          "rural": "Qishloq aholi punkti"
+        },
+        "subTypeLabel": "Qishloq aholi punktining qo'shimcha turi",
+        "subTypePlaceholder": "Qo'shimcha turni tanlang...",
+        "proposeBtn": "+ O'z variantimni taklif qilish",
+        "cancelBtn": "Bekor qilish",
+        "submitBtn": "Aholi punkti yaratish"
+      },
+      "propose": {
+        "title": "Qo'shimcha turni taklif qilish",
+        "desc": "Sizning taklifingiz tekshirish uchun moderatorga yuboriladi.",
+        "nameLabel": "Qo'shimcha tur nomi",
+        "namePlaceholder": "Masalan: Qishloq",
+        "cancelBtn": "Bekor qilish",
+        "submitBtn": "Taklif qilish"
+      },
+      "currency": {
+        "title": "Milliy valyuta chiqarish",
+        "codeLabel": "Valyuta kodi (2-5 ta harf)",
+        "nameLabel": "Valyuta nomi",
+        "namePlaceholder": "Chekka So'mi",
+        "mainLabel": "Asosiy tanga buyumi (1 birlik valyuta)",
+        "kopeckLabel": "Mayda tanga buyumi / tiyin (0.01 birlik valyuta)",
+        "enchantLabel": "Himoya sehri (ikkala buyumga qo'llanadi)",
+        "info": "ℹ️ 1 valyuta birligi har doim 100 tiyinga teng.",
+        "error": "⚠️ Asosiy va mayda tanga bir xil buyum bo'lishi mumkin emas!",
+        "cancelBtn": "Bekor qilish",
+        "submitBtn": "Valyuta chiqarish"
+      },
+      "bank": {
+        "title": "Milliy Bank tashkil etish",
+        "nameLabel": "Bank nomi",
+        "namePlaceholder": "{{name}} Milliy Banki",
+        "info": "ℹ️ Milliy bank valyutangizning emissiya markaziga aylanadigan №40817... g'azna hisob raqamini ochadi.",
+        "cancelBtn": "Bekor qilish",
+        "submitBtn": "Bank tashkil etish"
+      },
+      "tax": {
+        "title": "Soliq stavkalarini sozlash",
+        "p2pLabel": "O'yinchi-o'yinchi o'tkazmalari (%)",
+        "p2cLabel": "Tijorat o'tkazmalari (%)",
+        "exchangeLabel": "Bitimlardan birja yig'imi (%)",
+        "cancelBtn": "Bekor qilish",
+        "submitBtn": "Soliqni saqlash"
+      },
+      "roles": {
+        "title": "Mansabdor shaxslarni tayinlash",
+        "treasurerLabel": "G'aznachi (fuqaro)",
+        "voivodeLabel": "Sipohsalar (fuqaro)",
+        "unassign": "-- Mansabdan ozod qilish --",
+        "cancelBtn": "Bekor qilish",
+        "submitBtn": "Mansablarni saqlash"
+      }
+    }
+  },
+  "territories": {
+    "title": "Hududlarni boshqarish (Privatlar)",
+    "empty": "Sizda hozircha ro'yxatdan o'tgan privatlar yo'q.",
+    "deleteBtn": "O'chirish",
+    "coords": "Koordinatalar:",
+    "area": "Maydoni:",
+    "blocks": "blok²",
+    "displayOnMap": "Xaritada ko'rsatish",
+    "errors": {
+      "delete": "Privatni o'chirishda xatolik",
+      "visibility": "Ko'rinishni o'zgartirishda xatolik"
+    },
+    "loading": "Hududlar yuklanmoqda..."
+  },
+  "elections": {
+    "title": "🗳️ Boshqaruv organlariga saylovlar",
+    "endsAt": "Tugash vaqti: ",
+    "noCandidates": "Nomzodlar hali ko'rsatilmagan.",
+    "votes": " ovoz (",
+    "percent": "%)",
+    "voteBtn": "Nomzodga ovoz berish",
+    "unavailableTitle": "Ovoz berish ro'yxatga olish bosqichi tugagach ochiladi",
+    "unavailableBtn": "Ovoz berish hozircha mavjud emas",
+    "nominateTitle": "⭐ O'z nomzodini ko'rsatish",
+    "programPlaceholder": "Sizning saylovoldi dasturingiz (nega aynan sizga ovoz berish kerak)...",
+    "cancelBtn": "Bekor qilish",
+    "submitBtn": "Yuborish",
+    "loadingBtn": "Yuborilmoqda...",
+    "statuses": {
+      "nomination": "Nomzodlarni ro'yxatga olish bosqichi",
+      "voting": "Ovoz berish jarayoni",
+      "completed": "Saylovlar yakunlandi"
+    },
+    "errors": {
+      "nominate": "Nomzodni ko'rsatishda xatolik. Ehtimol siz allaqachon nomzodingizni ko'rsatgansiz.",
+      "vote": "Ovoz berishda xatolik. Ehtimol siz allaqachon ovoz bergansiz."
+    }
+  },
+  "editSettlement": {
+    "title": "Aholi punktini tahrirlash",
+    "nameLabel": "Aholi punkti nomi:",
+    "descLabel": "Tavsifi:",
+    "flagLabel": "Bayroq/Gerb",
+    "colorLabel": "Xaritadagi hudud rangi:",
+    "xLabel": "Markazning X koordinatasi",
+    "zLabel": "Markazning Z koordinatasi",
+    "statusLabel": "Maqomi",
+    "statusOpts": {
+      "settlement": "Aholi punkti",
+      "capital": "Poytaxt",
+      "rural": "Qishloq aholi punkti"
+    },
+    "subTypeLabel": "Qishloq aholi punktining qo'shimcha turi",
+    "subTypePlaceholder": "Qo'shimcha turni tanlang...",
+    "proposeBtn": "+ Taklif qilish",
+    "photosLabel": "Aholi punkti fotosuratlari (5 tagacha)",
+    "cancelBtn": "Bekor qilish",
+    "submitBtn": "Saqlash",
+    "loadingBtn": "Saqlanmoqda...",
+    "errors": {
+      "save": "Saqlashda xatolik",
+      "proposeSuccess": "Tur muvaffaqiyatli taklif qilindi va moderatsiyaga yuborildi!",
+      "proposeError": "Turni taklif qilishda xatolik"
+    },
+    "proposeModal": {
+      "title": "Qo'shimcha turni taklif qilish",
+      "desc": "Sizning taklifingiz tekshirish uchun moderatorga yuboriladi.",
+      "nameLabel": "Qo'shimcha tur nomi",
+      "namePlaceholder": "Masalan: Qishloq",
+      "cancelBtn": "Bekor qilish",
+      "submitBtn": "Taklif qilish"
+    }
+  },
+  "mapColorPicker": {
+    "previewLabel": "Xaritada oldindan ko'rish (shaffoflik: ",
+    "exampleSettlement": "Aholi punkti chegaralarini ko'rsatish namunasi",
+    "exampleState": "Davlat chegaralarini ko'rsatish namunasi"
+  },
+  "settlementCard": {
+    "capital": "Poytaxt",
+    "rural": "Qishloq aholi punkti",
+    "noMayor": "🏛️ Hokimsiz (Saylov)",
+    "noDesc": "Aholi punkti tavsifi hozircha ko'rsatilmagan.",
+    "residents": "👥 {{count}} aholi",
+    "powerTitle": "Aholi punktining davlat qudratiga iqtisodiy hissasi",
+    "powerValue": "⚡ {{count}} birlik",
+    "moreBtn": "Batafsil →"
+  },
+  "citizenshipRequests": {
+    "title": "📬 Aholi punktiga joylashish uchun arizalar",
+    "empty": "Ko'rib chiqilayotgan faol arizalar yo'q.",
+    "approveBtn": "✔ Tasdiqlash",
+    "rejectBtn": "✖ Rad etish",
+    "errors": {
+      "status": "Ariza maqomini o'zgartirishda xatolik"
+    }
+  },
+  "stateCard": {
+    "noLeader": "Yetakchisiz (Saylov)",
+    "noDesc": "Davlat tavsifi hozircha ko'rsatilmagan...",
+    "settlements": "🏙️ Aholi punktlari:",
+    "citizens": "👥 Fuqarolar:",
+    "powerTitle": "Davlatning iqtisodiy qudrati",
+    "powerValue": "⚡ Qudrat:",
+    "moreBtn": "Batafsil",
+    "moreBtnArrow": "→"
+  },
+  "diplomacyBadge": {
+    "ally": "Ittifoqchi",
+    "war": "Urush",
+    "neutral": "Neytrallik"
+  },
+  "editState": {
+    "title": "Davlatni tahrirlash",
+    "nameLabel": "Davlat nomi:",
+    "descLabel": "Tavsifi:",
+    "flagLabel": "Bayroq",
+    "emblemLabel": "Gerb (mavjud bo'lsa)",
+    "colorLabel": "Xaritadagi hudud rangi:",
+    "cancelBtn": "Bekor qilish",
+    "submitBtn": "Saqlash",
+    "loadingBtn": "Saqlanmoqda...",
+    "errors": {
+      "save": "Saqlashda xatolik"
+    }
+  },
+  "streetsManager": {
+    "title": "🛣️ Aholi punkti ko'chalari",
+    "loading": "Ko'chalar yuklanmoqda...",
+    "newStreetPlaceholder": "Yangi ko'cha nomi",
+    "createBtn": "Yaratish",
+    "saveBtn": "Saqlash",
+    "cancelBtn": "Bekor qilish",
+    "empty": "Bu aholi punktida hali ko'chalar yo'q",
+    "confirmDelete": "Haqiqatan ham bu ko'chani o'chirib tashlamoqchimisiz? Undagi barcha ko'chmas mulklar bog'liqligini yo'qotishi mumkin!",
+    "errors": {
+      "create": "Ko'cha yaratishda xatolik",
+      "update": "Ko'chani yangilashda xatolik",
+      "delete": "Ko'chani o'chirishda xatolik"
+    }
+  },
+  "settlementsList": {
+    "title": "🏙️ Server aholi punktlari",
+    "subtitle": "Fuqarolar tomonidan asos solingan poytaxtlar, megapolislar va qal'alar",
+    "searchPlaceholder": "🔍 Aholi punktini qidirish...",
+    "allStates": "Barcha davlatlar",
+    "createBtn": "+ Aholi punkti yaratish",
+    "loading": "Aholi punktlari yuklanmoqda...",
+    "empty": "Aholi punktlari topilmadi. Serverdagi birinchi aholi punktiga asos soling!",
+    "createModal": {
+      "title": "🏙️ Yangi aholi punkti tashkil etish",
+      "namePlaceholder": "Aholi punkti nomi*",
+      "descPlaceholder": "Aholi punkti tavsifi / me'moriy uslubi...",
+      "flagLabel": "Gerb/Bayroq",
+      "colorLabel": "Xaritadagi rangi:",
+      "typeLabel": "Aholi punkti turi",
+      "types": {
+        "settlement": "Aholi punkti",
+        "rural": "Qishloq aholi punkti"
+      },
+      "subTypePlaceholder": "Qo'shimcha turni tanlang...",
+      "statePlaceholder": "Davlatni tanlang (ixtiyoriy)",
+      "cancelBtn": "Bekor qilish",
+      "submitBtn": "Yaratish",
+      "loadingBtn": "Yaratilmoqda..."
+    },
+    "errors": {
+      "create": "Aholi punkti yaratishda xatolik"
+    }
+  },
+  "nationalBank": {
+    "transfersTax": "O'yinchi-O'yinchi o'tkazmalariga soliq (%)",
+    "commercialTax": "Tijorat o'tkazmalariga soliq (%)",
+    "ipoFee": "IPO uchun yig'im ({{currency}})",
+    "tradingFee": "Savdo-sotiqdan komissiya (%)",
+    "treasuryBalance": "G'azna balansi",
+    "ipoRequestsTitle": "IPO-ga arizalar ({{count}})",
+    "ipoRequestInfo": "Aksiyalar: {{shares}} dona | Boshlang'ich narx: {{price}} | Yig'im: {{fee}}",
+    "approveBtn": "Tasdiqlash",
+    "rejectBtn": "Rad etish",
+    "accessDenied": "Ushbu davlat Milliy Bankini boshqarish huquqiga ega emassiz.",
+    "title": "Milliy Bank",
+    "gatheringData": "Moliyaviy ma'lumotlar yig'ilmoqda...",
+    "heroTitle": "{{name}} Milliy Banki",
+    "heroSubtitle": "Davlat moliyasini boshqarish paneli",
+    "backToState": "Davlatga qaytish",
+    "goToTransfers": "O'tkazmalar bo'limiga o'tish",
+    "notEstablished": "Bank tashkil etilmagan",
+    "notEstablishedDesc": "Prezident davlat sahifasida Milliy Bankni tashkil etishi kerak.",
+    "accountNotFound": "Hisob topilmadi",
+    "accountNotFoundDesc": "G'azna hisob raqami topilmadi. Ehtimol davlat valyutasi hali chiqarilmagan bo'lishi mumkin.",
+    "treasuryAccount": "G'azna hisob raqami",
+    "economySettings": "Iqtisodiyot va soliqlar sozlamalari"
+  },
+  "stateDetailMissed": {
+    "noAccount": "Yaratilmagan",
+    "defaultBankName": "{{name}} Milliy Banki",
+    "copyId": "ID nusxalash",
+    "editState": "Davlatni tahrirlash",
+    "archiveState": "Davlatni arxivlash",
+    "powerUnit": " birlik",
+    "exchangeRateInfo": "1 {{code}} = {{rate}} birlik"
+  },
+  "settlementDetail": {
+    "loading": "Aholi punkti pasporti yuklanmoqda...",
+    "notFound": "Aholi punkti topilmadi.",
+    "backToList": "← Ro'yxatga qaytish",
+    "backToStatesList": "← Aholi punktlari ro'yxatiga",
+    "capitalBadge": "Poytaxt",
+    "ruralBadge": "Qishloq aholi punkti",
+    "noDesc": "Aholi punkti tavsifi hozircha ko'rsatilmagan.",
+    "mayor": "🏛️ Aholi punkti hokimi:",
+    "vacant": "Bo'sh o'rin (Saylov)",
+    "state": "🏰 Davlat:",
+    "independent": "Mustaqil aholi punkti",
+    "population": "👥 Aholi:",
+    "citizensCount": "{{count}} aholi",
+    "powerContribution": "⚡ Qudratga hissasi:",
+    "powerValue": "+100 birlik",
+    "zeroPower": "0 birlik (aholi yo'q)",
+    "buttons": {
+      "isResident": "🏠 Siz ushbu aholi punktida yashaysiz",
+      "leave": "🚪 Aholi punktidan chiqish",
+      "apply": "Yashash / ko'chib o'tish uchun ariza topshirish",
+      "applying": "Yuborilmoqda...",
+      "resignMayor": "Vakolatlarni topshirish",
+      "edit": "✏️ Aholi punktini tahrirlash",
+      "requests": "📬 Joylashish uchun arizalar ({{count}})",
+      "setCapital": "🏛️ Poytaxt qilish",
+      "delete": "🗑️ Aholi punktini o'chirish"
+    },
+    "passport": {
+      "title": "📜 Aholi punkti pasporti",
+      "capitalBadge": "⭐ DAVLAT POYTAXTI",
+      "active": "● Faol aholi punkti",
+      "inactive": "○ Aholisi kam",
+      "founded": "Tashkil etilgan sana:",
+      "unknownDate": "Noma'lum"
+    },
+    "images": {
+      "title": "🖼️ Aholi punkti fotosuratlari",
+      "emptyTitle": "Fotosuratlar yo'q",
+      "emptyDesc": "Hokim hozircha ushbu aholi punktining fotosuratlarini yuklamagan"
+    },
+    "elections": {
+      "title": "🗳️ Aholi punktida Hokim saylovi"
+    },
+    "citizens": {
+      "title": "👥 Aholi punktidagi aholi ({{count}})",
+      "me": "(Siz)",
+      "mayorRole": "👑 Aholi punkti hokimi",
+      "citizenRole": "👥 Aholi",
+      "emptyTitle": "Bu aholi punktida hozircha rasman ro'yxatdan o'tgan aholi yo'q",
+      "emptyDesc": "Birinchi bo'lib ariza topshiring va aholi punktining fuqarosi bo'ling!"
+    },
+    "alerts": {
+      "applySuccess": "Yashash / ko'chib o'tish arizangiz aholi punkti hokimiga muvaffaqiyatli yuborildi!",
+      "applyError": "Arizani yuborib bo'lmadi. Ehtimol sizda faol ariza mavjud bo'lishi mumkin.",
+      "confirmLeave": "Bu aholi punktidan chiqmoqchimisiz?",
+      "leaveSuccess": "Siz aholi punktidan muvaffaqiyatli chiqdingiz!",
+      "leaveError": "Aholi punktidan chiqib bo'lmadi.",
+      "confirmDelete": "DIQQAT! Bu amal qaytarilmaydi. Aholi punktini o'chirish kerakmi?",
+      "deleteError": "Aholi punktini o'chirishda xatolik",
+      "confirmResign": "Hokimlik vakolatingizni topshirishga ishonchingiz komilmi?",
+      "resignError": "Iste'foga chiqishda xatolik",
+      "confirmCapital": "Bu aholi punktini davlat poytaxti qilib belgilamoqchimisiz?",
+      "capitalSuccess": "Aholi punkti muvaffaqiyatli poytaxt etib tayinlandi!",
+      "capitalError": "Poytaxtni tayinlashda xatolik"
+    }
+  },
+  "decrees": {
+    "publishNew": "+ Yangi farmon chop etish",
+    "publishFirst": "+ Birinchi farmonni chop etish",
+    "createTitle": "Davlatning rasmiy farmonini yaratish",
+    "createSubtitle": "Farmon davlat kanalida chop etiladi va barcha o'yinchilarga ko'rinadi",
+    "titleLabel": "Hujjat sarlavhasi *",
+    "titlePlaceholder": "Masalan: №1 Farmon «Davlat Bankini tashkil etish va valyuta chiqarish to'g'risida»",
+    "contentLabel": "Rasmiy farmon matni *",
+    "contentPlaceholder": "Qarorning to'liq matnini, qonunlarni, qoidalarni yoki fuqarolarga e'lonlarni bayon qiling...",
+    "cancel": "Bekor qilish",
+    "publishing": "Chop etilmoqda...",
+    "publishBtn": "📜 Farmonni chop etish",
+    "decreeBadge": "📜 FARMON #{{number}}",
+    "authorRole": "Prezident / Muallif",
+    "certified": "Rasmiy davlat hujjati • Yetakchi tomonidan tasdiqlangan",
+    "emptyTitle": "Hozircha rasmiy farmonlar yo'q",
+    "emptySubtitle": "Davlat yetakchisi hali hujjatlar, qonunlar yoki farmonlar e'lon qilmagan.",
+    "errorPublish": "Farmonni chop etishda xatolik"
+  }
+}

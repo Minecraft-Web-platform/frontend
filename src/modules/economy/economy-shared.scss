@@ -2,7 +2,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 48px 32px;
-  color: #000000;
+  color: var(--text-primary);
   font-family: sans-serif;
 
   &--embedded {
@@ -18,17 +18,18 @@
   margin-bottom: 36px;
   flex-wrap: wrap;
   gap: 24px;
-  background-color: #f6f8fa;
-  border: 1px solid #d2d2d8;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-card);
   border-radius: 16px;
   padding: 32px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 
   .hero-title {
     font-family: "Minecraft", sans-serif;
     font-size: 32px;
     font-weight: normal;
-    color: #000000;
+    color: var(--text-headings);
     margin: 0 0 10px 0;
     display: flex;
     align-items: center;
@@ -40,7 +41,7 @@
   }
 
   .hero-subtitle {
-    color: #535353;
+    color: var(--text-secondary);
     font-size: 16px;
     margin: 0;
     line-height: 1.5;
@@ -52,7 +53,7 @@
   font-family: "Minecraft", sans-serif;
   font-size: 24px;
   font-weight: normal;
-  color: #000000;
+  color: var(--text-headings);
   margin: 36px 0 16px 0;
 }
 
@@ -87,23 +88,43 @@
   border: 1px solid transparent;
 
   &--primary {
-    background-color: #000000;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: #ffffff;
-    border-color: #000000;
+    border-color: #334155;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: 0.5s;
+      z-index: -1;
+    }
 
     &:hover {
-      background-color: #222222;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-color: #475569;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.25);
+      &::after {
+        left: 100%;
+      }
     }
   }
 
   &--secondary {
-    background-color: #ffffff;
-    color: #000000;
-    border-color: #d2d2d8;
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    border-color: var(--border-color);
 
     &:hover {
-      background-color: #f6f8fa;
-      border-color: #000000;
+      background-color: var(--bg-hover);
+      border-color: var(--accent-emerald);
+      color: var(--text-primary);
     }
   }
 
@@ -132,7 +153,7 @@
   display: flex;
   gap: 12px;
   margin-bottom: 24px;
-  border-bottom: 1px solid #d2d2d8;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 12px;
 }
 
@@ -143,28 +164,29 @@
   padding: 10px 20px;
   font-size: 15px;
   font-weight: 600;
-  color: #535353;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    color: #000000;
-    background-color: #f6f8fa;
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
   }
 
   &--active {
-    background-color: #000000;
-    color: #ffffff;
-    border-color: #000000;
+    background-color: var(--accent-emerald);
+    color: #0d1117;
+    border-color: var(--accent-emerald);
+    font-weight: 700;
   }
 }
 
 .economy-table-container {
-  background-color: #ffffff;
-  border: 1px solid #d2d2d8;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
   margin-bottom: 36px;
 }
 
@@ -174,20 +196,20 @@
   font-size: 14px;
 
   thead {
-    background-color: #f6f8fa;
-    border-bottom: 1px solid #d2d2d8;
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-card);
 
     th {
       padding: 16px 20px;
       text-align: left;
       font-weight: 700;
-      color: #000000;
+      color: var(--text-primary);
     }
   }
 
   tbody {
     tr {
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid var(--border-subtle);
       transition: background-color 0.15s ease;
 
       &:last-child {
@@ -195,13 +217,13 @@
       }
 
       &:hover {
-        background-color: #f6f8fa;
+        background-color: var(--bg-hover);
       }
     }
 
     td {
       padding: 16px 20px;
-      color: #333333;
+      color: var(--text-primary);
     }
   }
 }
@@ -212,7 +234,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: var(--modal-overlay);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -222,20 +244,20 @@
 }
 
 .economy-modal {
-  background-color: #ffffff;
-  border: 1px solid #d2d2d8;
+  background-color: var(--modal-bg);
+  border: 1px solid var(--border-card);
   border-radius: 16px;
   width: 100%;
   max-width: 480px;
   padding: 32px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-  color: #000000;
+  box-shadow: var(--shadow-modal);
+  color: var(--text-primary);
 
   .modal-title {
     font-family: "Minecraft", sans-serif;
     font-size: 24px;
     font-weight: normal;
-    color: #000000;
+    color: var(--text-headings);
     margin: 0 0 24px 0;
   }
 
@@ -250,21 +272,21 @@
       gap: 6px;
       font-size: 14px;
       font-weight: 600;
-      color: #333333;
+      color: var(--text-secondary);
     }
 
     input, select, textarea {
-      background-color: #f6f8fa;
-      border: 1px solid #d2d2d8;
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 12px 14px;
       font-size: 14px;
-      color: #000000;
+      color: var(--input-text);
 
       &:focus {
         outline: none;
-        border-color: #10b981;
-        background-color: #ffffff;
+        border-color: var(--accent-emerald);
+        background-color: var(--bg-surface);
       }
     }
   }

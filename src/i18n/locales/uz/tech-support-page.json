@@ -1,0 +1,121 @@
+{
+  "title": "Texnik yordam",
+  "subtitle": "«Chekka Yilnomalari 2.0» serverining yordam va muammolarni hal qilish xizmati",
+  "faqTitle": "Ko'p beriladigan savollar",
+  "faqItems": [
+    {
+      "q": "Sud qanday ishlaydi?",
+      "a": "Sud tizimi kompaniyalar tomonidan sifatsiz ko'rsatilgan xizmatlar ustidan shikoyat qilish imkonini beradi. Buyurtma bo'yicha nizo kelib chiqqanda, siz hakamlikka (arbitrajga) murojaat qilishingiz mumkin. Davlat rahbari (prezident) vaziyatni ko'rib chiqadi va mablag'ni qaytarish yoki shikoyatni rad etish to'g'risida qaror qabul qiladi."
+    },
+    {
+      "q": "Meni bloklashdi, nima qilishim kerak?",
+      "a": "Siz texnik yordamga apellyatsiya berishingiz mumkin. Xat mavzusiga «Apellyatsiya» deb yozing, matnda esa vaziyatni va nima uchun blokdan chiqarish kerak deb hisoblashingizni batafsil tushuntirib bering. Ma'muriyat sizning arizangizni ko'rib chiqadi."
+    },
+    {
+      "q": "Qanday qilib fuqaro bo'lish mumkin?",
+      "a": "Fuqarolikni olish uchun istalgan aholi punkti hokimiga yoki to'g'ridan-to'g'ri davlat prezidentiga murojaat qilishingiz kerak. O'zingizga ma'qul shahar yoki qishloqni «Davlatlar» va «Aholi punktlari» bo'limlaridan topib, yashash uchun ariza topshirishingiz mumkin."
+    },
+    {
+      "q": "Milliy valyuta qanday ishlaydi?",
+      "a": "Milliy valyutani davlatlarning Milliy Banklari chiqaradi. Har bir valyutaning o'z jismoniy ekvivalenti — himoyalangan sehrlangan tangalari mavjud. Kurs g'aznadagi oltin zaxiralariga, davlat quvvatiga va muomaladagi umumiy pul hajmiga qarab avtomatik hisoblanadi."
+    },
+    {
+      "q": "O'z kompaniyamni qanday ochish mumkin?",
+      "a": "«Iqtisodiyot» bo'limiga o'ting, kompaniyalar ro'yxati joylashgan oynani oching va «Kompaniya yaratish» tugmasini bosing. Shaklni to'ldiring, nomini, yurisdiksiyasini ko'rsating va sizning firmangiz ro'yxatdan o'tadi."
+    },
+    {
+      "q": "Birjada aksiyalar bilan qanday savdo qilish mumkin?",
+      "a": "Har bir ommaviy kompaniya aksiyalar chiqaradi. Siz ularni «Fond birjasi» bo'limida narxlar o'zgarishi grafiklarini kuzatgan holda sotib olishingiz va sotishingiz mumkin. Shuningdek, kompaniya egasi barcha aksiyadorlarga sof foydadan dividendlar to'lashi mumkin."
+    },
+    {
+      "q": "Yutuqlar nima uchun kerak?",
+      "a": "Yutuqlar serverdagi va saytdagi faolligingiz uchun beriladi. Ular sizning ochiq profilingizda ko'rsatiladi va boshqa o'yinchilar oldida obro'ingizni oshiradi."
+    },
+    {
+      "q": "Treasury modining imkoniyatlari qanday?",
+      "a": "Treasury modi — bu server iqtisodiyotini sayt bilan chuqur integratsiya qilish uchun bizning shaxsiy ishlanmamiz. U bankomatlar, seyflar, elektron terminallar va jismoniy tangalarni saytdagi bank hisoblariga bir zumda o'tkazishni qo'shadi."
+    },
+    {
+      "q": "O'z kompaniyamni qanday ochish mumkin?",
+      "a": "«Iqtisodiyot» -> «Kompaniyalar» bo'limiga o'ting. Kompaniyani ro'yxatdan o'tkazish tanlangan yurisdiksiyaning valyutasida ma'lum bir summani (yig'imni) tashkil etadi. Ro'yxatdan o'tgach, siz o'yinchilarga xizmatlar ko'rsatishingiz, buyurtmalar olishingiz va kelajakda IPO-ga chiqib, aksiyalarni sotishingiz mumkin bo'ladi."
+    },
+    {
+      "q": "Kompaniyalar aksiyalarini qanday sotib olish mumkin?",
+      "a": "«Birja» bo'limiga o'ting (Iqtisodiyot qismi). U yerda siz IPO-ga chiqqan ommaviy kompaniyalar ro'yxatini ko'rasiz. Siz ularning aksiyalarini davlat valyutasiga sotib olishingiz va sotishingiz, shuningdek ularning foydasidan dividendlar olishingiz mumkin."
+    },
+    {
+      "q": "O'z davlatimni qanday yaratish mumkin?",
+      "a": "«Davlatlar» bo'limiga o'ting va davlat yaratish tugmasini bosing. Shaklni to'ldiring, nomini o'ylab toping, bayrog'ini tanlang va davlatingiz bir zumda saytda paydo bo'ladi!"
+    },
+    {
+      "q": "Parolimni unutgan bo'lsam nima qilishim kerak?",
+      "a": "Kirish sahifasiga o'ting va «Parolni unutdingizmi?» tugmasini bosing. Sizning ulangan pochtangizga tiklash havolasi keladi. Agar pochtani oldindan profilingizga ulamagan bo'lsangiz, hisobga kirishni tiklash juda qiyin bo'ladi."
+    },
+    {
+      "q": "Eng asosiysi",
+      "a": "Saytdagi barcha imkoniyatlar qulaylik uchun yaratilgan va RolePlay o'ynashga yordam beradi, biroq u hech qanday holatda sizga o'z RP-ingizni o'ylab topishga to'sqinlik qilmaydi! Masalan, xizmat ko'rsatmaslik to'g'risidagi sud ishini o'yinda sudya va advokatlar bilan to'liq o'ynab chiqish mumkin, prezident esa keyin saytda tugmani bosib, majlis bayonnomasini biriktiradi. Sinab ko'ring, tajriba qiling va o'zingizning betakror tarixingizni yarating!"
+    },
+    {
+      "q": "Men xatolik yoki zaiflik (dyup) topdim",
+      "a": "Xatoliklardan hech qachon g'arazli maqsadlarda foydalanmang! Iltimos, murojaat shaklida zaiflikni batafsil tasvirlab bering. Muhim xatolar va dyuplar haqida xabar berganlik uchun eksklyuziv o'yin ichidagi mukofotlar va yutuqlar ko'zda tutilgan."
+    },
+    {
+      "q": "Shahar, poytaxt va qishloq aholi punkti o'rtasidagi farq nima?",
+      "a": "Poytaxt — prezident qarorgohi joylashgan davlatning asosiy aholi punkti (davlatda faqat bitta poytaxt bo'lishi mumkin). Shahar — yirik mustaqil aholi punkti. Qishloq aholi punkti — tashkil etishda maxsus qo'shimcha turni (qishloq, ovul va h.k.) tanlash mumkin bo'lgan kichik aholi punkti."
+    },
+    {
+      "q": "Aholi punkti maqomini qanday qilib Poytaxtga o'zgartirish mumkin?",
+      "a": "Poytaxtni faqat davlat yetakchisi (prezidenti) tayinlashi mumkin. Buning uchun davlatingizdagi kerakli shahar yoki qishloq sahifasiga o'ting va «Poytaxt qilish» tugmasini bosing."
+    },
+    {
+      "q": "Qishloq aholi punktining o'z qo'shimcha turini qanday qo'shish mumkin?",
+      "a": "Agar qishloq aholi punktini tashkil etishda ro'yxatdan mos turni topa olmasangiz (masalan, siz «Ovul» yoki «Qal'a» qurmoqchisiz), «+ O'z variantimni taklif qilish» tugmasini bosing. Nomini yozing, u moderatsiyaga yuboriladi. Administrator arizangizni tasdiqlashi bilanoq, bu tur serverning barcha o'yinchilari uchun ochiladi!"
+    }
+  ],
+  "alerts": {
+    "approved": "Tur muvaffaqiyatli tasdiqlandi!",
+    "rejected": "Tur muvaffaqiyatli rad etildi!",
+    "errorModeration": "Moderatsiya xatoligi",
+    "fileSizeExceeded": "Ba'zi fayllar 5MB hajmdan oshgani sababli e'tiborga olinmadi."
+  },
+  "serverStatus": {
+    "online": "Server holati: Onlayn",
+    "offline": "Server holati: Oflayn",
+    "loading": "Server holati: Yuklanmoqda...",
+    "onlineDesc": "Server barqaror ishlamoqda, siz kirib o'ynashingiz mumkin.",
+    "offlineDesc": "Server ayni paytda mavjud emas. Texnik ishlar olib borilayotgan bo'lishi mumkin.",
+    "loadingDesc": "Server holati tekshirilmoqda..."
+  },
+  "launcherInfo": {
+    "title": "Kirishda muammolar bormi?",
+    "desc": "Modlar to'plamining eng so'nggi versiyasi o'rnatilganligiga ishonch hosil qiling.",
+    "btn": "To'plamni yuklab olish"
+  },
+  "form": {
+    "title": "Murojaat yuborish",
+    "successTitle": "Murojaat yuborildi!",
+    "successDesc": "Biz sizning so'rovingizni qabul qildik. Javob yaqin orada <b>{{email}}</b> ulangan pochtasiga yuboriladi.",
+    "writeMoreBtn": "Yana yozish",
+    "emailRequiredTitle": "Pochtani ulash talab qilinadi",
+    "emailRequiredDesc": "Texnik yordamga murojaat yuborish uchun sizga javob yubora olishimiz maqsadida email manzilini ulash va tasdiqlash zarur.",
+    "goToProfileBtn": "Profilga o'tish",
+    "errorSubmit": "Yuborishda xatolik yuz berdi. Keyinroq qayta urinib ko'ring.",
+    "nicknameLabel": "Sizning taxallusingiz",
+    "topicPlaceholder": "Masalan: To'lovdagi muammo",
+    "topicLabel": "Murojaat mavzusi",
+    "textPlaceholder": "Muammoingizni batafsil tasvirlab bering...",
+    "textLabel": "Murojaat matni",
+    "attachFilesLabel": "Skrinshotlarni biriktirish (maksimal 3 ta fayl, har biri 5MB gacha)",
+    "submittingBtn": "Yuborilmoqda...",
+    "submitBtn": "Yuborish"
+  },
+  "moderation": {
+    "title": "Aholi punktlari turlarini moderatsiya qilish",
+    "desc": "Foydalanuvchilar qishloq aholi punktlarining yangi qo'shimcha turlarini taklif qilishlari mumkin. Bu yerda siz ularni tasdiqlashingiz yoki rad etishingiz mumkin.",
+    "empty": "Moderatsiyani kutayotgan turlar yo'q.",
+    "proposedBy": "Taklif etuvchi: {{username}}",
+    "unknown": "Noma'lum",
+    "approveBtn": "Tasdiqlash",
+    "rejectBtn": "Rad etish"
+  }
+}

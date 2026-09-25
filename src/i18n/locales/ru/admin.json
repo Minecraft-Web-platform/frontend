@@ -1,0 +1,43 @@
+{
+    "title": "Управление Ачивками (Админ)",
+    "alerts": {
+        "updated": "Ачивка успешно обновлена!",
+        "created": "Ачивка успешно создана!",
+        "errorSave": "Ошибка сохранения ачивки",
+        "granted": "Ачивка успешно выдана!",
+        "errorGrant": "Ошибка выдачи ачивки",
+        "confirmDelete": "Точно удалить эту ачивку?",
+        "deleted": "Удалено",
+        "errorDelete": "Ошибка удаления"
+    },
+    "form": {
+        "editTitle": "Редактировать Ачивку",
+        "createTitle": "Создать Ачивку",
+        "namePlaceholder": "Название",
+        "descPlaceholder": "Описание",
+        "iconLabel": "Иконка (опционально)",
+        "rarityLabel": "Редкость",
+        "rarityCommon": "Обычная (Common)",
+        "rarityRare": "Редкая (Rare)",
+        "rarityEpic": "Эпическая (Epic)",
+        "rarityLegendary": "Легендарная (Legendary)",
+        "triggerPlaceholder": "Событие авто-выдачи (state.created)",
+        "saveBtn": "Сохранить",
+        "createBtn": "Создать",
+        "cancelBtn": "Отмена"
+    },
+    "grant": {
+        "title": "Выдать Ачивку Игроку",
+        "usernamePlaceholder": "Никнейм игрока",
+        "achievementLabel": "Ачивка",
+        "selectPlaceholder": "-- Выберите ачивку --",
+        "grantBtn": "Выдать"
+    },
+    "list": {
+        "title": "Список Ачивок",
+        "triggerPrefix": "Trigger:",
+        "manualTrigger": "Ручная выдача",
+        "editBtn": "Редактировать",
+        "deleteBtn": "Удалить"
+    }
+}

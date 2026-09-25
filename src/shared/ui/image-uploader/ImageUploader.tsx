@@ -1,5 +1,5 @@
-import {  } from 'axios';
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { uploadService } from '../../services/upload.service';
 import './ImageUploader.scss';
 import { ImageCropperModal } from './ImageCropperModal';
@@ -21,12 +21,13 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   multiple = false,
   value,
   onChange,
-  label = 'Загрузить картинку',
+  label,
   maxFiles = 5,
   customUploadFn,
   enableCrop = false,
   aspect,
 }) => {
+  const { t } = useTranslation('navigation');
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,6 +35,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [fileToCrop, setFileToCrop] = useState<File | null>(null);
 
   const urls: string[] = value ? (Array.isArray(value) ? value : [value]) : [];
+  const displayLabel = label !== undefined ? label : t('uploader.defaultLabel');
 
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
@@ -74,7 +76,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     }
     
     if (multiple && urls.length + files.length > maxFiles) {
-      setError(`Максимальное количество файлов: ${maxFiles}`);
+      setError(t('uploader.maxFilesError', { max: maxFiles }));
       return;
     }
     if (enableCrop && !multiple && files.length === 1) {
@@ -91,7 +93,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     try {
       for (const file of files) {
         if (!file.type.startsWith('image/')) {
-          throw new Error('Пожалуйста, загружайте только изображения (JPG, PNG, WEBP)');
+          throw new Error(t('uploader.formatError'));
         }
         
         let url;
@@ -110,7 +112,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError((err as Error).message || 'Ошибка загрузки');
+      setError((err as Error).message || t('uploader.uploadError'));
     } finally {
       setIsUploading(false);
     }
@@ -131,7 +133,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
 
   return (
     <div className="image-uploader">
-      {label && <label className="uploader-label">{label}</label>}
+      {displayLabel && <label className="uploader-label">{displayLabel}</label>}
       
       <div 
         className={`drop-zone ${isDragging ? 'dragging' : ''} ${isUploading ? 'uploading' : ''}`}
@@ -153,12 +155,14 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         {isUploading ? (
           <div className="upload-state">
             <div className="spinner"></div>
-            <span>Загрузка...</span>
+            <span>{t('uploader.loading')}</span>
           </div>
         ) : (
           <div className="idle-state">
             <span className="icon">📸</span>
-            <span className="text">Перетащите картинку сюда или <strong>нажмите для выбора</strong></span>
+            <span className="text">
+              {t('uploader.dropText')} <strong>{t('uploader.clickSelect')}</strong>
+            </span>
           </div>
         )}
       </div>
@@ -177,7 +181,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
                   e.stopPropagation();
                   handleRemove(url);
                 }}
-                title="Удалить"
+                title={t('uploader.remove')}
               >
                 ✕
               </button>

@@ -6,13 +6,17 @@ import { News } from "../types/news.type";
 import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
 import useAuthStore from "../../../store/auth.store";
 import Button from "../../../shared/ui/button/button.component";
+import { useTranslation } from "react-i18next";
+import { useShallow } from 'zustand/react/shallow';
+
 
 const NewsDetailsPage: FC = () => {
   const { id } = useParams<{ id: string }>();
   const [news, setNews] = useState<News | null>(null);
   const [loading, setLoading] = useState(true);
-  const { isAdmin } = useAuthStore();
+  const { isAdmin } = useAuthStore(useShallow(state => ({ isAdmin: state.isAdmin })));
   const navigate = useNavigate();
+  const { t } = useTranslation("news");
 
   useEffect(() => {
     if (!id) return;
@@ -28,13 +32,13 @@ const NewsDetailsPage: FC = () => {
 
       {loading && (
         <main className="content">
-          <p style={{ textAlign: "center", fontSize: "20px", marginTop: "40px" }}>Загрузка новости...</p>
+          <p style={{ textAlign: "center", fontSize: "20px", marginTop: "40px" }}>{t("news.details.loading")}</p>
         </main>
       )}
 
       {!loading && !news && (
         <main className="content">
-          <p style={{ textAlign: "center", fontSize: "20px", marginTop: "40px" }}>Новость не найдена 😢</p>
+          <p style={{ textAlign: "center", fontSize: "20px", marginTop: "40px" }}>{t("news.details.notFound")}</p>
         </main>
       )}
 
@@ -73,31 +77,31 @@ const NewsDetailsPage: FC = () => {
 
           <div className="news-meta">
             <p>
-              <b>Категория:</b> {news.category.name}
+              <b>{t("news.details.category")}</b> {news.category.name}
             </p>
             <p>
-              <b>Автор:</b>{" "}
+              <b>{t("news.details.author")}</b>{" "}
               <Link
-                style={{ textDecoration: "none", color: "black" }}
+                className="news-meta__author-link"
                 to={`/players/${news.author}`}
               >
                 {news.author}
               </Link>
             </p>
             <p>
-              <b>Дата публикации: </b>
+              <b>{t("news.details.date")} </b>
               {new Date(news.created_at).toLocaleDateString("uk-UA")}
             </p>
 
             {isAdmin && (
               <>
                 <p>
-                  <b>Статус:</b> {news.isApproved ? "Одобрена" : "Не одобрена"}
+                  <b>{t("news.details.statusLabel")}</b> {news.isApproved ? t("news.status.approved") : t("news.status.notApproved")}
                 </p>
 
                 {!news.isApproved && (
                   <Button callback={() => newsService.approve(news.id)}>
-                    Одобрить
+                    {t("news.details.approveBtn")}
                   </Button>
                 )}
 
@@ -107,7 +111,7 @@ const NewsDetailsPage: FC = () => {
                   }
                   secondary
                 >
-                  Удалить
+                  {t("news.details.deleteBtn")}
                 </Button>
               </>
             )}

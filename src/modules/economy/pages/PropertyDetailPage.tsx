@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Edit2, ShoppingCart, XCircle, MapPin, Square, Store } from 'lucide-react';
 import { PropagateLoader } from 'react-spinners';
 import { useProperty, useCurrencies } from '../hooks/useEconomyData';
@@ -9,32 +10,17 @@ import useAuthStore from '../../../store/auth.store';
 import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
 import { AxiosError } from 'axios';
 import './PropertyDetailPage.scss';
+import { useShallow } from 'zustand/react/shallow';
 
-const PROPERTY_TYPE_TRANSLATIONS: Record<string, string> = {
-  land_plot: 'Земельный участок',
-  residential: 'Жилое строение',
-  public_building: 'Здание общего пользования',
-  administrative: 'Административное здание',
-  railway: 'Ж/Д вокзал',
-  airfield: 'Аэродром',
-  seaport: 'Морской порт',
-  military: 'Военный объект'
-};
-
-const PROPERTY_SUBTYPE_TRANSLATIONS: Record<string, string> = {
-  ihs: 'ИЖС (Дом, коммерция)',
-  subsidiary: 'Подсобное хозяйство',
-  agricultural: 'Сельхоз-нужды',
-  industrial: 'Промышленный'
-};
 
 export const PropertyDetailPage: React.FC = () => {
+  const { t } = useTranslation('economy');
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: property, isLoading, mutate } = useProperty(id);
   const { data: allCurrencies = [] } = useCurrencies();
   
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
   let myUuid = '';
   if (accessToken) {
     try {
@@ -68,11 +54,11 @@ export const PropertyDetailPage: React.FC = () => {
             <div className="header-actions">
               <button className="back-btn" onClick={() => navigate(-1)}>
                 <ArrowLeft size={20} />
-                Назад
+                {t('properties.backBtn')}
               </button>
             </div>
             <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
-              Имущество не найдено.
+              {t('properties.notFound')}
             </div>
           </div>
         </main>
@@ -81,40 +67,42 @@ export const PropertyDetailPage: React.FC = () => {
   }
 
   const handleBuy = async () => {
-    if (!window.confirm(`Вы уверены, что хотите купить это имущество за ${property.price}?`)) return;
+    if (!window.confirm(t('properties.confirmBuy', { price: property.price }))) return;
     try {
       setActionLoading(true);
       await economyService.buyProperty(property.id, {
         newOwnerType: 'personal', // Defaults to personal buy for now
         newOwnerId: myUuid, // For personal it's user's UUID
       });
-      alert('Успешно куплено!');
+      alert(t('properties.buySuccess'));
       mutate();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка при покупке');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || t('properties.createModal.error'));
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleCancelSell = async () => {
-    if (!window.confirm('Снять с продажи?')) return;
+    if (!window.confirm(t('properties.confirmDelist'))) return;
     try {
       setActionLoading(true);
       await economyService.cancelListing(property.id);
-      alert('Снято с продажи!');
+      alert(t('properties.delistSuccess'));
       mutate();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      alert((err as AxiosError<{message?: string}>).response?.data?.message || 'Ошибка');
+      alert((err as AxiosError<{message?: string}>).response?.data?.message || t('properties.delistError'));
     } finally {
       setActionLoading(false);
     }
   };
 
   const isOwner = property.ownerId === myUuid;
-  const typeText = `${PROPERTY_TYPE_TRANSLATIONS[property.type] || property.type} ${property.subType ? `(${PROPERTY_SUBTYPE_TRANSLATIONS[property.subType] || property.subType})` : ''}`;
+  const translatedType = t(`properties.types.${property.type}`, property.type);
+  const translatedSubtype = property.subType ? t(`properties.subtypes.${property.subType}`, property.subType) : '';
+  const typeText = `${translatedType} ${translatedSubtype ? `(${translatedSubtype})` : ''}`;
 
   return (
     <div className="page">
@@ -124,7 +112,7 @@ export const PropertyDetailPage: React.FC = () => {
           <div className="header-actions">
         <button className="back-btn" onClick={() => navigate(-1)}>
           <ArrowLeft size={20} />
-          Назад к списку
+          {t('properties.backToList')}
         </button>
       </div>
 
@@ -154,7 +142,7 @@ export const PropertyDetailPage: React.FC = () => {
           ) : (
             <div className="no-photos">
               <Store size={48} style={{ opacity: 0.5, marginBottom: '16px' }} />
-              <div>Нет фотографий</div>
+              <div>{t('properties.noPhotos')}</div>
             </div>
           )}
         </div>
@@ -164,11 +152,11 @@ export const PropertyDetailPage: React.FC = () => {
             <h1>{property.name}</h1>
             <div className="badges">
               <span className="badge type">
-                {property.propertyCategory === 'real_estate' ? 'Недвижимость' : 'Спецобъект'}
+                {property.propertyCategory === 'real_estate' ? t('properties.realEstate') : t('properties.specialObject')}
               </span>
               {property.isForSale && (
                 <span className="badge sale">
-                  В продаже
+                  {t('properties.forSale')}
                 </span>
               )}
             </div>
@@ -182,25 +170,25 @@ export const PropertyDetailPage: React.FC = () => {
 
           <div className="details-grid">
             <div className="detail-row">
-              <span className="label">Тип</span>
+              <span className="label">{t('properties.labels.type')}</span>
               <span className="value">{typeText}</span>
             </div>
             
             <div className="detail-row">
-              <span className="label">Государство</span>
+              <span className="label">{t('properties.labels.state')}</span>
               <span className="value">{property.state?.name || property.stateId}</span>
             </div>
 
             {property.settlementId && (
               <div className="detail-row">
-                <span className="label">Поселение</span>
+                <span className="label">{t('properties.labels.settlement')}</span>
                 <span className="value">{property.settlement?.name || property.settlementId}</span>
               </div>
             )}
 
             {property.centerCoordinates && (
               <div className="detail-row">
-                <span className="label">Координаты</span>
+                <span className="label">{t('properties.labels.coords')}</span>
                 <span className="value" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <MapPin size={14} />
                   {(() => {
@@ -224,30 +212,30 @@ export const PropertyDetailPage: React.FC = () => {
 
             {property.area != null && (
               <div className="detail-row">
-                <span className="label">Площадь</span>
+                <span className="label">{t('properties.labels.area')}</span>
                 <span className="value" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Square size={14} />
-                  {property.area} кв.м.
+                  {property.area} {t('properties.units.sqm')}
                 </span>
               </div>
             )}
 
             {(property.street || property.houseNumber) && (
               <div className="detail-row">
-                <span className="label">Адрес</span>
+                <span className="label">{t('properties.labels.address')}</span>
                 <span className="value">{property.street?.name || ''} {property.houseNumber || ''}</span>
               </div>
             )}
 
             {property.parentPropertyId && (
               <div className="detail-row">
-                <span className="label">Участок (ID)</span>
+                <span className="label">{t('properties.labels.parentPlot')}</span>
                 <span className="value">{property.parentPropertyId}</span>
               </div>
             )}
             
             <div className="detail-row">
-              <span className="label">Владелец</span>
+              <span className="label">{t('properties.labels.owner')}</span>
               <span className="value" style={{ fontSize: '14px', fontWeight: 600 }}>{property.ownerName || property.ownerId}</span>
             </div>
           </div>
@@ -276,7 +264,7 @@ export const PropertyDetailPage: React.FC = () => {
                 disabled={actionLoading}
               >
                 <XCircle size={18} style={{ marginRight: '8px' }} />
-                Снять с продажи
+                {t('properties.delistBtn')}
               </button>
             )}
 
@@ -287,14 +275,14 @@ export const PropertyDetailPage: React.FC = () => {
                 disabled={actionLoading}
               >
                 <ShoppingCart size={18} style={{ marginRight: '8px' }} />
-                Купить
+                {t('properties.buyBtn')}
               </button>
             )}
 
             {isOwner && (
-              <button className="button button--secondary" onClick={() => alert('Редактирование пока недоступно')}>
+              <button className="button button--secondary" onClick={() => alert(t('properties.editUnavailable'))}>
                 <Edit2 size={18} style={{ marginRight: '8px' }} />
-                Редактировать
+                {t('properties.editBtn')}
               </button>
             )}
           </div>

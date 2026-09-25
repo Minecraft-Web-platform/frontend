@@ -1,0 +1,18 @@
+{
+  "html-elements": {
+    "download-heading": "Launcherni yuklab oling",
+    "page-description": "Legacy Launcher yordamida siz Minecraft-ning kerakli versiyasini yuklab olishingiz, modlar papkasini tezda ochishingiz va o'yinni boshlashingiz mumkin.",
+    "unavailable": "Mavjud emas",
+    "mods-heading": "Modlar qo'shish",
+    "under-mods-heading-description": "Modpaketga qo'shmoqchi bo'lgan modlarni tanlang — biz ularni majburiy modlar bilan birga arxivga joylaymiz :)",
+    "download-button-text": "Modpaketni yuklab olish",
+    "under-button-text": "Modpaketingiz yuklanmoqda, bu 2-4 daqiqa vaqt oladi, ungacha choy damlab oling :)",
+    "loading-mods": "Qo'shimcha modlar ro'yxati yuklanmoqda..."
+  },
+  "errors": {
+    "http": {
+      "download-timeout": "Yuklab olish juda uzoq davom etdi. Internet aloqasini tekshiring va qayta urinib ko'ring",
+      "internal-error": "Saytimizda xatolik yuz berdi. Birozdan so'ng qayta urinib ko'ring :("
+    }
+  }
+}

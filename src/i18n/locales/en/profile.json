@@ -1,0 +1,50 @@
+{
+  "profile-page": {
+    "title": "Profile",
+    "description": "Your personal corner. More data will appear here over time, but for now it's ascetic mode - we admire what we can.",
+    "bannedTitle": "Your account is banned!",
+    "banReason": "Reason:",
+    "banReasonNotSpecified": "Not specified",
+    "banDescription": "Your access to site features is limited.",
+    "nickname": "Nickname",
+    "emailPlaceholder": "link-email@email.com",
+    "email": "Email",
+    "emailConfirmed": "Confirmed",
+    "emailNotConfirmed": "Not confirmed",
+    "roleAdmin": "Administrator",
+    "roleEconomist": "Economist",
+    "rolePlayer": "Player",
+    "role": "Project Role",
+    "none": "None",
+    "citizenship": "Citizenship",
+    "settlement": "Settlement",
+    "neverPlayed": "Never played",
+    "lastIp": "Last IP",
+    "uuid": "UUID (player)",
+    "copied": "Copied!",
+    "avatar": "Profile Avatar",
+    "bindEmail": "Bind Email",
+    "logout": "Log Out"
+  },
+  "calendar": {
+    "title": "Event Calendar",
+    "subtitle": "Track political life and your notifications",
+    "eventsCount": "Events:",
+    "loading": "Loading...",
+    "empty": "Nothing interesting happened on this day.",
+    "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  },
+  "achievements": {
+    "empty": "You have no achievements yet.",
+    "title": "Achievements",
+    "earned": "Earned:",
+    "unlocked": "ACHIEVEMENT UNLOCKED",
+    "rarities": {
+      "common": "COMMON ACHIEVEMENT",
+      "rare": "RARE ACHIEVEMENT",
+      "epic": "EPIC ACHIEVEMENT",
+      "legendary": "LEGENDARY ACHIEVEMENT"
+    }
+  }
+}

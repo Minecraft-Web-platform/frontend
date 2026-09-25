@@ -2,6 +2,7 @@ import {  } from 'axios';
 import { FC, useState } from 'react';
 import './elections-widget.component.scss';
 import { IElection } from '../../types/states.types';
+import { useTranslation } from 'react-i18next';
 
 interface ElectionsWidgetProps {
   election: IElection;
@@ -17,6 +18,7 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
   const [showNominateForm, setShowNominateForm] = useState(false);
   const [programText, setProgramText] = useState('');
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation('states');
 
   const candidates = election.candidates || [];
   const totalVotes = candidates.reduce((sum, c) => sum + (c.votesCount || 0), 0);
@@ -31,7 +33,7 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      alert('Ошибка при выдвижении кандидатуры. Возможно, вы уже выдвинуты.');
+      alert(t('elections.errors.nominate'));
     } finally {
       setLoading(false);
     }
@@ -43,19 +45,19 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      alert('Ошибка при голосовании. Возможно, вы уже проголосовали.');
+      alert(t('elections.errors.vote'));
     }
   };
 
   const getStatusLabel = () => {
     switch (election.status) {
       case 'nomination':
-        return { label: 'Этап регистрации кандидатов', className: 'elections-widget__status--nomination' };
+        return { label: t('elections.statuses.nomination'), className: 'elections-widget__status--nomination' };
       case 'voting':
-        return { label: 'Идет голосование', className: 'elections-widget__status--voting' };
+        return { label: t('elections.statuses.voting'), className: 'elections-widget__status--voting' };
       case 'completed':
       default:
-        return { label: 'Выборы завершены', className: 'elections-widget__status--completed' };
+        return { label: t('elections.statuses.completed'), className: 'elections-widget__status--completed' };
     }
   };
 
@@ -63,16 +65,16 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
 
   return (
     <div className="elections-widget">
-      <h3 className="elections-widget__title">🗳️ Выборы в органы управления</h3>
+      <h3 className="elections-widget__title">{t('elections.title')}</h3>
       <div className={`elections-widget__status ${statusInfo.className}`}>
         {statusInfo.label}
       </div>
       <p className="elections-widget__subtitle">
-        Завершение: {new Date(election.endsAt).toLocaleDateString()}
+        {t('elections.endsAt')} {new Date(election.endsAt).toLocaleDateString()}
       </p>
 
       {candidates.length === 0 ? (
-        <p style={{ color: '#718096', fontStyle: 'italic', padding: '10px 0' }}>Кандидаты еще не выдвинуты.</p>
+        <p style={{ color: '#718096', fontStyle: 'italic', padding: '10px 0' }}>{t('elections.noCandidates')}</p>
       ) : (
         <div className="elections-widget__candidates">
           {candidates.map((cand) => {
@@ -82,7 +84,7 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
                 <div className="elections-widget__candidate-header">
                   <span className="elections-widget__candidate-name">👤 {cand.username}</span>
                   <span className="elections-widget__candidate-votes">
-                    {cand.votesCount} голосов ({percent}%)
+                    {cand.votesCount}{t('elections.votes')}{percent}{t('elections.percent')}
                   </span>
                 </div>
                 {cand.programText && (
@@ -100,16 +102,16 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
                       className="elections-widget__btn elections-widget__btn--vote"
                       onClick={() => handleVote(cand.id)}
                     >
-                      Голосовать за кандидата
+                      {t('elections.voteBtn')}
                     </button>
                   ) : election.status === 'nomination' ? (
                     <button
                       className="elections-widget__btn"
                       style={{ background: '#f1f5f9', color: '#94a3b8', cursor: 'not-allowed' }}
                       disabled
-                      title="Голосование станет доступно после этапа регистрации"
+                      title={t('elections.unavailableTitle')}
                     >
-                      Голосование пока недоступно
+                      {t('elections.unavailableBtn')}
                     </button>
                   ) : null}
                 </div>
@@ -125,7 +127,7 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
             className="elections-widget__btn elections-widget__btn--nominate"
             onClick={() => setShowNominateForm(true)}
           >
-            ⭐ Выдвинуть свою кандидатуру
+            {t('elections.nominateTitle')}
           </button>
         </div>
       )}
@@ -134,7 +136,7 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
         <form onSubmit={handleNominateSubmit} className="elections-widget__form">
           <textarea
             className="elections-widget__textarea"
-            placeholder="Ваша программа кандидата (почему нужно голосовать за вас)..."
+            placeholder={t('elections.programPlaceholder')}
             value={programText}
             onChange={(e) => setProgramText(e.target.value)}
           />
@@ -144,14 +146,14 @@ const ElectionsWidget: FC<ElectionsWidgetProps> = ({
               className="elections-widget__btn elections-widget__btn--cancel"
               onClick={() => setShowNominateForm(false)}
             >
-              Отмена
+              {t('elections.cancelBtn')}
             </button>
             <button
               type="submit"
               className="elections-widget__btn elections-widget__btn--nominate"
               disabled={loading}
             >
-              {loading ? 'Отправка...' : 'Отправить'}
+              {loading ? t('elections.loadingBtn') : t('elections.submitBtn')}
             </button>
           </div>
         </form>

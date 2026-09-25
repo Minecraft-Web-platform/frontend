@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   MINECRAFT_CURRENCY_ITEMS,
   MINECRAFT_ENCHANTMENTS,
@@ -19,6 +20,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
   label,
   required,
 }) => {
+  const { t } = useTranslation('economy');
   const [isOpen, setIsOpen] = useState(false);
   const [isCustomMode, setIsCustomMode] = useState(
     () => Boolean(value) && !getMinecraftItemInfo(value),
@@ -40,43 +42,60 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
 
   const currentInfo = getMinecraftItemInfo(value);
 
+  const handleSelect = (id: string) => {
+    onChange(id);
+    setIsOpen(false);
+  };
+
+  const handleCustomModeToggle = () => {
+    setIsCustomMode(true);
+    setIsOpen(false);
+  };
+
+  const handleBackToList = () => {
+    setIsCustomMode(false);
+    onChange('createdeco:gold_coin');
+  };
+
   return (
     <div
       ref={containerRef}
-      style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '6px' }}
+      style={{ position: 'relative', width: '100%', marginBottom: '16px' }}
     >
       {label && (
-        <span style={{ fontSize: '14px', fontWeight: 600, color: '#333333' }}>
+        <label
+          style={{
+            display: 'block',
+            marginBottom: '6px',
+            fontSize: '13px',
+            fontWeight: 600,
+            color: '#334155',
+          }}
+        >
           {label} {required && <span style={{ color: '#e11d48' }}>*</span>}
-        </span>
+        </label>
       )}
 
       {isCustomMode ? (
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
           <input
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="minecraft:diamond"
+            placeholder="minecraft:emerald, custom:coin_1..."
             required={required}
             style={{
               flex: 1,
               padding: '10px 14px',
-              border: '1px solid #d0d7de',
+              border: '1px solid #cbd5e1',
               borderRadius: '8px',
-              backgroundColor: '#f6f8fa',
-              fontSize: '14px',
-              color: '#1e293b',
+              fontFamily: 'monospace',
+              fontSize: '13px',
             }}
           />
           <button
             type="button"
-            onClick={() => {
-              setIsCustomMode(false);
-              if (!getMinecraftItemInfo(value)) {
-                onChange(MINECRAFT_CURRENCY_ITEMS[0].id);
-              }
-            }}
+            onClick={handleBackToList}
             style={{
               padding: '10px 12px',
               border: '1px solid #cbd5e1',
@@ -89,7 +108,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
               whiteSpace: 'nowrap',
             }}
           >
-            ← В список
+            {t('minecraftSelector.backToList')}
           </button>
         </div>
       ) : (
@@ -117,7 +136,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
               {currentInfo ? currentInfo.icon : '📦'}
             </span>
             <span style={{ fontWeight: 600 }}>
-              {currentInfo ? currentInfo.name : value || 'Выберите предмет'}
+              {currentInfo ? currentInfo.name : value || t('minecraftSelector.selectItem')}
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -164,10 +183,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
               return (
                 <div
                   key={item.id}
-                  onClick={() => {
-                    onChange(item.id);
-                    setIsOpen(false);
-                  }}
+                  onClick={() => handleSelect(item.id)}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -229,10 +245,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
           >
             <button
               type="button"
-              onClick={() => {
-                setIsCustomMode(true);
-                setIsOpen(false);
-              }}
+              onClick={handleCustomModeToggle}
               style={{
                 width: '100%',
                 padding: '6px',
@@ -245,7 +258,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
                 textAlign: 'center',
               }}
             >
-              + Ввести свой ID предмета вручную
+              {t('minecraftSelector.customItemId')}
             </button>
           </div>
         </div>
@@ -263,6 +276,7 @@ interface MinecraftEnchantDropdownProps {
 export const MinecraftEnchantDropdown: React.FC<
   MinecraftEnchantDropdownProps
 > = ({ value, onChange, label }) => {
+  const { t } = useTranslation('economy');
   const [isOpen, setIsOpen] = useState(false);
   const [isCustomMode, setIsCustomMode] = useState(
     () => Boolean(value) && !getMinecraftEnchantInfo(value),
@@ -332,7 +346,7 @@ export const MinecraftEnchantDropdown: React.FC<
               whiteSpace: 'nowrap',
             }}
           >
-            ← В список
+            {t('minecraftSelector.backToList')}
           </button>
         </div>
       ) : (
@@ -362,7 +376,7 @@ export const MinecraftEnchantDropdown: React.FC<
             <span style={{ fontWeight: 600 }}>
               {currentInfo
                 ? currentInfo.name
-                : value || 'Выберите чары'}
+                : value || t('minecraftSelector.selectEnchant')}
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -379,16 +393,7 @@ export const MinecraftEnchantDropdown: React.FC<
               >
                 {value}
               </span>
-            ) : (
-              <span
-                style={{
-                  fontSize: '12px',
-                  color: '#94a3b8',
-                }}
-              >
-                —
-              </span>
-            )}
+            ) : null}
             <span style={{ fontSize: '10px', color: '#64748b' }}>
               {isOpen ? '▲' : '▼'}
             </span>
@@ -402,19 +407,20 @@ export const MinecraftEnchantDropdown: React.FC<
             position: 'absolute',
             top: 'calc(100% + 4px)',
             left: 0,
-            right: 0,
-            zIndex: 1000,
-            backgroundColor: '#ffffff',
-            border: '1px solid #d0d7de',
-            borderRadius: '12px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)',
+            width: '100%',
             maxHeight: '280px',
             overflowY: 'auto',
+            backgroundColor: '#ffffff',
+            border: '1px solid #cbd5e1',
+            borderRadius: '10px',
+            boxShadow:
+              '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+            zIndex: 50,
           }}
         >
           <div style={{ padding: '6px' }}>
             {MINECRAFT_ENCHANTMENTS.map((ench) => {
-              const isSelected = ench.id === value;
+              const isSelected = value === ench.id;
               return (
                 <div
                   key={ench.id || 'none'}
@@ -426,7 +432,7 @@ export const MinecraftEnchantDropdown: React.FC<
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    padding: '10px 12px',
+                    padding: '8px 12px',
                     borderRadius: '8px',
                     cursor: 'pointer',
                     backgroundColor: isSelected ? '#eff6ff' : 'transparent',
@@ -497,7 +503,7 @@ export const MinecraftEnchantDropdown: React.FC<
                 textAlign: 'center',
               }}
             >
-              + Ввести чары вручную
+              {t('minecraftSelector.customEnchant')}
             </button>
           </div>
         </div>

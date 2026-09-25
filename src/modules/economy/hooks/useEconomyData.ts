@@ -2,6 +2,8 @@ import useSWR from 'swr';
 import { economyService } from '../services/economy.service';
 import { statesService } from '../../states';
 import useAuthStore from '../../../store/auth.store';
+import { useShallow } from 'zustand/react/shallow';
+
 
 // Helper for SWR caching keys
 export const ECONOMY_KEYS = {
@@ -34,7 +36,7 @@ export const useStates = () => {
 };
 
 export const useMyCompanies = () => {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
   let currentUsername = '';
   if (accessToken) {
     try {

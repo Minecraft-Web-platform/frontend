@@ -1,0 +1,43 @@
+{
+    "title": "Керування Досягненнями (Адмін)",
+    "alerts": {
+        "updated": "Досягнення успішно оновлено!",
+        "created": "Досягнення успішно створено!",
+        "errorSave": "Помилка збереження досягнення",
+        "granted": "Досягнення успішно видано!",
+        "errorGrant": "Помилка видачі досягнення",
+        "confirmDelete": "Справді видалити це досягнення?",
+        "deleted": "Видалено",
+        "errorDelete": "Помилка видалення"
+    },
+    "form": {
+        "editTitle": "Редагувати Досягнення",
+        "createTitle": "Створити Досягнення",
+        "namePlaceholder": "Назва",
+        "descPlaceholder": "Опис",
+        "iconLabel": "Іконка (необов'язково)",
+        "rarityLabel": "Рідкість",
+        "rarityCommon": "Звичайна (Common)",
+        "rarityRare": "Рідкісна (Rare)",
+        "rarityEpic": "Епічна (Epic)",
+        "rarityLegendary": "Легендарна (Legendary)",
+        "triggerPlaceholder": "Подія авто-видачі (state.created)",
+        "saveBtn": "Зберегти",
+        "createBtn": "Створити",
+        "cancelBtn": "Скасувати"
+    },
+    "grant": {
+        "title": "Видати Досягнення Гравцю",
+        "usernamePlaceholder": "Нікнейм гравця",
+        "achievementLabel": "Досягнення",
+        "selectPlaceholder": "-- Оберіть досягнення --",
+        "grantBtn": "Видати"
+    },
+    "list": {
+        "title": "Список Досягнень",
+        "triggerPrefix": "Тригер:",
+        "manualTrigger": "Ручна видача",
+        "editBtn": "Редагувати",
+        "deleteBtn": "Видалити"
+    }
+}

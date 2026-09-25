@@ -7,6 +7,22 @@
         "download-page": "Скачать сборку и лаунчер",
         "profile": "Профиль",
         "tech-support": "Техподдержка",
-        "regulations": "Регламенты"
+        "regulations": "Регламенты",
+        "states": "Государства",
+        "calendar": "Календарь",
+        "economy": "Экономика"
+    },
+    "uploader": {
+        "cropTitle": "Кадрирование изображения",
+        "cancel": "Отмена",
+        "save": "Сохранить",
+        "defaultLabel": "Загрузить картинку",
+        "maxFilesError": "Максимальное количество файлов: {{max}}",
+        "formatError": "Пожалуйста, загружайте только изображения (JPG, PNG, WEBP)",
+        "uploadError": "Ошибка загрузки",
+        "loading": "Загрузка...",
+        "dropText": "Перетащите картинку сюда или",
+        "clickSelect": "нажмите для выбора",
+        "remove": "Удалить"
     }
 }
