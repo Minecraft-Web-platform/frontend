@@ -19,10 +19,10 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
   const [selectedSubItemIds, setSelectedSubItemIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const [identities, setIdentities] = useState<IOrderIdentity[]>([]);
   const [selectedIdentityId, setSelectedIdentityId] = useState<string>('');
-  
+
   useEffect(() => {
     economyService.getMyIdentities()
       .then(data => {
@@ -49,7 +49,7 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
   const totalPrice = useMemo(() => {
     let total = service.price; // Base price or single service price
     if (service.isComposite && service.subItems) {
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       service.subItems.forEach((item: any) => {
         if (selectedSubItemIds.has(item.id)) {
           total += item.price;
@@ -68,7 +68,7 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
 
     setLoading(true);
     setError('');
-    
+
     try {
       const selectedIdentity = identities.find(i => i.id === selectedIdentityId);
 
@@ -82,9 +82,9 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
         payerStateId: selectedIdentity?.type === 'state' ? selectedIdentity.id : undefined,
       });
       onSuccess();
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError((err as AxiosError<{message?: string}>).response?.data?.message || (err as Error).message || t('companies.services.orderModal.error'));
+      setError((err as AxiosError<{ message?: string }>).response?.data?.message || (err as Error).message || t('companies.services.orderModal.error'));
     } finally {
       setLoading(false);
     }
@@ -95,7 +95,7 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
       <div className="order-service-modal">
         <h2>{t('companies.services.orderModal.title', { name: service.name })}</h2>
         {error && <div className="error-message">{error}</div>}
-        
+
         <div className="service-details">
           {service.description && <p>{service.description}</p>}
         </div>
@@ -104,11 +104,10 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
           {service.isComposite && service.subItems && service.subItems.length > 0 && (
             <div className="sub-items-selection">
               <h3>{t('companies.services.orderModal.subItemsTitle', { price: service.price })}</h3>
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-              {service.subItems.map((item: { name: string; price: number }) => (
+              {service.subItems.map((item: { id: string; name: string; description?: string | null; price: number }) => (
                 <label key={item.id} className="sub-item-checkbox">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={selectedSubItemIds.has(item.id)}
                     onChange={() => handleSubItemToggle(item.id)}
                   />
@@ -124,9 +123,9 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
 
           <div className="form-group">
             <label>{t('companies.services.orderModal.comment')}</label>
-            <textarea 
-              value={clientComment} 
-              onChange={e => setClientComment(e.target.value)} 
+            <textarea
+              value={clientComment}
+              onChange={e => setClientComment(e.target.value)}
               rows={4}
               placeholder={t('companies.services.orderModal.commentPlaceholder')}
             />
@@ -135,8 +134,8 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
           {identities.length > 1 && (
             <div className="form-group">
               <label>{t('companies.services.orderModal.orderAs')}</label>
-              <select 
-                value={selectedIdentityId} 
+              <select
+                value={selectedIdentityId}
                 onChange={e => setSelectedIdentityId(e.target.value)}
               >
                 {identities.map(id => (

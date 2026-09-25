@@ -4,13 +4,24 @@ import { statesService } from '../../services/states.service';
 import { useTranslation } from 'react-i18next';
 import './TerritoriesList.scss';
 
+interface ITerritoryItem {
+  id: string;
+  ownerType: string;
+  ownerId: string | number;
+  minX: number;
+  maxX: number;
+  minZ: number;
+  maxZ: number;
+  isHiddenOnMap: boolean;
+}
+
 interface TerritoriesListProps {
   ownerType: 'player' | 'company' | 'settlement' | 'state';
   ownerId: string;
 }
 
 export const TerritoriesList: React.FC<TerritoriesListProps> = ({ ownerType, ownerId }) => {
-  const [territories, setTerritories] = useState<unknown[]>([]);
+  const [territories, setTerritories] = useState<ITerritoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation('states');
 

@@ -32,12 +32,12 @@ import { useShallow } from 'zustand/react/shallow';
 
 
 const formatAccountNumber = (treasuryAccount: { id: string, balance: number, currencyCode: string } | string | null | undefined, t?: (key: string) => string) => {
-  if (!treasuryAccount) return t('stateDetailMissed.noAccount');
+  if (!treasuryAccount) return t?.('stateDetailMissed.noAccount') || '';
   if (typeof treasuryAccount === 'string') {
     return `#${treasuryAccount}`;
   }
   const accountId = treasuryAccount?.id;
-  if (!accountId) return t('stateDetailMissed.noAccount');
+  if (!accountId) return t?.('stateDetailMissed.noAccount') || '';
   return `${treasuryAccount.balance.toLocaleString()} ${treasuryAccount.currencyCode}`;
 };
 

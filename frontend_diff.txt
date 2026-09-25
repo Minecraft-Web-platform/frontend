@@ -1,0 +1,3104 @@
+diff --git a/FRONTEND_OPTIMIZATION_AUDIT.md b/FRONTEND_OPTIMIZATION_AUDIT.md
+new file mode 100644
+index 0000000..422084c
+--- /dev/null
++++ b/FRONTEND_OPTIMIZATION_AUDIT.md
+@@ -0,0 +1,451 @@
++# Комплексный аудит оптимизации фронтенда «Хроники Края 2.0»
++
++> **Статус документа:** Аналитический отчет и рекомендации  
++> **Область анализа:** Клиентская часть (React 18, Vite 5, TypeScript, Sass, Zustand, SWR)  
++> **Принцип:** Никаких правок в исходный код не вносилось (режим чистого аудита).
++
++---
++
++## Содержание
++1. [Резюме и ключевые метрики](#1-резюме-и-ключевые-метрики)
++2. [Категория 1: Сборка, бандл и разделение кода (Bundle Size & Code Splitting)](#2-категория-1-сборка-бандл-и-разделение-кода)
++3. [Категория 2: Интернационализация (i18n) и бандлинг локалей](#3-категория-2-интернационализация-i18n-и-бандлинг-локалей)
++4. [Категория 3: Производительность React и избыточные ре-рендеры](#4-категория-3-производительность-react-и-избыточные-ре-рендеры)
++5. [Категория 4: Утечки памяти (Memory Leaks)](#5-категория-4-утечки-памяти-memory-leaks)
++6. [Категория 5: Сетевые запросы, кэширование и медиа-ресурсы](#6-категория-5-сетевые-запросы-кэширование-и-медиа-ресурсы)
++7. [Категория 6: Архитектурные монолиты («God-компоненты»)](#7-категория-6-архитектурные-монолиты-god-компоненты)
++8. [Категория 7: Качество кода, TypeScript и ESLint](#8-категория-7-качество-кода-typescript-и-eslint)
++9. [Категория 8: SEO, доступность (a11y) и отказоустойчивость](#9-категория-8-seo-доступность-a11y-и-отказоустойчивость)
++10. [Матрица приоритетов и дорожная карта (Roadmap)](#10-матрица-приоритетов-и-дорожная-карта-roadmap)
++
++---
++
++## 1. Резюме и ключевые метрики
++
++В ходе глубокого анализа фронтенд-кодовой базы проекта были выявлены ключевые узкие места, напрямую влияющие на скорость начальной загрузки (FCP, LCP), время отклика интерфейса (INP, TTI), сетевой трафик и потребление памяти.
++
++### Текущее состояние сборки (`dist/assets`):
++- **Суммарный объем JS в проде:** `~2.8 МБ` (до сжатия) / `~850 КБ` (Gzip).
++- **Сверхтяжелые чанки:**
++  - `index-C91HfTLd.js`: **902 КБ** (содержит монолит страниц экономики, `jspdf`, `html2canvas`, `lightweight-charts`, `lucide-react`).
++  - `index-C1NitFnO.js`: **703 КБ** (монолит страниц государств и поселений).
++- **Суммарный объем JSON-локалей в главном бандле:** **828 КБ** (все 75 JSON-файлов для 5 языков загружаются синхронно при старте).
++- **Объем неоптимизированных картинок в `public/png`:** **2.6 МБ** (тяжелые несжатые PNG по 300–450 КБ).
++- **Мертвый код:** В зависимостях присутствуют тяжелые библиотеки (`recharts`, `date-fns`), которые вообще не импортируются в проекте.
++- **Утечки памяти:** Найдены неустранимые утечки в компонентах графиков (`TradingChart`, `MiniHistoryChart`), где экземпляры графиков не уничтожаются при размонтировании.
++
++> [!TIP]
++> **Потенциал оптимизации:**
++> - Сокращение начального бандла: на **60–75%** (с ~2.8 МБ до ~700–900 КБ).
++> - Устранение лишнего сетевого трафика картинок: на **80%** (перевод PNG в WebP/AVIF, удаление `Date.now()` кэш-бастинга).
++> - Полное устранение утечек памяти в графиках биржи и валют.
++
++---
++
++## 2. Категория 1: Сборка, бандл и разделение кода
++
++### 1.1. Разрушение Code Splitting из-за Barrel-файлов (`index.ts`) в `React.lazy()`
++- **Файлы:**
++  - [`src/App.tsx#L26-L34`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/App.tsx#L26-L34)
++  - [`src/modules/states/index.ts`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/index.ts)
++  - [`src/modules/economy/index.ts`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/index.ts)
++- **Суть проблемы:**
++  В [App.tsx](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/App.tsx) страницы подгружаются лениво, но импортируются через реэкспорты модулей (barrel files):
++  ```tsx
++  // Антипаттерн: импорт через индекс модуля
++  const StatesListPage = React.lazy(() => import("./modules/states").then(m => ({ default: m.StatesListPage })));
++  const StateDetailPage = React.lazy(() => import("./modules/states").then(m => ({ default: m.StateDetailPage })));
++  const EconomyHubPage = React.lazy(() => import("./modules/economy").then(m => ({ default: m.EconomyHubPage })));
++  ```
++  Поскольку `modules/states/index.ts` реэкспортирует абсолютно все страницы, модалки и сервисы модуля, Rollup объединяет **весь модуль государств** в один 703 КБ чанк, а **весь модуль экономики** — в один 902 КБ чанк. Ленивая загрузка отдельных маршрутов фактически перестает работать: посетив `/states`, пользователь скачивает код национального банка, всех поселений, модалок создания и выборов.
++- **Решение:**
++  Импортировать страницы напрямую из их собственных файлов:
++  ```tsx
++  const StatesListPage = React.lazy(() => import("./modules/states/pages/states-list-page/states-list.page"));
++  const StateDetailPage = React.lazy(() => import("./modules/states/pages/state-detail-page/state-detail.page"));
++  const EconomyHubPage = React.lazy(() => import("./modules/economy/pages/EconomyHubPage"));
++  ```
++
++---
++
++### 1.2. Синхронный импорт сверхтяжелых библиотек генерации PDF
++- **Файл:**
++  [`src/modules/economy/components/transaction-receipt-modal/transaction-receipt.modal.tsx#L4-L5`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/transaction-receipt-modal/transaction-receipt.modal.tsx#L4-L5)
++- **Суть проблемы:**
++  ```tsx
++  import html2canvas from 'html2canvas';
++  import { jsPDF } from 'jspdf';
++  ```
++  `jsPDF` (~350–400 КБ) и `html2canvas` (~200 КБ) импортируются статически на верхнем уровне модального окна чека. Так как чек транзакции связан с экономикой, эти 600 КБ немедленно вшиваются в общий чанк экономики `index-C91HfTLd.js`. При этом 99% пользователей даже не открывают этот модал, а кнопка «Скачать PDF» нажимается еще реже.
++- **Решение:**
++  Перенести импорт библиотек внутрь обработчика клика `handleDownloadPdf`:
++  ```tsx
++  const handleDownloadPdf = async () => {
++    setIsGenerating(true);
++    try {
++      const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
++        import('html2canvas'),
++        import('jspdf')
++      ]);
++      // генерация PDF...
++    } finally {
++      setIsGenerating(false);
++    }
++  };
++  ```
++  Это мгновенно уберет **~600 КБ** из чанка экономики.
++
++---
++
++### 1.3. Мертвые зависимости в `package.json`
++- **Файл:** [`package.json`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/package.json)
++- **Суть проблемы:**
++  1. `"recharts": "^3.10.1"` — установлена тяжелая библиотека графиков (вместе с пакетами d3), но в проекте **0 импортов** `recharts` (все графики работают на `lightweight-charts`).
++  2. `"date-fns": "^4.4.0"` — установлена библиотека работы с датами, но в кодовой базе **0 импортов** `date-fns` (все даты форматируются через нативный JS `Date`).
++- **Решение:**
++  Выполнить удаление неиспользуемых пакетов:
++  ```bash
++  npm uninstall recharts date-fns
++  ```
++  Это уменьшит `node_modules`, ускорит установку зависимостей в CI/CD и устранит риск случайного импорта дублирующих библиотек.
++
++---
++
++### 1.4. Отсутствие разделения вендорных библиотек в `vite.config.ts`
++- **Файл:** [`vite.config.ts`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/vite.config.ts)
++- **Суть проблемы:**
++  В конфигурации Vite не настроен `build.rollupOptions.output.manualChunks`. В результате тяжелые вендоры (`lightweight-charts`, `lucide-react`, `zustand`, `react-router`) перемешиваются с кодом компонентов и пересобираются/инвалидируются в браузере при каждом изменении любого UI-компонента.
++- **Решение:**
++  Настроить стратегию вендорных чанков:
++  ```ts
++  build: {
++    rollupOptions: {
++      output: {
++        manualChunks: {
++          'vendor-react': ['react', 'react-dom', 'react-router', 'react-router-dom'],
++          'vendor-charts': ['lightweight-charts'],
++          'vendor-ui': ['lucide-react', 'react-spinners', 'classnames'],
++          'vendor-state': ['zustand', 'swr', 'axios'],
++        }
++      }
++    }
++  }
++  ```
++  Это обеспечит долгосрочное кэширование вендорных скриптов в браузере клиента (`HTTP 304 / Cache-Control: immutable`).
++
++---
++
++### 1.5. Предупреждение Sass о Legacy JS API
++- **Суть проблемы:**
++  При каждой сборке `npm run build` выводится 20+ строк предупреждений:
++  `Deprecation [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.`
++- **Решение:**
++  В `vite.config.ts` включить современный компилятор Sass:
++  ```ts
++  css: {
++    preprocessorOptions: {
++      scss: {
++        api: 'modern-compiler'
++      }
++    }
++  }
++  ```
++  Это ускоряет сборку стилей благодаря пакету `sass-embedded` и убирает шум в логах CI.
++
++---
++
++## 3. Категория 2: Интернационализация (i18n) и бандлинг локалей
++
++### 2.1. Монолитная синхронная загрузка всех переводов (828 КБ)
++- **Файлы:**
++  - [`src/i18n/i18n.ts`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/i18n/i18n.ts)
++  - Каталог `src/i18n/locales/` (5 языков × 15 неймспейсов = 75 JSON-файлов)
++- **Суть проблемы:**
++  В файле `i18n.ts` статически импортируются все 75 JSON-файлов для языков `ru`, `en`, `pl`, `ua`, `kz`.
++  Файл `main.tsx` импортирует `i18n.ts` при старте приложения:
++  `import "./i18n/i18n";`
++  В итоге:
++  - Русскоязычный пользователь, открыв лендинг, вынужден скачать и распарсить в память браузера весь польский, казахский, украинский и английский текст для административной панели, налогов, биржи и регламентов.
++  - Общий объем несжатых JSON-переводов составляет **828 КБ**.
++- **Решение:**
++  Использовать динамическую подгрузку локалей через `i18next-resources-to-backend` или кастомный бэкенд с `import()`:
++  ```ts
++  import i18n from 'i18next';
++  import resourcesToBackend from 'i18next-resources-to-backend';
++
++  i18n
++    .use(resourcesToBackend((language: string, namespace: string) => 
++      import(`./locales/${language}/${namespace}.json`)
++    ))
++    .use(initReactI18next)
++    .init({ ... });
++  ```
++  **Результат:** Начальный бандл мгновенно уменьшается на **~700+ КБ**. Браузер запрашивает только нужный язык и только нужные разделы.
++
++---
++
++## 4. Категория 3: Производительность React и избыточные ре-рендеры
++
++### 4.1. Глобальная подписка на весь Zustand-стор (`useAuthStore`)
++- **Файлы (21 компонент):**
++  - [`src/modules/states/pages/states-list-page/states-list.page.tsx#L30`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/pages/states-list-page/states-list.page.tsx#L30)
++  - [`src/modules/economy/pages/CompaniesListPage.tsx#L22`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/CompaniesListPage.tsx#L22)
++  - [`src/shared/components/global-toast/GlobalToastProvider.tsx#L17`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/shared/components/global-toast/GlobalToastProvider.tsx#L17)
++  - [`src/modules/profile/pages/profile.page.tsx#L18`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/profile/pages/profile.page.tsx#L18)
++  - И многие другие.
++- **Суть проблемы:**
++  Компоненты вызывают Zustand без селектора:
++  ```tsx
++  // Антипаттерн: подписка на весь объект стора
++  const { isAuthenticated, isAdmin } = useAuthStore();
++  ```
++  В Zustand v5 вызов `useAuthStore()` без селектора подписывает компонент на **любое** изменение в сторе (обновление токена, смена бан-статуса, обновление роли, изменение `isEconomist`). В результате один фоновый запрос авторизации вызывает волну ре-рендеров по всему дереву компонентов.
++- **Решение:**
++  Использовать точечные селекторы либо `useShallow`:
++  ```tsx
++  // Вариант 1: атомарный селектор
++  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
++
++  // Вариант 2: useShallow для нескольких полей
++  import { useShallow } from 'zustand/react/shallow';
++  const { isAuthenticated, isAdmin } = useAuthStore(
++    useShallow(state => ({ isAuthenticated: state.isAuthenticated, isAdmin: state.isAdmin }))
++  );
++  ```
++
++---
++
++### 4.2. Дорогие вычисления без `useMemo` в циклах рендера
++- **Пример 1 — [`players.page.tsx#L53-L67`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/players/pages/players.page.tsx#L53-L67):**
++  ```tsx
++  const filteredUsers = users.filter((user) => {
++    const matchesOnline =
++      filterOnline === "all" ||
++      (filterOnline === "online" && onlinePlayers.players.includes(user.username)); // O(N * M)
++    // ...
++  });
++  ```
++  Массив `users` фильтруется при каждом ре-рендере без `useMemo`. Поиск в массиве `onlinePlayers.players.includes()` дает квадратичную сложность.
++  *Решение:* Обернуть в `useMemo` и преобразовать `onlinePlayers.players` в `new Set(...)` для проверки за $O(1)$.
++
++- **Пример 2 — [`achievements-admin.page.tsx#L25-L29`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/admin/pages/achievements-admin.page.tsx#L25-L29):**
++  ```tsx
++  const sortedAchievements = [...(achievements || [])].sort((a, b) => ...);
++  ```
++  Сортировка массива достижений выполняется на каждый ввод символа в любое поле формы (заголовок, описание, иконка).
++  *Решение:* Обернуть в `useMemo(..., [achievements])`.
++
++- **Пример 3 — [`useEconomyData.ts#L36-L49`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/hooks/useEconomyData.ts#L36-L49):**
++  В хуке `useMyCompanies` при каждом ре-рендере вызывается `JSON.parse(atob(accessToken.split('.')[1]))` без мемоизации.
++  *Решение:* Парсить имя пользователя один раз при авторизации и сохранять в `auth.store` или мемоизировать.
++
++---
++
++### 4.3. Нестабильные ссылки на функции-пропсы (Triggering Loops & Re-fetches)
++- **Файлы:**
++  - [`src/modules/economy/components/MarketTab.tsx#L61`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/MarketTab.tsx#L61)
++  - [`src/modules/economy/pages/CurrencyDetailPage.tsx#L104`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/CurrencyDetailPage.tsx#L104)
++- **Суть проблемы:**
++  Родительские компоненты передают в `TradingChart` новую стрелочную функцию на каждый рендер:
++  ```tsx
++  <TradingChart fetchHistory={() => economyService.getCompanySharePriceHistory(selectedCompany.id)} />
++  ```
++  Внутри `TradingChart` функция `fetchHistory` добавлена в массив зависимостей `useEffect`:
++  ```tsx
++  useEffect(() => { loadData(); }, [fetchHistory, ...]);
++  ```
++  Поскольку ссылка `fetchHistory` новая на каждом рендере родителя, `loadData()` перезапускается повторно при любом обновлении стейта в родителе.
++- **Решение:**
++  Оборачивать коллбэки в `useCallback` в родителе, либо в `TradingChart` принимать `companyId` / `currencyId` вместо функции и вызывать нужный метод сервиса напрямую.
++
++---
++
++### 4.4. Прямые манипуляции с DOM в React-компонентах
++- **Файл:** [`src/modules/economy/components/MinecraftItemSelector.tsx#L197-L206`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/MinecraftItemSelector.tsx#L197-L206)
++- **Суть проблемы:**
++  Для элементов списка написаны обработчики `onMouseEnter` и `onMouseLeave`, которые вручную мутируют `e.currentTarget.style.backgroundColor = '#f1f5f9'`.
++  Создаются сотни inline-объектов `style={{ ... }}` на каждый рендер списка предметов.
++- **Решение:**
++  Вынести стили в SCSS-класс со стандартным псевдоклассом `:hover`. Это разгрузит виртуальный DOM и JS-поток.
++
++---
++
++## 5. Категория 4: Утечки памяти (Memory Leaks)
++
++### 5.1. Утечка инстансов графиков в `TradingChart` и `MiniHistoryChart`
++- **Файлы:**
++  - [`src/modules/economy/components/TradingChart.tsx#L110-L141`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/TradingChart.tsx#L110-L141)
++  - [`src/modules/economy/components/MiniHistoryChart.tsx#L117-L120`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/components/MiniHistoryChart.tsx#L117-L120)
++- **Суть проблемы:**
++  Библиотека Lightweight Charts создает canvas-контексты, анимационные циклы `requestAnimationFrame` и DOM-структуры через `createChart()`.
++  Официальная документация требует обязательно вызывать `chart.remove()` при размонтировании компонента.
++  В текущем коде:
++  ```tsx
++  return () => {
++    isMounted = false;
++    // chartRef.current?.remove(); — ОТСУТСТВУЕТ!
++  };
++  ```
++  В результате:
++  - Каждый раз, когда пользователь переключает вкладки в экономике (Биржа ↔ Валюты ↔ Компании), старые инстансы графиков остаются висеть в памяти.
++  - В `MiniHistoryChart` (который выводится в каждой карточке валюты и компании) при пагинации или фильтрации утекают десятки canvas-инстансов, приводя к нарастанию потребления RAM вкладкой браузера (вплоть до сотен мегабайт).
++- **Решение:**
++  Добавить обязательный вызов очистки:
++  ```tsx
++  useEffect(() => {
++    return () => {
++      if (chartRef.current) {
++        chartRef.current.remove();
++        chartRef.current = null;
++      }
++    };
++  }, []);
++  ```
++
++---
++
++### 5.2. Неконтролируемые таймеры в `GlobalToastProvider.tsx`
++- **Файл:** [`src/shared/components/global-toast/GlobalToastProvider.tsx#L45-L47`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/shared/components/global-toast/GlobalToastProvider.tsx#L45-L47)
++- **Суть проблемы:**
++  При получении SSE-события достижений запускается таймер удаления:
++  ```tsx
++  setTimeout(() => {
++    setToasts((prev) => prev.filter((t) => t.id !== newToast.id));
++  }, 10000);
++  ```
++  Таймеры не сохраняются в массиве идентификаторов и не очищаются при отмонтировании или смене пользователя.
++
++---
++
++## 6. Категория 5: Сетевые запросы, кэширование и медиа-ресурсы
++
++### 6.1. Разрушение HTTP-кэша аватарок через `Date.now()`
++- **Файлы:**
++  - [`src/modules/players/pages/players.page.tsx#L121`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/players/pages/players.page.tsx#L121)
++  - [`src/modules/profile/pages/profile.page.tsx#L156`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/profile/pages/profile.page.tsx#L156)
++- **Суть проблемы:**
++  ```tsx
++  src={user?.avatar_img ? `${user.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"}
++  ```
++  Вызов `Date.now()` вычисляется **в теле JSX при каждом ре-рендере**.
++  При переключении любого фильтра или состояния страницы URL аватарки каждого игрока меняется на новый миллисекундный таймстемп. Браузер считает это совершенно новым ресурсом, инвалидирует кэш и отправляет повторные GET-запросы на сервер для всех аватарок.
++- **Решение:**
++  Удалить `?t=${Date.now()}` из рендера списков. Кэш-бастинг должен применяться **только** в момент загрузки нового аватара (например, через поле `user.updatedAt` или сохранение версии в стейте после загрузки).
++
++---
++
++### 6.2. Неоптимизированные растровые изображения и 404 ошибки
++- **Суть проблемы:**
++  1. **Тяжелые PNG:** В `public/png` лежат большие несжатые файлы: `city.png` (428 КБ), `party.png` (363 КБ), `train.png` (322 КБ), `zabka.png` (447 КБ). Конвертация в современный формат WebP/AVIF уменьшит их вес в 4–6 раз (до 50–70 КБ).
++  2. **Отсутствие `loading="lazy"`:** На лендинге ([landing.page.tsx](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/landing/landing.page.tsx)) и в списках игроков все картинки грузятся жадно (`eager`).
++  3. **Отсутствие `width` и `height`:** Вызывает сдвиги макета при загрузке (ухудшает метрику CLS).
++  4. **404 Not Found:**
++     - В [`landing.page.tsx#L45`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/landing/landing.page.tsx#L45): указан `<img src="/png/settlement.png" />`, но такого файла в каталоге `public/png/` **нет**. Это приводит к лишнему 404 запросу и битому изображению на первом экране.
++     - В [`index.html#L5`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/index.html#L5): указан `<link rel="icon" href="/vite.svg" />`, но файла `vite.svg` в `public/` нет (404 ошибка при загрузке favicon).
++
++---
++
++### 6.3. Гонка запросов и отсутствие очереди при обновлении Refresh Token
++- **Файл:** [`src/shared/services/main-axios.ts#L12-L41`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/shared/services/main-axios.ts#L12-L41)
++- **Суть проблемы:**
++  Если при переходе на страницу одновременно отправляются 3–5 запросов (например, в `Promise.all([getMyCards(), getMyAccounts(), ...])`) и access-токен истек, все запросы одновременно получают статус 401.
++  В интерцепторе отсутствует флаг блокировки / очередь ожидающих промисов (`isRefreshing` + `failedQueue`). В итоге отправляется сразу несколько параллельных POST-запросов на `/auth/refresh/`. При ротации refresh-токенов бэкенд аннулирует последующие запросы, что приводит к внезапному логауту пользователя.
++- **Решение:**
++  Реализовать стандартный паттерн очереди для Axios-интерцептора с ожиданием одного активного запроса на обновление токена.
++
++---
++
++### 6.4. Дублирование сетевых запросов и несогласованное использование SWR
++- **Суть проблемы:**
++  - В проекте есть хуки [`useMyCards`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/hooks/useEconomyData.ts) и `useMyAccounts` на базе SWR с кэшированием. Однако страница [`CardsPage.tsx`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/CardsPage.tsx) игнорирует эти хуки и делает повторный ручной запрос через `economyService` с локальным лоадером.
++  - Запрос `profileService.getInfoAboutMe()` дублируется в 4 разных страницах (`StateDetailPage`, `TechSupportPage`, `ProfilePage`, `PlayersPage`), вместо того чтобы брать профиль из кэша SWR ключа `'profile/me'` или единого селектора стора.
++
++---
++
++## 7. Категория 6: Архитектурные монолиты («God-компоненты»)
++
++### 7.1. Монолитные компоненты страниц с десятками модалок внутри
++В проекте сформировался ряд компонентов огромного размера:
++- [`state-detail.page.tsx`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/pages/state-detail-page/state-detail.page.tsx): **1363 строки**
++- [`PropertiesPage.tsx`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/PropertiesPage.tsx): **788 строк**
++- [`StockExchangePage.tsx`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/StockExchangePage.tsx): **579 строк**
++- [`settlement-detail.page.tsx`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/states/pages/settlement-detail-page/settlement-detail.page.tsx): **563 строки**
++- [`CardsPage.tsx`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/economy/pages/CardsPage.tsx): **442 строки**
++
++**Почему это влияет на производительность:**
++Например, в `state-detail.page.tsx` прямо в теле страницы определены состояния для 7 различных модальных окон (создание поселения, смена типа, выпуск валюты, создание банка, налоги, роли, редактирование государства) — всего свыше 30 `useState` хуков.
++Когда пользователь открывает модалку и вводит текст в поле названия поселения, **каждое нажатие клавиши** вызывает полный ре-рендер гигантской страницы со всеми ее списками граждан, декретов, казначейства и графиков.
++
++**Решение:**
++Вынести каждую модалку в отдельный независимый компонент (например, `CreateSettlementModal.tsx`, `CreateCurrencyModal.tsx`). Состояние полей формы должно инкапсулироваться внутри модалки, а страница должна передавать только флаг открытия и коллбэк `onSuccess`.
++
++---
++
++## 8. Категория 7: Качество кода, TypeScript и ESLint
++
++### 8.1. 18 ошибок линтера и риски в `npm run lint`
++- **Суть проблемы:**
++  Запуск `npm run lint` завершается с ошибкой (`code 1`, 18 errors, 3 warnings).
++  - 14 ошибок `Unexpected any. Specify a different type (@typescript-eslint/no-explicit-any)` в критичных модулях (`state-detail.page.tsx`, `PropertiesPage.tsx`, `achievements-admin.page.tsx`).
++  - Неиспользуемые переменные ошибок (`no-unused-vars`).
++  - Нарушения правил хуков (`react-hooks/exhaustive-deps`) в `DisputedOrdersTab.tsx`, `CurrenciesPage.tsx`, `PropertiesPage.tsx`. Пропуск зависимостей в `useEffect` грозит устаревшими замыканиями (stale closures), когда данные не обновляются после изменения фильтров или пропсов.
++
++---
++
++## 9. Категория 8: SEO, доступность (a11y) и отказоустойчивость
++
++### 9.1. Отсутствие Error Boundary
++- **Файл:** [`src/App.tsx`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/App.tsx)
++- **Суть проблемы:**
++  В приложении с большим количеством динамических чанков (`React.lazy`) при сбое сети или выкатке новой версии на сервере (когда старые хэши чанков перестают существовать) пользователь получает `ChunkLoadError`. Без компонента `ErrorBoundary` всё дерево React размонтируется, оставляя пользователя на мертвом белом экране.
++- **Решение:**
++  Обернуть `<Routes>` в компонент `ErrorBoundary` с кнопкой «Перезагрузить страницу» и автоматической перезагрузкой при `ChunkLoadError`.
++
++### 9.2. Доступность кликабельных карточек и SEO
++- **Файлы:** [`src/modules/news/pages/news.page.tsx#L62-L66`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/modules/news/pages/news.page.tsx#L62-L66) и др.
++- **Суть проблемы:**
++  Карточки новостей сделаны как `<article onClick={() => navigate(...)}>`.
++  - Поисковые роботы не могут индексировать такие переходы, так как отсутствует тег `<a href="...">`.
++  - Пользователи не могут открыть новость в новой вкладке через колесико мыши или `Ctrl+Click`.
++  - Навигация недоступна для пользователей с клавиатурой (отсутствует фокус по Tab и активация по Enter).
++- **Решение:**
++  Использовать компонент `<Link to="...">` из `react-router-dom` вместо `div/article` с `onClick`.
++
++### 9.3. Оптимизация шрифтов и `<head>`
++- **Файлы:** [`index.html`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/index.html), [`src/App.css`](file:///Users/oleksandrshtonda/projects/minecraft-website/frontend/src/App.css)
++- **Рекомендации:**
++  - Добавить `<link rel="preload" href="/src/assets/fonts/minencraft.woff2" as="font" type="font/woff2" crossorigin>` в `index.html` для устранения задержки отображения заголовков в пиксельном шрифте.
++  - Заменить `<html lang="en">` на динамический или актуальный язык (`ru`).
++  - Добавить мета-теги `description` и базовые OpenGraph теги (`og:title`, `og:image`).
++
++---
++
++## 10. Матрица приоритетов и дорожная карта (Roadmap)
++
++Для достижения максимального эффекта при минимальных затратах времени оптимизацию рекомендуется разбить на 3 последовательных этапа:
++
++```mermaid
++graph TD
++    A["Этап 1: Quick Wins (Быстрые победы)<br/>Затраты: 1-2 часа<br/>Эффект: -1 МБ бандла, устранение утечек"] --> B["Этап 2: React Performance & Refactoring<br/>Затраты: 1-2 дня<br/>Эффект: Плавный UI, отсутствие лишних ре-рендеров"]
++    B --> C["Этап 3: Deep Architecture & i18n<br/>Затраты: 2-3 дня<br/>Эффект: Сверхбыстрая начальная загрузка (-700 КБ)"]
++```
++
++| Приоритет | Задача | Файлы / Модули | Влияние на проект | Сложность |
++| :--- | :--- | :--- | :--- | :--- |
++| **P0 (Критично)** | **Устранить утечку памяти в графиках** (`chart.remove()`) | `TradingChart.tsx`, `MiniHistoryChart.tsx` | Предотвращение краша вкладки браузера и утечки RAM | Очень низкая (10 мин) |
++| **P0 (Критично)** | **Ленивый импорт `jsPDF` и `html2canvas`** | `transaction-receipt.modal.tsx` | **-600 КБ** из чанка экономики | Очень низкая (15 мин) |
++| **P0 (Критично)** | **Удалить неиспользуемые `recharts` и `date-fns`** | `package.json` | Очистка дерева зависимостей | Очень низкая (5 мин) |
++| **P0 (Критично)** | **Удалить `Date.now()` из рендера аватарок** | `players.page.tsx`, `profile.page.tsx` | Восстановление HTTP-кэша, устранение спама картинок | Очень низкая (10 мин) |
++| **P1 (Высокий)** | **Разделить страницы напрямую (минуя barrel `index.ts`)** | `App.tsx` | Дробление 900 КБ и 700 КБ чанков на маленькие маршруты | Низкая (30 мин) |
++| **P1 (Высокий)** | **Настроить `manualChunks` и `modern-compiler`** | `vite.config.ts` | Кэширование вендоров, чистые логи сборки | Низкая (20 мин) |
++| **P1 (Высокий)** | **Добавить селекторы в `useAuthStore`** | 21 компонент с `useAuthStore()` | Устранение каскадных ре-рендеров приложения | Средняя (1-2 часа) |
++| **P1 (Высокий)** | **Исправить битые ссылки (settlement.png, favicon)** | `landing.page.tsx`, `index.html` | Устранение 404 ошибок при загрузке страниц | Низкая (15 мин) |
++| **P1 (Высокий)** | **Добавить `ErrorBoundary`** | `App.tsx` | Защита от белого экрана при сетевых сбоях | Низкая (30 мин) |
++| **P2 (Средний)** | **Декомпозиция модалок из `state-detail` и `Properties`** | `state-detail.page.tsx`, `PropertiesPage.tsx` | Ускорение отклика форм, чистота архитектуры | Средняя (1 день) |
++| **P2 (Средний)** | **Перевод PNG-изображений в формат WebP** | `public/png/` | Сокращение веса картинок с 2.6 МБ до ~400 КБ | Средняя (1 час) |
++| **P2 (Средний)** | **Очередь запросов в Axios-интерцепторе refresh-токена** | `main-axios.ts` | Стабильность сессии при истечении токена | Средняя (2 часа) |
++| **P3 (Масштаб)** | **Динамическая загрузка переводов i18n по требованию** | `src/i18n/` | **-700+ КБ** из главного начального чанка | Средняя (1-2 дня) |
++| **P3 (Масштаб)** | **Исправление 18 ошибок ESLint и типизация `any`** | `src/modules/...` | Надежность типов и предотвращение багов | Средняя (1 день) |
++
++---
++*Документ сформирован в режиме аудита согласно запросу пользователя.*
+diff --git a/index.html b/index.html
+index aca55bf..e0152bc 100644
+--- a/index.html
++++ b/index.html
+@@ -2,7 +2,7 @@
+ <html lang="en">
+   <head>
+     <meta charset="UTF-8" />
+-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
++    <link rel="icon" type="image/png" href="/png/steve-head.webp" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>Хроники края</title>
+   </head>
+diff --git a/package-lock.json b/package-lock.json
+index 6dd85ce..7a25ac7 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -10,7 +10,6 @@
+       "dependencies": {
+         "axios": "^1.9.0",
+         "classnames": "^2.5.1",
+-        "date-fns": "^4.4.0",
+         "html2canvas": "^1.4.1",
+         "i18next": "^26.0.1",
+         "i18next-browser-languagedetector": "^8.2.1",
+@@ -25,7 +24,6 @@
+         "react-router": "^7.8.1",
+         "react-router-dom": "^7.8.1",
+         "react-spinners": "^0.17.0",
+-        "recharts": "^3.10.1",
+         "swr": "^2.5.1",
+         "zustand": "^5.0.5"
+       },
+@@ -1829,32 +1827,6 @@
+         "url": "https://opencollective.com/parcel"
+       }
+     },
+-    "node_modules/@reduxjs/toolkit": {
+-      "version": "2.12.0",
+-      "resolved": "https://registry.npmjs.org/@reduxjs/toolkit/-/toolkit-2.12.0.tgz",
+-      "integrity": "sha512-KiT+RzZbp6mQET+Mg+h2c97+9j1sNflUxQkIHI7Yuzf6Peu+OYpmkn6nbHWmLLWj+1ZODUJFwGZ7gx3L9R9EOw==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "@standard-schema/spec": "^1.0.0",
+-        "@standard-schema/utils": "^0.3.0",
+-        "immer": "^11.0.0",
+-        "redux": "^5.0.1",
+-        "redux-thunk": "^3.1.0",
+-        "reselect": "^5.1.0"
+-      },
+-      "peerDependencies": {
+-        "react": "^16.9.0 || ^17.0.0 || ^18 || ^19",
+-        "react-redux": "^7.2.1 || ^8.1.3 || ^9.0.0"
+-      },
+-      "peerDependenciesMeta": {
+-        "react": {
+-          "optional": true
+-        },
+-        "react-redux": {
+-          "optional": true
+-        }
+-      }
+-    },
+     "node_modules/@rolldown/pluginutils": {
+       "version": "1.0.0-beta.27",
+       "resolved": "https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.0-beta.27.tgz",
+@@ -2235,18 +2207,6 @@
+         "win32"
+       ]
+     },
+-    "node_modules/@standard-schema/spec": {
+-      "version": "1.1.0",
+-      "resolved": "https://registry.npmjs.org/@standard-schema/spec/-/spec-1.1.0.tgz",
+-      "integrity": "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==",
+-      "license": "MIT"
+-    },
+-    "node_modules/@standard-schema/utils": {
+-      "version": "0.3.0",
+-      "resolved": "https://registry.npmjs.org/@standard-schema/utils/-/utils-0.3.0.tgz",
+-      "integrity": "sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==",
+-      "license": "MIT"
+-    },
+     "node_modules/@svgr/babel-plugin-add-jsx-attribute": {
+       "version": "8.0.0",
+       "resolved": "https://registry.npmjs.org/@svgr/babel-plugin-add-jsx-attribute/-/babel-plugin-add-jsx-attribute-8.0.0.tgz",
+@@ -2734,69 +2694,6 @@
+         "@swc/counter": "^0.1.3"
+       }
+     },
+-    "node_modules/@types/d3-array": {
+-      "version": "3.2.2",
+-      "resolved": "https://registry.npmjs.org/@types/d3-array/-/d3-array-3.2.2.tgz",
+-      "integrity": "sha512-hOLWVbm7uRza0BYXpIIW5pxfrKe0W+D5lrFiAEYR+pb6w3N2SwSMaJbXdUfSEv+dT4MfHBLtn5js0LAWaO6otw==",
+-      "license": "MIT"
+-    },
+-    "node_modules/@types/d3-color": {
+-      "version": "3.1.3",
+-      "resolved": "https://registry.npmjs.org/@types/d3-color/-/d3-color-3.1.3.tgz",
+-      "integrity": "sha512-iO90scth9WAbmgv7ogoq57O9YpKmFBbmoEoCHDB2xMBY0+/KVrqAaCDyCE16dUspeOvIxFFRI+0sEtqDqy2b4A==",
+-      "license": "MIT"
+-    },
+-    "node_modules/@types/d3-ease": {
+-      "version": "3.0.2",
+-      "resolved": "https://registry.npmjs.org/@types/d3-ease/-/d3-ease-3.0.2.tgz",
+-      "integrity": "sha512-NcV1JjO5oDzoK26oMzbILE6HW7uVXOHLQvHshBUW4UMdZGfiY6v5BeQwh9a9tCzv+CeefZQHJt5SRgK154RtiA==",
+-      "license": "MIT"
+-    },
+-    "node_modules/@types/d3-interpolate": {
+-      "version": "3.0.4",
+-      "resolved": "https://registry.npmjs.org/@types/d3-interpolate/-/d3-interpolate-3.0.4.tgz",
+-      "integrity": "sha512-mgLPETlrpVV1YRJIglr4Ez47g7Yxjl1lj7YKsiMCb27VJH9W8NVM6Bb9d8kkpG/uAQS5AmbA48q2IAolKKo1MA==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "@types/d3-color": "*"
+-      }
+-    },
+-    "node_modules/@types/d3-path": {
+-      "version": "3.1.1",
+-      "resolved": "https://registry.npmjs.org/@types/d3-path/-/d3-path-3.1.1.tgz",
+-      "integrity": "sha512-VMZBYyQvbGmWyWVea0EHs/BwLgxc+MKi1zLDCONksozI4YJMcTt8ZEuIR4Sb1MMTE8MMW49v0IwI5+b7RmfWlg==",
+-      "license": "MIT"
+-    },
+-    "node_modules/@types/d3-scale": {
+-      "version": "4.0.9",
+-      "resolved": "https://registry.npmjs.org/@types/d3-scale/-/d3-scale-4.0.9.tgz",
+-      "integrity": "sha512-dLmtwB8zkAeO/juAMfnV+sItKjlsw2lKdZVVy6LRr0cBmegxSABiLEpGVmSJJ8O08i4+sGR6qQtb6WtuwJdvVw==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "@types/d3-time": "*"
+-      }
+-    },
+-    "node_modules/@types/d3-shape": {
+-      "version": "3.1.8",
+-      "resolved": "https://registry.npmjs.org/@types/d3-shape/-/d3-shape-3.1.8.tgz",
+-      "integrity": "sha512-lae0iWfcDeR7qt7rA88BNiqdvPS5pFVPpo5OfjElwNaT2yyekbM0C9vK+yqBqEmHr6lDkRnYNoTBYlAgJa7a4w==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "@types/d3-path": "*"
+-      }
+-    },
+-    "node_modules/@types/d3-time": {
+-      "version": "3.0.4",
+-      "resolved": "https://registry.npmjs.org/@types/d3-time/-/d3-time-3.0.4.tgz",
+-      "integrity": "sha512-yuzZug1nkAAaBlBBikKZTgzCeA+k1uy4ZFwWANOfKw5z5LRhV0gNA7gNkKm7HoK+HRN0wX3EkxGk0fpbWhmB7g==",
+-      "license": "MIT"
+-    },
+-    "node_modules/@types/d3-timer": {
+-      "version": "3.0.2",
+-      "resolved": "https://registry.npmjs.org/@types/d3-timer/-/d3-timer-3.0.2.tgz",
+-      "integrity": "sha512-Ps3T8E8dZDam6fUyNiMkekK3XUsaUEik+idO9/YjPtfj2qruF8tFBXS7XhtE4iIXBLxhmLjP3SXpLhVf21I9Lw==",
+-      "license": "MIT"
+-    },
+     "node_modules/@types/estree": {
+       "version": "1.0.9",
+       "resolved": "https://registry.npmjs.org/@types/estree/-/estree-1.0.9.tgz",
+@@ -2859,12 +2756,6 @@
+       "license": "MIT",
+       "optional": true
+     },
+-    "node_modules/@types/use-sync-external-store": {
+-      "version": "0.0.6",
+-      "resolved": "https://registry.npmjs.org/@types/use-sync-external-store/-/use-sync-external-store-0.0.6.tgz",
+-      "integrity": "sha512-zFDAD+tlpf2r4asuHEj0XH6pY6i0g5NeAHPn+15wk3BV6JA69eERFXC1gyGThDkVa1zCyKr5jox1+2LbV/AMLg==",
+-      "license": "MIT"
+-    },
+     "node_modules/@typescript-eslint/eslint-plugin": {
+       "version": "8.67.0",
+       "resolved": "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.67.0.tgz",
+@@ -3445,15 +3336,6 @@
+       "integrity": "sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==",
+       "license": "MIT"
+     },
+-    "node_modules/clsx": {
+-      "version": "2.1.1",
+-      "resolved": "https://registry.npmjs.org/clsx/-/clsx-2.1.1.tgz",
+-      "integrity": "sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=6"
+-      }
+-    },
+     "node_modules/color-convert": {
+       "version": "2.0.1",
+       "resolved": "https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz",
+@@ -3597,137 +3479,6 @@
+       "devOptional": true,
+       "license": "MIT"
+     },
+-    "node_modules/d3-array": {
+-      "version": "3.2.4",
+-      "resolved": "https://registry.npmjs.org/d3-array/-/d3-array-3.2.4.tgz",
+-      "integrity": "sha512-tdQAmyA18i4J7wprpYq8ClcxZy3SC31QMeByyCFyRt7BVHdREQZ5lpzoe5mFEYZUWe+oq8HBvk9JjpibyEV4Jg==",
+-      "license": "ISC",
+-      "dependencies": {
+-        "internmap": "1 - 2"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/d3-color": {
+-      "version": "3.1.0",
+-      "resolved": "https://registry.npmjs.org/d3-color/-/d3-color-3.1.0.tgz",
+-      "integrity": "sha512-zg/chbXyeBtMQ1LbD/WSoW2DpC3I0mpmPdW+ynRTj/x2DAWYrIY7qeZIHidozwV24m4iavr15lNwIwLxRmOxhA==",
+-      "license": "ISC",
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/d3-ease": {
+-      "version": "3.0.1",
+-      "resolved": "https://registry.npmjs.org/d3-ease/-/d3-ease-3.0.1.tgz",
+-      "integrity": "sha512-wR/XK3D3XcLIZwpbvQwQ5fK+8Ykds1ip7A2Txe0yxncXSdq1L9skcG7blcedkOX+ZcgxGAmLX1FrRGbADwzi0w==",
+-      "license": "BSD-3-Clause",
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/d3-format": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/d3-format/-/d3-format-3.1.2.tgz",
+-      "integrity": "sha512-AJDdYOdnyRDV5b6ArilzCPPwc1ejkHcoyFarqlPqT7zRYjhavcT3uSrqcMvsgh2CgoPbK3RCwyHaVyxYcP2Arg==",
+-      "license": "ISC",
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/d3-interpolate": {
+-      "version": "3.0.1",
+-      "resolved": "https://registry.npmjs.org/d3-interpolate/-/d3-interpolate-3.0.1.tgz",
+-      "integrity": "sha512-3bYs1rOD33uo8aqJfKP3JWPAibgw8Zm2+L9vBKEHJ2Rg+viTR7o5Mmv5mZcieN+FRYaAOWX5SJATX6k1PWz72g==",
+-      "license": "ISC",
+-      "dependencies": {
+-        "d3-color": "1 - 3"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/d3-path": {
+-      "version": "3.1.0",
+-      "resolved": "https://registry.npmjs.org/d3-path/-/d3-path-3.1.0.tgz",
+-      "integrity": "sha512-p3KP5HCf/bvjBSSKuXid6Zqijx7wIfNW+J/maPs+iwR35at5JCbLUT0LzF1cnjbCHWhqzQTIN2Jpe8pRebIEFQ==",
+-      "license": "ISC",
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/d3-scale": {
+-      "version": "4.0.2",
+-      "resolved": "https://registry.npmjs.org/d3-scale/-/d3-scale-4.0.2.tgz",
+-      "integrity": "sha512-GZW464g1SH7ag3Y7hXjf8RoUuAFIqklOAq3MRl4OaWabTFJY9PN/E1YklhXLh+OQ3fM9yS2nOkCoS+WLZ6kvxQ==",
+-      "license": "ISC",
+-      "dependencies": {
+-        "d3-array": "2.10.0 - 3",
+-        "d3-format": "1 - 3",
+-        "d3-interpolate": "1.2.0 - 3",
+-        "d3-time": "2.1.1 - 3",
+-        "d3-time-format": "2 - 4"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/d3-shape": {
+-      "version": "3.2.0",
+-      "resolved": "https://registry.npmjs.org/d3-shape/-/d3-shape-3.2.0.tgz",
+-      "integrity": "sha512-SaLBuwGm3MOViRq2ABk3eLoxwZELpH6zhl3FbAoJ7Vm1gofKx6El1Ib5z23NUEhF9AsGl7y+dzLe5Cw2AArGTA==",
+-      "license": "ISC",
+-      "dependencies": {
+-        "d3-path": "^3.1.0"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/d3-time": {
+-      "version": "3.1.0",
+-      "resolved": "https://registry.npmjs.org/d3-time/-/d3-time-3.1.0.tgz",
+-      "integrity": "sha512-VqKjzBLejbSMT4IgbmVgDjpkYrNWUYJnbCGo874u7MMKIWsILRX+OpX/gTk8MqjpT1A/c6HY2dCA77ZN0lkQ2Q==",
+-      "license": "ISC",
+-      "dependencies": {
+-        "d3-array": "2 - 3"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/d3-time-format": {
+-      "version": "4.1.0",
+-      "resolved": "https://registry.npmjs.org/d3-time-format/-/d3-time-format-4.1.0.tgz",
+-      "integrity": "sha512-dJxPBlzC7NugB2PDLwo9Q8JiTR3M3e4/XANkreKSUxF8vvXKqm1Yfq4Q5dl8budlunRVlUUaDUgFt7eA8D6NLg==",
+-      "license": "ISC",
+-      "dependencies": {
+-        "d3-time": "1 - 3"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/d3-timer": {
+-      "version": "3.0.1",
+-      "resolved": "https://registry.npmjs.org/d3-timer/-/d3-timer-3.0.1.tgz",
+-      "integrity": "sha512-ndfJ/JxxMd3nw31uyKoY2naivF+r29V+Lc0svZxe1JvvIRmi8hUsrMvdOwgS1o6uBHmiz91geQ0ylPP0aj1VUA==",
+-      "license": "ISC",
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/date-fns": {
+-      "version": "4.4.0",
+-      "resolved": "https://registry.npmjs.org/date-fns/-/date-fns-4.4.0.tgz",
+-      "integrity": "sha512-+1UMbeh68lH1SegH83CGWwpb6OHHbpSgr3+s5Eww5M4CAgswBpoWS0AjTOfEJ33HiYKz1hdj/KTFprzXHmq/6w==",
+-      "license": "MIT",
+-      "funding": {
+-        "type": "github",
+-        "url": "https://github.com/sponsors/kossnocorp"
+-      }
+-    },
+     "node_modules/debug": {
+       "version": "4.4.3",
+       "resolved": "https://registry.npmjs.org/debug/-/debug-4.4.3.tgz",
+@@ -3745,12 +3496,6 @@
+         }
+       }
+     },
+-    "node_modules/decimal.js-light": {
+-      "version": "2.5.1",
+-      "resolved": "https://registry.npmjs.org/decimal.js-light/-/decimal.js-light-2.5.1.tgz",
+-      "integrity": "sha512-qIMFpTMZmny+MMIitAB6D7iVPEorVw6YQRWkvarTkT4tBeSLLiHzcwj6q0MmYSFCiVpiqPJTJEYIrpcPzVEIvg==",
+-      "license": "MIT"
+-    },
+     "node_modules/deep-is": {
+       "version": "0.1.4",
+       "resolved": "https://registry.npmjs.org/deep-is/-/deep-is-0.1.4.tgz",
+@@ -3896,17 +3641,6 @@
+         "node": ">= 0.4"
+       }
+     },
+-    "node_modules/es-toolkit": {
+-      "version": "1.50.0",
+-      "resolved": "https://registry.npmjs.org/es-toolkit/-/es-toolkit-1.50.0.tgz",
+-      "integrity": "sha512-OyZKhUVvEep9ITEiwHn8GKnMRQIVqoSIX7WnRbkWgJkllCujilqP2rD0u979tkl8wqyc8ICwlc1UBVv/Sl1G6w==",
+-      "license": "MIT",
+-      "workspaces": [
+-        "docs",
+-        "benchmarks",
+-        "tests/types"
+-      ]
+-    },
+     "node_modules/esbuild": {
+       "version": "0.21.5",
+       "resolved": "https://registry.npmjs.org/esbuild/-/esbuild-0.21.5.tgz",
+@@ -4153,12 +3887,6 @@
+         "node": ">=0.10.0"
+       }
+     },
+-    "node_modules/eventemitter3": {
+-      "version": "5.0.4",
+-      "resolved": "https://registry.npmjs.org/eventemitter3/-/eventemitter3-5.0.4.tgz",
+-      "integrity": "sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==",
+-      "license": "MIT"
+-    },
+     "node_modules/fancy-canvas": {
+       "version": "2.1.0",
+       "resolved": "https://registry.npmjs.org/fancy-canvas/-/fancy-canvas-2.1.0.tgz",
+@@ -4553,6 +4281,8 @@
+       "resolved": "https://registry.npmjs.org/immer/-/immer-11.1.17.tgz",
+       "integrity": "sha512-8Vu44Y0MuMBlTQz/jQ8HEMYNq/bBqk87MnBwYR5mC8AthfhEXidZ5aT/oA/CUqboa8THKltnD9L3xyqhU/Sy1Q==",
+       "license": "MIT",
++      "optional": true,
++      "peer": true,
+       "funding": {
+         "type": "opencollective",
+         "url": "https://opencollective.com/immer"
+@@ -4592,15 +4322,6 @@
+         "node": ">=0.8.19"
+       }
+     },
+-    "node_modules/internmap": {
+-      "version": "2.0.3",
+-      "resolved": "https://registry.npmjs.org/internmap/-/internmap-2.0.3.tgz",
+-      "integrity": "sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg==",
+-      "license": "ISC",
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+     "node_modules/iobuffer": {
+       "version": "5.4.0",
+       "resolved": "https://registry.npmjs.org/iobuffer/-/iobuffer-5.4.0.tgz",
+@@ -5246,36 +4967,6 @@
+         "react": ">=16.13.1"
+       }
+     },
+-    "node_modules/react-is": {
+-      "version": "19.2.8",
+-      "resolved": "https://registry.npmjs.org/react-is/-/react-is-19.2.8.tgz",
+-      "integrity": "sha512-s5un28nYxKJw5gvUHyW5PCC28CvBqLu9r3cWgzHT4Vo/5fqqkFcdRYsGcKf50WMPpjjFZS5d76fn3YCo2njKwQ==",
+-      "license": "MIT",
+-      "peer": true
+-    },
+-    "node_modules/react-redux": {
+-      "version": "9.3.0",
+-      "resolved": "https://registry.npmjs.org/react-redux/-/react-redux-9.3.0.tgz",
+-      "integrity": "sha512-KQopgqFo/p/fgmAs5qz6p5RWaNAzq40WAu7fJIXnQpYxFPbJYtsJPWvGeF2rOBaY/kEuV77AVsX8TsQzKm+A/g==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "@types/use-sync-external-store": "^0.0.6",
+-        "use-sync-external-store": "^1.4.0"
+-      },
+-      "peerDependencies": {
+-        "@types/react": "^18.2.25 || ^19",
+-        "react": "^18.0 || ^19",
+-        "redux": "^5.0.0"
+-      },
+-      "peerDependenciesMeta": {
+-        "@types/react": {
+-          "optional": true
+-        },
+-        "redux": {
+-          "optional": true
+-        }
+-      }
+-    },
+     "node_modules/react-router": {
+       "version": "7.18.2",
+       "resolved": "https://registry.npmjs.org/react-router/-/react-router-7.18.2.tgz",
+@@ -5339,51 +5030,6 @@
+         "url": "https://paulmillr.com/funding/"
+       }
+     },
+-    "node_modules/recharts": {
+-      "version": "3.10.1",
+-      "resolved": "https://registry.npmjs.org/recharts/-/recharts-3.10.1.tgz",
+-      "integrity": "sha512-QXFrvt6IVcw7eeZCoyXTwkIJAX3Dv1nyVhMicXJ47GsGDDpcN8z6o644DibE9XjpBTThtsomLKnTV6lc+cVFUA==",
+-      "license": "MIT",
+-      "workspaces": [
+-        "www"
+-      ],
+-      "dependencies": {
+-        "@reduxjs/toolkit": "^1.9.0 || 2.x.x",
+-        "clsx": "^2.1.1",
+-        "decimal.js-light": "^2.5.1",
+-        "es-toolkit": "^1.39.3",
+-        "eventemitter3": "^5.0.1",
+-        "immer": "^11.1.8",
+-        "react-redux": "8.x.x || 9.x.x",
+-        "reselect": "5.2.0",
+-        "tiny-invariant": "^1.3.3",
+-        "use-sync-external-store": "^1.2.2",
+-        "victory-vendor": "^37.0.2"
+-      },
+-      "engines": {
+-        "node": ">=18"
+-      },
+-      "peerDependencies": {
+-        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+-        "react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+-        "react-is": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+-      }
+-    },
+-    "node_modules/redux": {
+-      "version": "5.0.1",
+-      "resolved": "https://registry.npmjs.org/redux/-/redux-5.0.1.tgz",
+-      "integrity": "sha512-M9/ELqF6fy8FwmkpnF0S3YKOqMyoWJ4+CS5Efg2ct3oY9daQvd/Pc71FpGZsVsbl3Cpb+IIcjBDUnnyBdQbq4w==",
+-      "license": "MIT"
+-    },
+-    "node_modules/redux-thunk": {
+-      "version": "3.1.0",
+-      "resolved": "https://registry.npmjs.org/redux-thunk/-/redux-thunk-3.1.0.tgz",
+-      "integrity": "sha512-NW2r5T6ksUKXCabzhL9z+h206HQw/NJkcLm1GPImRQ8IzfXwRGqjVhKJGauHirT0DAuyy6hjdnMZaRoAcy0Klw==",
+-      "license": "MIT",
+-      "peerDependencies": {
+-        "redux": "^5.0.0"
+-      }
+-    },
+     "node_modules/regenerator-runtime": {
+       "version": "0.13.11",
+       "resolved": "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz",
+@@ -5391,12 +5037,6 @@
+       "license": "MIT",
+       "optional": true
+     },
+-    "node_modules/reselect": {
+-      "version": "5.2.0",
+-      "resolved": "https://registry.npmjs.org/reselect/-/reselect-5.2.0.tgz",
+-      "integrity": "sha512-AgZ3UOZm3YndfrJ4OYjgrT7bmCm/1iqkjvEfH/oYjzh6PD2qw4QuT3jjnXIrpdt4MTpMXclMT3lXbmRY+XRakw==",
+-      "license": "MIT"
+-    },
+     "node_modules/resolve-from": {
+       "version": "4.0.0",
+       "resolved": "https://registry.npmjs.org/resolve-from/-/resolve-from-4.0.0.tgz",
+@@ -6079,12 +5719,6 @@
+         "utrie": "^1.0.2"
+       }
+     },
+-    "node_modules/tiny-invariant": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/tiny-invariant/-/tiny-invariant-1.3.3.tgz",
+-      "integrity": "sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==",
+-      "license": "MIT"
+-    },
+     "node_modules/tinyglobby": {
+       "version": "0.2.17",
+       "resolved": "https://registry.npmjs.org/tinyglobby/-/tinyglobby-0.2.17.tgz",
+@@ -6239,28 +5873,6 @@
+       "dev": true,
+       "license": "MIT"
+     },
+-    "node_modules/victory-vendor": {
+-      "version": "37.3.6",
+-      "resolved": "https://registry.npmjs.org/victory-vendor/-/victory-vendor-37.3.6.tgz",
+-      "integrity": "sha512-SbPDPdDBYp+5MJHhBCAyI7wKM3d5ivekigc2Dk2s7pgbZ9wIgIBYGVw4zGHBml/qTFbexrofXW6Gu4noGxrOwQ==",
+-      "license": "MIT AND ISC",
+-      "dependencies": {
+-        "@types/d3-array": "^3.0.3",
+-        "@types/d3-ease": "^3.0.0",
+-        "@types/d3-interpolate": "^3.0.1",
+-        "@types/d3-scale": "^4.0.2",
+-        "@types/d3-shape": "^3.1.0",
+-        "@types/d3-time": "^3.0.0",
+-        "@types/d3-timer": "^3.0.0",
+-        "d3-array": "^3.1.6",
+-        "d3-ease": "^3.0.1",
+-        "d3-interpolate": "^3.0.1",
+-        "d3-scale": "^4.0.2",
+-        "d3-shape": "^3.1.0",
+-        "d3-time": "^3.0.0",
+-        "d3-timer": "^3.0.1"
+-      }
+-    },
+     "node_modules/vite": {
+       "version": "5.4.21",
+       "resolved": "https://registry.npmjs.org/vite/-/vite-5.4.21.tgz",
+diff --git a/package.json b/package.json
+index 1143130..1837d03 100644
+--- a/package.json
++++ b/package.json
+@@ -12,7 +12,6 @@
+   "dependencies": {
+     "axios": "^1.9.0",
+     "classnames": "^2.5.1",
+-    "date-fns": "^4.4.0",
+     "html2canvas": "^1.4.1",
+     "i18next": "^26.0.1",
+     "i18next-browser-languagedetector": "^8.2.1",
+@@ -27,7 +26,6 @@
+     "react-router": "^7.8.1",
+     "react-router-dom": "^7.8.1",
+     "react-spinners": "^0.17.0",
+-    "recharts": "^3.10.1",
+     "swr": "^2.5.1",
+     "zustand": "^5.0.5"
+   },
+diff --git a/public/png/city.png b/public/png/city.png
+deleted file mode 100644
+index 138fda1..0000000
+Binary files a/public/png/city.png and /dev/null differ
+diff --git a/public/png/city.webp b/public/png/city.webp
+new file mode 100644
+index 0000000..dd7f7c5
+Binary files /dev/null and b/public/png/city.webp differ
+diff --git a/public/png/creeper.png b/public/png/creeper.png
+deleted file mode 100644
+index 985c232..0000000
+Binary files a/public/png/creeper.png and /dev/null differ
+diff --git a/public/png/creeper.webp b/public/png/creeper.webp
+new file mode 100644
+index 0000000..5c3c5fe
+Binary files /dev/null and b/public/png/creeper.webp differ
+diff --git a/public/png/diamond.png b/public/png/diamond.png
+deleted file mode 100644
+index dd4952b..0000000
+Binary files a/public/png/diamond.png and /dev/null differ
+diff --git a/public/png/diamond.webp b/public/png/diamond.webp
+new file mode 100644
+index 0000000..892b583
+Binary files /dev/null and b/public/png/diamond.webp differ
+diff --git a/public/png/factory.png b/public/png/factory.png
+deleted file mode 100644
+index 94e4779..0000000
+Binary files a/public/png/factory.png and /dev/null differ
+diff --git a/public/png/factory.webp b/public/png/factory.webp
+new file mode 100644
+index 0000000..49e8bba
+Binary files /dev/null and b/public/png/factory.webp differ
+diff --git a/public/png/gold_ingot.png b/public/png/gold_ingot.png
+deleted file mode 100644
+index cbcd0eb..0000000
+Binary files a/public/png/gold_ingot.png and /dev/null differ
+diff --git a/public/png/gold_ingot.webp b/public/png/gold_ingot.webp
+new file mode 100644
+index 0000000..16170ff
+Binary files /dev/null and b/public/png/gold_ingot.webp differ
+diff --git a/public/png/island_1.png b/public/png/island_1.png
+deleted file mode 100644
+index 30688a6..0000000
+Binary files a/public/png/island_1.png and /dev/null differ
+diff --git a/public/png/island_1.webp b/public/png/island_1.webp
+new file mode 100644
+index 0000000..2ff1e87
+Binary files /dev/null and b/public/png/island_1.webp differ
+diff --git a/public/png/island_2.png b/public/png/island_2.png
+deleted file mode 100644
+index e8fca9c..0000000
+Binary files a/public/png/island_2.png and /dev/null differ
+diff --git a/public/png/island_2.webp b/public/png/island_2.webp
+new file mode 100644
+index 0000000..8a1a668
+Binary files /dev/null and b/public/png/island_2.webp differ
+diff --git a/public/png/island_3.png b/public/png/island_3.png
+deleted file mode 100644
+index 98262aa..0000000
+Binary files a/public/png/island_3.png and /dev/null differ
+diff --git a/public/png/island_3.webp b/public/png/island_3.webp
+new file mode 100644
+index 0000000..db0f962
+Binary files /dev/null and b/public/png/island_3.webp differ
+diff --git a/public/png/netherite_block.png b/public/png/netherite_block.png
+deleted file mode 100644
+index 1e13d04..0000000
+Binary files a/public/png/netherite_block.png and /dev/null differ
+diff --git a/public/png/netherite_block.webp b/public/png/netherite_block.webp
+new file mode 100644
+index 0000000..9f74d9c
+Binary files /dev/null and b/public/png/netherite_block.webp differ
+diff --git a/public/png/netherite_ingot.png b/public/png/netherite_ingot.png
+deleted file mode 100644
+index 501acdb..0000000
+Binary files a/public/png/netherite_ingot.png and /dev/null differ
+diff --git a/public/png/netherite_ingot.webp b/public/png/netherite_ingot.webp
+new file mode 100644
+index 0000000..6a0a628
+Binary files /dev/null and b/public/png/netherite_ingot.webp differ
+diff --git a/public/png/party.png b/public/png/party.png
+deleted file mode 100644
+index 188b800..0000000
+Binary files a/public/png/party.png and /dev/null differ
+diff --git a/public/png/party.webp b/public/png/party.webp
+new file mode 100644
+index 0000000..6035d4d
+Binary files /dev/null and b/public/png/party.webp differ
+diff --git a/public/png/skeleton.png b/public/png/skeleton.png
+deleted file mode 100644
+index 684d57f..0000000
+Binary files a/public/png/skeleton.png and /dev/null differ
+diff --git a/public/png/skeleton.webp b/public/png/skeleton.webp
+new file mode 100644
+index 0000000..12c0715
+Binary files /dev/null and b/public/png/skeleton.webp differ
+diff --git a/public/png/steve-head.png b/public/png/steve-head.png
+deleted file mode 100644
+index dbfb9b9..0000000
+Binary files a/public/png/steve-head.png and /dev/null differ
+diff --git a/public/png/steve-head.webp b/public/png/steve-head.webp
+new file mode 100644
+index 0000000..277da22
+Binary files /dev/null and b/public/png/steve-head.webp differ
+diff --git a/public/png/steve.png b/public/png/steve.png
+deleted file mode 100644
+index 4f815ee..0000000
+Binary files a/public/png/steve.png and /dev/null differ
+diff --git a/public/png/steve.webp b/public/png/steve.webp
+new file mode 100644
+index 0000000..268a6ce
+Binary files /dev/null and b/public/png/steve.webp differ
+diff --git a/public/png/train.png b/public/png/train.png
+deleted file mode 100644
+index 1c32458..0000000
+Binary files a/public/png/train.png and /dev/null differ
+diff --git a/public/png/train.webp b/public/png/train.webp
+new file mode 100644
+index 0000000..ec9cd1d
+Binary files /dev/null and b/public/png/train.webp differ
+diff --git a/public/png/zabka.png b/public/png/zabka.png
+deleted file mode 100644
+index 90fb8a8..0000000
+Binary files a/public/png/zabka.png and /dev/null differ
+diff --git a/public/png/zabka.webp b/public/png/zabka.webp
+new file mode 100644
+index 0000000..77fc450
+Binary files /dev/null and b/public/png/zabka.webp differ
+diff --git a/src/App.tsx b/src/App.tsx
+index 034d01f..49bd8f7 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -6,6 +6,7 @@ import { RequireAuth } from "./shared/wraps/require-auth.wrap";
+ import GuestOnly from "./shared/wraps/guests-only.wrap";
+ import { GlobalToastProvider } from "./shared/components/global-toast/GlobalToastProvider";
+ import LangChanger from "./shared/ui/lang-changer/lang-changer.component";
++import ErrorBoundary from "./shared/components/error-boundary/ErrorBoundary";
+ 
+ const RegistrationPage = React.lazy(() => import("./modules/auth/pages/registration-page/registration.page"));
+ const LoginPage = React.lazy(() => import("./modules/auth/pages/login-page/login.page"));
+@@ -23,15 +24,15 @@ const TechSupportPage = React.lazy(() => import("./modules/tech-support/pages/te
+ const EmailConfirmationPage = React.lazy(() => import("./modules/auth/pages/email-confirmation/email-confirmation.page"));
+ const NewsDetailsPage = React.lazy(() => import("./modules/news/pages/news-details.page"));
+ const NotFoundPage = React.lazy(() => import("./modules/not-found/pages/not-found.page"));
+-const StatesListPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.StatesListPage })));
+-const StateDetailPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.StateDetailPage })));
+-const NationalBankPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.NationalBankPage })));
+-const SettlementsListPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.SettlementsListPage })));
+-const SettlementDetailPage = React.lazy(() => import("./modules/states").then(module => ({ default: module.SettlementDetailPage })));
+-const EconomyHubPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.EconomyHubPage })));
+-const CompanyDetailPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.CompanyDetailPage })));
+-const CurrencyDetailPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.CurrencyDetailPage })));
+-const PropertyDetailPage = React.lazy(() => import("./modules/economy").then(module => ({ default: module.PropertyDetailPage })));
++const StatesListPage = React.lazy(() => import("./modules/states/pages/states-list-page/states-list.page"));
++const StateDetailPage = React.lazy(() => import("./modules/states/pages/state-detail-page/state-detail.page"));
++const NationalBankPage = React.lazy(() => import("./modules/states/pages/national-bank-page/national-bank.page"));
++const SettlementsListPage = React.lazy(() => import("./modules/states/pages/settlements-list-page/settlements-list.page"));
++const SettlementDetailPage = React.lazy(() => import("./modules/states/pages/settlement-detail-page/settlement-detail.page"));
++const EconomyHubPage = React.lazy(() => import("./modules/economy/pages/EconomyHubPage").then(module => ({ default: module.EconomyHubPage })));
++const CompanyDetailPage = React.lazy(() => import("./modules/economy/pages/CompanyDetailPage").then(module => ({ default: module.CompanyDetailPage })));
++const CurrencyDetailPage = React.lazy(() => import("./modules/economy/pages/CurrencyDetailPage").then(module => ({ default: module.CurrencyDetailPage })));
++const PropertyDetailPage = React.lazy(() => import("./modules/economy/pages/PropertyDetailPage").then(module => ({ default: module.PropertyDetailPage })));
+ const MapPage = React.lazy(() => import("./modules/map/pages/MapPage").then(module => ({ default: module.MapPage })));
+ 
+ function App() {
+@@ -46,228 +47,230 @@ function App() {
+       <GlobalToastProvider>
+         <Suspense fallback={fallbackLoader}>
+           <LangChanger />
+-          <Routes>
+-          <Route path="/" index={true} element={<LandingPage />} />
++          <ErrorBoundary>
++            <Routes>
++            <Route path="/" index={true} element={<LandingPage />} />
+ 
+-          <Route
+-            path="/download"
+-            element={
+-              <RequireAuth>
+-                <DownloadPage />
+-              </RequireAuth>
+-            }
+-          />
+-          <Route
+-            path="/registration"
+-            element={
+-              <GuestOnly redirectTo="/profile">
+-                <RegistrationPage />
+-              </GuestOnly>
+-            }
+-          />
+-          <Route
+-            path="/login"
+-            element={
+-              <GuestOnly redirectTo="/profile">
+-                <LoginPage />
+-              </GuestOnly>
+-            }
+-          />
+-          <Route
+-            path="/reset-password"
+-            element={
+-              <GuestOnly redirectTo="/profile">
+-                <ResetPasswordPage />
+-              </GuestOnly>
+-            }
+-          />
++            <Route
++              path="/download"
++              element={
++                <RequireAuth>
++                  <DownloadPage />
++                </RequireAuth>
++              }
++            />
++            <Route
++              path="/registration"
++              element={
++                <GuestOnly redirectTo="/profile">
++                  <RegistrationPage />
++                </GuestOnly>
++              }
++            />
++            <Route
++              path="/login"
++              element={
++                <GuestOnly redirectTo="/profile">
++                  <LoginPage />
++                </GuestOnly>
++              }
++            />
++            <Route
++              path="/reset-password"
++              element={
++                <GuestOnly redirectTo="/profile">
++                  <ResetPasswordPage />
++                </GuestOnly>
++              }
++            />
+ 
+-          <Route
+-            path="/news"
+-            element={
+-              <RequireAuth>
+-                <NewsPage />
+-              </RequireAuth>
+-            }
+-          />
++            <Route
++              path="/news"
++              element={
++                <RequireAuth>
++                  <NewsPage />
++                </RequireAuth>
++              }
++            />
+ 
+-          <Route
+-            path="/news/:id"
+-            element={
+-              <RequireAuth>
+-                <NewsDetailsPage />
+-              </RequireAuth>
+-            }
+-          />
++            <Route
++              path="/news/:id"
++              element={
++                <RequireAuth>
++                  <NewsDetailsPage />
++                </RequireAuth>
++              }
++            />
+ 
+-          <Route
+-            path="/map"
+-            element={
+-              <RequireAuth>
+-                <MapPage />
+-              </RequireAuth>
+-            }
+-          />
++            <Route
++              path="/map"
++              element={
++                <RequireAuth>
++                  <MapPage />
++                </RequireAuth>
++              }
++            />
+ 
+-          <Route path="/agreement" element={<AgreementPage />} />
++            <Route path="/agreement" element={<AgreementPage />} />
+ 
+-          <Route
+-            path="/profile"
+-            element={
+-              <RequireAuth allowBanned={true}>
+-                <Profile></Profile>
+-              </RequireAuth>
+-            }
+-          />
++            <Route
++              path="/profile"
++              element={
++                <RequireAuth allowBanned={true}>
++                  <Profile></Profile>
++                </RequireAuth>
++              }
++            />
+ 
+-          <Route
+-            path="/calendar"
+-            element={
+-              <RequireAuth>
+-                <CalendarPage />
+-              </RequireAuth>
+-            }
+-          />
++            <Route
++              path="/calendar"
++              element={
++                <RequireAuth>
++                  <CalendarPage />
++                </RequireAuth>
++              }
++            />
+ 
+-          <Route
+-            path="/email-confirmation"
+-            element={
+-              <RequireAuth allowBanned={true}>
+-                <EmailConfirmationPage />
+-              </RequireAuth>
+-            }
+-          />
++            <Route
++              path="/email-confirmation"
++              element={
++                <RequireAuth allowBanned={true}>
++                  <EmailConfirmationPage />
++                </RequireAuth>
++              }
++            />
+ 
+-          <Route
+-            path="/players"
+-            element={
+-              <RequireAuth>
+-                <PlayersPage />
+-              </RequireAuth>
+-            }
+-          />
++            <Route
++              path="/players"
++              element={
++                <RequireAuth>
++                  <PlayersPage />
++                </RequireAuth>
++              }
++            />
+ 
+-          <Route
+-            path="/players/:username"
+-            element={
+-              <RequireAuth>
+-                <PlayerProfile />
+-              </RequireAuth>
+-            }
+-          />
++            <Route
++              path="/players/:username"
++              element={
++                <RequireAuth>
++                  <PlayerProfile />
++                </RequireAuth>
++              }
++            />
+ 
+-          <Route
+-            path="/states"
+-            element={
+-              <RequireAuth>
+-                <StatesListPage />
+-              </RequireAuth>
+-            }
+-          />
+-          <Route
+-            path="/states/:id"
+-            element={
+-              <RequireAuth>
+-                <StateDetailPage />
+-              </RequireAuth>
+-            }
+-          />
+-          <Route
+-            path="/states/:id/national-bank"
+-            element={
+-              <RequireAuth>
+-                <NationalBankPage />
+-              </RequireAuth>
+-            }
+-          />
+-          <Route
+-            path="/settlements"
+-            element={
+-              <RequireAuth>
+-                <SettlementsListPage />
+-              </RequireAuth>
+-            }
+-          />
+-          <Route
+-            path="/settlements/:id"
+-            element={
+-              <RequireAuth>
+-                <SettlementDetailPage />
+-              </RequireAuth>
+-            }
+-          />
++            <Route
++              path="/states"
++              element={
++                <RequireAuth>
++                  <StatesListPage />
++                </RequireAuth>
++              }
++            />
++            <Route
++              path="/states/:id"
++              element={
++                <RequireAuth>
++                  <StateDetailPage />
++                </RequireAuth>
++              }
++            />
++            <Route
++              path="/states/:id/national-bank"
++              element={
++                <RequireAuth>
++                  <NationalBankPage />
++                </RequireAuth>
++              }
++            />
++            <Route
++              path="/settlements"
++              element={
++                <RequireAuth>
++                  <SettlementsListPage />
++                </RequireAuth>
++              }
++            />
++            <Route
++              path="/settlements/:id"
++              element={
++                <RequireAuth>
++                  <SettlementDetailPage />
++                </RequireAuth>
++              }
++            />
+ 
+-          <Route
+-            path="/tech-support"
+-            element={
+-              <RequireAuth allowBanned={true}>
+-                <TechSupportPage />
+-              </RequireAuth>
+-            }
+-          />
++            <Route
++              path="/tech-support"
++              element={
++                <RequireAuth allowBanned={true}>
++                  <TechSupportPage />
++                </RequireAuth>
++              }
++            />
+ 
+-          <Route
+-            path="/economy"
+-            element={
+-              <RequireAuth>
+-                <EconomyHubPage />
+-              </RequireAuth>
+-            }
+-          />
+-          <Route
+-            path="/bank"
+-            element={<Navigate to="/economy?tab=bank" replace />}
+-          />
+-          <Route
+-            path="/currencies"
+-            element={<Navigate to="/economy?tab=currencies" replace />}
+-          />
+-          <Route
+-            path="/companies"
+-            element={<Navigate to="/economy?tab=companies" replace />}
+-          />
+-          <Route
+-            path="/economy/currency/:id"
+-            element={
+-              <RequireAuth>
+-                <CurrencyDetailPage />
+-              </RequireAuth>
+-            }
+-          />
+-          <Route
+-            path="/economy/property/:id"
+-            element={
+-              <RequireAuth>
+-                <PropertyDetailPage />
+-              </RequireAuth>
+-            }
+-          />
+-          <Route
+-            path="/companies/:id"
+-            element={
+-              <RequireAuth>
+-                <CompanyDetailPage />
+-              </RequireAuth>
+-            }
+-          />
+-          <Route
+-            path="/exchange"
+-            element={<Navigate to="/economy?tab=exchange" replace />}
+-          />
+-          <Route
+-            path="/properties"
+-            element={<Navigate to="/economy?tab=properties" replace />}
+-          />
+-          <Route
+-            path="/admin/achievements"
+-            element={
+-              <RequireAuth>
+-                <AchievementsAdminPage />
+-              </RequireAuth>
+-            }
+-          />
+-          <Route path="*" element={<NotFoundPage />} />
+-        </Routes>
++            <Route
++              path="/economy"
++              element={
++                <RequireAuth>
++                  <EconomyHubPage />
++                </RequireAuth>
++              }
++            />
++            <Route
++              path="/bank"
++              element={<Navigate to="/economy?tab=bank" replace />}
++            />
++            <Route
++              path="/currencies"
++              element={<Navigate to="/economy?tab=currencies" replace />}
++            />
++            <Route
++              path="/companies"
++              element={<Navigate to="/economy?tab=companies" replace />}
++            />
++            <Route
++              path="/economy/currency/:id"
++              element={
++                <RequireAuth>
++                  <CurrencyDetailPage />
++                </RequireAuth>
++              }
++            />
++            <Route
++              path="/economy/property/:id"
++              element={
++                <RequireAuth>
++                  <PropertyDetailPage />
++                </RequireAuth>
++              }
++            />
++            <Route
++              path="/companies/:id"
++              element={
++                <RequireAuth>
++                  <CompanyDetailPage />
++                </RequireAuth>
++              }
++            />
++            <Route
++              path="/exchange"
++              element={<Navigate to="/economy?tab=exchange" replace />}
++            />
++            <Route
++              path="/properties"
++              element={<Navigate to="/economy?tab=properties" replace />}
++            />
++            <Route
++              path="/admin/achievements"
++              element={
++                <RequireAuth>
++                  <AchievementsAdminPage />
++                </RequireAuth>
++              }
++            />
++            <Route path="*" element={<NotFoundPage />} />
++          </Routes>
++        </ErrorBoundary>
+         </Suspense>
+       </GlobalToastProvider>
+     </BrowserRouter>
+diff --git a/src/i18n/i18n.ts b/src/i18n/i18n.ts
+index d0d13b8..5557bda 100644
+--- a/src/i18n/i18n.ts
++++ b/src/i18n/i18n.ts
+@@ -1,234 +1,41 @@
+-import i18n from 'i18next';
++import i18n, { BackendModule } from 'i18next';
+ import { initReactI18next } from 'react-i18next';
+ import LanguageDetector from 'i18next-browser-languagedetector';
+ 
+-// EN
+-import enAuth from './locales/en/auth.json';
+-import enDownloadPage from './locales/en/download-page.json';
+-import enErrors from './locales/en/errors.json';
+-import enLandingPage from './locales/en/landing-page.json';
+-import enNavigation from './locales/en/navigation.json';
+-import enPlayerProfile from './locales/en/player-profile.json';
+-import enPlayersList from './locales/en/players-list.json';
+-import enTechSupport from './locales/en/tech-support-page.json';
+-import enProfile from './locales/en/profile.json';
+-import enEconomy from './locales/en/economy.json';
+-import enMap from './locales/en/map.json';
+-import enStates from './locales/en/states.json';
+-import enNews from './locales/en/news.json';
+-import enAdmin from './locales/en/admin.json';
+-import enPlayers from './locales/en/players.json';
+-
+-// PL
+-import plAuth from './locales/pl/auth.json';
+-import plDownloadPage from './locales/pl/download-page.json';
+-import plErrors from './locales/pl/errors.json';
+-import plLandingPage from './locales/pl/landing-page.json';
+-import plNavigation from './locales/pl/navigation.json';
+-import plPlayerProfile from './locales/pl/player-profile.json';
+-import plPlayersList from './locales/pl/players-list.json';
+-import plTechSupport from './locales/pl/tech-support-page.json';
+-import plProfile from './locales/pl/profile.json';
+-import plEconomy from './locales/pl/economy.json';
+-import plMap from './locales/pl/map.json';
+-import plStates from './locales/pl/states.json';
+-import plNews from './locales/pl/news.json';
+-import plAdmin from './locales/pl/admin.json';
+-import plPlayers from './locales/pl/players.json';
+-
+-// UA
+-import uaAuth from './locales/ua/auth.json';
+-import uaDownloadPage from './locales/ua/download-page.json';
+-import uaErrors from './locales/ua/errors.json';
+-import uaLandingPage from './locales/ua/landing-page.json';
+-import uaNavigation from './locales/ua/navigation.json';
+-import uaPlayerProfile from './locales/ua/player-profile.json';
+-import uaPlayersList from './locales/ua/players-list.json';
+-import uaTechSupport from './locales/ua/tech-support-page.json';
+-import uaProfile from './locales/ua/profile.json';
+-import uaEconomy from './locales/ua/economy.json';
+-import uaMap from './locales/ua/map.json';
+-import uaStates from './locales/ua/states.json';
+-import uaNews from './locales/ua/news.json';
+-import uaAdmin from './locales/ua/admin.json';
+-import uaPlayers from './locales/ua/players.json';
+-
+-// KZ
+-import kzAuth from './locales/kz/auth.json';
+-import kzDownloadPage from './locales/kz/download-page.json';
+-import kzErrors from './locales/kz/errors.json';
+-import kzLandingPage from './locales/kz/landing-page.json';
+-import kzNavigation from './locales/kz/navigation.json';
+-import kzPlayerProfile from './locales/kz/player-profile.json';
+-import kzPlayersList from './locales/kz/players-list.json';
+-import kzTechSupport from './locales/kz/tech-support-page.json';
+-import kzProfile from './locales/kz/profile.json';
+-import kzEconomy from './locales/kz/economy.json';
+-import kzMap from './locales/kz/map.json';
+-import kzStates from './locales/kz/states.json';
+-import kzNews from './locales/kz/news.json';
+-import kzAdmin from './locales/kz/admin.json';
+-import kzPlayers from './locales/kz/players.json';
+-
+-// UZ
+-import uzAuth from './locales/uz/auth.json';
+-import uzDownloadPage from './locales/uz/download-page.json';
+-import uzErrors from './locales/uz/errors.json';
+-import uzLandingPage from './locales/uz/landing-page.json';
+-import uzNavigation from './locales/uz/navigation.json';
+-import uzPlayerProfile from './locales/uz/player-profile.json';
+-import uzPlayersList from './locales/uz/players-list.json';
+-import uzTechSupport from './locales/uz/tech-support-page.json';
+-import uzProfile from './locales/uz/profile.json';
+-import uzEconomy from './locales/uz/economy.json';
+-import uzMap from './locales/uz/map.json';
+-import uzStates from './locales/uz/states.json';
+-import uzNews from './locales/uz/news.json';
+-import uzAdmin from './locales/uz/admin.json';
+-import uzPlayers from './locales/uz/players.json';
+-
+-// RU
+-import ruAuth from './locales/ru/auth.json';
+-import ruDownloadPage from './locales/ru/download-page.json';
+-import ruErrors from './locales/ru/errors.json';
+-import ruLandingPage from './locales/ru/landing-page.json';
+-import ruNavigation from './locales/ru/navigation.json';
+-import ruPlayerProfile from './locales/ru/player-profile.json';
+-import ruPlayersList from './locales/ru/players-list.json';
+-import ruTechSupport from './locales/ru/tech-support-page.json';
+-import ruProfile from './locales/ru/profile.json';
+-import ruEconomy from './locales/ru/economy.json';
+-import ruMap from './locales/ru/map.json';
+-import ruStates from './locales/ru/states.json';
+-import ruNews from './locales/ru/news.json';
+-import ruAdmin from './locales/ru/admin.json';
+-import ruPlayers from './locales/ru/players.json';
+-
+ export const defaultNS = 'navigation';
+ 
+-const uaResources = {
+-  auth: uaAuth,
+-  'download-page': uaDownloadPage,
+-  errors: uaErrors,
+-  'landing-page': uaLandingPage,
+-  navigation: uaNavigation,
+-  'player-profile': uaPlayerProfile,
+-  'players-list': uaPlayersList,
+-  'tech-support-page': uaTechSupport,
+-  profile: uaProfile,
+-  economy: uaEconomy,
+-  map: uaMap,
+-  states: uaStates,
+-  news: uaNews,
+-  admin: uaAdmin,
+-  players: uaPlayers
+-};
+-
+-const kzResources = {
+-  auth: kzAuth,
+-  'download-page': kzDownloadPage,
+-  errors: kzErrors,
+-  'landing-page': kzLandingPage,
+-  navigation: kzNavigation,
+-  'player-profile': kzPlayerProfile,
+-  'players-list': kzPlayersList,
+-  'tech-support-page': kzTechSupport,
+-  profile: kzProfile,
+-  economy: kzEconomy,
+-  map: kzMap,
+-  states: kzStates,
+-  news: kzNews,
+-  admin: kzAdmin,
+-  players: kzPlayers
+-};
+-
+-const uzResources = {
+-  auth: uzAuth,
+-  'download-page': uzDownloadPage,
+-  errors: uzErrors,
+-  'landing-page': uzLandingPage,
+-  navigation: uzNavigation,
+-  'player-profile': uzPlayerProfile,
+-  'players-list': uzPlayersList,
+-  'tech-support-page': uzTechSupport,
+-  profile: uzProfile,
+-  economy: uzEconomy,
+-  map: uzMap,
+-  states: uzStates,
+-  news: uzNews,
+-  admin: uzAdmin,
+-  players: uzPlayers
+-};
+-
+-export const resources = {
+-  en: {
+-    auth: enAuth,
+-    'download-page': enDownloadPage,
+-    errors: enErrors,
+-    'landing-page': enLandingPage,
+-    navigation: enNavigation,
+-    'player-profile': enPlayerProfile,
+-    'players-list': enPlayersList,
+-    'tech-support-page': enTechSupport,
+-    profile: enProfile,
+-    economy: enEconomy,
+-    map: enMap,
+-    states: enStates,
+-    news: enNews,
+-    admin: enAdmin,
+-    players: enPlayers
+-  },
+-  pl: {
+-    auth: plAuth,
+-    'download-page': plDownloadPage,
+-    errors: plErrors,
+-    'landing-page': plLandingPage,
+-    navigation: plNavigation,
+-    'player-profile': plPlayerProfile,
+-    'players-list': plPlayersList,
+-    'tech-support-page': plTechSupport,
+-    profile: plProfile,
+-    economy: plEconomy,
+-    map: plMap,
+-    states: plStates,
+-    news: plNews,
+-    admin: plAdmin,
+-    players: plPlayers
+-  },
+-  ua: uaResources,
+-  uk: uaResources,
+-  kz: kzResources,
+-  kk: kzResources,
+-  uz: uzResources,
+-  ru: {
+-    auth: ruAuth,
+-    'download-page': ruDownloadPage,
+-    errors: ruErrors,
+-    'landing-page': ruLandingPage,
+-    navigation: ruNavigation,
+-    'player-profile': ruPlayerProfile,
+-    'players-list': ruPlayersList,
+-    'tech-support-page': ruTechSupport,
+-    profile: ruProfile,
+-    economy: ruEconomy,
+-    map: ruMap,
+-    states: ruStates,
+-    news: ruNews,
+-    admin: ruAdmin,
+-    players: ruPlayers
++const locales = import.meta.glob('./locales/**/*.json');
++
++const dynamicLoadBackend: BackendModule = {
++  type: 'backend',
++  init: () => {},
++  read(language, namespace, callback) {
++    let resolvedLang = language;
++    if (language === 'uk') resolvedLang = 'ua';
++    if (language === 'kk') resolvedLang = 'kz';
++    
++    const path = `./locales/${resolvedLang}/${namespace}.json`;
++    const loader = locales[path];
++    
++    if (loader) {
++      loader()
++        // eslint-disable-next-line @typescript-eslint/no-explicit-any
++        .then((module: any) => callback(null, module.default || module))
++        .catch(err => callback(err, null));
++    } else {
++      callback(new Error(`Locale not found: ${path}`), null);
++    }
+   }
+-} as const;
+-
+-console.log('i18n initialized');
++};
+ 
+ i18n
++  .use(dynamicLoadBackend)
+   .use(LanguageDetector)
+   .use(initReactI18next)
+   .init({
+-    resources,
+     fallbackLng: 'ru',
+     defaultNS,
+-    ns: Object.keys(resources.en),
++    ns: ['navigation', 'auth', 'download-page', 'errors', 'landing-page', 'player-profile', 'players-list', 'tech-support-page', 'profile', 'economy', 'map', 'states', 'news', 'admin', 'players'],
+     interpolation: {
+       escapeValue: false
+     }
+diff --git a/src/modules/admin/pages/achievements-admin.page.tsx b/src/modules/admin/pages/achievements-admin.page.tsx
+index 5aeadf9..d5497ae 100644
+--- a/src/modules/admin/pages/achievements-admin.page.tsx
++++ b/src/modules/admin/pages/achievements-admin.page.tsx
+@@ -64,7 +64,7 @@ export const AchievementsAdminPage: FC = () => {
+       }
+       handleCancelEdit();
+       mutate();
+-    } catch (err: any) {
++    } catch (err: unknown) {
+       setMessage((err as AxiosError<{message?: string}>).response?.data?.message || t("alerts.errorSave"));
+     }
+   };
+@@ -77,7 +77,7 @@ export const AchievementsAdminPage: FC = () => {
+     setTriggerEvent('');
+   };
+ 
+-  const handleEditClick = (a: any) => {
++  const handleEditClick = (a: { id: string, title: string, description: string, iconUrl?: string, rarity: import("../../achievements/types/achievements.types").AchievementRarity, triggerEvent?: string }) => {
+     setEditId(a.id);
+     setTitle(a.title);
+     setDescription(a.description);
+@@ -92,7 +92,7 @@ export const AchievementsAdminPage: FC = () => {
+       await achievementsService.grantAchievement({ username: grantUsername, achievementId: grantAchievementId });
+       setMessage(t("alerts.granted"));
+       setGrantUsername('');
+-    } catch (err: any) {
++    } catch (err: unknown) {
+       setMessage((err as AxiosError<{message?: string}>).response?.data?.message || t("alerts.errorGrant"));
+     }
+   };
+@@ -103,7 +103,7 @@ export const AchievementsAdminPage: FC = () => {
+       await achievementsService.deleteAchievement(id);
+       setMessage(t("alerts.deleted"));
+       mutate();
+-    } catch (err: any) {
++    } catch {
+       setMessage(t("alerts.errorDelete"));
+     }
+   };
+diff --git a/src/modules/auth/pages/email-confirmation/email-confirmation.page.tsx b/src/modules/auth/pages/email-confirmation/email-confirmation.page.tsx
+index 5963469..8adfa02 100644
+--- a/src/modules/auth/pages/email-confirmation/email-confirmation.page.tsx
++++ b/src/modules/auth/pages/email-confirmation/email-confirmation.page.tsx
+@@ -9,6 +9,8 @@ import { authService } from "../../services/auth.service";
+ import useAuthStore from "../../../../store/auth.store";
+ 
+ import { useTranslation } from "react-i18next";
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ const EmailConfirmationPage: FC = () => {
+   const [step, setStep] = useState<
+@@ -18,7 +20,7 @@ const EmailConfirmationPage: FC = () => {
+   const [code, setCode] = useState<string>("");
+   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+   const [isLoading, setIsLoading] = useState<boolean>(false);
+-  const { accessToken } = useAuthStore();
++  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
+   const navigate = useNavigate();
+   const { t } = useTranslation('auth');
+ 
+diff --git a/src/modules/download/download.page.tsx b/src/modules/download/download.page.tsx
+index 5fbd657..0eeadf7 100644
+--- a/src/modules/download/download.page.tsx
++++ b/src/modules/download/download.page.tsx
+@@ -6,6 +6,8 @@ import Sidebar from "../../shared/ui/sidebar/sidebar.component";
+ import useAuthStore from "../../store/auth.store";
+ import { PropagateLoader } from "react-spinners";
+ import ModBuilder from "./components/mod-builder.component";
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ 
+ type LauncherMeta = {
+@@ -27,7 +29,7 @@ const osList: { key: string; label: string; icon: string }[] = [
+ const DownloadPage: FC = () => {
+   const [launchers, setLaunchers] = useState<LaunchersResponse | null>(null);
+   const [loading, setLoading] = useState(true);
+-  const { accessToken } = useAuthStore();
++  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
+   const { t } = useTranslation('download-page');
+ 
+   useEffect(() => {
+diff --git a/src/modules/economy/components/CompanyCard.scss b/src/modules/economy/components/CompanyCard.scss
+index 4723cdd..a7cef14 100644
+--- a/src/modules/economy/components/CompanyCard.scss
++++ b/src/modules/economy/components/CompanyCard.scss
+@@ -41,8 +41,8 @@
+       height: 56px;
+       border-radius: 16px;
+       flex-shrink: 0;
+-      object-fit: contain;
+-      background-color: #f8fafc;
++      object-fit: cover;
++      background-color: var(--bg-surface);
+       border: 1px solid rgba(0, 0, 0, 0.05);
+       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+     }
+diff --git a/src/modules/economy/components/CompanyServicesTab.tsx b/src/modules/economy/components/CompanyServicesTab.tsx
+index 65ee373..5fd7112 100644
+--- a/src/modules/economy/components/CompanyServicesTab.tsx
++++ b/src/modules/economy/components/CompanyServicesTab.tsx
+@@ -6,6 +6,8 @@ import { CreateServiceModal } from './CreateServiceModal';
+ import { OrderServiceModal } from './OrderServiceModal';
+ import './CompanyServicesTab.scss';
+ import useAuthStore from '../../../store/auth.store';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ interface CompanyServicesTabProps {
+   company: ICompany;
+@@ -15,7 +17,7 @@ interface CompanyServicesTabProps {
+ 
+ export const CompanyServicesTab: React.FC<CompanyServicesTabProps> = ({ company, services, onRefresh }) => {
+   const { t } = useTranslation('economy');
+-  const { accessToken } = useAuthStore();
++  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
+   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+   const [selectedService, setSelectedService] = useState<ICompanyService | null>(null);
+   const [serviceToEdit, setServiceToEdit] = useState<ICompanyService | null>(null);
+@@ -27,7 +29,7 @@ export const CompanyServicesTab: React.FC<CompanyServicesTabProps> = ({ company,
+       username = payload.username || payload.username_lower || '';
+  
+ // eslint-disable-next-line @typescript-eslint/no-unused-vars
+-    } catch (e: any) {
++    } catch {
+       // ignore
+     }
+   }
+diff --git a/src/modules/economy/components/CurrencyCard.tsx b/src/modules/economy/components/CurrencyCard.tsx
+index 34e5ebe..6413292 100644
+--- a/src/modules/economy/components/CurrencyCard.tsx
++++ b/src/modules/economy/components/CurrencyCard.tsx
+@@ -71,8 +71,8 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
+               const mainInfo = getMinecraftItemInfo(currency.minecraftItemId);
+               return (
+                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+-                  <span style={{ color: '#64748b', fontSize: '13px' }}>{t('currencies.baseItem')}</span>
+-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#0f172a' }}>
++                  <span className="item-label" style={{ fontSize: '13px' }}>{t('currencies.baseItem')}</span>
++                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--text-primary)' }}>
+                     {mainInfo ? mainInfo.icon : null}
+                     <span>{mainInfo ? t(`minecraftItems.${mainInfo.id}`, mainInfo.name) : currency.minecraftItemId}</span>
+                   </span>
+@@ -85,8 +85,8 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
+                 const kopInfo = getMinecraftItemInfo(currency.kopeckItemId);
+                 return (
+                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+-                    <span style={{ color: '#64748b', fontSize: '13px' }}>{t('currencies.changeItem')}</span>
+-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#0f172a' }}>
++                    <span className="item-label" style={{ fontSize: '13px' }}>{t('currencies.changeItem')}</span>
++                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--text-primary)' }}>
+                       {kopInfo ? kopInfo.icon : null}
+                       <span>{kopInfo ? t(`minecraftItems.${kopInfo.id}`, kopInfo.name) : currency.kopeckItemId}</span>
+                     </span>
+@@ -98,8 +98,8 @@ export const CurrencyCard: React.FC<CurrencyCardProps> = ({
+               (() => {
+                 const enchInfo = getMinecraftEnchantInfo(currency.minecraftEnchantment);
+                 return (
+-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', paddingTop: '4px', borderTop: '1px dashed #e2e8f0' }}>
+-                    <span style={{ color: '#64748b', fontSize: '13px' }}>{t('currencies.protectionCharm')}</span>
++                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', paddingTop: '4px', borderTop: '1px dashed var(--border-color, #e2e8f0)' }}>
++                    <span className="item-label" style={{ fontSize: '13px' }}>{t('currencies.protectionCharm')}</span>
+                     <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#7c3aed' }}>
+                       <span>{enchInfo ? enchInfo.icon : '✨'}</span>
+                       <span>{enchInfo ? t(`minecraftEnchants.${enchInfo.id}`, enchInfo.name) : currency.minecraftEnchantment}</span>
+diff --git a/src/modules/economy/components/MiniHistoryChart.tsx b/src/modules/economy/components/MiniHistoryChart.tsx
+index abbd72f..b9bb402 100644
+--- a/src/modules/economy/components/MiniHistoryChart.tsx
++++ b/src/modules/economy/components/MiniHistoryChart.tsx
+@@ -119,6 +119,16 @@ export const MiniHistoryChart: React.FC<MiniHistoryChartProps> = ({
+     };
+   }, [fetchHistory, triggerRefetch, color]);
+ 
++  // Cleanup chart instance on unmount to prevent memory leaks
++  useEffect(() => {
++    return () => {
++      if (chartRef.current) {
++        chartRef.current.remove();
++        chartRef.current = null;
++      }
++    };
++  }, []);
++
+   return (
+     <div style={{ width: '100%', height: '60px', marginTop: '12px', position: 'relative' }}>
+       {!hasData && (
+diff --git a/src/modules/economy/components/OrderServiceModal.tsx b/src/modules/economy/components/OrderServiceModal.tsx
+index 2c10678..ca79f8a 100644
+--- a/src/modules/economy/components/OrderServiceModal.tsx
++++ b/src/modules/economy/components/OrderServiceModal.tsx
+@@ -105,7 +105,7 @@ export const OrderServiceModal: React.FC<OrderServiceModalProps> = ({ companyId,
+             <div className="sub-items-selection">
+               <h3>{t('companies.services.orderModal.subItemsTitle', { price: service.price })}</h3>
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
+-              {service.subItems.map((item: any) => (
++              {service.subItems.map((item: { name: string; price: number }) => (
+                 <label key={item.id} className="sub-item-checkbox">
+                   <input 
+                     type="checkbox" 
+diff --git a/src/modules/economy/components/TradingChart.tsx b/src/modules/economy/components/TradingChart.tsx
+index 27843aa..5a6a528 100644
+--- a/src/modules/economy/components/TradingChart.tsx
++++ b/src/modules/economy/components/TradingChart.tsx
+@@ -97,7 +97,7 @@ export const TradingChart: React.FC<TradingChartProps> = ({
+         setLoading(false);
+  
+ // eslint-disable-next-line @typescript-eslint/no-unused-vars
+-      } catch (err: any) {
++      } catch {
+         if (isMounted) {
+           setError(t('exchange.chartError'));
+           setLoading(false);
+@@ -140,6 +140,16 @@ export const TradingChart: React.FC<TradingChartProps> = ({
+     return () => window.removeEventListener('resize', handleResize);
+   }, []);
+ 
++  // Cleanup chart instance on unmount to prevent memory leaks
++  useEffect(() => {
++    return () => {
++      if (chartRef.current) {
++        chartRef.current.remove();
++        chartRef.current = null;
++      }
++    };
++  }, []);
++
+   return (
+     <div style={{ position: 'relative', width: '100%', height: '400px' }}>
+       {loading && (
+diff --git a/src/modules/economy/components/transaction-receipt-modal/transaction-receipt.modal.tsx b/src/modules/economy/components/transaction-receipt-modal/transaction-receipt.modal.tsx
+index 5ebbe49..76c2a31 100644
+--- a/src/modules/economy/components/transaction-receipt-modal/transaction-receipt.modal.tsx
++++ b/src/modules/economy/components/transaction-receipt-modal/transaction-receipt.modal.tsx
+@@ -1,8 +1,6 @@
+ import {  } from 'axios';
+ import { FC, useRef, useState } from 'react';
+ import { useTranslation } from 'react-i18next';
+-import html2canvas from 'html2canvas';
+-import { jsPDF } from 'jspdf';
+ import './transaction-receipt.modal.scss';
+ 
+ import { ITransfer, ICurrency } from '../../types/economy.types';
+@@ -34,6 +32,10 @@ export const TransactionReceiptModal: FC<Props> = ({ transaction, currencies, on
+     if (!receiptRef.current) return;
+     setIsGenerating(true);
+     try {
++      const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
++        import('html2canvas'),
++        import('jspdf')
++      ]);
+       const canvas = await html2canvas(receiptRef.current, { scale: 4, useCORS: true, allowTaint: true });
+       const imgData = canvas.toDataURL('image/png');
+       const pdf = new jsPDF({
+diff --git a/src/modules/economy/constants/minecraft-items.tsx b/src/modules/economy/constants/minecraft-items.tsx
+index 6e98f79..f47b3c8 100644
+--- a/src/modules/economy/constants/minecraft-items.tsx
++++ b/src/modules/economy/constants/minecraft-items.tsx
+@@ -113,25 +113,25 @@ export const MINECRAFT_CURRENCY_ITEMS: IMinecraftItemOption[] = [
+     id: 'minecraft:diamond',
+     name: 'Diamond',
+     type: 'ingot',
+-    icon: <img src="/png/diamond.png" alt="Diamond" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
++    icon: <img src="/png/diamond.webp" alt="Diamond" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+   },
+   {
+     id: 'minecraft:gold_ingot',
+     name: 'Gold Ingot',
+     type: 'ingot',
+-    icon: <img src="/png/gold_ingot.png" alt="Gold Ingot" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
++    icon: <img src="/png/gold_ingot.webp" alt="Gold Ingot" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+   },
+   {
+     id: 'minecraft:netherite_ingot',
+     name: 'Netherite Ingot',
+     type: 'ingot',
+-    icon: <img src="/png/netherite_ingot.png" alt="Netherite Ingot" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
++    icon: <img src="/png/netherite_ingot.webp" alt="Netherite Ingot" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+   },
+   {
+     id: 'minecraft:netherite_block',
+     name: 'Netherite Block',
+     type: 'ingot',
+-    icon: <img src="/png/netherite_block.png" alt="Netherite Block" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
++    icon: <img src="/png/netherite_block.webp" alt="Netherite Block" style={{ width: '1em', height: '1em', objectFit: 'contain', imageRendering: 'pixelated' }} />,
+   },
+ ];
+ 
+diff --git a/src/modules/economy/hooks/useEconomyData.ts b/src/modules/economy/hooks/useEconomyData.ts
+index d919e5c..1d1788f 100644
+--- a/src/modules/economy/hooks/useEconomyData.ts
++++ b/src/modules/economy/hooks/useEconomyData.ts
+@@ -2,6 +2,8 @@ import useSWR from 'swr';
+ import { economyService } from '../services/economy.service';
+ import { statesService } from '../../states';
+ import useAuthStore from '../../../store/auth.store';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ // Helper for SWR caching keys
+ export const ECONOMY_KEYS = {
+@@ -34,7 +36,7 @@ export const useStates = () => {
+ };
+ 
+ export const useMyCompanies = () => {
+-  const { accessToken } = useAuthStore();
++  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
+   let currentUsername = '';
+   if (accessToken) {
+     try {
+diff --git a/src/modules/economy/pages/CompaniesListPage.tsx b/src/modules/economy/pages/CompaniesListPage.tsx
+index ff78135..8446d62 100644
+--- a/src/modules/economy/pages/CompaniesListPage.tsx
++++ b/src/modules/economy/pages/CompaniesListPage.tsx
+@@ -13,13 +13,15 @@ import { IpoModal } from '../components/IpoModal';
+ import { DividendModal } from '../components/DividendModal';
+ import '../economy-shared.scss';
+ import { useNavigate } from 'react-router-dom';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ export const CompaniesListPage: React.FC<{ embedded?: boolean }> = ({
+   embedded = false,
+ }) => {
+   const { t } = useTranslation('economy');
+   const navigate = useNavigate();
+-  const { isAuthenticated, accessToken } = useAuthStore();
++  const { isAuthenticated, accessToken } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated, accessToken: state.accessToken })));
+   
+   const { data: companies = [], isLoading: loadingCompanies, mutate: mutateCompanies } = useAllCompanies();
+   const { data: statesList = [] } = useStates();
+diff --git a/src/modules/economy/pages/CompanyDetailPage.tsx b/src/modules/economy/pages/CompanyDetailPage.tsx
+index b88464f..8d7eb36 100644
+--- a/src/modules/economy/pages/CompanyDetailPage.tsx
++++ b/src/modules/economy/pages/CompanyDetailPage.tsx
+@@ -14,6 +14,8 @@ import { profileService } from '../../profile/services/profile.service';
+ import { EditCompanyModal } from '../components/edit-company-modal/EditCompanyModal';
+ import { TerritoriesList } from '../../states/components/territories-list/TerritoriesList';
+ import './CompanyDetailPage.scss';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ export const CompanyDetailPage: React.FC = () => {
+   const { t } = useTranslation('economy');
+@@ -24,7 +26,7 @@ export const CompanyDetailPage: React.FC = () => {
+   const [loading, setLoading] = useState(true);
+   const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'orders' | 'territories'>('overview');
+   const [showEditCompanyModal, setShowEditCompanyModal] = useState(false);
+-  const { isAuthenticated } = useAuthStore();
++  const { isAuthenticated } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated })));
+   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
+   const { data: currenciesList = [] } = useCurrencies();
+ 
+diff --git a/src/modules/economy/pages/CurrencyDetailPage.tsx b/src/modules/economy/pages/CurrencyDetailPage.tsx
+index 769045b..d41efe0 100644
+--- a/src/modules/economy/pages/CurrencyDetailPage.tsx
++++ b/src/modules/economy/pages/CurrencyDetailPage.tsx
+@@ -68,19 +68,27 @@ export const CurrencyDetailPage: React.FC = () => {
+           <button 
+             className="back-btn" 
+             onClick={() => navigate(-1)}
+-            style={{ marginBottom: '24px', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', color: '#475569', fontWeight: 600, fontSize: '14px', transition: 'all 0.2s' }}
++            style={{ marginBottom: '24px', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'var(--bg-surface)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '14px', transition: 'all 0.2s' }}
+           >
+             &larr; {t('currencies.detail.backToList')}
+           </button>
+           
+           <div className="cdp-header-card" style={{ marginBottom: '24px' }}>
+             <div className="cdp-header-card__main">
+-              <div className="cdp-logo" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 'bold', color: '#0f172a', background: '#f8fafc' }}>
+-                {currency.code}
++              <div className="cdp-logo" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 'bold', color: 'var(--text-primary)', background: 'var(--bg-surface)', overflow: 'hidden', borderRadius: '16px', width: '80px', height: '80px' }}>
++                {currency.stateFlagUrl ? (
++                  <img 
++                    src={currency.stateFlagUrl} 
++                    alt={currency.code}
++                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
++                  />
++                ) : (
++                  currency.code
++                )}
+               </div>
+               <div className="cdp-title-info">
+                 <h1 style={{ margin: 0 }}>{currency.name}</h1>
+-                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', color: '#64748b' }}>
++                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', color: 'var(--text-secondary)' }}>
+                   <span>{t('currencies.detail.ticker', { code: currency.code })}</span>
+                   <span>{t('currencies.detail.inCirculation', { count: currency.totalIssued.toLocaleString() })}</span>
+                   <span>{t('currencies.detail.goldReserve', { reserves: currency.reserves.toLocaleString() })}</span>
+@@ -117,7 +125,7 @@ export const CurrencyDetailPage: React.FC = () => {
+                       const mainInfo = getMinecraftItemInfo(currency.minecraftItemId);
+                       return (
+                         <div>
+-                          <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '4px' }}>{t('currencies.detail.base')}</div>
++                          <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>{t('currencies.detail.base')}</div>
+                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}>
+                             {mainInfo?.icon} {mainInfo ? t(`minecraftItems.${mainInfo.id}`, mainInfo.name) : currency.minecraftItemId}
+                           </div>
+@@ -129,7 +137,7 @@ export const CurrencyDetailPage: React.FC = () => {
+                       const kopInfo = getMinecraftItemInfo(currency.kopeckItemId);
+                       return (
+                         <div>
+-                          <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '4px' }}>{t('currencies.detail.change')}</div>
++                          <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>{t('currencies.detail.change')}</div>
+                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}>
+                             {kopInfo?.icon} {kopInfo ? t(`minecraftItems.${kopInfo.id}`, kopInfo.name) : currency.kopeckItemId}
+                           </div>
+@@ -141,7 +149,7 @@ export const CurrencyDetailPage: React.FC = () => {
+                       const enchInfo = getMinecraftEnchantInfo(currency.minecraftEnchantment);
+                       return (
+                         <div>
+-                          <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '4px' }}>{t('currencies.detail.charm')}</div>
++                          <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>{t('currencies.detail.charm')}</div>
+                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500, color: '#7c3aed' }}>
+                             {enchInfo?.icon || '✨'} {enchInfo ? t(`minecraftEnchants.${enchInfo.id}`, enchInfo.name) : currency.minecraftEnchantment}
+                           </div>
+diff --git a/src/modules/economy/pages/PropertiesPage.tsx b/src/modules/economy/pages/PropertiesPage.tsx
+index 76dbdb4..3d5489a 100644
+--- a/src/modules/economy/pages/PropertiesPage.tsx
++++ b/src/modules/economy/pages/PropertiesPage.tsx
+@@ -75,7 +75,7 @@ export const PropertiesPage: React.FC = () => {
+   const [sellType, setSellType] = useState<'market' | 'direct'>('market');
+   const [eligibleBuyers, setEligibleBuyers] = useState<{uuid: string, username: string}[]>([]);
+   const [forSaleToId, setForSaleToId] = useState<string>('');
+-  const [allCurrencies, setAllCurrencies] = useState<any[]>([]);
++  const [allCurrencies, setAllCurrencies] = useState<ICurrency[]>([]);
+ 
+   const availableTerritories = React.useMemo(() => {
+     const expectedTerritoryType = createForm.ownerType === 'personal' ? 'player' : (createForm.ownerType === 'company' ? 'company' : undefined);
+@@ -206,7 +206,7 @@ export const PropertiesPage: React.FC = () => {
+     }
+   };
+ 
+-  const handleEditClick = (p: any) => {
++  const handleEditClick = (p: import("../types/economy.types").IProperty) => {
+     setEditPropertyId(p.id);
+     setEditOwnerType(p.ownerType);
+     setEditOwnerId(p.ownerId);
+diff --git a/src/modules/economy/pages/PropertyDetailPage.tsx b/src/modules/economy/pages/PropertyDetailPage.tsx
+index d39dd0e..0944bcb 100644
+--- a/src/modules/economy/pages/PropertyDetailPage.tsx
++++ b/src/modules/economy/pages/PropertyDetailPage.tsx
+@@ -10,6 +10,8 @@ import useAuthStore from '../../../store/auth.store';
+ import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
+ import { AxiosError } from 'axios';
+ import './PropertyDetailPage.scss';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ export const PropertyDetailPage: React.FC = () => {
+   const { t } = useTranslation('economy');
+@@ -18,7 +20,7 @@ export const PropertyDetailPage: React.FC = () => {
+   const { data: property, isLoading, mutate } = useProperty(id);
+   const { data: allCurrencies = [] } = useCurrencies();
+   
+-  const { accessToken } = useAuthStore();
++  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
+   let myUuid = '';
+   if (accessToken) {
+     try {
+diff --git a/src/modules/economy/pages/StockExchangePage.tsx b/src/modules/economy/pages/StockExchangePage.tsx
+index 446c7b0..6de8867 100644
+--- a/src/modules/economy/pages/StockExchangePage.tsx
++++ b/src/modules/economy/pages/StockExchangePage.tsx
+@@ -11,6 +11,8 @@ import '../economy-shared.scss';
+ import { useTranslation } from 'react-i18next';
+ 
+ import { usePublicCompanies, useMyPortfolio, useStates, useMyCompanies, useCurrencies } from '../hooks/useEconomyData';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
+   embedded = false,
+@@ -27,7 +29,7 @@ export const StockExchangePage: React.FC<{ embedded?: boolean }> = ({
+   const [changePriceCompanyId, setChangePriceCompanyId] = useState<string | null>(null);
+   const [selectedExchangeId, setSelectedExchangeId] = useState<string | null>(null);
+ 
+-  const { accessToken } = useAuthStore();
++  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
+   const { t } = useTranslation('economy');
+ 
+   let currentUsername = '';
+diff --git a/src/modules/economy/services/economy.service.ts b/src/modules/economy/services/economy.service.ts
+index 1153ae1..990d641 100644
+--- a/src/modules/economy/services/economy.service.ts
++++ b/src/modules/economy/services/economy.service.ts
+@@ -280,7 +280,7 @@ export class EconomyService {
+   }
+ 
+   // --- Banks ---
+-  public async createBank(data: any): Promise<any> {
++  public async createBank(data: unknown): Promise<unknown> {
+     return this.httpService.post(`economy/banks`, data);
+   }
+ }
+diff --git a/src/modules/landing/landing.page.tsx b/src/modules/landing/landing.page.tsx
+index 7ea4770..3e4da5e 100644
+--- a/src/modules/landing/landing.page.tsx
++++ b/src/modules/landing/landing.page.tsx
+@@ -35,14 +35,14 @@ const LandingPage: FC = () => {
+         <h1>{t("about.heading")}</h1>
+ 
+         <section className="main__section">
+-          <img src="/png/creeper.png" className="img-small-left" alt="" />
++          <img src="/png/creeper.webp" className="img-small-left" alt="" />
+ 
+           <p className="left">
+             {t("about.building")}
+           </p>
+ 
+           <img
+-            src="/png/settlement.png"
++            src="/png/city.webp"
+             alt="Merida settlement"
+             className="img-large-right"
+           />
+@@ -50,7 +50,7 @@ const LandingPage: FC = () => {
+ 
+         <section className="main__section">
+           <img
+-            src="/png/factory.png"
++            src="/png/factory.webp"
+             alt="factory SteelFactories"
+             className="img-large-left"
+           />
+@@ -65,34 +65,34 @@ const LandingPage: FC = () => {
+             <br />- {t("about.food")}
+           </p>
+ 
+-          <img src="/png/island_1.png" className="img-small-right" alt="" />
++          <img src="/png/island_1.webp" className="img-small-right" alt="" />
+         </section>
+ 
+         <section className="main__section">
+-          <img src="/png/island_2.png" className="img-small-left" alt="" />
++          <img src="/png/island_2.webp" className="img-small-left" alt="" />
+ 
+           <p className="left">{t("about.logistics")}</p>
+ 
+           <img
+-            src="/png/train.png"
++            src="/png/train.webp"
+             alt="train station"
+             className="img-large-right"
+           />
+         </section>
+ 
+         <section className="main__section">
+-          <img src="/png/party.png" alt="party" className="img-large-left" />
++          <img src="/png/party.webp" alt="party" className="img-large-left" />
+ 
+           <p className="right">
+             {t("about.frogs")}
+           </p>
+ 
+-          <img src="/png/island_3.png" className="img-small-right" alt="" />
++          <img src="/png/island_3.webp" className="img-small-right" alt="" />
+         </section>
+       </main>
+ 
+       <footer className="footer">
+-        <img src="/png/skeleton.png" alt="Skeleton" height={64} />
++        <img src="/png/skeleton.webp" alt="Skeleton" height={64} />
+ 
+         <div className="footer__links">
+           <span>
+@@ -115,7 +115,7 @@ const LandingPage: FC = () => {
+           </span>
+         </div>
+ 
+-        <img src="/png/steve.png" alt="Steve" height={64} />
++        <img src="/png/steve.webp" alt="Steve" height={64} />
+       </footer>
+     </>
+   );
+diff --git a/src/modules/map/pages/MapPage.tsx b/src/modules/map/pages/MapPage.tsx
+index ef9b1fc..075a09c 100644
+--- a/src/modules/map/pages/MapPage.tsx
++++ b/src/modules/map/pages/MapPage.tsx
+@@ -16,7 +16,7 @@ export const MapPage: React.FC = () => {
+       try {
+         const res = await serverService.getPing();
+         setIsOnline(res.running);
+-      } catch (e) {
++      } catch {
+         setIsOnline(false);
+       }
+     };
+diff --git a/src/modules/news/pages/news-details.page.tsx b/src/modules/news/pages/news-details.page.tsx
+index df2870c..3e30417 100644
+--- a/src/modules/news/pages/news-details.page.tsx
++++ b/src/modules/news/pages/news-details.page.tsx
+@@ -7,12 +7,14 @@ import Sidebar from "../../../shared/ui/sidebar/sidebar.component";
+ import useAuthStore from "../../../store/auth.store";
+ import Button from "../../../shared/ui/button/button.component";
+ import { useTranslation } from "react-i18next";
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ const NewsDetailsPage: FC = () => {
+   const { id } = useParams<{ id: string }>();
+   const [news, setNews] = useState<News | null>(null);
+   const [loading, setLoading] = useState(true);
+-  const { isAdmin } = useAuthStore();
++  const { isAdmin } = useAuthStore(useShallow(state => ({ isAdmin: state.isAdmin })));
+   const navigate = useNavigate();
+   const { t } = useTranslation("news");
+ 
+diff --git a/src/modules/news/pages/news.page.tsx b/src/modules/news/pages/news.page.tsx
+index 81925d3..034f553 100644
+--- a/src/modules/news/pages/news.page.tsx
++++ b/src/modules/news/pages/news.page.tsx
+@@ -10,6 +10,8 @@ import { useNavigate } from "react-router";
+ import CreateNewsModal from "../components/create-news.component";
+ 
+ import { useTranslation } from "react-i18next";
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ const NewsPage: FC = () => {
+   const [categories, setCategories] = useState<NewsCategory[]>([]);
+@@ -17,7 +19,7 @@ const NewsPage: FC = () => {
+     null
+   );
+   const navigate = useNavigate();
+-  const { isAdmin } = useAuthStore();
++  const { isAdmin } = useAuthStore(useShallow(state => ({ isAdmin: state.isAdmin })));
+   const { t } = useTranslation("news");
+ 
+   useEffect(() => {
+diff --git a/src/modules/players/components/player-passport.component.scss b/src/modules/players/components/player-passport.component.scss
+index fb3399a..2c8962e 100644
+--- a/src/modules/players/components/player-passport.component.scss
++++ b/src/modules/players/components/player-passport.component.scss
+@@ -6,9 +6,6 @@
+   margin: auto;
+   width: 600px;
+   background-color: var(--bg-card);
+-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.25'><path d='M0 10 Q10 0, 20 10 T40 10'/></svg>");
+-  background-repeat: repeat;
+-  background-size: 10px;
+   border: 1px solid var(--border-card);
+   border-radius: 14px;
+   padding: 24px;
+@@ -19,6 +16,20 @@
+   color: var(--text-primary);
+   transition: all 0.25s ease;
+ 
++  &::after {
++    content: '';
++    position: absolute;
++    top: 0;
++    left: 0;
++    right: 0;
++    bottom: 0;
++    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.25'><path d='M0 10 Q10 0, 20 10 T40 10'/></svg>");
++    background-repeat: repeat;
++    background-size: 10px;
++    pointer-events: none;
++    z-index: 0;
++  }
++
+   &__bg-flag {
+     position: absolute;
+     top: 0;
+@@ -28,8 +39,7 @@
+     background-size: cover;
+     background-position: center;
+     background-repeat: no-repeat;
+-    opacity: 0.12;
+-    mix-blend-mode: overlay;
++    opacity: 0.3;
+     pointer-events: none;
+     z-index: 0;
+   }
+@@ -116,11 +126,6 @@
+     }
+   }
+ 
+-  .passport-divider {
+-    height: 1px;
+-    background-color: var(--border-color);
+-    margin: 8px 0;
+-  }
+ 
+   &__email {
+     display: flex;
+@@ -149,10 +154,7 @@
+     background-color: #ffffff;
+     color: #0f172a;
+ 
+-    &__bg-flag {
+-      opacity: 0.18;
+-      mix-blend-mode: multiply;
+-    }
++
+ 
+     &__header {
+       color: #0f172a;
+diff --git a/src/modules/players/components/player-passport.component.tsx b/src/modules/players/components/player-passport.component.tsx
+index f3a0719..3c20cb6 100644
+--- a/src/modules/players/components/player-passport.component.tsx
++++ b/src/modules/players/components/player-passport.component.tsx
+@@ -45,8 +45,6 @@ const PlayerPassportComponent = ({ player }: PlayerPassportProps) => {
+             <span className="label">{t("players.passport.role")}</span>{" "}
+             {player.role === "admin" ? t("players.passport.roleAdmin") : t("players.passport.rolePlayer")}
+           </div>
+-          
+-          <div className="passport-divider"></div>
+ 
+           <div className="detail-row">
+             <span className="label">{t("players.passport.citizenship")}</span>{" "}
+diff --git a/src/modules/players/pages/player-profile.page.tsx b/src/modules/players/pages/player-profile.page.tsx
+index 0b6b5a7..ac460ad 100644
+--- a/src/modules/players/pages/player-profile.page.tsx
++++ b/src/modules/players/pages/player-profile.page.tsx
+@@ -364,7 +364,7 @@ const PlayerProfilePage = () => {
+                       setPlayer(updatedPlayer);
+                       setModalState("none");
+                       setBanReasonInput("");
+-                    } catch (e) {
++                    } catch {
+                       alert(t('modal.banError'));
+                     }
+                   }}>{t('modal.ban')}</button>
+@@ -382,7 +382,7 @@ const PlayerProfilePage = () => {
+                       const updatedPlayer = await playersService.unbanUser(player.username);
+                       setPlayer(updatedPlayer);
+                       setModalState("none");
+-                    } catch (e) {
++                    } catch {
+                       alert(t('modal.unbanError'));
+                     }
+                   }}>{t('modal.unban')}</button>
+diff --git a/src/modules/players/pages/players.page.tsx b/src/modules/players/pages/players.page.tsx
+index 9048703..9ddd7a4 100644
+--- a/src/modules/players/pages/players.page.tsx
++++ b/src/modules/players/pages/players.page.tsx
+@@ -118,8 +118,8 @@ const PlayersPage: FC = () => {
+                     className="player__profile-picture"
+                     src={
+                       user?.avatar_img
+-                        ? `${user.avatar_img}?t=${Date.now()}`
+-                        : "/png/steve-head.png"
++                        ? user.avatar_img
++                        : "/png/steve-head.webp"
+                     }
+                     alt={user.username}
+                   />
+diff --git a/src/modules/profile/pages/calendar.page.tsx b/src/modules/profile/pages/calendar.page.tsx
+index 99af6ad..06ad478 100644
+--- a/src/modules/profile/pages/calendar.page.tsx
++++ b/src/modules/profile/pages/calendar.page.tsx
+@@ -5,6 +5,8 @@ import Sidebar from '../../../shared/ui/sidebar/sidebar.component';
+ import './calendar.page.scss';
+ import useAuthStore from '../../../store/auth.store';
+ import { useTranslation } from 'react-i18next';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ interface IEvent {
+   id: string;
+@@ -27,7 +29,7 @@ const getFirstDayOfMonth = (year: number, month: number) => {
+ };
+ 
+ export const CalendarPage: FC = () => {
+-  const { isAuthenticated } = useAuthStore();
++  const { isAuthenticated } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated })));
+   const [events, setEvents] = useState<IEvent[]>([]);
+   const [loading, setLoading] = useState(true);
+   const { t } = useTranslation('profile');
+diff --git a/src/modules/profile/pages/profile.page.tsx b/src/modules/profile/pages/profile.page.tsx
+index 3c0978e..85f922b 100644
+--- a/src/modules/profile/pages/profile.page.tsx
++++ b/src/modules/profile/pages/profile.page.tsx
+@@ -13,9 +13,11 @@ import { useNavigate } from "react-router";
+ import AchievementsBlock from "../components/achievements-block/achievements-block.component";
+ import { achievementsService } from "../../achievements/services/achievements.service";
+ import { useTranslation } from "react-i18next";
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ const Profile: FC = () => {
+-  const { accessToken, logout, setRoleInfo, setBanInfo } = useAuthStore();
++  const { accessToken, logout, setRoleInfo, setBanInfo } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken, logout: state.logout, setRoleInfo: state.setRoleInfo, setBanInfo: state.setBanInfo })));
+   const navigate = useNavigate();
+   const { t } = useTranslation('profile');
+ 
+@@ -153,7 +155,7 @@ const Profile: FC = () => {
+                 <div className="avatar">
+                   {info?.isBanned ? (
+                     <img 
+-                      src={info?.avatar_img ? `${info.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"} 
++                      src={info?.avatar_img ? info.avatar_img : "/png/steve-head.webp"} 
+                       alt={t("profile-page.avatar")}
+                       style={{ width: "280px", height: "280px", borderRadius: "8px", objectFit: "cover" }}
+                     />
+@@ -162,7 +164,7 @@ const Profile: FC = () => {
+                       label={t("profile-page.avatar")}
+                       enableCrop
+                       aspect={1}
+-                      value={info?.avatar_img ? `${info.avatar_img}?t=${Date.now()}` : "/png/steve-head.png"}
++                      value={info?.avatar_img ? info.avatar_img : "/png/steve-head.webp"}
+                       onChange={(url) => mutate({ ...info!, avatar_img: url as string }, false)}
+                       customUploadFn={async (file) => {
+                         const { avatarUrl } = await profileService.uploadAvatar(file, accessToken as string);
+diff --git a/src/modules/states/components/territories-list/TerritoriesList.tsx b/src/modules/states/components/territories-list/TerritoriesList.tsx
+index 540a2f9..e108785 100644
+--- a/src/modules/states/components/territories-list/TerritoriesList.tsx
++++ b/src/modules/states/components/territories-list/TerritoriesList.tsx
+@@ -10,7 +10,7 @@ interface TerritoriesListProps {
+ }
+ 
+ export const TerritoriesList: React.FC<TerritoriesListProps> = ({ ownerType, ownerId }) => {
+-  const [territories, setTerritories] = useState<any[]>([]);
++  const [territories, setTerritories] = useState<unknown[]>([]);
+   const [loading, setLoading] = useState(true);
+   const { t } = useTranslation('states');
+ 
+diff --git a/src/modules/states/pages/national-bank-page/national-bank.page.tsx b/src/modules/states/pages/national-bank-page/national-bank.page.tsx
+index f51cc54..5e7b6e5 100644
+--- a/src/modules/states/pages/national-bank-page/national-bank.page.tsx
++++ b/src/modules/states/pages/national-bank-page/national-bank.page.tsx
+@@ -14,6 +14,8 @@ import './national-bank.page.scss';
+ import { useTranslation } from 'react-i18next';
+ import { PropagateLoader } from 'react-spinners';
+ import Button from '../../../../shared/ui/button/button.component';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ const NationalBankPage: FC = () => {
+   const { id } = useParams<{ id: string }>();
+@@ -24,7 +26,7 @@ const NationalBankPage: FC = () => {
+   const [ipoRequests, setIpoRequests] = useState<IIpoRequest[]>([]);
+   const [loading, setLoading] = useState(true);
+ 
+-  const { isAuthenticated, isAdmin } = useAuthStore();
++  const { isAuthenticated, isAdmin } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated, isAdmin: state.isAdmin })));
+   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
+   const { t } = useTranslation('states');
+ 
+diff --git a/src/modules/states/pages/settlement-detail-page/settlement-detail.page.tsx b/src/modules/states/pages/settlement-detail-page/settlement-detail.page.tsx
+index ab213c2..05d072c 100644
+--- a/src/modules/states/pages/settlement-detail-page/settlement-detail.page.tsx
++++ b/src/modules/states/pages/settlement-detail-page/settlement-detail.page.tsx
+@@ -18,6 +18,8 @@ import useAuthStore from '../../../../store/auth.store';
+ import { profileService } from '../../../profile/services/profile.service';
+ import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
+ import { useTranslation } from 'react-i18next';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ const SettlementDetailPage: FC = () => {
+   const { id } = useParams<{ id: string }>();
+@@ -32,7 +34,7 @@ const SettlementDetailPage: FC = () => {
+   const [applying, setApplying] = useState(false);
+   const { t } = useTranslation('states');
+ 
+-  const { isAuthenticated, isAdmin } = useAuthStore();
++  const { isAuthenticated, isAdmin } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated, isAdmin: state.isAdmin })));
+   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
+ 
+   useEffect(() => {
+diff --git a/src/modules/states/pages/settlements-list-page/settlements-list.page.tsx b/src/modules/states/pages/settlements-list-page/settlements-list.page.tsx
+index 32e55c9..94c9aa1 100644
+--- a/src/modules/states/pages/settlements-list-page/settlements-list.page.tsx
++++ b/src/modules/states/pages/settlements-list-page/settlements-list.page.tsx
+@@ -9,6 +9,8 @@ import { ImageUploader } from '../../../../shared/ui/image-uploader/ImageUploade
+ import { MapColorPicker } from '../../components/map-color-picker/MapColorPicker';
+ import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
+ import { useTranslation } from 'react-i18next';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ const SettlementsListPage: FC = () => {
+   const [searchParams] = useSearchParams();
+@@ -33,7 +35,7 @@ const SettlementsListPage: FC = () => {
+   const [creating, setCreating] = useState(false);
+   const { t } = useTranslation('states');
+ 
+-  const { isAdmin } = useAuthStore();
++  const { isAdmin } = useAuthStore(useShallow(state => ({ isAdmin: state.isAdmin })));
+ 
+   const loadData = async () => {
+     setLoading(true);
+diff --git a/src/modules/states/pages/state-detail-page/state-detail.page.tsx b/src/modules/states/pages/state-detail-page/state-detail.page.tsx
+index fdae957..131f1f9 100644
+--- a/src/modules/states/pages/state-detail-page/state-detail.page.tsx
++++ b/src/modules/states/pages/state-detail-page/state-detail.page.tsx
+@@ -28,8 +28,10 @@ import '../../../economy/economy-shared.scss';
+ import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
+ import { EditStateModal } from '../../components/edit-state-modal/EditStateModal';
+ import { useTranslation } from 'react-i18next';
++import { useShallow } from 'zustand/react/shallow';
+ 
+-const formatAccountNumber = (treasuryAccount: any, t?: any) => {
++
++const formatAccountNumber = (treasuryAccount: { id: string, balance: number, currencyCode: string } | string | null | undefined, t?: (key: string) => string) => {
+   if (!treasuryAccount) return t('stateDetailMissed.noAccount');
+   if (typeof treasuryAccount === 'string') {
+     return `#${treasuryAccount}`;
+@@ -86,7 +88,7 @@ const StateDetailPage: FC = () => {
+ 
+   const [showEditStateModal, setShowEditStateModal] = useState(false);
+ 
+-  const { isAuthenticated } = useAuthStore();
++  const { isAuthenticated } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated })));
+   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
+ 
+   useEffect(() => {
+diff --git a/src/modules/states/pages/states-list-page/states-list.page.tsx b/src/modules/states/pages/states-list-page/states-list.page.tsx
+index 8cd7fb5..1e07b2c 100644
+--- a/src/modules/states/pages/states-list-page/states-list.page.tsx
++++ b/src/modules/states/pages/states-list-page/states-list.page.tsx
+@@ -9,6 +9,8 @@ import { MapColorPicker } from '../../components/map-color-picker/MapColorPicker
+ import useAuthStore from '../../../../store/auth.store';
+ import Sidebar from '../../../../shared/ui/sidebar/sidebar.component';
+ import { useTranslation } from 'react-i18next';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ const StatesListPage: FC = () => {
+   const [states, setStates] = useState<IState[]>([]);
+@@ -27,7 +29,7 @@ const StatesListPage: FC = () => {
+   const [color, setColor] = useState('');
+   const [creating, setCreating] = useState(false);
+ 
+-  const { isAuthenticated } = useAuthStore();
++  const { isAuthenticated } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated })));
+   const { t } = useTranslation('states');
+ 
+   const loadStates = async () => {
+diff --git a/src/shared/components/error-boundary/ErrorBoundary.scss b/src/shared/components/error-boundary/ErrorBoundary.scss
+new file mode 100644
+index 0000000..f840a07
+--- /dev/null
++++ b/src/shared/components/error-boundary/ErrorBoundary.scss
+@@ -0,0 +1,37 @@
++.error-boundary {
++  display: flex;
++  flex-direction: column;
++  align-items: center;
++  justify-content: center;
++  height: 100vh;
++  width: 100vw;
++  background-color: var(--bg-primary, #0f172a);
++  color: var(--text-primary, #f8fafc);
++  text-align: center;
++  padding: 20px;
++
++  h2 {
++    font-size: 24px;
++    margin-bottom: 16px;
++  }
++
++  p {
++    margin-bottom: 24px;
++    color: var(--text-secondary, #94a3b8);
++  }
++
++  &-btn {
++    padding: 12px 24px;
++    background-color: #3b82f6;
++    color: white;
++    border: none;
++    border-radius: 8px;
++    cursor: pointer;
++    font-size: 16px;
++    transition: background-color 0.2s;
++
++    &:hover {
++      background-color: #2563eb;
++    }
++  }
++}
+diff --git a/src/shared/components/error-boundary/ErrorBoundary.tsx b/src/shared/components/error-boundary/ErrorBoundary.tsx
+new file mode 100644
+index 0000000..5bdd4e8
+--- /dev/null
++++ b/src/shared/components/error-boundary/ErrorBoundary.tsx
+@@ -0,0 +1,48 @@
++import React, { Component, ErrorInfo, ReactNode } from "react";
++import "./ErrorBoundary.scss";
++
++interface Props {
++  children?: ReactNode;
++}
++
++interface State {
++  hasError: boolean;
++  error: Error | null;
++}
++
++class ErrorBoundary extends Component<Props, State> {
++  public state: State = {
++    hasError: false,
++    error: null
++  };
++
++  public static getDerivedStateFromError(error: Error): State {
++    return { hasError: true, error };
++  }
++
++  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
++    console.error("Uncaught error:", error, errorInfo);
++    if (error.name === 'ChunkLoadError' || error.message.includes('dynamically imported module') || error.message.includes('Failed to fetch dynamically imported module')) {
++      // Auto reload on chunk load error
++      window.location.reload();
++    }
++  }
++
++  public render() {
++    if (this.state.hasError) {
++      return (
++        <div className="error-boundary">
++          <h2>Упс! Что-то пошло не так.</h2>
++          <p>Произошла ошибка при загрузке страницы.</p>
++          <button onClick={() => window.location.reload()} className="error-boundary-btn">
++            Перезагрузить страницу
++          </button>
++        </div>
++      );
++    }
++
++    return this.props.children;
++  }
++}
++
++export default ErrorBoundary;
+diff --git a/src/shared/components/global-toast/GlobalToastProvider.tsx b/src/shared/components/global-toast/GlobalToastProvider.tsx
+index 6ecba55..a3c7fe4 100644
+--- a/src/shared/components/global-toast/GlobalToastProvider.tsx
++++ b/src/shared/components/global-toast/GlobalToastProvider.tsx
+@@ -4,6 +4,8 @@ import useAuthStore from '../../../store/auth.store';
+ import { IAchievement } from '../../../modules/achievements/types/achievements.types';
+ import { playAchievementSound } from '../../utils/audio.utils';
+ import './global-toast.scss';
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ const SERVER_URL = import.meta.env.VITE_BACKEND_URL;
+ 
+@@ -14,7 +16,7 @@ interface ToastItem {
+ 
+ export const GlobalToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+   const { t } = useTranslation('profile');
+-  const { accessToken } = useAuthStore();
++  const { accessToken } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken })));
+   const [toasts, setToasts] = useState<ToastItem[]>([]);
+ 
+   useEffect(() => {
+diff --git a/src/shared/services/main-axios.ts b/src/shared/services/main-axios.ts
+index 945f2f7..975bcaa 100644
+--- a/src/shared/services/main-axios.ts
++++ b/src/shared/services/main-axios.ts
+@@ -1,4 +1,4 @@
+-import axios from "axios";
++import axios, { InternalAxiosRequestConfig } from "axios";
+ import useAuthStore from "../../store/auth.store";
+ 
+ export const mainAxios = axios.create({
+@@ -7,18 +7,50 @@ export const mainAxios = axios.create({
+ 
+ const SERVER_URL = import.meta.env.VITE_BACKEND_URL;
+ 
++let isRefreshing = false;
++// eslint-disable-next-line @typescript-eslint/no-explicit-any
++let failedQueue: Array<{ resolve: (token: string) => void; reject: (error: any) => void }> = [];
++
++// eslint-disable-next-line @typescript-eslint/no-explicit-any
++const processQueue = (error: any, token: string | null = null) => {
++  failedQueue.forEach((prom) => {
++    if (error) {
++      prom.reject(error);
++    } else {
++      prom.resolve(token!);
++    }
++  });
++  failedQueue = [];
++};
++
+ mainAxios.interceptors.response.use(
+   (response) => response,
+   async (error) => {
+-    const originalRequest = error.config;
++    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
++    
+     if (error.response?.status === 401 && !originalRequest._retry) {
++      if (isRefreshing) {
++        return new Promise(function (resolve, reject) {
++          failedQueue.push({ resolve, reject });
++        })
++          .then((token) => {
++            originalRequest.headers.Authorization = `Bearer ${token}`;
++            return mainAxios(originalRequest);
++          })
++          .catch((err) => {
++            return Promise.reject(err);
++          });
++      }
++
+       originalRequest._retry = true;
++      isRefreshing = true;
+ 
+       const { refreshToken, login, logout } = useAuthStore.getState();
+       const urlToServer = SERVER_URL + "/auth/refresh/";
+ 
+       if (!refreshToken) {
+         logout();
++        isRefreshing = false;
+         return Promise.reject(error);
+       }
+ 
+@@ -29,14 +61,16 @@ mainAxios.interceptors.response.use(
+         const newAT = response.data;
+ 
+         login(newAT, refreshToken);
+-
+         originalRequest.headers.Authorization = `Bearer ${newAT}`;
+-
++        processQueue(null, newAT);
++        
+         return mainAxios(originalRequest);
+       } catch (refreshError) {
++        processQueue(refreshError, null);
+         logout();
+-
+         return Promise.reject(refreshError);
++      } finally {
++        isRefreshing = false;
+       }
+     }
+ 
+diff --git a/src/shared/wraps/guests-only.wrap.tsx b/src/shared/wraps/guests-only.wrap.tsx
+index 4fe451f..4c11bc6 100644
+--- a/src/shared/wraps/guests-only.wrap.tsx
++++ b/src/shared/wraps/guests-only.wrap.tsx
+@@ -1,6 +1,8 @@
+ import React from "react";
+ import { Navigate } from "react-router-dom";
+ import useAuthStore from "../../store/auth.store";
++import { useShallow } from 'zustand/react/shallow';
++
+ 
+ type GuestOnlyProps = {
+   children: React.ReactNode;
+@@ -11,7 +13,7 @@ export default function GuestOnly({
+   children,
+   redirectTo = "/profile",
+ }: GuestOnlyProps) {
+-  const { isAuthenticated } = useAuthStore();
++  const { isAuthenticated } = useAuthStore(useShallow(state => ({ isAuthenticated: state.isAuthenticated })));
+ 
+   if (isAuthenticated) {
+     return <Navigate to={redirectTo} replace />;
+diff --git a/src/shared/wraps/require-auth.wrap.tsx b/src/shared/wraps/require-auth.wrap.tsx
+index 997ce94..ea9ca53 100644
+--- a/src/shared/wraps/require-auth.wrap.tsx
++++ b/src/shared/wraps/require-auth.wrap.tsx
+@@ -4,6 +4,8 @@ import { useEffect } from "react";
+ import useSWR from "swr";
+ import { profileService } from "../../modules/profile/services/profile.service";
+ import { PropagateLoader } from "react-spinners";
++import { useShallow } from 'zustand/react/shallow';
++
+ export function RequireAuth({
+   children,
+   allowBanned = false,
+@@ -11,7 +13,7 @@ export function RequireAuth({
+   children: React.ReactNode;
+   allowBanned?: boolean;
+ }) {
+-  const { accessToken, isAuthenticated, logout, isBanned, setBanInfo } = useAuthStore();
++  const { accessToken, isAuthenticated, logout, isBanned, setBanInfo } = useAuthStore(useShallow(state => ({ accessToken: state.accessToken, isAuthenticated: state.isAuthenticated, logout: state.logout, isBanned: state.isBanned, setBanInfo: state.setBanInfo })));
+   const location = useLocation();
+ 
+   const { data: info, isLoading } = useSWR(
+diff --git a/src/styles/theme.css b/src/styles/theme.css
+index 749b566..d53432a 100644
+--- a/src/styles/theme.css
++++ b/src/styles/theme.css
+@@ -424,6 +424,10 @@ html, body {
+       border-color: var(--border-subtle) !important;
+     }
+ 
++    .currency-card__footer {
++      border-color: var(--border-subtle) !important;
++    }
++
+     .stat-box .stat-value {
+       color: var(--text-primary) !important;
+     }
+diff --git a/vite.config.ts b/vite.config.ts
+index 4c85d4c..415e541 100644
+--- a/vite.config.ts
++++ b/vite.config.ts
+@@ -5,6 +5,25 @@ import svgr from "vite-plugin-svgr";
+ // https://vite.dev/config/
+ export default defineConfig({
+   plugins: [react(), svgr()],
++  css: {
++    preprocessorOptions: {
++      scss: {
++        api: 'modern-compiler'
++      }
++    }
++  },
++  build: {
++    rollupOptions: {
++      output: {
++        manualChunks: {
++          'vendor-react': ['react', 'react-dom', 'react-router', 'react-router-dom'],
++          'vendor-charts': ['lightweight-charts'],
++          'vendor-ui': ['lucide-react', 'react-spinners', 'classnames'],
++          'vendor-state': ['zustand', 'swr', 'axios'],
++        }
++      }
++    }
++  },
+   server: {
+     proxy: {
+       '^/bluemap/.*/live/markers\\.json': {
