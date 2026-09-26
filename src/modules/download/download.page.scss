@@ -33,7 +33,6 @@
   padding: 40px 36px;
   box-shadow: var(--shadow-card);
   margin-bottom: 40px;
-  transition: all 0.3s ease;
 
   &__badge {
     display: inline-flex;
@@ -94,6 +93,7 @@
       height: 28px;
       flex-shrink: 0;
       object-fit: contain;
+      filter: invert(1);
     }
 
     .download-launcher__os-info {
@@ -165,7 +165,6 @@
   border: 1px solid var(--border-card);
   box-shadow: var(--shadow-card);
   width: 100%;
-  transition: all 0.3s ease;
 
   &__badge {
     display: inline-flex;
