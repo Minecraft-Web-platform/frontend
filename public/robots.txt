@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Allow: /agreement
+Allow: /login
+Allow: /registration
+
+# Disallow private and administrative pages
+Disallow: /admin/
+Disallow: /profile
+Disallow: /email-confirmation
+
+# Host
+Host: https://khroniki-kraya.com
+
+# Sitemap
+Sitemap: https://khroniki-kraya.com/sitemap.xml

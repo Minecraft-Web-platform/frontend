@@ -1,0 +1,61 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Хроники Края 2.0",
+    "identifier": "did:web:khroniki-kraya.com",
+    "documentationUrl": "https://khroniki-kraya.com/agreement",
+    "logoUrl": "https://khroniki-kraya.com/png/steve-head.webp"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:khroniki-kraya.com:service:website",
+      "displayName": "Khroniki Kraya 2.0 Web Portal",
+      "type": "text/html",
+      "url": "https://khroniki-kraya.com/",
+      "description": "Официальный веб-портал военно-политического Minecraft сервера Хроники Края 2.0.",
+      "tags": [
+        "minecraft",
+        "survival",
+        "roleplay",
+        "politics",
+        "community"
+      ],
+      "capabilities": [
+        "server-info",
+        "auth-portal",
+        "economy-guide",
+        "lore"
+      ],
+      "representativeQueries": [
+        "Как начать играть на Minecraft сервере Хроники Края 2.0?",
+        "Военно-политический сервер Minecraft с городами и государствами"
+      ],
+      "version": "2.0.0",
+      "updatedAt": "2026-09-26T11:00:00Z"
+    },
+    {
+      "identifier": "urn:air:khroniki-kraya.com:documentation:llms",
+      "displayName": "LLM Context and Machine Discovery Manifest",
+      "type": "text/markdown",
+      "url": "https://khroniki-kraya.com/llms.txt",
+      "description": "Справочный манифест и структурированная документация для больших языковых моделей и ИИ-агентов о проекте Хроники Края 2.0.",
+      "tags": [
+        "llm",
+        "ai-discovery",
+        "documentation",
+        "context"
+      ],
+      "capabilities": [
+        "llm-context",
+        "project-overview",
+        "api-documentation"
+      ],
+      "representativeQueries": [
+        "Документация и контекст проекта Хроники Края для LLM",
+        "Описание механик и правил сервера Хроники Края 2.0"
+      ],
+      "version": "1.0.0",
+      "updatedAt": "2026-09-26T11:00:00Z"
+    }
+  ]
+}

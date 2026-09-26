@@ -1,10 +1,23 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import "./landing.page.scss";
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 
 const LandingPage: FC = () => {
   const { t } = useTranslation("landing-page");
+
+  useEffect(() => {
+    const descriptionText =
+      "Хроники Края 2.0 — уникальный военно-политический и экономический сервер Minecraft с развитой системой государств, городов и выборов. Развивайте бизнес, торгуйте на бирже акций, управляйте банковскими счетами и участвуйте в глобальной дипломатии. Присоединяйтесь к нашему сообществу, возводите масштабные архитектурные проекты и создавайте собственную историю!";
+
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement("meta");
+      metaDesc.setAttribute("name", "description");
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.setAttribute("content", descriptionText);
+  }, []);
 
   const copyIP = () => {
     navigator.clipboard.writeText("mc.khroniki-kraya.com");
