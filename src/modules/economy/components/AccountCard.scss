@@ -157,10 +157,11 @@
 
       .card-number {
         font-family: monospace;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 700;
         color: var(--text-headings);
         margin-bottom: 2px;
+        white-space: nowrap;
       }
 
       .card-meta {

@@ -9,7 +9,8 @@ interface BusinessCertificateProps {
 
 const normalizeDate = (dateToNormalize: string): string => {
   if (!dateToNormalize) return "-";
-  const date = new Date(dateToNormalize);
+  const cleanDate = dateToNormalize.split('[')[0];
+  const date = new Date(cleanDate);
   const day = String(date.getUTCDate()).padStart(2, "0");
   const month = String(date.getUTCMonth() + 1).padStart(2, "0");
   const year = date.getUTCFullYear();

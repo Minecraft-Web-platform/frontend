@@ -20,7 +20,7 @@
       font-family: "Minecraft";
     }
 
-    .admin-grid {
+    .admin-section {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 32px;
@@ -30,19 +30,19 @@
         grid-template-columns: 1fr;
       }
 
-      .panel {
+      .admin-card {
         background: #fff;
         border: 1px solid #e0e0e0;
         padding: 32px;
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 
-        .form {
+        .admin-form {
           display: flex;
           flex-direction: column;
           gap: 20px;
 
-          .input-group {
+          .form-group {
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -53,7 +53,7 @@
               font-weight: 500;
             }
             
-            select {
+            .admin-select {
               background: #fff;
               border: 1px solid #ccc;
               color: #000;
@@ -73,16 +73,21 @@
               }
             }
           }
+          
+          .form-actions {
+            display: flex;
+            gap: 16px;
+          }
         }
       }
     }
 
-    .achievements-list {
+    .achievements-list-admin {
       display: flex;
       flex-direction: column;
       gap: 16px;
 
-      .achievement-card {
+      .achievement-admin-item {
         background: #fff;
         border: 1px solid #e0e0e0;
         padding: 20px;
@@ -98,17 +103,17 @@
           box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
         }
         
-        img {
+        .achievement-icon-admin {
           width: 56px;
           height: 56px;
-          border-radius: 50%;
+          border-radius: 8px;
           object-fit: contain;
           background: #f5f5f5;
           border: 2px solid #ccc;
           padding: 4px;
         }
 
-        .info {
+        .achievement-info-admin {
           flex: 1;
           h3 {
             margin: 0 0 6px 0;
@@ -121,6 +126,7 @@
             color: #666;
             font-size: 0.9rem;
             line-height: 1.4;
+            white-space: pre-wrap;
           }
           small {
             color: #0066cc;
@@ -128,6 +134,10 @@
             font-weight: 500;
           }
         }
+        
+        .achievement-actions {
+          display: flex;
+          gap: 8px;
 
           .edit-btn {
             background: #3b82f6;
@@ -162,10 +172,7 @@
               color: #fff;
             }
           }
-
-        &.rarity-rare img { border-color: #0070dd; }
-        &.rarity-epic img { border-color: #a335ee; }
-        &.rarity-legendary img { border-color: #ff8000; }
+        }
       }
     }
   }
