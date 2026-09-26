@@ -631,6 +631,126 @@ html, body {
     box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4) !important;
   }
 
+  .states-list-page__empty,
+  .settlements-list-page__empty {
+    background: linear-gradient(135deg, #171d27 0%, #1a2230 100%) !important;
+    border: 1px dashed var(--border-color) !important;
+    box-shadow: var(--shadow-card) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .states-list-page__empty:hover,
+  .settlements-list-page__empty:hover {
+    border-color: rgba(16, 185, 129, 0.4) !important;
+  }
+
+  .states-list-page__empty-icon-wrap {
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.16) 0%, rgba(16, 185, 129, 0.02) 70%) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    box-shadow: 0 0 24px rgba(16, 185, 129, 0.2) !important;
+  }
+
+  .states-list-page__empty-title {
+    color: var(--text-headings) !important;
+  }
+
+  .states-list-page__empty-desc {
+    color: var(--text-secondary) !important;
+  }
+
+  .states-list-page__empty-action-btn--secondary {
+    background: #1f2736 !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+  }
+
+  .states-list-page__empty-action-btn--secondary:hover {
+    background: #2a3447 !important;
+    color: #ffffff !important;
+  }
+
+  /* Download page dark mode overrides */
+  .download-page {
+    background-color: var(--bg-page) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .download-launcher,
+  .mod-builder {
+    background: linear-gradient(135deg, #171d27 0%, #1a2230 100%) !important;
+    border-color: var(--border-card) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .download-launcher__title,
+  .mod-builder__title {
+    color: var(--text-headings) !important;
+  }
+
+  .download-launcher__desc,
+  .mod-builder__desc {
+    color: var(--text-secondary) !important;
+  }
+
+  .download-launcher__os {
+    background-color: #1a212e !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  .download-launcher__os:hover {
+    background-color: #222c3d !important;
+    border-color: var(--accent-emerald) !important;
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25) !important;
+  }
+
+  .download-launcher__os .os-name {
+    color: var(--text-headings) !important;
+  }
+
+  .download-launcher__os .os-details {
+    color: var(--text-muted) !important;
+  }
+
+  .mod-builder__toolbar {
+    background: #11151e !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .mod-builder__quick-btn {
+    background-color: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .mod-builder__quick-btn:hover:not(:disabled) {
+    background-color: var(--bg-hover) !important;
+    border-color: var(--accent-emerald) !important;
+    color: var(--accent-emerald) !important;
+  }
+
+  .mod-builder__item {
+    background-color: #161c26 !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .mod-builder__item:hover {
+    background-color: #1e2634 !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+  }
+
+  .mod-builder__item--active {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    border-color: var(--accent-emerald) !important;
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.15) !important;
+  }
+
+  .mod-builder__item-name {
+    color: var(--text-primary) !important;
+  }
+
   .states-list-page__modal {
     background-color: var(--bg-card) !important;
     border-color: var(--border-card) !important;

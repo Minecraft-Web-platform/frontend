@@ -7,7 +7,13 @@
         "under-mods-heading-description": "Choose the mods you want to add to your pack — we’ll bundle them into an archive along with required mods :)",
         "download-button-text": "Download modpack",
         "under-button-text": "Your modpack is downloading, this will take 2–4 minutes — grab some tea meanwhile :)",
-        "loading-mods": "Loading optional mods list..."
+        "loading-mods": "Loading optional mods list...",
+        "select-all": "Select all",
+        "deselect-all": "Deselect all",
+        "selected": "Selected",
+        "of": "of",
+        "step-launcher": "Step 1: Launcher",
+        "step-mods": "Step 2: Modifications"
     },
     "errors": {
         "http": {

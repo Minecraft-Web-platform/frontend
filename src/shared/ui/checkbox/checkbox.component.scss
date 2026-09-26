@@ -1,15 +1,35 @@
 .checkbox {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--border-color, #2b3446);
+  border-radius: 6px;
+  background-color: var(--bg-surface, #161b22);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
 
-  border: 1px solid black;
-  border-radius: 4px;
-  background-color: #fff;
+  &:hover {
+    border-color: var(--accent-emerald, #10b981);
+    background-color: var(--bg-hover, #222938);
+  }
+
+  &--checked {
+    background-color: var(--accent-emerald, #10b981);
+    border-color: var(--accent-emerald, #10b981);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+
+    &:hover {
+      background-color: #059669;
+      border-color: #059669;
+    }
+  }
 
   svg {
     display: block;
-    margin-top: 3px;
-    margin-left: 3px;
   }
 }

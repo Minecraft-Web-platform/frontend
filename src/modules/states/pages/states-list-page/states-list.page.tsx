@@ -124,7 +124,12 @@ const StatesListPage: FC = () => {
           </div>
 
           {loading ? (
-            <div className="states-list-page__empty">{t('states-list.empty.loading')}</div>
+            <div className="states-list-page__empty states-list-page__empty--loading">
+              <div className="states-list-page__empty-icon-wrap">
+                <span className="states-list-page__empty-icon">⏳</span>
+              </div>
+              <h3 className="states-list-page__empty-title">{t('states-list.empty.loading')}</h3>
+            </div>
           ) : (
             <div className="states-list-page__grid">
               {filteredStates.length > 0 ? (
@@ -133,7 +138,36 @@ const StatesListPage: FC = () => {
                 ))
               ) : (
                 <div className="states-list-page__empty">
-                  {t('states-list.empty.notFound')}
+                  <div className="states-list-page__empty-icon-wrap">
+                    <span className="states-list-page__empty-icon">{search.trim() ? '🔍' : '🏰'}</span>
+                  </div>
+                  <h3 className="states-list-page__empty-title">
+                    {search.trim()
+                      ? t('states-list.empty.searchNotFound')
+                      : t('states-list.empty.notFoundTitle')}
+                  </h3>
+                  <p className="states-list-page__empty-desc">
+                    {search.trim()
+                      ? t('states-list.empty.searchNotFoundDesc')
+                      : t('states-list.empty.notFoundDesc')}
+                  </p>
+                  {search.trim() ? (
+                    <button
+                      type="button"
+                      className="states-list-page__empty-action-btn states-list-page__empty-action-btn--secondary"
+                      onClick={() => setSearch('')}
+                    >
+                      {t('states-list.empty.resetSearch')}
+                    </button>
+                  ) : isAuthenticated && (
+                    <button
+                      type="button"
+                      className="states-list-page__empty-action-btn"
+                      onClick={() => setShowCreateModal(true)}
+                    >
+                      {t('states-list.controls.create')}
+                    </button>
+                  )}
                 </div>
               )}
             </div>

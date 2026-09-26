@@ -8,21 +8,29 @@ type Props = {
 
 const Checkbox: FC<Props> = ({ checked, onClickHandler }) => {
   return (
-    <div className="checkbox" onClick={onClickHandler}>
+    <div
+      className={`checkbox ${checked ? "checkbox--checked" : ""}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClickHandler();
+      }}
+      role="checkbox"
+      aria-checked={checked}
+    >
       {checked && (
         <svg
-          width="8"
-          height="8"
-          viewBox="0 0 8 8"
+          width="10"
+          height="10"
+          viewBox="0 0 10 10"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M1 4 L3 6 L7 2"
+            d="M1.5 5.2 L3.8 7.5 L8.5 2.5"
             stroke="currentColor"
-            stroke-width="1.2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       )}

@@ -7,7 +7,13 @@
         "under-mods-heading-description": "Wybierz mody, które chcesz dodać do paczki — spakujemy je do archiwum wraz z modami wymaganymi :)",
         "download-button-text": "Pobierz modpack",
         "under-button-text": "Twój modpack się pobiera, zajmie to 2-4 minuty, zrób sobie herbatę :)",
-        "loading-mods": "Ładowanie listy opcjonalnych modów..."
+        "loading-mods": "Ładowanie listy opcjonalnych modów...",
+        "select-all": "Wybierz wszystkie",
+        "deselect-all": "Odznacz wszystkie",
+        "selected": "Wybrano",
+        "of": "z",
+        "step-launcher": "Krok 1: Launcher",
+        "step-mods": "Krok 2: Modyfikacje"
     },
     "errors": {
         "http": {

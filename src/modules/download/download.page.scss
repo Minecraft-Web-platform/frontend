@@ -1,77 +1,158 @@
+.download-page {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
 .download-wrapper {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
   align-items: center;
-}
-
-.download-page {
-  position: relative;
-  display: flex;
-
+  padding: 48px 32px 80px;
+  max-width: 1000px;
+  margin: 0 auto;
   width: 100%;
-  height: 100vh;
-  background-color: #fff;
 }
 
+/* 🚀 Launcher Section */
 .download-launcher {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
+  width: 100%;
+  background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-card) 100%);
+  border: 1px solid var(--border-card);
   border-radius: 24px;
-  padding-top: 100px;
-  width: 600px;
+  padding: 40px 36px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 40px;
+  transition: all 0.3s ease;
 
-  //loader
-  & > span {
-    margin-top: 16px;
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--accent-emerald);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    margin-bottom: 16px;
   }
 
-  h1 {
+  &__title {
     text-align: center;
-    font-family: "Minecraft";
+    font-family: "Minecraft", sans-serif;
+    font-size: 32px;
+    font-weight: normal;
+    color: var(--text-headings);
+    margin: 0 0 12px 0;
   }
 
-  p {
-    margin-top: 16px;
-    color: rgb(65, 65, 65);
-    font-family: sans-serif;
+  &__desc {
+    margin: 0 0 32px 0;
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 580px;
     text-align: center;
   }
 
   &__files {
-    margin-top: 32px;
     display: flex;
     justify-content: center;
-    gap: 32px;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
   }
 
   &__os {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 24px;
-
-    padding: 0 32px;
-    height: 64px;
-    border-radius: 32px;
-    background-color: #000;
-    color: #fff;
+    gap: 16px;
+    padding: 16px 26px;
+    min-width: 220px;
+    border-radius: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 
-    span {
-      font-family: "minecraft";
+    .os-icon {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      object-fit: contain;
     }
 
-    img {
-      width: 24px;
-      height: 24px;
+    .download-launcher__os-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      flex: 1;
+
+      .os-name {
+        font-family: "Minecraft", sans-serif;
+        font-size: 16px;
+        color: var(--text-headings);
+        line-height: 1.2;
+      }
+
+      .os-details,
+      .os-status {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+    }
+
+    .download-arrow {
+      color: var(--text-muted);
+      transition: transform 0.2s ease, color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: var(--bg-hover);
+      border-color: var(--accent-emerald);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+
+      .download-arrow {
+        transform: translateY(2px);
+        color: var(--accent-emerald);
+      }
+    }
+
+    &--disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
     }
   }
 }
 
+.download-page__loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 0;
+}
+
+/* 📦 Modpack Builder Section */
 .download-mod-pack {
-  margin-top: 80px;
+  width: 100%;
 }
 
 .mod-builder {
@@ -79,43 +160,203 @@
   flex-direction: column;
   align-items: center;
   border-radius: 24px;
-  padding: 48px 90px 56px;
-  background-color: #ffffffcc;
-  margin: 0 auto;
-  width: 600px;
-  font-family: sans-serif;
+  padding: 40px 36px;
+  background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-card) 100%);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  transition: all 0.3s ease;
 
-  h1 {
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    background: rgba(56, 189, 248, 0.12);
+    color: var(--accent-diamond);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    margin-bottom: 16px;
+  }
+
+  &__title {
     text-align: center;
-    font-family: "Minecraft";
-    margin-bottom: 8px;
+    font-family: "Minecraft", sans-serif;
+    font-size: 30px;
+    font-weight: normal;
+    color: var(--text-headings);
+    margin: 0 0 12px 0;
   }
 
-  p {
+  &__desc {
     text-align: center;
-    margin: 16px 0;
-    color: rgb(65, 65, 65);
-    font-family: sans-serif;
+    margin: 0 0 28px 0;
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 580px;
   }
 
-  //loader
-  & > span {
-    display: block !important;
-  }
-
-  &__mods-toggler {
-    margin-top: 16px;
+  &__loader {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 48px 0;
 
-    div {
-      display: flex;
-      gap: 8px;
+    .mod-builder__loading-text {
+      color: var(--text-secondary);
+      font-size: 15px;
     }
   }
 
-  .button {
-    margin-top: 32px;
+  &__toolbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  &__count {
+    font-size: 14px;
+    color: var(--text-secondary);
+
+    strong {
+      color: var(--accent-emerald);
+      font-size: 15px;
+    }
+  }
+
+  &__quick-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__quick-btn {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--bg-hover);
+      border-color: var(--accent-emerald);
+      color: var(--accent-emerald);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &__mods-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--bg-hover);
+      border-color: rgba(16, 185, 129, 0.4);
+      transform: translateY(-1px);
+    }
+
+    &--active {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.12);
+    }
+  }
+
+  &__item-name {
+    color: var(--text-primary);
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__action {
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .button {
+      padding: 16px 32px;
+      font-size: 18px;
+      border-radius: 14px;
+      width: 100%;
+    }
+  }
+
+  &__hint {
+    margin-top: 16px;
+    color: var(--text-muted);
+    font-size: 13.5px;
+    text-align: center;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 768px) {
+  .download-wrapper {
+    padding: 24px 16px 60px;
+  }
+
+  .download-launcher,
+  .mod-builder {
+    padding: 28px 20px;
+    border-radius: 18px;
+  }
+
+  .download-launcher__title,
+  .mod-builder__title {
+    font-size: 24px;
+  }
+
+  .download-launcher__files {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .download-launcher__os {
+    min-width: unset;
+  }
+
+  .mod-builder__mods-grid {
+    grid-template-columns: 1fr;
   }
 }

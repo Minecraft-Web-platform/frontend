@@ -10,7 +10,12 @@
         },
         "empty": {
             "loading": "Loading states...",
-            "notFound": "No states found. Be the first to found a great empire!"
+            "notFound": "No states found. Be the first to found a great empire!",
+            "notFoundTitle": "No states found",
+            "notFoundDesc": "Be the first to found a great empire!",
+            "searchNotFound": "Nothing found",
+            "searchNotFoundDesc": "Try adjusting your search query or reset the filter",
+            "resetSearch": "Reset search"
         },
         "createModal": {
             "title": "🏰 Founding a New State",

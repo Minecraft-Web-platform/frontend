@@ -10,7 +10,12 @@
     },
     "empty": {
       "loading": "Wczytywanie państw...",
-      "notFound": "Nie znaleziono żadnych państw. Bądź pierwszym, który założy wielkie imperium!"
+      "notFound": "Nie znaleziono żadnych państw. Bądź pierwszym, który założy wielkie imperium!",
+      "notFoundTitle": "Nie znaleziono państw",
+      "notFoundDesc": "Bądź pierwszym, który założy wielkie imperium!",
+      "searchNotFound": "Nic nie znaleziono",
+      "searchNotFoundDesc": "Spróbuj zmienić zapytanie lub zresetować filtr",
+      "resetSearch": "Zresetuj wyszukiwanie"
     },
     "createModal": {
       "title": "🏰 Zakładanie nowego państwa",
