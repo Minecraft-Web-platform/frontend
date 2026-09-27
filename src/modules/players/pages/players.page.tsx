@@ -77,22 +77,26 @@ const PlayersPage: FC = () => {
         </div>
 
         <div className="filter-buttons">
-          <p>{t("players.show")}</p>
-          <button
-            className={`filter-buttons__button ${filterOnline === "all" ? "filter-buttons__button--active" : ""}`}
-            onClick={() => setFilterOnline("all")}
-          >
-            {t("players.all")}
-          </button>
-          <button
-            className={`filter-buttons__button ${filterOnline === "online" ? "filter-buttons__button--active" : ""}`}
-            onClick={() => setFilterOnline("online")}
-          >
-            {t("players.onlyServer")}
-          </button>
+          <div className="filter-buttons__left">
+            <p className="filter-label">{t("players.show")}</p>
+            <div className="filter-buttons__actions">
+              <button
+                className={`filter-buttons__button ${filterOnline === "all" ? "filter-buttons__button--active" : ""}`}
+                onClick={() => setFilterOnline("all")}
+              >
+                {t("players.all")}
+              </button>
+              <button
+                className={`filter-buttons__button ${filterOnline === "online" ? "filter-buttons__button--active" : ""}`}
+                onClick={() => setFilterOnline("online")}
+              >
+                {t("players.onlyServer")}
+              </button>
+            </div>
+          </div>
 
           <div className="filter-buttons__state-filter">
-            <p>{t("players.state")}</p>
+            <p className="filter-label">{t("players.state")}</p>
             <CustomSelect
               value={filterState}
               onChange={(val) => setFilterState(val)}
