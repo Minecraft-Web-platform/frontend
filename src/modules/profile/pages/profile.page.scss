@@ -18,9 +18,12 @@
   margin: auto;
   box-shadow: var(--shadow-card);
   padding: 40px 64px;
-  min-width: 800px;
-  max-width: 1000px;
   width: 100%;
+  max-width: 1000px;
+
+  @media (max-width: 768px) {
+    padding: 24px 20px;
+  }
   box-sizing: border-box;
   background-color: var(--bg-card);
   border: 1px solid var(--border-card);
@@ -48,6 +51,12 @@
     grid-template-columns: 1fr 280px;
     gap: 64px;
 
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      justify-items: center;
+    }
+
     .avatar {
       transition: transform 0.3s linear;
 
@@ -58,6 +67,11 @@
           width: 280px;
           height: 280px;
           border-radius: 12px;
+
+          @media (max-width: 480px) {
+            width: 200px;
+            height: 200px;
+          }
 
           .remove-btn {
             top: 8px;

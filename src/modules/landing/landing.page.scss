@@ -25,16 +25,24 @@
 
   h1 {
     font-size: 64px;
+    text-align: center;
+    @media (max-width: 768px) { font-size: 40px; }
   }
 
   p {
     margin-top: 16px;
     font-size: 32px;
+    text-align: center;
+    @media (max-width: 768px) { font-size: 20px; }
   }
 
   &__link-to-auth {
     margin-top: 300px;
     font-size: 64px;
+    @media (max-width: 768px) {
+      margin-top: 150px;
+      font-size: 32px;
+    }
   }
 
   &__link-to-online-map {
@@ -60,10 +68,25 @@
   &__section {
     margin-top: 100px;
     max-width: 1200px;
+    padding: 0 20px;
+    width: 100%;
+    box-sizing: border-box;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     gap: 32px;
     align-items: center;
+
+    @media (max-width: 768px) {
+      display: flex;
+      flex-direction: column;
+      margin-top: 60px;
+      gap: 24px;
+      
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
 
     p {
       font-size: 20px;

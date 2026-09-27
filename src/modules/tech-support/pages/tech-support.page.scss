@@ -11,7 +11,6 @@
   font-family: 'Inter', sans-serif;
   color: var(--text-primary);
   max-width: 1200px;
-  margin-left: 260px;
   margin-right: auto;
 
   .tech-support-header {
@@ -385,10 +384,5 @@
         }
       }
     }
-  }
-
-  @media (max-width: 736px) {
-    margin-left: 0;
-    padding: 20px;
   }
 }

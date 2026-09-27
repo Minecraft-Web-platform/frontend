@@ -37,7 +37,9 @@
 .player {
   background-color: var(--bg-card);
   text-align: center;
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
   height: 300px;
   border: 1px solid var(--border-card);
   border-radius: 16px;
