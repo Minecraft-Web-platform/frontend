@@ -162,13 +162,12 @@ const PlayerProfilePage = () => {
             </div>
           </div>
           
-          <div style={{ marginLeft: "auto", display: "flex", gap: "10px", alignItems: "center" }}>
+          <div className="profile-header__actions">
             {isAdmin && (
               <>
                 {player.isBanned ? (
                   <button 
                     className="unban-btn"
-                    style={{ backgroundColor: "#10b981", color: "white", border: "none", padding: "8px 16px", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", transition: "0.2s" }}
                     onClick={() => setModalState("unban")}
                   >
                     {t('unban')}
@@ -176,7 +175,6 @@ const PlayerProfilePage = () => {
                 ) : (
                   <button 
                     className="ban-btn"
-                    style={{ backgroundColor: "#ef4444", color: "white", border: "none", padding: "8px 16px", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", transition: "0.2s" }}
                     onClick={() => {
                       setBanReasonInput("");
                       setModalState("ban");
