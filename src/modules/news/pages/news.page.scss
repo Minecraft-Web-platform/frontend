@@ -9,6 +9,10 @@
   padding-bottom: 64px;
   max-width: 1200px;
 
+  @media (max-width: 768px) {
+    padding-top: 88px;
+  }
+
   .button {
     max-width: 300px;
     margin: 0 auto;
