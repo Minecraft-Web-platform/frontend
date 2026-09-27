@@ -17,10 +17,10 @@
   display: block;
   border-radius: 24px;
   padding: 60px 64px 60px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--auth-form-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--auth-form-border);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   margin: 0 auto;
   width: 620px;
@@ -50,7 +50,7 @@
   gap: 8px;
 
   a {
-    color: #000;
+    color: var(--text-primary);
   }
 }
 
