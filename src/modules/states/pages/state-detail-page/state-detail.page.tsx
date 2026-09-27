@@ -280,11 +280,8 @@ const StateDetailPage: FC = () => {
     e.preventDefault();
     if (!id) return;
     try {
-      await economyService.createBank({
+      await statesService.createNationalBank(id, {
         name: bankName || t('stateDetailMissed.defaultBankName', { name: state?.name }),
-        ownerType: 'state',
-        ownerId: id,
-        accountId: state?.treasuryAccountNumber
       });
       setShowCreateBankModal(false);
       setBankName('');
@@ -1131,12 +1128,14 @@ const StateDetailPage: FC = () => {
                     label={t('state-detail.modals.currency.mainLabel')}
                     value={currItemId}
                     onChange={setCurrItemId}
+                    filterType="coin"
                     required
                   />
                   <MinecraftItemDropdown
                     label={t('state-detail.modals.currency.kopeckLabel')}
                     value={currKopeckItemId}
                     onChange={setCurrKopeckItemId}
+                    filterType="coin"
                     required
                   />
                   <MinecraftEnchantDropdown

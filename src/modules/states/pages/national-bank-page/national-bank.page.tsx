@@ -130,7 +130,7 @@ const NationalBankPage: FC = () => {
       <main className="content">
         <div className="economy-page">
           <div className="economy-container">
-            <div className="economy-hero" style={{ background: 'linear-gradient(135deg, #eab308 0%, #ca8a04 100%)' }}>
+            <div className="economy-hero economy-hero--gold">
               <div className="hero-icon">🏦</div>
               <h2 className="hero-title">{t('nationalBank.heroTitle', { name: state?.name })}</h2>
               <p className="hero-subtitle">{t('nationalBank.heroSubtitle')}</p>

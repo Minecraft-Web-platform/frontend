@@ -12,6 +12,7 @@ interface MinecraftItemDropdownProps {
   onChange: (id: string) => void;
   label?: string;
   required?: boolean;
+  filterType?: 'coin' | 'ingot';
 }
 
 export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
@@ -19,6 +20,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
   onChange,
   label,
   required,
+  filterType,
 }) => {
   const { t } = useTranslation('economy');
   const [isOpen, setIsOpen] = useState(false);
@@ -69,10 +71,10 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
             marginBottom: '6px',
             fontSize: '13px',
             fontWeight: 600,
-            color: '#334155',
+            color: 'var(--text-secondary)',
           }}
         >
-          {label} {required && <span style={{ color: '#e11d48' }}>*</span>}
+          {label} {required && <span style={{ color: 'var(--danger, #e11d48)' }}>*</span>}
         </label>
       )}
 
@@ -87,7 +89,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
             style={{
               flex: 1,
               padding: '10px 14px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)',
               borderRadius: '8px',
               fontFamily: 'monospace',
               fontSize: '13px',
@@ -98,12 +100,12 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
             onClick={handleBackToList}
             style={{
               padding: '10px 12px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)',
               borderRadius: '8px',
-              backgroundColor: '#ffffff',
+              backgroundColor: 'var(--bg-surface)',
               fontSize: '12px',
               cursor: 'pointer',
-              color: '#3b82f6',
+              color: 'var(--accent-diamond, #3b82f6)',
               fontWeight: 600,
               whiteSpace: 'nowrap',
             }}
@@ -121,12 +123,12 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
             justifyContent: 'space-between',
             width: '100%',
             padding: '10px 14px',
-            backgroundColor: '#f6f8fa',
-            border: '1px solid #d0d7de',
+            backgroundColor: 'var(--input-bg)',
+            border: '1px solid var(--input-border)',
             borderRadius: '8px',
             cursor: 'pointer',
             textAlign: 'left',
-            color: '#1e293b',
+            color: 'var(--text-primary)',
             fontSize: '14px',
             transition: 'border-color 0.2s',
           }}
@@ -145,8 +147,8 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
                 style={{
                   fontSize: '12px',
                   fontFamily: 'monospace',
-                  backgroundColor: '#e2e8f0',
-                  color: '#475569',
+                  backgroundColor: 'var(--border-subtle)',
+                  color: 'var(--text-secondary)',
                   padding: '2px 8px',
                   borderRadius: '6px',
                 }}
@@ -154,7 +156,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
                 {value}
               </span>
             )}
-            <span style={{ fontSize: '10px', color: '#64748b' }}>
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
               {isOpen ? '▲' : '▼'}
             </span>
           </div>
@@ -169,8 +171,8 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
             left: 0,
             right: 0,
             zIndex: 1000,
-            backgroundColor: '#ffffff',
-            border: '1px solid #d0d7de',
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--input-border)',
             borderRadius: '12px',
             boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)',
             maxHeight: '320px',
@@ -178,7 +180,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
           }}
         >
           <div style={{ padding: '6px' }}>
-            {MINECRAFT_CURRENCY_ITEMS.map((item) => {
+            {MINECRAFT_CURRENCY_ITEMS.filter((item) => !filterType || item.type === filterType).map((item) => {
               const isSelected = item.id === value;
               return (
                 <div
@@ -191,12 +193,12 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
                     padding: '10px 12px',
                     borderRadius: '8px',
                     cursor: 'pointer',
-                    backgroundColor: isSelected ? '#eff6ff' : 'transparent',
+                    backgroundColor: isSelected ? 'var(--bg-active)' : 'transparent',
                     transition: 'background-color 0.15s',
                   }}
                   onMouseEnter={(e) => {
                     if (!isSelected) {
-                      e.currentTarget.style.backgroundColor = '#f1f5f9';
+                      e.currentTarget.style.backgroundColor = 'var(--bg-hover)';
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -213,7 +215,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
                       style={{
                         fontSize: '14px',
                         fontWeight: isSelected ? 700 : 500,
-                        color: isSelected ? '#1d4ed8' : '#1e293b',
+                        color: isSelected ? 'var(--accent-diamond, #1d4ed8)' : 'var(--text-primary)',
                       }}
                     >
                       {item.name}
@@ -223,8 +225,8 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
                     style={{
                       fontSize: '12px',
                       fontFamily: 'monospace',
-                      backgroundColor: isSelected ? '#dbeafe' : '#f1f5f9',
-                      color: isSelected ? '#1e40af' : '#64748b',
+                      backgroundColor: isSelected ? 'var(--bg-active)' : 'var(--bg-hover)',
+                      color: isSelected ? 'var(--accent-diamond, #1e40af)' : 'var(--text-muted)',
                       padding: '2px 8px',
                       borderRadius: '6px',
                     }}
@@ -238,9 +240,9 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
 
           <div
             style={{
-              borderTop: '1px solid #e2e8f0',
+              borderTop: '1px solid var(--border-subtle)',
               padding: '8px 12px',
-              backgroundColor: '#f8fafc',
+              backgroundColor: 'var(--bg-muted)',
             }}
           >
             <button
@@ -251,7 +253,7 @@ export const MinecraftItemDropdown: React.FC<MinecraftItemDropdownProps> = ({
                 padding: '6px',
                 border: 'none',
                 background: 'transparent',
-                color: '#3b82f6',
+                color: 'var(--accent-diamond, #3b82f6)',
                 fontSize: '13px',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -304,7 +306,7 @@ export const MinecraftEnchantDropdown: React.FC<
       style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '6px' }}
     >
       {label && (
-        <span style={{ fontSize: '14px', fontWeight: 600, color: '#333333' }}>
+        <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>
           {label}
         </span>
       )}
@@ -319,11 +321,11 @@ export const MinecraftEnchantDropdown: React.FC<
             style={{
               flex: 1,
               padding: '10px 14px',
-              border: '1px solid #d0d7de',
+              border: '1px solid var(--input-border)',
               borderRadius: '8px',
-              backgroundColor: '#f6f8fa',
+              backgroundColor: 'var(--input-bg)',
               fontSize: '14px',
-              color: '#1e293b',
+              color: 'var(--text-primary)',
             }}
           />
           <button
@@ -336,12 +338,12 @@ export const MinecraftEnchantDropdown: React.FC<
             }}
             style={{
               padding: '10px 12px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)',
               borderRadius: '8px',
-              backgroundColor: '#ffffff',
+              backgroundColor: 'var(--bg-surface)',
               fontSize: '12px',
               cursor: 'pointer',
-              color: '#3b82f6',
+              color: 'var(--accent-diamond, #3b82f6)',
               fontWeight: 600,
               whiteSpace: 'nowrap',
             }}
@@ -359,12 +361,12 @@ export const MinecraftEnchantDropdown: React.FC<
             justifyContent: 'space-between',
             width: '100%',
             padding: '10px 14px',
-            backgroundColor: '#f6f8fa',
-            border: '1px solid #d0d7de',
+            backgroundColor: 'var(--input-bg)',
+            border: '1px solid var(--input-border)',
             borderRadius: '8px',
             cursor: 'pointer',
             textAlign: 'left',
-            color: '#1e293b',
+            color: 'var(--text-primary)',
             fontSize: '14px',
             transition: 'border-color 0.2s',
           }}
@@ -385,8 +387,8 @@ export const MinecraftEnchantDropdown: React.FC<
                 style={{
                   fontSize: '12px',
                   fontFamily: 'monospace',
-                  backgroundColor: '#e2e8f0',
-                  color: '#475569',
+                  backgroundColor: 'var(--border-subtle)',
+                  color: 'var(--text-secondary)',
                   padding: '2px 8px',
                   borderRadius: '6px',
                 }}
@@ -394,7 +396,7 @@ export const MinecraftEnchantDropdown: React.FC<
                 {value}
               </span>
             ) : null}
-            <span style={{ fontSize: '10px', color: '#64748b' }}>
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
               {isOpen ? '▲' : '▼'}
             </span>
           </div>
@@ -410,8 +412,8 @@ export const MinecraftEnchantDropdown: React.FC<
             width: '100%',
             maxHeight: '280px',
             overflowY: 'auto',
-            backgroundColor: '#ffffff',
-            border: '1px solid #cbd5e1',
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--border-color)',
             borderRadius: '10px',
             boxShadow:
               '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
@@ -435,12 +437,12 @@ export const MinecraftEnchantDropdown: React.FC<
                     padding: '8px 12px',
                     borderRadius: '8px',
                     cursor: 'pointer',
-                    backgroundColor: isSelected ? '#eff6ff' : 'transparent',
+                    backgroundColor: isSelected ? 'var(--bg-active)' : 'transparent',
                     transition: 'background-color 0.15s',
                   }}
                   onMouseEnter={(e) => {
                     if (!isSelected) {
-                      e.currentTarget.style.backgroundColor = '#f1f5f9';
+                      e.currentTarget.style.backgroundColor = 'var(--bg-hover)';
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -455,7 +457,7 @@ export const MinecraftEnchantDropdown: React.FC<
                       style={{
                         fontSize: '14px',
                         fontWeight: isSelected ? 700 : 500,
-                        color: isSelected ? '#1d4ed8' : '#1e293b',
+                        color: isSelected ? 'var(--accent-diamond, #1d4ed8)' : 'var(--text-primary)',
                       }}
                     >
                       {ench.name}
@@ -465,8 +467,8 @@ export const MinecraftEnchantDropdown: React.FC<
                     style={{
                       fontSize: '12px',
                       fontFamily: 'monospace',
-                      backgroundColor: isSelected ? '#dbeafe' : '#f1f5f9',
-                      color: isSelected ? '#1e40af' : '#64748b',
+                      backgroundColor: isSelected ? 'var(--bg-active)' : 'var(--bg-hover)',
+                      color: isSelected ? 'var(--accent-diamond, #1e40af)' : 'var(--text-muted)',
                       padding: '2px 8px',
                       borderRadius: '6px',
                     }}
@@ -480,9 +482,9 @@ export const MinecraftEnchantDropdown: React.FC<
 
           <div
             style={{
-              borderTop: '1px solid #e2e8f0',
+              borderTop: '1px solid var(--border-subtle)',
               padding: '8px 12px',
-              backgroundColor: '#f8fafc',
+              backgroundColor: 'var(--bg-muted)',
             }}
           >
             <button
@@ -496,7 +498,7 @@ export const MinecraftEnchantDropdown: React.FC<
                 padding: '6px',
                 border: 'none',
                 background: 'transparent',
-                color: '#3b82f6',
+                color: 'var(--accent-diamond, #3b82f6)',
                 fontSize: '13px',
                 fontWeight: 600,
                 cursor: 'pointer',
