@@ -698,5 +698,13 @@
       "success": "Listed for sale!",
       "error": "Error listing for sale"
     }
+  },
+  "portfolio": {
+    "companyPrefix": "Company ",
+    "inPortfolio": "In portfolio: ",
+    "pcs": "pcs.",
+    "avgPrice": "Avg price: ",
+    "owner": "Owner: ",
+    "sell": "Sell"
   }
 }

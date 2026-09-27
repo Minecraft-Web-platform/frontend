@@ -698,5 +698,13 @@
       "success": "Wystawiono na sprzedaż!",
       "error": "Błąd podczas wystawiania na sprzedaż"
     }
+  },
+  "portfolio": {
+    "companyPrefix": "Firma ",
+    "inPortfolio": "W portfolio: ",
+    "pcs": "szt.",
+    "avgPrice": "Średnia cena: ",
+    "owner": "Właściciel: ",
+    "sell": "Sprzedaj"
   }
 }

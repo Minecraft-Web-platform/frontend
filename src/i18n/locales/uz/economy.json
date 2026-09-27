@@ -698,5 +698,13 @@
       "success": "Sotuvga qo'yildi!",
       "error": "Sotuvga qo'yishda xatolik"
     }
+  },
+  "portfolio": {
+    "companyPrefix": "Kompaniya ",
+    "inPortfolio": "Portfelda: ",
+    "pcs": "dona.",
+    "avgPrice": "O'rtacha narx: ",
+    "owner": "Egasi: ",
+    "sell": "Sotish"
   }
 }
