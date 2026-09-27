@@ -8,14 +8,14 @@ function changeLanguage(language: string, setter: Dispatch<SetStateAction<string
   setter(language);
 }
 
-export const LangChanger = () => {
+export const LangChanger = ({ isMobileMenu = false }: { isMobileMenu?: boolean }) => {
   const [lang, setLang] = useState(i18n.language);
   const [isOpened, setIsOpened] = useState<boolean>(false);
 
   const activeLang = (lang === 'uk' || lang === 'ua') ? 'ua' : (lang === 'kk' || lang === 'kz') ? 'kz' : lang;
 
   return (
-    <div className="lang-changer">
+    <div className={`lang-changer ${isMobileMenu ? 'lang-changer--mobile-menu' : 'lang-changer--desktop'}`}>
       <ThemeToggle variant="compact" />
       {isOpened ? (
       <div className="btns">

@@ -14,6 +14,7 @@ import TechSupportIcon from "../../../assets/svg/contact.svg?react";
 import DocsIcon from "../../../assets/svg/docs.svg?react";
 import CalendarIcon from "../../../assets/svg/calendar.svg?react";
 import { Link, useLocation } from "react-router";
+import LangChanger from "../lang-changer/lang-changer.component";
 
 const MenuIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 24, height: 24 }}>
@@ -130,6 +131,7 @@ const Sidebar: FC = () => {
               <IconComponent path="/agreement" label={t('buttons.regulations')} iconType="stroke">
                 <DocsIcon />
               </IconComponent>
+              <LangChanger isMobileMenu />
             </div>
           )}
         </>
