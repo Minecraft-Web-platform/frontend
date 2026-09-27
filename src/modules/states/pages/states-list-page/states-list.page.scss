@@ -235,6 +235,10 @@
     justify-content: center;
     z-index: 1000;
     padding: 20px;
+
+    @media (max-width: 768px) {
+      padding: 12px;
+    }
   }
 
   &__modal {
@@ -249,12 +253,21 @@
     max-height: 90vh;
     overflow-y: auto;
 
+    @media (max-width: 768px) {
+      padding: 16px;
+      border-radius: 12px;
+    }
+
     h3 {
       font-family: "Minecraft", sans-serif;
       margin: 0;
       font-size: 24px;
       font-weight: normal;
       color: var(--text-headings);
+
+      @media (max-width: 768px) {
+        font-size: 20px;
+      }
     }
 
     form {

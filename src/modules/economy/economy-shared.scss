@@ -277,6 +277,11 @@
   box-shadow: var(--shadow-modal);
   color: var(--text-primary);
 
+  @media (max-width: 768px) {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
   .modal-title {
     font-family: "Minecraft", sans-serif;
     font-size: 24px;
