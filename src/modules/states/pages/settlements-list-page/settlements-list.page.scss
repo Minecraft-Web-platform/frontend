@@ -22,6 +22,10 @@
   &__title {
     font-family: "Minecraft", sans-serif;
     font-size: 32px;
+
+    @media (max-width: 768px) {
+      font-size: 24px;
+    }
     font-weight: normal;
     color: var(--text-headings);
     margin: 0 0 10px 0;

@@ -38,6 +38,13 @@
       display: inline-block;
       font-size: 28px;
     }
+
+    @media (max-width: 768px) {
+      font-size: 24px;
+      span {
+        font-size: 22px;
+      }
+    }
   }
 
   &__subtitle {

@@ -9,7 +9,8 @@
   height: 100vh;
 
   @media (max-width: 768px) {
-    margin-left: 70px !important;
+    margin-left: 0 !important;
+    height: calc(100vh - 70px);
   }
 }
 
