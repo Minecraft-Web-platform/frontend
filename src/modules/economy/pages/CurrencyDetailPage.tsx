@@ -99,7 +99,7 @@ export const CurrencyDetailPage: React.FC = () => {
 
           <div className="cdp-tab-content">
             <div className="cdp-overview">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '24px', alignItems: 'start' }}>
+              <div className="cdp-content-grid">
                 <div className="cdp-info-card" style={{ display: 'flex', flexDirection: 'column' }}>
                   <h2 style={{ marginBottom: '16px', fontSize: '18px', fontWeight: 600 }}>{t('currencies.detail.rateChart')}</h2>
                   <div style={{ marginBottom: '16px', fontSize: '24px', fontWeight: 'bold' }}>

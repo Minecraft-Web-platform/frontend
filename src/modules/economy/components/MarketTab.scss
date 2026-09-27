@@ -1,0 +1,109 @@
+.market-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.market-tab-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+
+  @media (max-width: 968px) {
+    flex-direction: column;
+  }
+}
+
+.market-tab-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+}
+
+.market-tab-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  background: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid var(--border-card);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+
+  @media (max-width: 968px) {
+    width: 100%;
+  }
+}
+
+.market-tab-chart-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid var(--border-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 640px) {
+    padding: 16px;
+  }
+}
+
+.market-tab-chart-header {
+  margin: 0 0 16px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .company-name {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-headings);
+    word-break: break-word;
+
+    @media (max-width: 480px) {
+      font-size: 20px;
+    }
+  }
+
+  .price-info {
+    text-align: right;
+
+    @media (max-width: 480px) {
+      text-align: left;
+    }
+
+    .price {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--text-headings);
+
+      @media (max-width: 480px) {
+        font-size: 24px;
+      }
+    }
+
+    .change {
+      font-size: 14px;
+    }
+  }
+}
+
+.market-tab-actions {
+  display: flex;
+  gap: 12px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
+}

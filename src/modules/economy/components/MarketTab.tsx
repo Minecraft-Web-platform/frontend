@@ -1,4 +1,5 @@
 import React from 'react';
+import './MarketTab.scss';
 import { useTranslation } from 'react-i18next';
 import { ICompany } from '../types/economy.types';
 import { IState } from '../../states/types/states.types';
@@ -35,7 +36,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
   const selectedCompany = companies.find(c => c.id === selectedCompanyId) || null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div className="market-tab">
       {onBack && (
         <div style={{ alignSelf: 'flex-start' }}>
           <Button type="button" secondary={true} callback={onBack}>
@@ -43,17 +44,17 @@ export const MarketTab: React.FC<MarketTabProps> = ({
           </Button>
         </div>
       )}
-      <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+      <div className="market-tab-layout">
         {/* Left column: Chart and actions */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="market-tab-main">
           {selectedCompany ? (
             <>
-            <div style={{ background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-card)', padding: '24px', boxShadow: 'var(--shadow-card)' }}>
-              <h2 style={{ margin: '0 0 16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '24px', fontWeight: 600, color: 'var(--text-headings)' }}>{selectedCompany.name}</span>
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '28px', fontWeight: 'bold', color: 'var(--text-headings)' }}>{selectedCompany.sharePrice} {getCurrencyCode(selectedCompany)}</span>
-                  <div style={{ fontSize: '14px', color: selectedCompany.priceChange24h >= 0 ? '#10b981' : '#ef4444' }}>
+            <div className="market-tab-chart-card">
+              <h2 className="market-tab-chart-header">
+                <span className="company-name">{selectedCompany.name}</span>
+                <div className="price-info">
+                  <span className="price">{selectedCompany.sharePrice} {getCurrencyCode(selectedCompany)}</span>
+                  <div className="change" style={{ color: selectedCompany.priceChange24h >= 0 ? '#10b981' : '#ef4444' }}>
                     {selectedCompany.priceChange24h >= 0 ? '+' : ''}{selectedCompany.priceChange24h.toFixed(2)}% {t('exchange.hours24')}
                   </div>
                 </div>
@@ -61,7 +62,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
               <TradingChart fetchHistory={() => economyService.getCompanySharePriceHistory(selectedCompany.id)} triggerRefetch={selectedCompany.sharePrice} />
             </div>
             
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div className="market-tab-actions">
               <Button
                 type="button"
                 callback={() => setBuyCompanyId(selectedCompany.id)}
@@ -107,7 +108,7 @@ export const MarketTab: React.FC<MarketTabProps> = ({
       </div>
 
       {/* Right column: Shares list */}
-      <div style={{ width: '320px', flexShrink: 0, background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-card)', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: 'var(--shadow-card)' }}>
+      <div className="market-tab-sidebar">
         <div style={{ padding: '16px', borderBottom: '1px solid var(--border-color)', background: 'var(--bg-surface)', fontWeight: 600, fontSize: '16px', color: 'var(--text-headings)' }}>
           {t('exchange.sharesOnMarket', 'Shares on the market')}
         </div>

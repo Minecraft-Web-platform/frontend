@@ -135,6 +135,17 @@
       flex-direction: column;
       gap: 24px;
 
+      .cdp-content-grid {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 24px;
+        align-items: start;
+
+        @media (max-width: 968px) {
+          grid-template-columns: 1fr;
+        }
+      }
+
       .cdp-info-card {
         background: var(--bg-card);
         border: 1px solid var(--border-card);
