@@ -206,6 +206,9 @@
           color: var(--text-primary);
           display: flex;
           justify-content: space-between;
+          gap: 8px;
+          flex-wrap: wrap;
+          word-break: break-word;
           border-bottom: 1px dashed var(--border-color);
           padding-bottom: 8px;
 
