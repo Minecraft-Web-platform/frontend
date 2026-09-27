@@ -76,9 +76,17 @@ const Sidebar: FC = () => {
               <PlayersIcon />
             </IconComponent>
 
-            <IconComponent path="/map" label={t('buttons.world-map')} iconType="fill">
-              <MapIcon />
-            </IconComponent>
+            <div className="sidebar__desktop-only">
+              <IconComponent path="/map" label={t('buttons.world-map')} iconType="fill">
+                <MapIcon />
+              </IconComponent>
+            </div>
+
+            <div className="sidebar__mobile-only">
+              <IconComponent path="/profile" label={t('buttons.profile')} iconType="fill">
+                <ProfileIcon />
+              </IconComponent>
+            </div>
           </>
         )}
       </div>
@@ -107,8 +115,8 @@ const Sidebar: FC = () => {
 
           {isMoreMenuOpen && (
             <div className="sidebar__mobile-menu">
-              <IconComponent path="/profile" label={t('buttons.profile')} iconType="fill">
-                <ProfileIcon />
+              <IconComponent path="/map" label={t('buttons.world-map')} iconType="fill">
+                <MapIcon />
               </IconComponent>
               <IconComponent path="/states" label={t('buttons.states')} iconType="fill">
                 <StateIcon />
