@@ -88,11 +88,7 @@
     }
 
     &__middle {
-      flex: 1;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      gap: 8px;
+      display: contents;
     }
 
     &__bottom {
@@ -129,7 +125,6 @@
       border-radius: 8px;
       transition: all 0.2s ease;
       flex-shrink: 0;
-      margin-left: 8px;
       
       span {
         display: none; // Hide "Еще" text to match icons
@@ -167,6 +162,10 @@
           font-size: 15px;
         }
       }
+    }
+
+    &__mobile-only {
+      display: contents;
     }
   }
 }
