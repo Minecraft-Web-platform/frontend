@@ -37,6 +37,7 @@
   --auth-form-border: rgba(255, 255, 255, 0.4);
   --auth-bg-image: url("/png/auth-bg-opt.jpg");
   --notfound-bg-image: url("/png/mirograd-opt.webp");
+  --bg-dark-opacity: 0;
   
   --accent-emerald: #10b981;
   --accent-diamond: #0ea5e9;
@@ -81,6 +82,7 @@
   --auth-form-border: rgba(255, 255, 255, 0.1);
   --auth-bg-image: url("/png/auth-bg-dark-opt.jpg");
   --notfound-bg-image: url("/png/mirograd-dark-opt.webp");
+  --bg-dark-opacity: 1;
   
   --accent-emerald: #10b981;
   --accent-diamond: #38bdf8;

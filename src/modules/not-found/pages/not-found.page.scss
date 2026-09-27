@@ -5,7 +5,22 @@
   height: 100vh;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: var(--notfound-bg-image);
+  background-image: url("/png/mirograd-opt.webp");
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1;
+    background-image: url("/png/mirograd-dark-opt.webp");
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: var(--bg-dark-opacity);
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none;
+  }
 
   .info-block {
     max-width: 600px;
