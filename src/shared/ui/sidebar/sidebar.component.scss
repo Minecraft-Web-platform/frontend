@@ -54,6 +54,10 @@
     display: contents;
   }
 
+  &__mobile-only {
+    display: none;
+  }
+
   &__more-btn {
     display: none;
   }
